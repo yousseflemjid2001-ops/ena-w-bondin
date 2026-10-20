@@ -224,6 +224,7 @@ window.handleLoginSubmit = function(e) {
       setTimeout(() => {
         loginOverlay.style.display = 'none';
         loginOverlay.classList.remove('login-success-warp');
+        document.body.style.overflow = '';
         // Réinitialiser le bouton pour la prochaine connexion
         if (btnContent) btnContent.style.display = 'flex';
         if (btnLoading) btnLoading.style.display = 'none';
@@ -257,6 +258,7 @@ window.logoutToLoginScreen = function() {
   if (loginOverlay) {
     loginOverlay.style.display = 'flex';
     loginOverlay.classList.add('login-fade-in');
+    document.body.style.overflow = 'hidden';
     if (window.lucide) {
       try { lucide.createIcons(); } catch(e) {}
     }
@@ -332,10 +334,13 @@ function initAuthGate() {
   if (forceLogout) {
     sessionStorage.removeItem('bondin_authenticated');
     loginOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
   } else if (forceLogin || !isAuth) {
     loginOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
   } else {
     loginOverlay.style.display = 'none';
+    document.body.style.overflow = '';
     const savedRole = sessionStorage.getItem('bondin_auth_role');
     if (savedRole) {
       updateHeaderProfileBadge(savedRole);
