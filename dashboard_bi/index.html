@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
-  <link rel="stylesheet" href="style.css?v=20261020_executive_login_v13">
+  <link rel="stylesheet" href="style.css?v=20261020_executive_login_v14">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -64,7 +64,7 @@
     <!-- Top HUD Bar -->
     <div class="w-full flex items-center justify-between px-6 sm:px-12 py-6 relative z-20">
       <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 font-mono text-xs sm:text-sm font-bold shadow-[0_0_18px_rgba(16 Bull,185,129,0.3)]">
+        <div class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 font-mono text-xs sm:text-sm font-bold shadow-[0_0_18px_rgba(16,185,129,0.3)]">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>Live DWH : <strong class="text-white font-extrabold tracking-wide">13 097 scans</strong></span>
         </div>
@@ -110,7 +110,7 @@
         </p>
 
         <!-- Métrique 1 : CA FIDÉLITÉ M-O-M -->
-        <div class="rounded-2xl bg-[#140820]/95 border border-purple-500/30 p-5 sm:p-6 flex items-center justify-between mb-4 hover:border-purple-500/60 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.4)] backdrop-blur-md">
+        <div class="login-metric-luxury rounded-2xl bg-[#140820]/95 border border-purple-500/30 p-5 sm:p-6 flex items-center justify-between mb-4 hover:border-purple-500/60 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.4)] backdrop-blur-md">
           <div class="flex items-center gap-4">
             <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-purple-600/25 border border-purple-500/50 flex items-center justify-center text-purple-300 flex-shrink-0 shadow-inner">
               <i data-lucide="trending-up" class="w-6 h-6 sm:w-7 sm:h-7"></i>
@@ -126,7 +126,7 @@
         </div>
 
         <!-- Métrique 2 : MOTEUR PRÉDICTIF COPILOT IA -->
-        <div class="rounded-2xl bg-[#140820]/95 border border-purple-500/30 p-5 sm:p-6 flex items-center justify-between mb-5 hover:border-purple-500/60 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.4)] backdrop-blur-md">
+        <div class="login-metric-luxury rounded-2xl bg-[#140820]/95 border border-purple-500/30 p-5 sm:p-6 flex items-center justify-between mb-5 hover:border-purple-500/60 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.4)] backdrop-blur-md">
           <div class="flex items-center gap-4">
             <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-500/25 border border-amber-500/50 flex items-center justify-center text-amber-400 flex-shrink-0 shadow-inner">
               <i data-lucide="sparkles" class="w-6 h-6 sm:w-7 sm:h-7"></i>
@@ -151,7 +151,7 @@
 
       <!-- COLONNE DROITE : CARTE DE CONNEXION EXÉCUTIVE (AGRANDIE, LOGOS MAJESTUEUX) -->
       <div class="lg:col-span-5">
-        <div class="rounded-[2.2rem] bg-[#13081e]/95 border border-purple-500/40 p-8 sm:p-11 shadow-[0_0_80px_rgba(147,51,234,0.3)] relative overflow-hidden backdrop-blur-2xl">
+        <div class="login-portal-card-luxury rounded-[2.2rem] bg-[#13081e]/95 border border-purple-500/40 p-8 sm:p-11 shadow-[0_0_80px_rgba(147,51,234,0.3)] relative overflow-hidden backdrop-blur-2xl">
           
           <!-- Liseré supérieur lumineux or & carmin -->
           <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-amber-400 via-purple-400 to-transparent"></div>
@@ -229,9 +229,11 @@
             <div>
               <label class="text-xs sm:text-sm font-semibold text-purple-200/90 mb-2 block" for="login-email">Identifiant Exécutif / Email</label>
               <div class="relative flex items-center">
-                <i data-lucide="user" class="absolute left-4 w-5 h-5 text-purple-400 pointer-events-none"></i>
+                <span class="absolute left-4 text-purple-400 pointer-events-none flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
                 <input type="email" id="login-email" value="direction@bondin.tn" required readonly
-                  class="w-full bg-[#1b0c28] border border-purple-500/35 rounded-2xl pl-12 pr-4 py-3 sm:py-3.5 text-sm sm:text-base text-white font-medium focus:border-purple-400 focus:outline-none transition-colors shadow-inner" />
+                  class="login-input-luxury w-full bg-[#1b0c28] border border-purple-500/35 rounded-2xl pl-12 pr-4 py-3 sm:py-3.5 text-sm sm:text-base text-white font-medium focus:border-fuchsia-400 focus:outline-none transition-all shadow-inner" />
               </div>
             </div>
 
@@ -244,11 +246,13 @@
                 </span>
               </div>
               <div class="relative flex items-center">
-                <i data-lucide="key-round" class="absolute left-4 w-5 h-5 text-purple-400 pointer-events-none"></i>
-                <input type="password" id="login-password" value="••••••••••••" required
-                  class="w-full bg-[#1b0c28] border border-purple-500/35 rounded-2xl pl-12 pr-12 py-3 sm:py-3.5 text-sm sm:text-base text-white font-mono focus:border-purple-400 focus:outline-none transition-colors shadow-inner" />
-                <button type="button" onclick="window.toggleLoginPasswordVisibility()" class="absolute right-4 text-purple-300/70 hover:text-white transition-colors cursor-pointer" title="Afficher/Masquer">
-                  <i id="login-eye-icon" data-lucide="eye" class="w-5 h-5"></i>
+                <span class="absolute left-4 text-purple-400 pointer-events-none flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+                </span>
+                <input type="password" id="login-password" value="Bondin2026!DG" required
+                  class="login-input-luxury w-full bg-[#1b0c28] border border-purple-500/35 rounded-2xl pl-12 pr-12 py-3 sm:py-3.5 text-sm sm:text-base text-white font-mono focus:border-fuchsia-400 focus:outline-none transition-all shadow-inner" />
+                <button type="button" id="login-eye-btn" onclick="window.toggleLoginPasswordVisibility()" class="absolute right-4 text-purple-300/70 hover:text-white transition-colors cursor-pointer p-1" title="Afficher/Masquer le mot de passe">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
             </div>
@@ -262,7 +266,7 @@
                 <input type="checkbox" checked class="rounded border-purple-500/40 bg-[#1b0c28] text-purple-600 focus:ring-0 focus:ring-offset-0 w-4 h-4 cursor-pointer accent-purple-600">
                 <span>Garder ma session active</span>
               </label>
-              <a href="javascript:void(0)" onclick="window.showToast('Contactez la Direction des Systèmes d'Information BONDIN', 'shield')" class="text-purple-300/80 hover:text-purple-100 hover:underline">Clé perdue ?</a>
+              <a href="javascript:void(0)" onclick="window.showToast('Contactez la Direction des Systèmes d&apos;Information BONDIN', 'shield')" class="text-purple-300/80 hover:text-purple-100 hover:underline">Clé perdue ?</a>
             </div>
 
             <!-- Bouton Déverrouiller Cockpit Décisionnel Grand Format -->
@@ -897,7 +901,7 @@
           <span class="visual-info-icon" title="Exploration guidée IA : Décomposition du CA Global -> Segments -> Gammes -> Magasins">?</span>
         </div>
         <div id="decomp-tree-container" style="overflow-x: auto; padding: 6px 0;">
-          <!-- Injecté par app.js?v=20261020_executive_login_v13 -->
+          <!-- Injecté par app.js?v=20261020_executive_login_v14 -->
         </div>
       </div>
 
@@ -1061,7 +1065,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js?v=20261020_executive_login_v13 -->
+              <!-- Injecté par app.js?v=20261020_executive_login_v14 -->
             </tbody>
           </table>
         </div>
@@ -1086,7 +1090,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js?v=20261020_executive_login_v13 -->
+              <!-- Injecté par app.js?v=20261020_executive_login_v14 -->
             </tbody>
           </table>
         </div>
@@ -1152,7 +1156,7 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Injecté par app.js?v=20261020_executive_login_v13 -->
+                <!-- Injecté par app.js?v=20261020_executive_login_v14 -->
               </tbody>
             </table>
           </div>
@@ -1176,7 +1180,7 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Injecté par app.js?v=20261020_executive_login_v13 -->
+                <!-- Injecté par app.js?v=20261020_executive_login_v14 -->
               </tbody>
             </table>
           </div>
@@ -1203,7 +1207,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js?v=20261020_executive_login_v13 -->
+              <!-- Injecté par app.js?v=20261020_executive_login_v14 -->
             </tbody>
           </table>
         </div>
@@ -1368,8 +1372,8 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="data.js?v=20261020_executive_login_v13"></script>
-  <script src="app.js?v=20261020_executive_login_v13"></script>
+  <script src="data.js?v=20261020_executive_login_v14"></script>
+  <script src="app.js?v=20261020_executive_login_v14"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->

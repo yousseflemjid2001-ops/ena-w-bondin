@@ -163,18 +163,29 @@ window.onLoginRoleChange = function(roleVal) {
 
 window.toggleLoginPasswordVisibility = function() {
   const pwdInput = document.getElementById('login-password');
-  const eyeIcon = document.getElementById('login-eye-icon');
+  const eyeBtn = document.getElementById('login-eye-btn');
   if (!pwdInput) return;
   
   if (pwdInput.type === 'password') {
     pwdInput.type = 'text';
-    if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye-off');
+    if (eyeBtn) {
+      eyeBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-fuchsia-300 hover:text-white transition-colors">
+          <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+          <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+          <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+          <line x1="2" x2="22" y1="2" y2="22"/>
+        </svg>`;
+    }
   } else {
     pwdInput.type = 'password';
-    if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye');
-  }
-  if (window.lucide) {
-    try { lucide.createIcons(); } catch(e) {}
+    if (eyeBtn) {
+      eyeBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-purple-300/70 hover:text-white transition-colors">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>`;
+    }
   }
 };
 
@@ -283,37 +294,41 @@ function initLoginParticles() {
   resize();
   window.addEventListener('resize', resize);
   
-  const particleCount = Math.min(45, Math.floor(window.innerWidth / 30));
+  const particleCount = Math.min(65, Math.max(30, Math.floor(window.innerWidth / 28)));
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 2.2 + 0.8,
+      radius: Math.random() * 2.4 + 0.8,
       speedY: Math.random() * 0.45 + 0.15,
-      speedX: (Math.random() - 0.5) * 0.3,
-      opacity: Math.random() * 0.6 + 0.2,
-      color: Math.random() > 0.4 ? 'rgba(245, 158, 11, ' : 'rgba(200, 16, 46, '
+      speedX: (Math.random() - 0.5) * 0.25,
+      swayOffset: Math.random() * Math.PI * 2,
+      opacity: Math.random() * 0.65 + 0.15,
+      color: Math.random() > 0.45 ? '245, 158, 11' : (Math.random() > 0.5 ? '225, 29, 72' : '192, 38, 211')
     });
   }
   
+  let frame = 0;
   function animate() {
-    if (!document.getElementById('login-screen') || document.getElementById('login-screen').style.display === 'none') {
+    frame++;
+    const loginOverlay = document.getElementById('login-screen');
+    if (!loginOverlay || loginOverlay.style.display === 'none') {
       animationId = requestAnimationFrame(animate);
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let p of particles) {
       p.y -= p.speedY;
-      p.x += p.speedX;
-      if (p.y < -10) {
-        p.y = canvas.height + 10;
+      p.x += Math.sin(frame * 0.02 + p.swayOffset) * 0.35 + p.speedX;
+      if (p.y < -15) {
+        p.y = canvas.height + 15;
         p.x = Math.random() * canvas.width;
       }
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = p.color + p.opacity + ')';
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = '#F59E0B';
+      ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
+      ctx.shadowBlur = p.radius * 4;
+      ctx.shadowColor = `rgba(${p.color}, 0.8)`;
       ctx.fill();
     }
     animationId = requestAnimationFrame(animate);
