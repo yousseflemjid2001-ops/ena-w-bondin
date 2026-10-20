@@ -1,17 +1,33 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-20 17:30:37",
+  "timestamp": "2026-10-20 18:12:37",
   "company_name": "BONDIN",
-  "total_scans": 13084,
-  "total_ca_tnd": 153138.77,
+  "total_scans": 13086,
+  "total_ca_tnd": 153161.37,
   "panier_moyen_tnd": 11.704,
-  "total_points_emis": 513307,
+  "total_points_emis": 513387,
   "clients_actifs": 758,
-  "dernier_scan": "2026-10-20 17:15:15",
-  "dernier_ticket": "bondin6134146",
-  "dernier_magasin": "Caf\u00e9t\u00e9ria Tunis Ariana",
+  "dernier_scan": "2026-10-20 18:12:14",
+  "dernier_ticket": "bondin6134970",
+  "dernier_magasin": "Caf\u00e9t\u00e9ria Gafsa Ville",
   "recent_scans": [
+    {
+      "id": 13097,
+      "ticket": "bondin6134970",
+      "montant_tnd": 7.8,
+      "points": 21.3,
+      "date": "2026-10-20 18:12:14",
+      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
+    },
+    {
+      "id": 13096,
+      "ticket": "bondin6134838",
+      "montant_tnd": 14.8,
+      "points": 59.2,
+      "date": "2026-10-20 17:59:33",
+      "magasin": "Succursale Gafsa Ville"
+    },
     {
       "id": 13095,
       "ticket": "bondin6134146",
@@ -35,22 +51,6 @@
       "points": 81.4,
       "date": "2026-10-20 17:05:29",
       "magasin": "Succursale Gafsa"
-    },
-    {
-      "id": 13092,
-      "ticket": "bondin6133817",
-      "montant_tnd": 296.0,
-      "points": 1184.0,
-      "date": "2026-10-20 16:56:07",
-      "magasin": "Succursale Gab\u00e8s Jara"
-    },
-    {
-      "id": 13091,
-      "ticket": "bondin6133781",
-      "montant_tnd": 11.8,
-      "points": 26.6,
-      "date": "2026-10-20 16:54:07",
-      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
     }
   ]
 }

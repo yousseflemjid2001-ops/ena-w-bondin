@@ -2499,9 +2499,23 @@ window.toggleRagChat = function() {
   const panel = document.getElementById('rag-chatbox-panel');
   if (!panel) return;
   const isHidden = panel.style.display === 'none' || panel.style.display === '';
-  panel.style.display = isHidden ? 'block' : 'none';
+  panel.style.display = isHidden ? 'flex' : 'none';
   if (isHidden) {
-    document.getElementById('rag-user-input')?.focus();
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch(e) {}
+    }
+    // Mise à jour dynamique des chiffres clés dans le message de bienvenue
+    if (typeof liveSyncData !== 'undefined' && liveSyncData) {
+      const bCa = document.getElementById('rag-brief-ca');
+      const bSc = document.getElementById('rag-brief-scans');
+      const bUs = document.getElementById('rag-brief-users');
+      if (bCa && liveSyncData.total_ca_tnd) bCa.innerText = `${Math.round(liveSyncData.total_ca_tnd).toLocaleString('fr-FR')} TND`;
+      if (bSc && liveSyncData.total_scans) bSc.innerText = `${liveSyncData.total_scans.toLocaleString('fr-FR')} scans`;
+      if (bUs && liveSyncData.clients_actifs) bUs.innerText = `${liveSyncData.clients_actifs.toLocaleString('fr-FR')} clients`;
+    }
+    setTimeout(() => {
+      document.getElementById('rag-user-input')?.focus();
+    }, 100);
   }
 };
 
@@ -2510,14 +2524,24 @@ window.clearRagMessages = function() {
   if (!messagesArea) return;
   messagesArea.innerHTML = `
     <div class="rag-msg-row assistant">
-      <div class="rag-msg-avatar">✨</div>
+      <div class="rag-msg-avatar">
+        <i data-lucide="bot" class="w-4 h-4 text-purple-300"></i>
+      </div>
       <div class="rag-msg-bubble">
-        <div class="rag-msg-author">Copilot Décisionnel BONDIN &bull; Analyse Certifiée</div>
-        <p>Discussion réinitialisée. Posez-moi vos questions décisionnelles en temps réel ou cliquez sur l'une des suggestions ci-dessus.</p>
+        <div class="rag-msg-author">
+          <span class="rag-author-name">Copilot Décisionnel BONDIN</span>
+          <span class="rag-author-pill">Session Réinitialisée</span>
+        </div>
+        <p class="rag-welcome-lead">
+          Session réinitialisée. Posez votre question décisionnelle ou choisissez une analyse stratégique dans les filtres ci-dessus.
+        </p>
       </div>
     </div>
   `;
-  if (typeof showToast === 'function') showToast("Discussion réinitialisée.", "info");
+  if (window.lucide) {
+    try { lucide.createIcons(); } catch(e) {}
+  }
+  if (typeof showToast === 'function') showToast("Session IA réinitialisée.", "info");
 };
 
 window.openGeminiKeyModal = function() {
@@ -2569,14 +2593,22 @@ window.sendRagMessage = async function() {
   const typingRow = document.createElement('div');
   typingRow.className = 'rag-msg-row assistant typing-temp';
   typingRow.innerHTML = `
-    <div class="rag-msg-avatar">✨</div>
+    <div class="rag-msg-avatar">
+      <i data-lucide="bot" class="w-4 h-4 text-purple-300"></i>
+    </div>
     <div class="rag-msg-bubble">
-      <div class="rag-typing-dots">
-        <span></span><span></span><span></span>
+      <div class="rag-typing-wrapper">
+        <span class="rag-typing-label">Consultation des 9 tables DWH...</span>
+        <div class="rag-typing-dots">
+          <span></span><span></span><span></span>
+        </div>
       </div>
     </div>
   `;
   messagesArea.appendChild(typingRow);
+  if (window.lucide) {
+    try { lucide.createIcons(); } catch(e) {}
+  }
   messagesArea.scrollTop = messagesArea.scrollHeight;
 
   try {
@@ -2585,11 +2617,11 @@ window.sendRagMessage = async function() {
       question: text,
       apiKey: geminiKey,
       liveContext: liveSyncData || {
-        total_scans: 13054,
-        total_ca_tnd: 152243.0,
-        dernier_ticket: 'bondin6129366',
-        dernier_magasin: 'Cafétéria Tunis Liberté',
-        dernier_scan: '2026-10-20 12:48:00'
+        total_scans: 13084,
+        total_ca_tnd: 153138.0,
+        dernier_ticket: 'bondin6134146',
+        dernier_magasin: 'Cafétéria Tunis Ariana',
+        dernier_scan: '2026-10-20 17:15:00'
       }
     };
 
@@ -2639,20 +2671,28 @@ window.sendRagMessage = async function() {
     });
 
     const sourcesHtml = cleanSources.length 
-      ? `<div class="rag-msg-sources">📁 Sources : ${cleanSources.map(s => `<span class="rag-source-pill">${s}</span>`).join(' ')}</div>` 
+      ? `<div class="rag-msg-sources"><span>Sources DWH :</span> ${cleanSources.map(s => `<span class="rag-source-pill">${s}</span>`).join(' ')}</div>` 
       : '';
 
     const assistantRow = document.createElement('div');
     assistantRow.className = 'rag-msg-row assistant';
     assistantRow.innerHTML = `
-      <div class="rag-msg-avatar">✨</div>
+      <div class="rag-msg-avatar">
+        <i data-lucide="bot" class="w-4 h-4 text-purple-300"></i>
+      </div>
       <div class="rag-msg-bubble">
-        <div class="rag-msg-author">Copilot Décisionnel BONDIN &bull; Analyse Certifiée</div>
+        <div class="rag-msg-author">
+          <span class="rag-author-name">Copilot Décisionnel BONDIN</span>
+          <span class="rag-author-pill">Analyse Certifiée</span>
+        </div>
         <div class="rag-content-body">${formattedAnswer}</div>
         ${sourcesHtml}
       </div>
     `;
     messagesArea.appendChild(assistantRow);
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch(e) {}
+    }
     messagesArea.scrollTop = messagesArea.scrollHeight;
 
   } catch (err) {
@@ -2660,12 +2700,17 @@ window.sendRagMessage = async function() {
     const errorRow = document.createElement('div');
     errorRow.className = 'rag-msg-row assistant';
     errorRow.innerHTML = `
-      <div class="rag-msg-avatar">⚠️</div>
+      <div class="rag-msg-avatar">
+        <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+      </div>
       <div class="rag-msg-bubble">
-        <p style="color: #DC2626;">Erreur de connexion avec le serveur RAG. Veuillez vérifier que le backend est actif.</p>
+        <p style="color: #F87171;">Erreur de connexion avec le serveur RAG. Veuillez vérifier que le backend est actif.</p>
       </div>
     `;
     messagesArea.appendChild(errorRow);
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch(e) {}
+    }
     messagesArea.scrollTop = messagesArea.scrollHeight;
   }
 };
