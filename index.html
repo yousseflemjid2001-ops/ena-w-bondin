@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
-  <link rel="stylesheet" href="style.css?v=20261020_copilot_screen_v8">
+  <link rel="stylesheet" href="style.css?v=20261020_pro_filter_v9">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -653,207 +653,140 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- 3b. BARRE DE FILTRAGE MODERNE POWER BI (ENA W BONDIN)    -->
+  <!-- 3b. BARRE DE FILTRES PROFESSIONNELLE POWER BI            -->
   <!-- ======================================================== -->
-  <section class="pbi-filter-card" id="pbi-filter-card">
-    <!-- LIGNE 1 : COMPTEUR FILTRES ACTIFS + TIME IA -->
-    <div class="filter-top-row">
-      <div class="active-filter-header">
-        <div class="filter-icon-box">
-          <i data-lucide="sliders-horizontal" style="width:20px;height:20px;"></i>
-          <span class="filter-badge-count" id="activeCountBadge">2</span>
-        </div>
-        <div class="filter-title-group">
-          <h3>FILTRES ACTIFS</h3>
-          <span id="activeCountText">2 filtres actifs</span>
-        </div>
-      </div>
+  <div class="pro-filter-bar" id="pro-filter-bar">
 
-      <div class="time-ia-bar" id="timePillsContainer">
-        <span class="time-ia-label">TIME IA :</span>
-        <button type="button" class="time-pill" data-period="Aujourd'hui" data-range="20/10/2026 - 20/10/2026" onclick="window.setTimePeriod('Aujourd\'hui', '20/10/2026 - 20/10/2026', this)">Aujourd'hui</button>
-        <button type="button" class="time-pill" data-period="7J" data-range="13/10/2026 - 20/10/2026" onclick="window.setTimePeriod('7J', '13/10/2026 - 20/10/2026', this)">7J</button>
-        <button type="button" class="time-pill" data-period="MTD" data-range="01/10/2026 - 20/10/2026" onclick="window.setTimePeriod('MTD', '01/10/2026 - 20/10/2026', this)">MTD</button>
-        <button type="button" class="time-pill" data-period="QTD" data-range="01/07/2026 - 20/10/2026" onclick="window.setTimePeriod('QTD', '01/07/2026 - 20/10/2026', this)">QTD</button>
-        <button type="button" class="time-pill active" data-period="YTD" data-range="01/04/2026 - 20/10/2026" onclick="window.setTimePeriod('YTD', '01/04/2026 - 20/10/2026', this)">YTD</button>
-        <button type="button" class="time-pill" data-period="Personnalisé" data-range="01/01/2026 - 20/10/2026" onclick="window.setTimePeriod('Personnalisé', '01/01/2026 - 20/10/2026', this)">Personnalisé</button>
+    <!-- Badge Filtres Exécutif avec Compteur Dynamique (Style Power BI Exécutif) -->
+    <div class="pro-filter-badge-cluster">
+      <div class="pro-filter-icon-box">
+        <i data-lucide="filter" class="w-4 h-4 text-purple-200"></i>
+      </div>
+      <div class="pro-filter-badge-text">
+        <span class="pro-filter-badge-title">FILTRES</span>
+        <span class="pro-filter-badge-count" id="active-filters-count">CONSOLIDÉ</span>
       </div>
     </div>
 
-    <!-- LIGNE 2 : RECHERCHE + VUE BOOKMARK + CODE POWER BI -->
-    <div class="filter-Sub-row">
-      <div class="search-box">
-        <i data-lucide="search"></i>
-        <input type="text" id="globalSearchInput" placeholder="Rechercher un PDV, SKU, ou Segment..." oninput="window.handleGlobalSearch(this.value)" onkeydown="if(event.key==='Enter') window.applyGlobalSearchFilter()" />
-        <span class="kbd-shortcut">Ctrl+K</span>
-      </div>
+    <div class="pro-filter-divider"></div>
 
-      <div class="bookmark-select-wrapper">
-        <i data-lucide="bookmark" style="width:15px;height:15px;"></i>
-        <select id="bookmarkSelect" onchange="window.handleBookmarkChange(this.value)">
-          <option value="dg">Vue : Direction Générale</option>
-          <option value="b2b">Vue : Focus Grossistes B2B</option>
-          <option value="turc">Vue : Top Café Turc Moulu</option>
-          <option value="retention">Vue : Alerte Rétention IA</option>
-        </select>
-        <i data-lucide="chevron-down" style="width:15px;height:15px;margin-left:-18px;pointer-events:none;"></i>
+    <!-- Calendrier : Plage de dates -->
+    <div class="pro-filter-group date-filter-group" id="group-filter-date">
+      <label class="pro-filter-label" for="filter-date-start">
+        <i data-lucide="calendar" class="w-3.5 h-3.5 text-purple-400"></i>
+        <span>Période (Calendrier)</span>
+      </label>
+      <div class="pro-date-picker-wrap">
+        <input type="date" id="filter-date-start" class="pro-date-field" value="2026-04-01" min="2026-01-01" max="2026-12-31" title="Date début">
+        <span class="date-arrow">&rarr;</span>
+        <input type="date" id="filter-date-end" class="pro-date-field" value="2026-10-20" min="2026-01-01" max="2026-12-31" title="Date fin">
       </div>
+    </div>
 
-      <button type="button" class="btn-code-pbi" onclick="window.openPowerBiCodeModal()">
-        <i data-lucide="code-2" style="width:16px;height:16px;"></i>
-        &lt;/&gt; Code Power BI
+    <div class="pro-filter-divider"></div>
+
+    <!-- Magasin / Point de Vente -->
+    <div class="pro-filter-group" id="group-filter-magasin">
+      <label class="pro-filter-label" for="filter-magasin">
+        <i data-lucide="store" class="w-3.5 h-3.5 text-rose-400"></i>
+        <span>Point de Vente</span>
+      </label>
+      <select id="filter-magasin" class="pro-filter-select">
+        <option value="all" selected>Tous les PDV (Réseau)</option>
+        <option value="SUC">Succursales (B2B)</option>
+        <option value="CAF">Cafétérias (B2C)</option>
+        <option value="gafsa">Gafsa (Succursale &amp; Cafétéria)</option>
+        <option value="tunis-liberte">Tunis Liberté</option>
+        <option value="el-menzah">El Menzah</option>
+        <option value="la-marsa">La Marsa</option>
+        <option value="gabes">Gabès Jara</option>
+        <option value="le-kef">Le Kef</option>
+        <option value="sfax">Sfax</option>
+        <option value="sousse">Sousse</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Gamme Café -->
+    <div class="pro-filter-group" id="group-filter-gamme">
+      <label class="pro-filter-label" for="filter-gamme">
+        <i data-lucide="coffee" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span>Gamme Produit</span>
+      </label>
+      <select id="filter-gamme" class="pro-filter-select">
+        <option value="all" selected>Toutes les gammes</option>
+        <option value="grains">Café en Grains Prestige</option>
+        <option value="moulu">Café Moulu Torréfié</option>
+        <option value="boissons">Boissons Salons &amp; Comptoir</option>
+        <option value="capsules">Capsules Compatibles</option>
+        <option value="accessoires">Accessoires &amp; Machines</option>
+        <option value="confiseries">Confiseries &amp; Délices</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Segment RFM -->
+    <div class="pro-filter-group" id="group-filter-segment">
+      <label class="pro-filter-label" for="filter-segment">
+        <i data-lucide="target" class="w-3.5 h-3.5 text-violet-400"></i>
+        <span>Segment RFM</span>
+      </label>
+      <select id="filter-segment" class="pro-filter-select">
+        <option value="all" selected>Tous les segments</option>
+        <option value="champions">Champions &amp; Ambassadeurs</option>
+        <option value="loyaux">Clients Fidèles &amp; Réguliers</option>
+        <option value="risque">Clients à Risque (Churn)</option>
+        <option value="hibernants">Clients Hibernants</option>
+        <option value="grossistes">Grossistes &amp; B2B</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Profil Réseau -->
+    <div class="pro-filter-group" id="group-slicer-reseau">
+      <label class="pro-filter-label" for="slicer-reseau">
+        <i data-lucide="network" class="w-3.5 h-3.5 text-sky-400"></i>
+        <span>Profil Réseau</span>
+      </label>
+      <select id="slicer-reseau" class="pro-filter-select">
+        <option value="all" selected>Réseau Global Consolidé</option>
+        <option value="particuliers">Consommateurs Détail (Cafétérias)</option>
+        <option value="grossistes">Grossistes &amp; B2B Suspects (Succursales)</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Rôle RLS -->
+    <div class="pro-filter-group" id="group-slicer-rls">
+      <label class="pro-filter-label" for="slicer-rls">
+        <i data-lucide="lock" class="w-3.5 h-3.5 text-fuchsia-400"></i>
+        <span>Rôle RLS (Sécurité)</span>
+      </label>
+      <select id="slicer-rls" class="pro-filter-select">
+        <option value="dir_gen" selected>Direction Générale (Global)</option>
+        <option value="mkt_b2c">Marketing B2C (Particuliers)</option>
+        <option value="grands_comptes">Grands Comptes (B2B)</option>
+        <option value="reg_tunis">Resp. Régional Grand Tunis</option>
+      </select>
+    </div>
+
+    <!-- Actions filtres (Reset & Appliquer avec effets de brillance) -->
+    <div class="pro-filter-actions">
+      <button class="pro-filter-btn-reset" onclick="window.resetAllFilters()" title="Réinitialiser tous les filtres">
+        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+        <span>Reset</span>
       </button>
-
-      <button type="button" class="btn-collapse" id="toggleCollapseBtn" onclick="window.toggleSlicersCollapse()" title="Réduire / Agrandir les filtres">
-        <i data-lucide="chevron-up" id="collapseChevron" style="width:18px;height:18px;"></i>
+      <button class="pro-filter-btn-apply btn-shine" onclick="window.applyFilters()" title="Appliquer les filtres sélectionnés">
+        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+        <span>Appliquer</span>
       </button>
     </div>
 
-    <!-- GRILLE DES 6 SLICERS (2 COLONNES x 3 LIGNES) -->
-    <div class="slicers-grid" id="slicersGrid">
-      <!-- 1. PÉRIODE (CALENDRIER) -->
-      <div class="slicer-item">
-        <div class="slicer-label-row">
-          <span class="slicer-label">
-            <i data-lucide="calendar" style="width:14px;height:14px;color:#c084fc;"></i>
-            PÉRIODE (CALENDRIER)
-          </span>
-          <span class="slicer-badge badge-vsn1" id="toggleVsN1" onclick="window.toggleVsN1Comparison()" title="Activer / Désactiver la comparaison N-1">VS N-1</span>
-        </div>
-        <div class="slicer-control date-control" onclick="window.promptCustomDateRange()" title="Cliquer pour ajuster la plage">
-          <span id="dateRangeDisplay">01/04/2026 - 20/10/2026</span>
-          <i data-lucide="calendar" style="width:16px;height:16px;color:#c084fc;"></i>
-        </div>
-      </div>
-
-      <!-- 2. POINT DE VENTE (PDV) -->
-      <div class="slicer-item">
-        <div class="slicer-label-row">
-          <span class="slicer-label">
-            <i data-lucide="store" style="width:14px;height:14px;color:#f43f5e;"></i>
-            POINT DE VENTE (PDV)
-          </span>
-          <span class="slicer-badge badge-purple-text" id="pdvCountBadge">TOUS (6)</span>
-        </div>
-        <div class="slicer-control">
-          <select id="pdvSelect" onchange="window.onPdvChange(this.value)">
-            <option value="all">Tous les PDV (Réseau)</option>
-            <option value="le-kef">Succursale Le Kef (2 410 scans)</option>
-            <option value="tunis-centre">Tunis Centre (4 120 scans)</option>
-            <option value="kelibia">Kélibia (1 890 scans)</option>
-            <option value="sfax">Sfax (2 650 scans)</option>
-            <option value="sousse">Sousse (2 004 scans)</option>
-            <option value="SUC">Succursales Uniquement (B2B)</option>
-            <option value="CAF">Cafétérias Uniquement (B2C)</option>
-          </select>
-          <i data-lucide="chevron-down" style="width:16px;height:16px;color:#9e8fb2;pointer-events:none;"></i>
-        </div>
-      </div>
-
-      <!-- 3. GAMME PRODUIT -->
-      <div class="slicer-item">
-        <div class="slicer-label-row">
-          <span class="slicer-label">
-            <i data-lucide="coffee" style="width:14px;height:14px;color:#f59e0b;"></i>
-            GAMME PRODUIT
-          </span>
-          <span class="slicer-badge badge-amber-text">TOUTES (5)</span>
-        </div>
-        <div class="slicer-control">
-          <select id="gammeSelect" onchange="window.onGammeChange(this.value)">
-            <option value="all">Toutes les gammes</option>
-            <option value="turc">Café Turc Pur Depuis 1910</option>
-            <option value="grains">Expresso Grain Pro</option>
-            <option value="capsules">Capsules Compatibles</option>
-            <option value="filtre">Café Filtre Tradition</option>
-            <option value="boissons">Boissons Salons &amp; Comptoir</option>
-          </select>
-          <i data-lucide="chevron-down" style="width:16px;height:16px;color:#9e8fb2;pointer-events:none;"></i>
-        </div>
-      </div>
-
-      <!-- 4. SEGMENT RFM (IA) -->
-      <div class="slicer-item">
-        <div class="slicer-label-row">
-          <span class="slicer-label">
-            <i data-lucide="sparkles" style="width:14px;height:14px;color:#818cf8;"></i>
-            SEGMENT RFM (IA)
-          </span>
-          <span class="slicer-badge badge-fidness">FIDNESS ML</span>
-        </div>
-        <div class="slicer-control">
-          <select id="rfmSelect" onchange="window.onRfmChange(this.value)">
-            <option value="all">Tous les segments</option>
-            <option value="champions">Champions &amp; Ambassadeurs</option>
-            <option value="loyaux">Clients Fidèles</option>
-            <option value="risque">À Risque de Churn</option>
-            <option value="nouveaux">Nouveaux Scanneurs</option>
-          </select>
-          <i data-lucide="chevron-down" style="width:16px;height:16px;color:#9e8fb2;pointer-events:none;"></i>
-        </div>
-      </div>
-
-      <!-- 5. PROFIL RÉSEAU -->
-      <div class="slicer-item">
-        <div class="slicer-label-row">
-          <span class="slicer-label">
-            <i data-lucide="network" style="width:14px;height:14px;color:#10b981;"></i>
-            PROFIL RÉSEAU
-          </span>
-        </div>
-        <div class="slicer-control">
-          <select id="reseauSelect" onchange="window.onReseauChange(this.value)">
-            <option value="all">Réseau Global Consolidé</option>
-            <option value="boutiques">Boutiques Officielles Bondin</option>
-            <option value="grossistes">Grossistes &amp; CHR</option>
-            <option value="gms">Grande Distribution (GMS)</option>
-          </select>
-          <i data-lucide="chevron-down" style="width:16px;height:16px;color:#9e8fb2;pointer-events:none;"></i>
-        </div>
-      </div>
-
-      <!-- 6. RÔLE RLS (SÉCURISÉ) -->
-      <div class="slicer-item">
-        <div class="slicer-label-row">
-          <span class="slicer-label">
-            <i data-lucide="shield-check" style="width:14px;height:14px;color:#c084fc;"></i>
-            RÔLE RLS (SÉCURISÉ)
-          </span>
-          <span class="slicer-badge badge-rls">RLS</span>
-        </div>
-        <div class="slicer-control rls-light">
-          <select id="rlsSelect" onchange="window.onRlsChange(this.value)">
-            <option value="dir_gen">Direction Générale (Global)</option>
-            <option value="reg_nord">Directeur Régional Nord</option>
-            <option value="chef_kef">Chef d'Agence Le Kef</option>
-            <option value="mkt_fidness">Analyste Marketing Fidness</option>
-            <option value="mkt_b2c">Marketing B2C (Particuliers)</option>
-            <option value="grands_comptes">Grands Comptes (B2B)</option>
-            <option value="reg_tunis">Resp. Régional Grand Tunis</option>
-          </select>
-          <i data-lucide="chevron-down" style="width:16px;height:16px;pointer-events:none;"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- PIED DE PAGE : PUCES DE FILTRES APPLIQUÉS & ACTIONS -->
-    <div class="filter-footer">
-      <div class="applied-chips-row" id="chipsContainer">
-        <!-- Rendu dynamique par JS -->
-      </div>
-
-      <div class="footer-actions">
-        <button type="button" class="btn-reset" onclick="window.resetAllFilters()">
-          <i data-lucide="rotate-ccw" style="width:15px;height:15px;"></i>
-          Réinitialiser tout
-        </button>
-        <button type="button" class="btn-apply" onclick="window.applyFiltersEffect()">
-          <i data-lucide="check-circle-2" style="width:16px;height:16px;"></i>
-          Appliquer les filtres
-        </button>
-      </div>
-    </div>
-  </section>
+  </div>
 
   <!-- ======================================================== -->
   <!-- BANNIÈRE INTERACTIVE DE FILTRAGE CROISÉ (STYLE POWER BI) -->
@@ -1457,8 +1390,8 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="data.js?v=20261020_copilot_screen_v8"></script>
-  <script src="app.js?v=20261020_copilot_screen_v8"></script>
+  <script src="data.js?v=20261020_pro_filter_v9"></script>
+  <script src="app.js?v=20261020_pro_filter_v9"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->
@@ -1518,46 +1451,7 @@
     </div>
   </div>
 
-  <!-- ======================================================== -->
-  <!-- MODAL EXÉCUTIF POWER BI CODE (DAX & POWER QUERY M)       -->
-  <!-- ======================================================== -->
-  <div id="modal-powerbi-code" class="modal-overlay" style="display: none;" onclick="if(event.target === this) window.closePowerBiCodeModal()">
-    <div class="modal-card" style="max-width: 680px;">
-      <div class="modal-header">
-        <div class="modal-title" style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 9px; background: rgba(147, 51, 234, 0.2); border: 1px solid rgba(168, 85, 247, 0.4); display: flex; align-items: center; justify-content: center; color: #c084fc;">
-            <i data-lucide="code-2" style="width: 18px; height: 18px;"></i>
-          </div>
-          <div>
-            <div style="font-size: 1rem; font-weight: 800; color: #ffffff;">Code &amp; Formules Microsoft Power BI</div>
-            <div style="font-size: 0.72rem; color: #9e8fb2; font-weight: 500;">Modèle DAX &amp; M-Query optimisé pour visuel HTML Content ou DAX Studio</div>
-          </div>
-        </div>
-        <button class="modal-close-btn" onclick="window.closePowerBiCodeModal()">&times;</button>
-      </div>
 
-      <div class="modal-body">
-        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-          <button type="button" id="pbi-tab-dax" class="time-pill active" onclick="window.switchPbiCodeTab('dax')">Mesures DAX Clés</button>
-          <button type="button" id="pbi-tab-rls" class="time-pill" onclick="window.switchPbiCodeTab('rls')">Règles RLS (Sécurité)</button>
-          <button type="button" id="pbi-tab-m" class="time-pill" onclick="window.switchPbiCodeTab('m')">Power Query (M)</button>
-        </div>
-
-        <div style="position: relative;">
-          <pre id="pbi-code-display" style="background: #0d0613; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: #f3e8ff; line-height: 1.6; max-height: 320px; overflow-y: auto; white-space: pre-wrap; user-select: all;"></pre>
-          <button type="button" class="btn-apply" onclick="window.copyPowerBiCode()" style="position: absolute; top: 10px; right: 10px; height: 32px; padding: 0 12px; font-size: 0.72rem;">
-            <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
-            <span id="copyCodeBtnText">Copier</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.72rem; color: #9e8fb2;">Source : <code>data_dwh/</code> (Modèle en Étoile 9 Tables)</span>
-        <button class="btn-reset" onclick="window.closePowerBiCodeModal()">Fermer</button>
-      </div>
-    </div>
-  </div>
 
   <!-- ======================================================== -->
   <!-- BOUTON FLOTTANT COPILOT IA RAG DÉCISIONNEL PRESTIGE      -->
