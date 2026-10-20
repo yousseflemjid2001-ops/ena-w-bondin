@@ -1,15 +1,7 @@
 {
   "version": 2,
-  "crons": [
-    {
-      "path": "/api/cron/sync",
-      "schedule": "0 2 * * *"
-    }
-  ],
   "rewrites": [
     { "source": "/api/rag/chat", "destination": "/api/chat" },
-    { "source": "/api/cron/sync", "destination": "/api/sync" },
-    { "source": "/", "destination": "/dashboard_bi/index.html" },
-    { "source": "/(.*)", "destination": "/dashboard_bi/$1" }
+    { "source": "/api/cron/sync", "destination": "/api/sync" }
   ]
 }
