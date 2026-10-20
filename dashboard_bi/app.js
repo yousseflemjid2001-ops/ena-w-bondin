@@ -411,6 +411,33 @@ function initSubbarTabs() {
 // ==========================================================================
 // 2. SLICERS & FILTRES (PROFIL RÉSEAU & SÉCURITÉ RLS)
 // ==========================================================================
+/** Met à jour dynamiquement le badge du compteur de filtres actifs (ex: "5 ACTIFS" ou "CONSOLIDÉ") */
+function updateActiveFiltersBadge() {
+  const dStart   = document.getElementById('filter-date-start')?.value;
+  const dEnd     = document.getElementById('filter-date-end')?.value;
+  const magasin  = document.getElementById('filter-magasin')?.value || 'all';
+  const gamme    = document.getElementById('filter-gamme')?.value || 'all';
+  const segment  = document.getElementById('filter-segment')?.value || 'all';
+  const reseau   = document.getElementById('slicer-reseau')?.value || 'all';
+  const role     = document.getElementById('slicer-rls')?.value || 'dir_gen';
+
+  let activeCount = [magasin, gamme, segment, reseau].filter(v => v !== 'all').length;
+  if (role !== 'dir_gen') activeCount += 1;
+  if ((dStart && dStart !== '2026-04-01') || (dEnd && dEnd !== '2026-10-20')) activeCount += 1;
+
+  const countBadge = document.getElementById('active-filters-count');
+  if (countBadge) {
+    if (activeCount === 0) {
+      countBadge.textContent = 'CONSOLIDÉ';
+      countBadge.style.color = '#34D399';
+    } else {
+      countBadge.textContent = `${activeCount} ACTIF${activeCount > 1 ? 'S' : ''}`;
+      countBadge.style.color = '#10B981';
+    }
+  }
+}
+window.updateActiveFiltersBadge = updateActiveFiltersBadge;
+
 function initSlicers() {
   // Changement direct des sélecteurs : marque actif ET applique en direct
   ['filter-magasin', 'filter-gamme', 'filter-segment', 'slicer-reseau', 'slicer-rls'].forEach(id => {
@@ -440,6 +467,9 @@ function initSlicers() {
       });
     }
   });
+
+  // Mise à jour initiale du badge de filtres actifs
+  updateActiveFiltersBadge();
 }
 
 /** Marquer visuellement un groupe de filtre actif (dot violet) */
@@ -610,6 +640,8 @@ window.resetAllFilters = function() {
 // Recalcule et actualise instantanément 100% des visuels du Dashboard
 // ==========================================================================
 function executeGlobalFilters() {
+  updateActiveFiltersBadge();
+
   const dStart   = document.getElementById('filter-date-start')?.value || '2026-04-01';
   const dEnd     = document.getElementById('filter-date-end')?.value || '2026-10-20';
   const magasin  = document.getElementById('filter-magasin')?.value || 'all';
