@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
-  <link rel="stylesheet" href="style.css?v=20261020_pbi_filter_v7">
+  <link rel="stylesheet" href="style.css?v=20261020_copilot_screen_v8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1457,8 +1457,8 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="data.js?v=20261020_pbi_filter_v7"></script>
-  <script src="app.js?v=20261020_pbi_filter_v7"></script>
+  <script src="data.js?v=20261020_copilot_screen_v8"></script>
+  <script src="app.js?v=20261020_copilot_screen_v8"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->
@@ -1562,140 +1562,77 @@
   <!-- ======================================================== -->
   <!-- BOUTON FLOTTANT COPILOT IA RAG DÉCISIONNEL PRESTIGE      -->
   <!-- ======================================================== -->
+  <!-- ======================================================== -->
+  <!-- BOUTON FLOTTANT COPILOT IA RAG DÉCISIONNEL               -->
+  <!-- ======================================================== -->
   <button id="btn-open-rag-chat" class="rag-floating-trigger" onclick="window.toggleRagChat()" title="Ouvrir le Copilot Décisionnel RAG (IA)">
-    <div class="rag-trigger-icon-box">
-      <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+    <div class="rag-trigger-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10a9.96 9.96 0 0 1-4.587-1.11L3 22l1.11-4.413A9.96 9.96 0 0 1 2 12 10 10 0 0 1 12 2z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
     </div>
-    <div class="rag-trigger-text-col">
-      <span class="rag-trigger-label">Copilot Décisionnel</span>
-      <span class="rag-trigger-sub">IA &bull; 9 Tables DWH</span>
-    </div>
-    <div class="rag-trigger-status-badge">
-      <span class="rag-live-radar-dot"></span>
-      <span>Live</span>
-    </div>
+    <span class="rag-trigger-label">Copilot IA RAG</span>
+    <span class="rag-trigger-dot"></span>
   </button>
 
   <!-- ======================================================== -->
-  <!-- MODAL / CHATBOX COPILOT IA RAG EXÉCUTIF PRESTIGE        -->
+  <!-- MODAL / DRAWER CHATBOX RAG DÉCISIONNEL                  -->
   <!-- ======================================================== -->
   <div id="rag-chatbox-panel" class="rag-chatbox-container" style="display: none;">
     <div class="rag-chatbox-card">
       
-      <!-- LIGNE DÉCORATIVE SUPÉRIEURE IRIDISCENTE -->
-      <div class="rag-top-shimmer"></div>
-
-      <!-- HEADER EXÉCUTIF DU COPILOT -->
+      <!-- HEADER CHATBOX -->
       <div class="rag-chat-header">
         <div class="rag-header-left">
-          <div class="rag-header-badge-icon">
-            <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+          <div class="rag-avatar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10a9.96 9.96 0 0 1-4.587-1.11L3 22l1.11-4.413A9.96 9.96 0 0 1 2 12 10 10 0 0 1 12 2z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
+            <div class="rag-avatar-glow"></div>
           </div>
           <div>
-            <div class="rag-header-title-row">
-              <span class="rag-title-main">Copilot Décisionnel IA</span>
-              <span class="rag-badge-certified">
-                <i data-lucide="shield-check" class="w-3 h-3 text-amber-400"></i>
-                DWH Grounded
-              </span>
+            <div class="rag-header-title">
+              Copilot Décisionnel RAG
+              <span class="rag-badge-certified"><span class="rag-pulse-dot"></span> IA CERTIFIÉE</span>
             </div>
-            <div class="rag-header-sub">BONDIN &times; FIDNESS &bull; Moteur Analytique Décisionnel</div>
+            <div class="rag-header-sub">BONDIN &times; FIDNESS &bull; Ancrage DWH Temps Réel</div>
           </div>
         </div>
-
         <div class="rag-header-actions">
-          <div class="rag-status-capsule" title="Connecté au Data Warehouse PostgreSQL (Prod)">
-            <span class="rag-radar-dot"></span>
-            <span>Live DWH</span>
+          <button class="rag-header-icon-btn" onclick="window.clearRagMessages()" title="Nouvelle discussion (Effacer l'historique)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+          <div class="rag-status-pill">
+            <span class="rag-pulse-green"></span> Connecté Live
           </div>
-
-          <button class="rag-header-icon-btn" onclick="window.clearRagMessages()" title="Réinitialiser la session">
-            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-          </button>
-          
-          <button class="rag-close-btn" onclick="window.toggleRagChat()" title="Fermer l'assistant">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
+          <button class="rag-close-btn" onclick="window.toggleRagChat()" title="Fermer le chat">&times;</button>
         </div>
       </div>
 
-      <!-- BARRE DE REQUÊTES STRATÉGIQUES (SANS EMOJIS, AVEC ICÔNES VECTORIELLES) -->
+      <!-- SUGGESTIONS DE QUESTIONS STRATÉGIQUES -->
       <div class="rag-chips-bar">
-        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quel est le chiffre d affaires total et le panier moyen ?')">
-          <i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span>CA &amp; Panier Moyen</span>
-        </button>
-        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la difference entre les succursales et les cafeterias ?')">
-          <i data-lucide="store" class="w-3.5 h-3.5 text-blue-400"></i>
-          <span>Succursales vs Cafétérias</span>
-        </button>
-        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la dette des points et le ratio Earn & Burn ?')">
-          <i data-lucide="coins" class="w-3.5 h-3.5 text-amber-400"></i>
-          <span>Dette &amp; Burn Rate</span>
-        </button>
-        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les magasins les plus rentables ?')">
-          <i data-lucide="award" class="w-3.5 h-3.5 text-purple-400"></i>
-          <span>Top Succursales</span>
-        </button>
-        <button class="rag-chip" onclick="window.askSuggestedQuestion('Combien de profils grossistes B2B ont ete detectes ?')">
-          <i data-lucide="users" class="w-3.5 h-3.5 text-rose-400"></i>
-          <span>Détection Grossistes</span>
-        </button>
-        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les clients en risque d attrition churn ?')">
-          <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-orange-400"></i>
-          <span>Risque Churn</span>
-        </button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quel est le chiffre d affaires total et le panier moyen ?')">💰 Chiffre d'Affaires</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la difference entre les succursales et les cafeterias ?')">🏬 Succursales vs Cafétérias</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la dette des points et le ratio Earn & Burn ?')">📊 Dette &amp; Points</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les magasins les plus rentables ?')">🏆 Top Magasins</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Combien de profils grossistes B2B ont ete detectes ?')">⚡ Grossistes B2B</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les clients en risque d attrition churn ?')">🚨 Alerte Churn</button>
       </div>
 
-      <!-- FLUX DES ÉCHANGES ET ANALYSES -->
+      <!-- ZONE DES MESSAGES -->
       <div class="rag-chat-messages" id="rag-messages-area">
         <div class="rag-msg-row assistant">
-          <div class="rag-msg-avatar">
-            <i data-lucide="bot" class="w-4 h-4 text-purple-300"></i>
-          </div>
+          <div class="rag-msg-avatar">✨</div>
           <div class="rag-msg-bubble">
-            <div class="rag-msg-author">
-              <span class="rag-author-name">Copilot Décisionnel BONDIN</span>
-              <span class="rag-author-pill">Modèle Grounded DWH</span>
-            </div>
-            
-            <p class="rag-welcome-lead">
-              Bonjour. Je suis votre moteur d'aide à la décision stratégique, directement indexé sur les <strong>9 tables du Data Warehouse ENA W BONDIN</strong>.
-            </p>
-
-            <div class="rag-kpi-micro-summary">
-              <div class="rag-kpi-micro-item">
-                <span class="rag-kpi-micro-lbl">Chiffre d'Affaires</span>
-                <span class="rag-kpi-micro-val text-amber-400" id="rag-brief-ca">153 138 TND</span>
-              </div>
-              <div class="rag-kpi-micro-sep"></div>
-              <div class="rag-kpi-micro-item">
-                <span class="rag-kpi-micro-lbl">Volume Transactions</span>
-                <span class="rag-kpi-micro-val text-emerald-400" id="rag-brief-scans">13 084 scans</span>
-              </div>
-              <div class="rag-kpi-micro-sep"></div>
-              <div class="rag-kpi-micro-item">
-                <span class="rag-kpi-micro-lbl">Portefeuille Actif</span>
-                <span class="rag-kpi-micro-val text-purple-300" id="rag-brief-users">758 clients</span>
-              </div>
-            </div>
-
-            <p class="rag-welcome-hint">
-              Sélectionnez une requête stratégique ci-dessus ou saisissez votre analyse libre ci-dessous.
-            </p>
+            <div class="rag-msg-author">Copilot Décisionnel BONDIN &bull; Analyse Certifiée</div>
+            <p>Bonjour ! Je suis votre Copilot Décisionnel connecté en temps réel aux <strong>9 tables du Data Warehouse</strong>. Posez-moi vos questions stratégiques ou cliquez sur les suggestions ci-dessus.</p>
           </div>
         </div>
       </div>
 
-      <!-- COMMANDE PROMPT DÉCISIONNELLE (STYLE RAYCAST / PALANTIR) -->
+      <!-- ZONE DE SAISIE PROMPT -->
       <div class="rag-chat-input-bar">
         <div class="rag-input-wrapper">
-          <i data-lucide="terminal" class="rag-input-icon"></i>
-          <input type="text" id="rag-user-input" class="rag-input-field" placeholder="Interroger le Data Warehouse (ex: CA par magasin, panier moyen, churn...)" onkeydown="if(event.key==='Enter') window.sendRagMessage()">
-          <span class="rag-kbd-hint">↵ Entrée</span>
+          <input type="text" id="rag-user-input" class="rag-input-field" placeholder="Posez une question sur le CA, les points, les magasins..." onkeydown="if(event.key==='Enter') window.sendRagMessage()">
         </div>
-        <button id="rag-send-btn" class="rag-send-button" onclick="window.sendRagMessage()" title="Exécuter la requête décisionnelle">
-          <i data-lucide="arrow-up" class="w-4 h-4 text-white"></i>
+        <button id="rag-send-btn" class="rag-send-button" onclick="window.sendRagMessage()" title="Envoyer au Copilot IA">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
 
