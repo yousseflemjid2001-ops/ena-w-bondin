@@ -1,17 +1,41 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-20 17:05:09",
+  "timestamp": "2026-10-20 17:30:37",
   "company_name": "BONDIN",
-  "total_scans": 13081,
-  "total_ca_tnd": 153108.32,
-  "panier_moyen_tnd": 11.705,
-  "total_points_emis": 513208,
+  "total_scans": 13084,
+  "total_ca_tnd": 153138.77,
+  "panier_moyen_tnd": 11.704,
+  "total_points_emis": 513307,
   "clients_actifs": 758,
-  "dernier_scan": "2026-10-20 16:56:07",
-  "dernier_ticket": "bondin6133817",
-  "dernier_magasin": "Succursale Gab\u00e8s Jara",
+  "dernier_scan": "2026-10-20 17:15:15",
+  "dernier_ticket": "bondin6134146",
+  "dernier_magasin": "Caf\u00e9t\u00e9ria Tunis Ariana",
   "recent_scans": [
+    {
+      "id": 13095,
+      "ticket": "bondin6134146",
+      "montant_tnd": 4.2,
+      "points": 8.4,
+      "date": "2026-10-20 17:15:15",
+      "magasin": "Caf\u00e9t\u00e9ria Tunis Ariana"
+    },
+    {
+      "id": 13094,
+      "ticket": "bondin6134143",
+      "montant_tnd": 5.9,
+      "points": 8.8,
+      "date": "2026-10-20 17:15:11",
+      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
+    },
+    {
+      "id": 13093,
+      "ticket": "bondin6133983",
+      "montant_tnd": 20.35,
+      "points": 81.4,
+      "date": "2026-10-20 17:05:29",
+      "magasin": "Succursale Gafsa"
+    },
     {
       "id": 13092,
       "ticket": "bondin6133817",
@@ -26,30 +50,6 @@
       "montant_tnd": 11.8,
       "points": 26.6,
       "date": "2026-10-20 16:54:07",
-      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
-    },
-    {
-      "id": 13090,
-      "ticket": "bondin6133740",
-      "montant_tnd": 3.6,
-      "points": 4.2,
-      "date": "2026-10-20 16:51:42",
-      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
-    },
-    {
-      "id": 13089,
-      "ticket": "bondin6133555",
-      "montant_tnd": 9.25,
-      "points": 37.0,
-      "date": "2026-10-20 16:40:17",
-      "magasin": "Succursale Gafsa Ville"
-    },
-    {
-      "id": 13088,
-      "ticket": "bondin6133548",
-      "montant_tnd": 2.0,
-      "points": 3.8,
-      "date": "2026-10-20 16:39:48",
       "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
     }
   ]

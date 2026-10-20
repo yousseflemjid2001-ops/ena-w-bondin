@@ -78,9 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initLiveProductionSync();
   updateGeminiBadgeStatus();
   
+  if (window.lucide) {
+    try { lucide.createIcons(); } catch(e) {}
+  }
+  
   // Animation initiale de réveil des compteurs de KPIs
   setTimeout(() => {
     executeGlobalFilters();
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch(e) {}
+    }
   }, 100);
 });
 
@@ -1729,8 +1736,12 @@ function showToast(message, type = 'success') {
   let iconSvg = '';
   if (type === 'alert') {
     iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-  } else if (type === 'info') {
-    iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  } else if (type === 'info' || type === 'coffee') {
+    iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>';
+  } else if (type === 'zap') {
+    iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5664F5" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+  } else if (type === 'shield-check') {
+    iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>';
   } else {
     iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
   }
@@ -1742,6 +1753,7 @@ function showToast(message, type = 'success') {
     if (toast.parentNode) toast.remove();
   }, 4000);
 }
+window.showToast = showToast;
 
 // ==========================================================================
 // 9b. SYNCHRONISATION EN TEMPS RÉEL POSTGRESQL (PRODUCTION 57.131.30.69)
@@ -1749,7 +1761,7 @@ function showToast(message, type = 'success') {
 let liveSyncData = null;
 
 async function fetchLiveProductionData(isManual = false) {
-  const icon = document.getElementById('refresh-icon-svg');
+  const icon = document.getElementById('refresh-icon') || document.getElementById('refresh-icon-svg');
   if (icon) {
     icon.style.transition = 'transform 0.6s ease';
     icon.style.transform = 'rotate(360deg)';
@@ -1773,12 +1785,25 @@ async function fetchLiveProductionData(isManual = false) {
     if (!data || !data.total_scans) return;
     liveSyncData = data;
 
-    // Mise à jour de l'indicateur d'état dans le bandeau supérieur
+    // Mise à jour de l'indicateur d'état du DWH (compteur scans & flux tickets)
+    const scanCounter = document.getElementById('scan-counter');
+    if (scanCounter) {
+      const prevVal = parseInt(scanCounter.innerText.replace(/\s+/g, ''), 10) || 0;
+      if (prevVal !== data.total_scans) {
+        animateCount(scanCounter, data.total_scans, v => Math.round(v).toLocaleString('fr-FR'));
+        scanCounter.classList.add('counter-bump');
+        setTimeout(() => scanCounter.classList.remove('counter-bump'), 600);
+      }
+    }
+
     const clock = document.getElementById('hdr-live-clock');
     if (clock) {
-      const lastTicket = data.dernier_ticket ? ` &bull; Ticket #${data.dernier_ticket}` : '';
-      const lastStore = data.dernier_magasin ? ` (${data.dernier_magasin})` : '';
-      clock.innerHTML = `<strong>Live DWH :</strong> ${data.total_scans.toLocaleString('fr-FR')} scans${lastTicket}${lastStore}`;
+      const lastTicket = data.dernier_ticket ? `<span class="text-amber-300 font-semibold">#${data.dernier_ticket}</span>` : '<span class="text-amber-300 font-semibold">#sync</span>';
+      const lastStore = data.dernier_magasin ? ` <span class="text-purple-300 font-sans">(${data.dernier_magasin})</span>` : '';
+      clock.innerHTML = `Ticket ${lastTicket}${lastStore}`;
+      clock.classList.remove('ticket-slide-enter');
+      void clock.offsetWidth; // Déclencher le reflow
+      clock.classList.add('ticket-slide-enter');
     }
 
     // Mise à jour des compteurs du bandeau exécutif
@@ -1795,7 +1820,7 @@ async function fetchLiveProductionData(isManual = false) {
     if (kpiInscrits) animateCount(kpiInscrits, data.clients_actifs, v => `${Math.round(v).toLocaleString('fr-FR')} clients`);
 
     if (isManual && typeof showToast === 'function') {
-      showToast(`Synchronisation réussie avec PostgreSQL Live (${data.total_scans.toLocaleString('fr-FR')} scans réels).`);
+      showToast(`Synchronisation DWH réussie (${data.total_scans.toLocaleString('fr-FR')} scans réels).`, 'info');
     }
 
   } catch (err) {
@@ -2664,21 +2689,32 @@ function applyTheme(theme, updateCharts) {
   if (theme === 'dark') {
     document.body.setAttribute('data-theme', 'dark');
     document.documentElement.setAttribute('data-theme', 'dark');
+    document.documentElement.classList.add('dark');
   } else {
     document.body.removeAttribute('data-theme');
     document.documentElement.removeAttribute('data-theme');
+    document.documentElement.classList.remove('dark');
   }
   localStorage.setItem('bondin_theme', theme);
 
   // Mise à jour de l'étiquette et de l'icône du bouton
-  const label = document.getElementById('theme-btn-label');
+  const label = document.getElementById('theme-label') || document.getElementById('theme-btn-label');
+  const icon = document.getElementById('theme-icon');
   const iconSlot = document.getElementById('theme-icon-slot');
-  if (label && iconSlot) {
+
+  if (label) {
+    label.innerText = theme === 'dark' ? 'Mode Clair' : 'Mode Sombre';
+  }
+
+  if (icon) {
+    icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch(e) {}
+    }
+  } else if (iconSlot) {
     if (theme === 'dark') {
-      label.innerText = 'Mode Clair';
       iconSlot.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
     } else {
-      label.innerText = 'Mode Sombre';
       iconSlot.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
     }
   }

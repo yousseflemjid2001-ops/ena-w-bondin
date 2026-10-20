@@ -8,6 +8,42 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS (corePlugins preflight disabled to protect charts & tables) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      corePlugins: {
+        preflight: false
+      },
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            serifBrand: ['"Cinzel"', 'serif']
+          },
+          colors: {
+            bondin: {
+              red: '#C8102E',
+              darkRed: '#8F081E',
+              gold: '#F59E0B',
+              espresso: '#180916',
+              plum: '#260E24',
+              accent: '#8B2671'
+            },
+            fidness: {
+              orange: '#FF5500',
+              blue: '#163396',
+              periwinkle: '#5664F5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Leaflet CDN pour la carte interactive -->
@@ -24,46 +60,208 @@
     <!-- ======================================================== -->
   <!-- 1. EN-TÊTE EXÉCUTIF PRESTIGE & MINIMALISTE               -->
   <!-- ======================================================== -->
-  <header class="header-enterprise">
-    <!-- GAUCHE : IDENTITÉ MAISON BONDIN -->
-    <div class="hdr-left-identity">
-      <img src="bondin_logo.png" alt="BONDIN" class="bondin-logo-img">
-      <div class="hdr-title-col">
-        <div class="hdr-brand-title">BONDIN <span>· DEPUIS 1910</span></div>
-        <div class="hdr-app-title">Plateforme Décisionnelle BI &amp; IA Client &bull; <span>ENA W BONDIN</span></div>
+  <!-- =========================================================================
+       1. BARRE SUPÉRIEURE LUMINEUSE ANIMÉE (PROGRESS / SHIMMER)
+       ========================================================================= -->
+  <div id="top-progress-bar" class="h-1 w-full shimmer-bar transition-all duration-500"></div>
+
+  <!-- =========================================================================
+       2. HEADER EXÉCUTIF PRINCIPAL (BONDIN × FIDNESS + LIVE DWH TICKER)
+       ========================================================================= -->
+  <header class="aurora-header cyber-grid border-b border-white/10 shadow-2xl relative z-30">
+    <!-- Orbes lumineux d'arrière-plan -->
+    <div class="aurora-orb-1"></div>
+    <div class="aurora-orb-2"></div>
+
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
+      
+      <!-- LIGNE 1 : IDENTITÉ DE MARQUE BONDIN + LIVE DWH TEMPS RÉEL -->
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        
+        <!-- GAUCHE : LOGO OFFICIEL BONDIN 1910 + TITRE PLATEFORME -->
+        <div class="flex items-center gap-4 group">
+          
+          <!-- LOGO BONDIN VECTORIEL OFFICIEL (Avec serveur de café + vapeur animée) -->
+          <div class="bondin-logo-card relative flex-shrink-0 cursor-pointer" onclick="window.showToast('BONDIN Depuis 1910 • Excellence Café & BI Temps Réel', 'coffee')" title="Café Bondin • Depuis 1910">
+            <!-- Halo lumineux derrière le logo -->
+            <div class="absolute -inset-1 bg-gradient-to-tr from-[#C8102E] via-amber-500 to-[#C8102E] rounded-2xl rounded-br-[22px] blur opacity-50 group-hover:opacity-90 transition duration-500"></div>
+            
+            <!-- SVG Exact du Logo Rouge Bondin Depuis 1910 -->
+            <svg width="64" height="66" viewBox="0 0 120 124" fill="none" xmlns="http://www.w3.org/2000/svg" class="relative rounded-xl rounded-br-[24px] shadow-xl border border-white/20">
+              <defs>
+                <linearGradient id="bondinRedGrad" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#D91432"/>
+                  <stop offset="60%" stop-color="#C00E29"/>
+                  <stop offset="100%" stop-color="#8B071B"/>
+                </linearGradient>
+                <linearGradient id="goldRim" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#D97706" stop-opacity="0.1"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Forme du blason Bondin avec coin inférieur droit arrondi signature -->
+              <path d="M8 0H112C116.418 0 120 3.58172 120 8V98C120 111.255 109.255 120 96 121.2L10 124C4.47715 124 0 119.523 0 114V8C0 3.58172 3.58172 0 8 0Z" fill="url(#bondinRedGrad)"/>
+              <path d="M8 1H112C115.866 1 119 4.13401 119 8V98C119 110.703 108.703 119.05 95.8 120.2L10 123C5.02944 123 1 118.971 1 114V8C1 4.13401 4.13401 1 8 1Z" stroke="url(#goldRim)" stroke-width="1.5"/>
+
+              <!-- Vapeur animée au-dessus des tasses -->
+              <path class="steam-path" d="M64 38 C63 34, 66 32, 65 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
+              <path class="steam-path" d="M71 38 C70 34, 73 32, 72 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
+
+              <!-- Illustration du serveur emblématique Bondin -->
+              <g fill="#FFFFFF">
+                <path d="M60 12 C65.5 11.5, 70 15.5, 69.5 22 C69 27.5, 65.5 31.5, 61.5 31.5 C57.5 31.5, 55 28, 55 22.5 C55 16.5, 56.5 12.5, 60 12 Z"/>
+                <path d="M58.5 20.5 Q60 21.5 61.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+                <path d="M63.5 20.5 Q65 21.5 66.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+                <path d="M59.5 25.5 Q62.5 28 65.5 25.5" stroke="#C00E29" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+                <path d="M57 32 L63 34 L55 56 L51 44 Z"/>
+                <path d="M40 26 C43 24, 48 26, 51 29 L48 33 C45 31, 41 31, 39 28 Z"/>
+                <path d="M46 31 L54 34 L50 43 L43 39 Z"/>
+                <path d="M54 36 Q61 37 63 42" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <rect x="60" y="42" width="5.5" height="4.2" rx="1"/>
+                <rect x="67.5" y="42" width="5.5" height="4.2" rx="1"/>
+                <rect x="54" y="46.8" width="26" height="2" rx="1"/>
+                <path d="M62 49.5 L68 57.5 L72 56 L75 49.5 L72 52.5 L68 49.5 Z"/>
+              </g>
+
+              <!-- Typographie Officielle BONDIN -->
+              <text x="60" y="88" text-anchor="middle" fill="#FFFFFF" font-family="'Cinzel', 'Plus Jakarta Sans', serif" font-weight="800" font-size="23.5" letter-spacing="0.8">BONDIN</text>
+              <text x="60" y="106" text-anchor="middle" fill="#FFE4E6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="10.2" letter-spacing="1.6">DEPUIS 1910</text>
+            </svg>
+          </div>
+
+          <!-- TEXTE & BADGES DE LA PLATEFORME -->
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
+                BONDIN
+              </h1>
+              
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500/25 via-amber-400/20 to-amber-600/25 text-amber-300 border border-amber-400/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                <i data-lucide="award" class="w-3 h-3 text-amber-400"></i>
+                DEPUIS 1910
+              </span>
+
+              <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white/10 text-pink-200 border border-white/15 backdrop-blur-md">
+                <i data-lucide="sparkles" class="w-3 h-3 text-pink-400"></i>
+                BI &amp; IA v4.8
+              </span>
+            </div>
+
+            <p class="text-xs sm:text-sm text-purple-200/80 font-medium mt-0.5 flex items-center gap-2">
+              <span>Plateforme Décisionnelle BI &amp; IA Client</span>
+              <span class="text-amber-400">&bull;</span>
+              <span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-rose-200 tracking-wide">
+                ENA W BONDIN
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <!-- DROITE : CAPSULE LIVE DWH TEMPS RÉEL -->
+        <div class="flex items-center self-start lg:self-center">
+          <div id="dwh-live-pill" onclick="window.refreshLiveDashboard()" class="group cursor-pointer relative flex items-center gap-3 px-4 py-2.5 rounded-full bg-black/45 hover:bg-black/60 border border-emerald-500/35 hover:border-emerald-400/70 backdrop-blur-xl shadow-[0_0_25px_rgba(16,185,129,0.15)] transition-all duration-300">
+            
+            <!-- Point Radar Émeraude Pulsant -->
+            <div class="relative flex items-center justify-center w-3 h-3">
+              <span class="radar-dot w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#10B981]"></span>
+            </div>
+
+            <!-- Compteur DWH Dynamique -->
+            <div class="flex items-center gap-1.5 text-xs sm:text-sm font-medium whitespace-nowrap">
+              <span class="text-emerald-400 font-semibold tracking-wide">Live DWH :</span>
+              <span id="scan-counter" class="font-mono font-bold text-white text-sm sm:text-base tracking-tight inline-block">13 074</span>
+              <span class="text-emerald-400 font-semibold">scans</span>
+            </div>
+
+            <span class="text-purple-400/60 font-bold">&bull;</span>
+
+            <!-- Flux de Tickets Dynamique avec transition fluide -->
+            <div class="overflow-hidden h-5 flex items-center min-w-[235px] sm:min-w-[265px]">
+              <div id="hdr-live-clock" class="text-xs sm:text-[13px] text-purple-200/90 font-mono truncate ticket-slide-enter">
+                Ticket <span class="text-amber-300 font-semibold">#bondin6133099</span> <span class="text-purple-300 font-sans">(Succursale Le Kef)</span>
+              </div>
+            </div>
+
+            <span class="hidden xl:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 opacity-0 group-hover:opacity-100 transition-opacity">
+              +1 live
+            </span>
+          </div>
+        </div>
+
       </div>
-    </div>
 
-    <!-- CENTRE : STATUT SYNCHRO DISCRET -->
-    <div class="hdr-center-status">
-      <span class="live-status-pill">
-        <span class="pulse-dot"></span>
-        <span id="hdr-live-clock">Synchronisation DWH active (Temps Réel)</span>
-      </span>
-    </div>
+      <!-- SÉPARATEUR SUBTIL LUMINEUX -->
+      <div class="my-3.5 h-px w-full bg-gradient-to-r from-white/15 via-purple-400/20 to-transparent"></div>
 
-    <!-- DROITE : ACTIONS & LOGO FIDNESS -->
-    <div class="hdr-right-tools">
-            <button id="btn-theme-toggle" class="hdr-action-btn theme-toggle" onclick="window.toggleDarkMode()" title="Basculer Mode Clair / Mode Sombre">
-        <span class="theme-icon-indicator" id="theme-icon-slot">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </span>
-        <span id="theme-btn-label">Mode Sombre</span>
-      </button>
+      <!-- LIGNE 2 : BARRE D'OUTILS D'ACTION, PARTENAIRE FIDNESS & PROFIL DG -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- GAUCHE : BOUTONS D'ACTION & CO-BRANDING FIDNESS -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          
+          <!-- Bouton Mode Sombre / Clair -->
+          <button id="theme-toggle-btn" onclick="window.toggleDarkMode()" class="group relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-[13px] font-semibold text-purple-100 bg-white/[0.07] hover:bg-white/[0.14] border border-white/15 hover:border-purple-300/40 backdrop-blur-md transition-all duration-300 active:scale-95">
+            <i id="theme-icon" data-lucide="moon" class="w-4 h-4 text-amber-300 transition-transform duration-500 group-hover:-rotate-12"></i>
+            <span id="theme-label">Mode Sombre</span>
+          </button>
 
-      <button id="btn-refresh-data" class="hdr-action-btn" title="Actualiser les indicateurs en temps réel" onclick="window.refreshLiveDashboard()">
-        <svg id="refresh-icon-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-        Actualiser
-      </button>
+          <!-- Bouton Actualiser DWH -->
+          <button id="refresh-btn" onclick="window.refreshLiveDashboard()" class="group relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-[13px] font-semibold text-purple-100 bg-white/[0.07] hover:bg-white/[0.14] border border-white/15 hover:border-purple-300/40 backdrop-blur-md transition-all duration-300 active:scale-95">
+            <i id="refresh-icon" data-lucide="refresh-cw" class="w-4 h-4 text-emerald-300 transition-transform duration-300"></i>
+            <span>Actualiser</span>
+          </button>
 
-      <button id="btn-export-pdf" class="hdr-action-btn primary" title="Exporter le rapport décisionnel en PDF" onclick="window.openExportModal()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exporter PDF
-      </button>
+          <!-- Bouton Exporter PDF -->
+          <button id="btn-export-pdf" onclick="window.openExportModal()" class="btn-shine group relative inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-[13px] font-bold text-white bg-gradient-to-r from-[#7E22CE] via-[#9333EA] to-[#C026D3] hover:from-[#6B21A8] hover:to-[#A21CAF] border border-purple-400/40 shadow-[0_4px_20px_rgba(147,51,234,0.45)] hover:shadow-[0_6px_25px_rgba(192,38,211,0.65)] transition-all duration-300 active:scale-95">
+            <i data-lucide="download" class="w-4 h-4 text-purple-100 transition-transform duration-300 group-hover:translate-y-0.5"></i>
+            <span>Exporter PDF</span>
+          </button>
 
-      <div class="fidness-brand-badge" title="FIDNESS · Plateforme Fidélité Digitale (Logo Officiel F)">
-        <img src="fidness_f_hd.png" alt="FIDNESS Logo F" class="fidness-f-icon">
-        <span class="fidness-brand-text">FIDNESS</span>
+          <!-- Séparateur vertical -->
+          <div class="h-6 w-px bg-white/15 mx-0.5 hidden sm:block"></div>
+
+          <!-- BADGE OFFICIEL PARTENAIRE FIDNESS -->
+          <div onclick="window.showToast('Partenariat FIDNESS × BONDIN : Flux Fidélité & IA synchronisés en temps réel', 'zap')" class="fidness-pill group relative inline-flex items-center gap-2.5 pl-2.5 pr-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-900 shadow-[0_4px_20px_rgba(86,100,245,0.35)] hover:shadow-[0_6px_25px_rgba(255,85,0,0.45)] border border-white/80 cursor-pointer transition-all duration-300 hover:-translate-y-0.5">
+            <svg width="20" height="26" viewBox="0 0 110 175" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
+              <circle class="fidness-dot" cx="22" cy="20" r="19" fill="#FF5500"/>
+              <path d="M29 44 C12.9837 44 0 56.9837 0 73 V125 H38 V44 H29 Z" fill="#163396"/>
+              <path d="M0 139 H38 V175 H25 C11.1929 175 0 163.807 0 150 V139 Z" fill="#163396"/>
+              <path d="M49 44 H110 V54 C110 70.0163 97.0163 83 81 83 H49 V44 Z" fill="#5664F5"/>
+              <path d="M38 92 H96 V100 C96 113.807 84.8071 125 71 125 H38 V92 Z" fill="#5664F5"/>
+            </svg>
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold tracking-tight text-[13px] leading-none">
+                <span class="text-[#163396]">FID</span><span class="text-slate-900">NESS</span>
+              </span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[#FF5500] group-hover:scale-125 transition-transform" title="Connecté à Fidness Cloud"></span>
+            </div>
+          </div>
+
+          <!-- Badge Profil DG -->
+          <button onclick="window.showToast('Profil actif : Direction Générale (Accès Global Consolidé)', 'shield-check')" class="group relative flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full bg-gradient-to-r from-purple-700/80 to-fuchsia-700/80 hover:from-purple-600 hover:to-fuchsia-600 border border-purple-300/40 shadow-lg transition-all duration-300 hover:scale-105">
+            <span class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-[#C8102E] text-white font-extrabold text-xs flex items-center justify-center shadow-inner ring-2 ring-white/30">
+              DG
+            </span>
+            <span class="text-xs font-semibold text-purple-100 hidden sm:inline">Direction</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-purple-900"></span>
+          </button>
+
+        </div>
+
+        <!-- DROITE : LATENCE & RACCOURCI COPILOT IA -->
+        <div class="flex items-center gap-2">
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[11px] text-purple-200/80">
+            <i data-lucide="cpu" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Latence IA : <strong class="text-emerald-300 font-mono">14ms</strong></span>
+          </div>
+
+          <button onclick="window.toggleRagChat()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-400/30 transition-all cursor-pointer">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Copilot IA RAG</span>
+          </button>
+        </div>
+
       </div>
     </div>
   </header>
