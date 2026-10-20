@@ -2227,14 +2227,13 @@ header.header-enterprise {
 
 /* Chat Header */
 .rag-chat-header {
-  background: linear-gradient(135deg, #1C0F2B 0%, #2E1245 50%, #1A0D28 100%) !important;
+  background: linear-gradient(135deg, #180B26 0%, #2A103E 60%, #1A0D28 100%) !important;
   color: #FFFFFF !important;
-  padding: 13px 18px !important;
+  padding: 14px 18px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  position: relative !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-top-left-radius: 20px !important;
   border-top-right-radius: 20px !important;
   flex-shrink: 0 !important;
@@ -2244,88 +2243,70 @@ header.header-enterprise {
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
+  min-width: 0 !important;
 }
 
 .rag-avatar-icon {
-  background: linear-gradient(135deg, #7C3AED 0%, #C026D3 100%) !important;
+  background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%) !important;
   width: 38px !important;
   height: 38px !important;
-  border-radius: 12px !important;
+  border-radius: 11px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  color: #FFF !important;
-  position: relative !important;
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.5) !important;
+  color: #FFFFFF !important;
   flex-shrink: 0 !important;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-.rag-avatar-glow {
-  position: absolute !important;
-  inset: -2px !important;
-  border-radius: 14px !important;
-  background: linear-gradient(135deg, #A855F7, #EC4899) !important;
-  z-index: -1 !important;
-  opacity: 0.6 !important;
-  filter: blur(4px) !important;
-  animation: avatarPulse 2.5s infinite alternate !important;
-}
-
-@keyframes avatarPulse {
-  0% { opacity: 0.4; filter: blur(3px); }
-  100% { opacity: 0.8; filter: blur(6px); }
+.rag-header-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
 }
 
 .rag-header-title {
-  font-size: 0.94rem !important;
+  font-size: 0.95rem !important;
   font-weight: 800 !important;
   color: #FFFFFF !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  letter-spacing: -0.2px !important;
-}
-
-.rag-badge-certified {
-  background: linear-gradient(135deg, rgba(217, 119, 6, 0.25), rgba(245, 158, 11, 0.35)) !important;
-  color: #FDE68A !important;
-  border: 1px solid rgba(245, 158, 11, 0.5) !important;
-  font-size: 0.64rem !important;
-  font-weight: 800 !important;
-  padding: 3px 8px !important;
-  border-radius: 12px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  letter-spacing: 0.4px !important;
-  text-transform: uppercase !important;
-}
-
-.rag-pulse-dot {
-  width: 6px !important;
-  height: 6px !important;
-  background: #10B981 !important;
-  border-radius: 50% !important;
-  box-shadow: 0 0 6px #10B981 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
 }
 
 .rag-header-sub {
-  font-size: 0.68rem !important;
-  color: #D3C4E5 !important;
+  font-size: 0.72rem !important;
+  color: rgba(233, 213, 255, 0.75) !important;
   font-weight: 500 !important;
-  margin-top: 2px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap !important;
+}
+
+.rag-live-status-dot {
+  width: 6.5px !important;
+  height: 6.5px !important;
+  background: #10B981 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px #10B981 !important;
+  animation: pulseDot 2s infinite !important;
+  flex-shrink: 0 !important;
 }
 
 .rag-header-actions {
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
+  flex-shrink: 0 !important;
 }
 
-.rag-header-icon-btn {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #FFFFFF !important;
+.rag-action-btn {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: rgba(233, 213, 255, 0.85) !important;
   width: 32px !important;
   height: 32px !important;
   border-radius: 9px !important;
@@ -2333,56 +2314,20 @@ header.header-enterprise {
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
-  transition: all 0.15s ease !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.rag-header-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+.rag-action-btn:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #FFFFFF !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
-  transform: rotate(-90deg) !important;
+  transform: translateY(-1px) !important;
 }
 
-.rag-status-pill {
-  background: rgba(16, 185, 129, 0.15) !important;
-  border: 1px solid rgba(16, 185, 129, 0.35) !important;
-  color: #34D399 !important;
-  font-size: 0.68rem !important;
-  font-weight: 700 !important;
-  padding: 4px 10px !important;
-  border-radius: 20px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-
-.rag-pulse-green {
-  width: 6px !important;
-  height: 6px !important;
-  background: #10B981 !important;
-  border-radius: 50% !important;
-  box-shadow: 0 0 8px #10B981 !important;
-}
-
-.rag-close-btn {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #FFFFFF !important;
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 9px !important;
-  font-size: 1.2rem !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  line-height: 1 !important;
-  transition: all 0.15s ease !important;
-}
-
-.rag-close-btn:hover {
-  background: rgba(239, 68, 68, 0.3) !important;
-  border-color: rgba(239, 68, 68, 0.6) !important;
-  color: #F87171 !important;
+.rag-action-btn.rag-close:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  color: #FCA5A5 !important;
   transform: rotate(90deg) !important;
 }
 
