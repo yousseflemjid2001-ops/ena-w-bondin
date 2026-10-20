@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "cleanUrls": true,
   "crons": [
     {
       "path": "/api/cron/sync",
@@ -8,11 +7,7 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/live", "destination": "/api/live.py" },
-    { "source": "/api/cron/sync", "destination": "/api/sync.py" },
-    { "source": "/api/sync", "destination": "/api/sync.py" },
-    { "source": "/api/rag/chat", "destination": "/api/chat.py" },
-    { "source": "/api/chat", "destination": "/api/chat.py" },
-    { "source": "/", "destination": "/api/index.py" }
+    { "source": "/api/rag/chat", "destination": "/api/chat" },
+    { "source": "/api/cron/sync", "destination": "/api/sync" }
   ]
 }
