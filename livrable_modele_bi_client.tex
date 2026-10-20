@@ -1,0 +1,218 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Packages indispensables ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage[top=1.8cm, bottom=2cm, left=1.8cm, right=1.8cm, headheight=14pt]{geometry}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{amsmath,amssymb}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, calc}
+
+% --- Palette de Couleurs Sobre & Premium ---
+\definecolor{bondinred}{RGB}{178, 34, 34}      % Rouge Marque Bondin
+\definecolor{fidnessblue}{RGB}{20, 60, 120}    % Bleu Institutionnel
+\definecolor{darkgray}{RGB}{50, 50, 50}
+\definecolor{lightgray}{RGB}{246, 248, 251}
+\definecolor{tableheader}{RGB}{230, 236, 248}
+
+% --- En-têtes et Pieds de page ---
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textcolor{darkgray}{\footnotesize \textbf{BONDIN \& FIDNESS} --- Note de Cadrage BI}}
+\lhead{\textcolor{darkgray}{\footnotesize Application Mobile « Ena w Bondin »}}
+\rfoot{\textcolor{darkgray}{\thepage}}
+\lfoot{\textcolor{darkgray}{\footnotesize Validation du Modèle de Données \& KPIs Clés}}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=fidnessblue,
+    urlcolor=fidnessblue
+}
+
+\begin{document}
+
+% --- EN-TÊTE DU DOCUMENT DESTINÉ AU CLIENT ---
+\begin{center}
+    {\LARGE \bfseries \textcolor{bondinred}{NOTE DE VALIDATION DÉCISIONNELLE \& BI}}\\[0.25cm]
+    {\Large \bfseries \textcolor{fidnessblue}{Modèle de Données en Étoile \& Catalogue des Indicateurs Clés}}\\[0.15cm]
+    {\large Application Mobile Fidélité : \textbf{« ENA W BONDIN »}}\\[0.3cm]
+    \rule{\linewidth}{1.2pt}\\[0.15cm]
+    \footnotesize \textbf{Destinataire :} Direction \& Équipe Projet BONDIN / FIDNESS \quad | \quad \textbf{Statut :} Livrable Sprint 1 -- Prêt pour Validation
+\end{center}
+
+\vspace{0.2cm}
+
+\noindent \textbf{Objet de la note :} Ce document soumet à validation la structure définitive de l'entrepôt décisionnel (\textit{Data Warehouse}) et la volumétrie réelle des données extraites, conformément aux exigences du cahier des charges décisionnel de l'application mobile.
+
+\vspace{0.3cm}
+
+% ==============================================================
+% TABLEAU 1 : MODÈLE DIMENSIONNEL ET VOLUMÉTRIE
+% ==============================================================
+\section*{\textcolor{fidnessblue}{TABLEAU 1 --- Inventaire du Modèle en Étoile \& Volumétrie des Données}}
+
+Le tableau ci-dessous détaille l'ensemble des tables du modèle en étoile, strictement calibrées sur le périmètre de la fidélité, des consommateurs et des gammes de produits :
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\ttfamily}p{4.4cm} p{2.6cm} c c X}
+\toprule
+\rowcolor{tableheader}
+\textnormal{\textbf{Nom de la Table}} & \textbf{Rôle Modèle} & \textbf{Lignes} & \textbf{Cols} & \textbf{Description Fonctionnelle \& Règles Métier} \\
+\midrule
+Fait\_Ventes\_Fidelite & Fait (Transactions) & \textbf{6\,360} & 8 & Actes d'achats scannés sur l'application avec montants convertis en TND réels et points attribués. \\
+Fait\_Mouvements\_Points & Fait (Points) & \textbf{6\,306} & 4 & Historique complet des flux de points : cumul par achat (Earn) et consommation en cadeaux (Burn). \\
+Fait\_Parrainages & Fait (Viralité) & \textbf{206} & 5 & Relations parrains-filleuls actives et primes de parrainage associées. \\
+\midrule
+Dim\_Client & Dimension & \textbf{2\,161} & 9 & Base consommateurs inscrits, profils pseudonymisés (conforme RGPD/RLS), panier moyen, récence et scores RFM. \\
+Dim\_Produit & Dimension & \textbf{538} & 5 & Référentiel des articles et cafés Bondin classés par gammes (Grains, Moulu, Pur, Décaféiné, Arabica). \\
+Dim\_Segment\_Client & Dimension & \textbf{5} & 4 & Typologie officielle du cahier des charges (Champions, Réguliers, Occasionnels, En Risque, Inactifs). \\
+Dim\_Recompense & Dimension & \textbf{14} & 5 & Catalogue des récompenses disponibles, coût en points et segmentation IA (Access, Privilège, Exclusif). \\
+Dim\_Temps & Dimension & \textbf{121} & 8 & Dimension calendaire journalière (avril à août 2026), avec hiérarchies Semaines, Mois et Trimestres. \\
+\midrule
+\rowcolor{lightgray}
+\multicolumn{2}{l}{\textbf{TOTAL DATA WAREHOUSE}} & \textbf{15\,711} & \multicolumn{2}{l}{\textbf{Ensemble des données nettoyées, prêtes à l'import Power BI}} \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+
+% --- SCHÉMA EN ÉTOILE SANS MAGASIN ---
+\subsection*{\textcolor{fidnessblue}{Schéma Conceptuel Associé (Star Schema)}}
+\begin{center}
+\begin{tikzpicture}[
+    dimnode/.style={rectangle, rounded corners=4pt, draw=fidnessblue, fill=fidnessblue!7, thick, minimum width=3.3cm, minimum height=1.6cm, align=left, font=\footnotesize},
+    factnode/.style={rectangle, rounded corners=4pt, draw=bondinred, fill=bondinred!9, thick, minimum width=4.5cm, minimum height=2.1cm, align=left, font=\footnotesize},
+    edge/.style={->, >=stealth, thick, darkgray}
+]
+
+    % Table de faits principale
+    \node[factnode] (fact_ventes) at (0, 0) {
+        \textbf{\textcolor{bondinred}{FAIT\_VENTES\_FIDELITE}}\\[2pt]
+        \scriptsize \textbf{6\,360 transactions}\\
+        \tiny $\bullet$ ID\_Transaction (PK)\\
+        \tiny $\bullet$ ID\_Client\_Hache (FK)\\
+        \tiny $\bullet$ Date (FK)\\
+        \tiny $\bullet$ Montant\_TND, Points\_Gagnes
+    };
+
+    % Dimension Client
+    \node[dimnode] (dim_client) at (-5.3, 2.2) {
+        \textbf{\textcolor{fidnessblue}{DIM\_CLIENT}}\\
+        \scriptsize \textbf{2\,161 profils}\\
+        \tiny $\bullet$ ID\_Client\_Hache (PK)\\
+        \tiny $\bullet$ Genre, Date\_Inscription\\
+        \tiny $\bullet$ Segment\_Client (RFM)\\
+        \tiny $\bullet$ Panier\_Moyen, Récence
+    };
+
+    % Dimension Temps
+    \node[dimnode] (dim_temps) at (5.3, 2.2) {
+        \textbf{\textcolor{fidnessblue}{DIM\_TEMPS}}\\
+        \scriptsize \textbf{121 dates}\\
+        \tiny $\bullet$ Date (PK)\\
+        \tiny $\bullet$ Jour, Semaine, Mois\\
+        \tiny $\bullet$ Trimestre, Année
+    };
+
+    % Dimension Produit / Gamme
+    \node[dimnode] (dim_produit) at (-5.3, -2.2) {
+        \textbf{\textcolor{fidnessblue}{DIM\_PRODUIT}}\\
+        \scriptsize \textbf{538 articles}\\
+        \tiny $\bullet$ ID\_Produit (PK)\\
+        \tiny $\bullet$ Référence\_Produit\\
+        \tiny $\bullet$ Gamme\_Café (Grains, Moulu...)\\
+        \tiny $\bullet$ Points\_Fidélité
+    };
+
+    % Fait Mouvements Points
+    \node[factnode] (fact_pts) at (5.3, -2.2) {
+        \textbf{\textcolor{bondinred}{FAIT\_MOUVEMENTS\_POINTS}}\\[2pt]
+        \scriptsize \textbf{6\,306 flux}\\
+        \tiny $\bullet$ ID\_Client\_Hache (FK)\\
+        \tiny $\bullet$ Date (FK)\\
+        \tiny $\bullet$ Type\_Mouvement (Earn/Burn)\\
+        \tiny $\bullet$ Points (+ / -)
+    };
+
+    % Relations
+    \draw[edge] (dim_client.south east) -- node[above, sloped, font=\tiny]{1 : $\infty$} (fact_ventes.north west);
+    \draw[edge] (dim_temps.south west) -- node[above, sloped, font=\tiny]{1 : $\infty$} (fact_ventes.north east);
+    \draw[edge] (dim_client.south) |- node[near end, above, font=\tiny]{1 : $\infty$} (fact_pts.west);
+    \draw[edge] (dim_temps.south) -- node[right, font=\tiny]{1 : $\infty$} (fact_pts.north);
+
+\end{tikzpicture}
+\end{center}
+
+\newpage
+
+% ==============================================================
+% TABLEAU 2 : INDICATEURS EXÉCUTIFS ET PILOTAGE
+% ==============================================================
+\section*{\textcolor{fidnessblue}{TABLEAU 2 --- Catalogue des Indicateurs Clés de Performance (KPIs)}}
+
+Le tableau ci-dessous présente les indicateurs exécutifs consolidés calculés directement sur les données réelles de l'application mobile :
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{p{6.5cm} r X}
+\toprule
+\rowcolor{tableheader}
+\textbf{Indicateur Clé Décisionnel} & \textbf{Valeur Calculée} & \textbf{Interprétation \& Objectif Métier} \\
+\midrule
+\textbf{Chiffre d'Affaires Fidélité Global} & \textbf{59\,480,655 TND} & Montant total des achats scannés par les membres. \\
+\textbf{Nombre de Transactions Scannées} & \textbf{6\,360 scans} & Volume d'actes d'achats validés par QR code / ticket. \\
+\textbf{Panier Moyen Fidélité (AOV)} & \textbf{9,352 TND} & Dépense moyenne observée par passage membre. \\
+\textbf{Volume Total de Points Attribués (Earn)} & \textbf{188\,294 pts} & Capital points cumulé par les utilisateurs de l'app. \\
+\textbf{Points Consommés en Récompenses (Burn)} & \textbf{100\,500 pts} & Points échangés contre des articles cadeaux. \\
+\textbf{Ratio de Santé Cagnotte (Earn \& Burn)} & \textbf{53,4\,\%} & \textbf{Équilibre idéal :} programme très attractif sans érosion financière de la marge. \\
+\textbf{Encours Passif Restant} & \textbf{87\,794 pts} & Provision financière des points circulants non réclamés. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.5cm}
+
+\subsection*{\textcolor{fidnessblue}{Segmentation RFM \& Recommandations Opérationnelles}}
+
+\vspace{0.1cm}
+\noindent
+\begin{tabularx}{\textwidth}{p{4.5cm} c c X}
+\toprule
+\rowcolor{tableheader}
+\textbf{Segment Consommateur} & \textbf{Effectif} & \textbf{Part} & \textbf{Action Marketing Cible} \\
+\midrule
+\textbf{Gros Consommateurs (Champions)} & \textbf{161} & 7,5\,\% & Top contributeurs au CA $\rightarrow$ Cadeaux exclusifs (Machines à café, Coffrets). \\
+\textbf{Consommateurs Réguliers} & \textbf{183} & 8,5\,\% & Fréquents acheteurs $\rightarrow$ Incitation au panier supérieur (cross-selling). \\
+\textbf{Consommateurs Occasionnels} & \textbf{221} & 10,2\,\% & Achats ponctuels $\rightarrow$ Offres de récurrence (doublement de points). \\
+\textbf{En Risque d'Attrition (Churn)} & \textbf{13} & 0,6\,\% & Inactifs depuis plus de 60 jours $\rightarrow$ Campagne push de réactivation immédiate. \\
+\textbf{Inactifs (Non encore scannés)} & \textbf{1\,583} & 73,3\,\% & Réservoir de croissance majeur $\rightarrow$ Offre de bienvenue au 1er scan. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.6cm}
+
+% --- SECTION 3 : FEUILLE DE ROUTE ---
+\section*{\textcolor{fidnessblue}{Validation \& Prochaines Étapes (Sprint 2 \& 3)}}
+\begin{enumerate}
+    \item \textbf{Validation formelle du modèle :} Accord de la direction sur les Tables 1 et 2 présentées ci-dessus.
+    \item \textbf{Déploiement Power BI (Sprint 3) :} Montage des 3 dashboards (Cockpit Direction, Segmentation/Sankey, Cagnotte \& IA).
+    \item \textbf{Recette finale \& Clôture (Sprint 4) :} Intégration du scoring Churn et livraison du rapport clé en main.
+\end{enumerate}
+
+\vspace{0.8cm}
+\begin{center}
+    \rule{0.6\linewidth}{0.6pt}\\[0.2cm]
+    \small \textbf{Document de Validation Projet} --- Préparé pour \textbf{BONDIN \& FIDNESS}
+\end{center}
+
+\end{document}

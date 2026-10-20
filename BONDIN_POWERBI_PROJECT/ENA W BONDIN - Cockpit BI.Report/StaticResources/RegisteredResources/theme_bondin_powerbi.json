@@ -1,0 +1,73 @@
+{
+  "name": "BONDIN Heritage 1910 - Espresso & Or Imperial",
+  "dataColors": [
+    "#D4AF37",
+    "#E08D3C",
+    "#8B251E",
+    "#3A231C",
+    "#F3DC87",
+    "#22C55E",
+    "#A57C1B",
+    "#C084FC"
+  ],
+  "background": "#0C0806",
+  "foreground": "#FBF8F3",
+  "tableAccent": "#D4AF37",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "color": { "solid": { "color": "#18110E" } },
+            "transparency": 10
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#D4AF37" } },
+            "transparency": 65,
+            "radius": 12
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": true,
+            "color": { "solid": { "color": "#000000" } },
+            "transparency": 50,
+            "preset": "Custom",
+            "position": "Outer",
+            "blur": 15,
+            "angle": 90,
+            "distance": 4
+          }
+        ],
+        "title": [
+          {
+            "fontColor": { "solid": { "color": "#FBF8F3" } },
+            "fontFamily": "Segoe UI Semibold",
+            "fontSize": 12
+          }
+        ]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [
+          {
+            "color": { "solid": { "color": "#D4AF37" } },
+            "fontSize": 24,
+            "fontFamily": "Segoe UI Bold"
+          }
+        ],
+        "categoryLabels": [
+          {
+            "color": { "solid": { "color": "#C7B5A7" } },
+            "fontSize": 10,
+            "fontFamily": "Segoe UI"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,170 @@
+table Dim_Client
+	lineageTag: 865f7f7f-56db-454c-b3f8-1f7f361ba202
+
+	/// Nombre de clients Champions VIP Pareto
+	measure Nb_Clients_Champions = 161
+		dataType: int64
+		formatString: #,0 clients
+		lineageTag: 2cd70bd5-9c88-4a0e-a604-9a804f76543a
+
+	/// Nombre de profils grossistes identifiés
+	measure Nb_Grossistes_B2B = 226
+		dataType: int64
+		formatString: #,0 grossistes
+		lineageTag: 769e033d-e0cc-4ca7-8ca8-f3f39eac730b
+
+	column Column1
+		dataType: string
+		lineageTag: b8bd1b96-fb1a-4f3e-809d-7318bd2d0de1
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column2
+		dataType: string
+		lineageTag: 1150bbe2-275c-414c-8c52-bf10fa1d8ed7
+		summarizeBy: none
+		sourceColumn: Column2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column3
+		dataType: string
+		lineageTag: f88b147b-9fe5-4442-ad2f-df5808eeff9c
+		summarizeBy: none
+		sourceColumn: Column3
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column4
+		dataType: string
+		lineageTag: faa91bfc-532c-459d-912a-806faa09cbd2
+		summarizeBy: none
+		sourceColumn: Column4
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column5
+		dataType: string
+		lineageTag: 8812c6df-8ead-4dad-a58f-32d84efd0923
+		summarizeBy: none
+		sourceColumn: Column5
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column6
+		dataType: string
+		lineageTag: 1a590d5e-fbb2-4503-a645-933fb23cd6c0
+		summarizeBy: none
+		sourceColumn: Column6
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column7
+		dataType: string
+		lineageTag: 36609e57-9f7e-4d71-90c1-32d65be89125
+		summarizeBy: none
+		sourceColumn: Column7
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column8
+		dataType: string
+		lineageTag: 818092ba-3812-4b51-9a3d-cc70085c2342
+		summarizeBy: none
+		sourceColumn: Column8
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column9
+		dataType: string
+		lineageTag: 56d3fe16-1513-4b94-a374-c84903cd619f
+		summarizeBy: none
+		sourceColumn: Column9
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column10
+		dataType: string
+		lineageTag: 9bd2021c-9f1a-4cf0-b375-37fd55d5f26d
+		summarizeBy: none
+		sourceColumn: Column10
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column11
+		dataType: string
+		lineageTag: a6888699-a8e6-4220-8ca9-34ebe5838422
+		summarizeBy: none
+		sourceColumn: Column11
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column12
+		dataType: string
+		lineageTag: c02e15b7-4d73-496d-b04f-d25671bdf3cf
+		summarizeBy: none
+		sourceColumn: Column12
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column13
+		dataType: string
+		lineageTag: ebc445a1-ec2a-44b1-8ce1-4e9a70c16e7c
+		summarizeBy: none
+		sourceColumn: Column13
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column14
+		dataType: string
+		lineageTag: 3cb9921f-2172-4b91-9b4d-d0b6fb05cb61
+		summarizeBy: none
+		sourceColumn: Column14
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column15
+		dataType: string
+		lineageTag: e238ae16-f3bd-4f48-8310-6511513c1798
+		summarizeBy: none
+		sourceColumn: Column15
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column16
+		dataType: string
+		lineageTag: df09d738-d643-4c99-8b9d-a895f9294e38
+		summarizeBy: none
+		sourceColumn: Column16
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column17
+		dataType: string
+		lineageTag: a2c68202-b66a-437f-ae7d-8f43f612ef84
+		summarizeBy: none
+		sourceColumn: Column17
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column18
+		dataType: string
+		lineageTag: 0011bfbd-5f88-4ef4-bc0f-5b425d04b2f7
+		summarizeBy: none
+		sourceColumn: Column18
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Client = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\ena w bonda\BONDIN_DATA_WAREHOUSE.xlsx"), null, true),
+				    Dim_Client_Sheet = Source{[Item="Dim_Client",Kind="Sheet"]}[Data]
+				in
+				    Dim_Client_Sheet
+
+	annotation PBI_ResultType = Table
+

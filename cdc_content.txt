@@ -1,0 +1,248 @@
+--- PAGE 1 ---
+Ca
+e
+des C a ges
+éc s o
+e
+a w
+o d
+|
+O
+&
+SS
+BONDIN
+PARTENARIAT STRATÉGIQUE
+Plateforme Fidélité Mobile
+Ò
+¡
+I
+FIDNESS
+CAHIERDESCHARGESBI
+Pilotage Décisionnel & IA Client de l’Application Mobile
+« ENA W BONDIN »
+¹ EXPERT DÉCISIONNEL / BI :
+— Profil : Consultant Senior BI & Data Analytics
+— Rôle : Architecture BI, Pipeline ETL, DAX &
+IA
+— Cadre : Accompagnement décisionnel pour FID-
+NESS
+— Cycle : Méthode Agile Fast-Track (4 Semaines)
+r ENTITÉS DU PROJET :
+— BONDIN : Ventes, Marketing & Direction Gé-
+nérale
+— FIDNESS : Éditeur plateforme fidélité digitale
+— Cœur
+d’analyse
+: Segments & Profils de
+consommation
+— Livrable Cible : Solution Power BI clé en main
+☼FICHE SYNTHÉTIQUE DU PROJET DÉCISIONNEL
+— Mission Principale : Structurer et déployer une plateforme décisionnelle moderne pour piloter les ventes
+générées par l’application mobile « Ena w Bondin », analyser la typologie des consommateurs (petits,
+moyens et gros acheteurs), sécuriser la rentabilité de la cagnotte et personnaliser l’expérience client grâce à
+l’IA.
+— Périmètre des Données : Données transactionnelles et comportementales enregistrées via l’application :
+achats scannés, solde et mouvements de points, parrainages et campagnes push. (Données strictement appli-
+catives Fidness).
+— Approche Projet : Déploiement pragmatique et accéléré en 4 semaines (4 sprints agiles hebdomadaires).
+◎LES 4 PILIERS DÉCISIONNELS CIBLES
+1. Pilotage du Chiffre d’Affaires Fidélité : Analyser le volume d’affaires scanné, le panier moyen et la
+fréquence d’achat des clients membres.
+2. Segmentation & Habitudes d’Achat : Identifier et fidéliser les gros consommateurs (loi de Pareto), analyser
+la récurrence des passages et stimuler le panier moyen.
+3. Maîtrise Économique de la Cagnotte (Earn & Burn) : Surveiller le ratio de distribution/consommation
+et évaluer en temps réel la dette financière des points en circulation.
+4. IA & Récompenses Sur-Mesure : Recommander des cadeaux personnalisés pour les gros consommateurs
+et anticiper le désengagement (Churn prédictif).
+Document de cadrage fonctionnel et technique • Programme 4 Semaines • Version Synthétique 2.1 • 30 septembre 2026
+Ò Pôle BI & Data Analytics | Programme 4 Semaines
+Page 1 / 4
+
+--- PAGE 2 ---
+Ca
+e
+des C a ges
+éc s o
+e
+a w
+o d
+|
+O
+&
+SS
+1. Catalogue des Indicateurs Clés Essentiels (KPIs)
+Pour garantir un pilotage direct et efficace, les métriques sont regroupées selon les 4 besoins fondamentaux de la
+direction :
+Õ 1. Performance du Chiffre d’Affaires Fidélité (Scans Mobile)
+— CA Fidélité Global (TND) : Somme des achats enregistrés via scan de l’application (P Montant scanné).
+— Panier Moyen Fidélité (AOV) : Dépense moyenne par achat membre scanné (
+CA Fidélité
+Nombre de transactions scannées).
+— Fréquence d’Achat : Nombre moyen de passages scannés par membre actif par mois (cible : 3 à 4 visites/mois).
+— Taux de Croissance du CA Fidélité : Progression mensuelle du chiffre d’affaires généré par les utilisateurs
+actifs.
+— Ventilation par Gamme de Café : Répartition du CA entre Cafés en Grains, Cafés Moulus, Capsules et
+Accessoires.
+² 2. Segmentation Clients & Habitudes d’Achat (Gros vs Occasionnels)
+— Typologie des Consommateurs : Répartition de la base selon le volume d’achat scanné (Gros consomma-
+teurs, Réguliers, Occasionnels).
+— Concentration du CA (Principe de Pareto) : Part du CA fidélité total générée par les 20% des clients
+les plus actifs.
+— Panier Moyen par Profil : Écart de dépense moyenne entre gros consommateurs de café et acheteurs
+occasionnels.
+— Rythme & Intervalle d’Achat : Temps moyen (en jours) entre deux achats scannés selon le profil d’acheteur.
+— Taux de Rétention & Récurrence : Pourcentage d’utilisateurs actifs scannant leur application sur 30, 60
+et 90 jours consécutifs.
+\ 3. Maîtrise Économique de la Cagnotte (Earn & Burn Analytics)
+— Ratio Earn & Burn : Points consommés (dépensés)
+Points attribués (gagnés)
+× 100. Mesure l’attractivité du programme sans éroder la
+marge.
+— Dette de Points (Encours Passif en TND) : Provision financière exacte représentant la valeur marchande
+des points non réclamés.
+— Taux de Rédemption : Pourcentage des membres ayant un solde suffisant qui convertissent leurs points en
+cadeaux.
+— Palmarès des Récompenses : Classement des articles cadeaux les plus demandés pour adapter le catalogue
+de l’application.
+j 4. Rétention Client, Parrainage & Recommandation IA
+— Segmentation RFM Dynamique : Classification automatisée des clients en segments (Champions, Fidèles,
+En Risque, Inactifs).
+— Moteur IA de Cadeaux Personnalisés : Recommandation sur-mesure de récompenses selon le profil (ex. :
+pour un gros consommateur, suggestion de coffrets d’exception ou accessoires barista plutôt qu’une réduction
+basique).
+— Taux d’Attrition Prédictif (Churn ML) : Pourcentage d’utilisateurs risquant de ne plus être actifs sur
+l’application sous 30 jours.
+— Performance Parrainage : Taux de conversion des filleuls invités ayant réalisé leur premier achat scanné.
+Ò Pôle BI & Data Analytics | Programme 4 Semaines
+Page 2 / 4
+
+--- PAGE 3 ---
+Ca
+e
+des C a ges
+éc s o
+e
+a w
+o d
+|
+O
+&
+SS
+2. Restitution Décisionnelle : Tableaux de Bord Power BI
+L’outil décisionnel propose 3 dashboards interactifs sous Power BI, conçus pour un usage intuitif et opérationnel :
+£ Dashboard 1 : Cockpit Direction & Chiffre d’Affaires Fidélité
+Public cible : Direction Générale BONDIN & Direction FIDNESS • Fréquence : Quotidienne / Hebdo
+— Indicateurs Clés Exécutifs : Cartes KPI affichant le CA fidélité cumulé, le panier moyen global, le volume
+de transactions scannées et l’encours financier des points.
+— Tendances & Évolutions : Courbes de comparaison N vs N-1 du chiffre d’affaires et de la fréquentation.
+— Simulateur Dynamique What-If (Paramètres DAX) : Curseur interactif permettant de simuler l’impact
+immédiat sur le CA et sur la dette si le barème d’attribution de points est ajusté.
+— Arbre de Décomposition IA : Exploration guidée par l’intelligence artificielle pour identifier quels facteurs
+expliquent la variation du CA (Segment de consommation →Gamme de café →Ancienneté).
+² Dashboard 2 : Segmentation Client, Habitudes d’Achat & Parrainage
+Public cible : Responsables Marketing FIDNESS & Responsables Ventes BONDIN
+— Matrice Comportementale des Clients : Répartition de la base par intensité de consommation avec CA
+cumulé et panier moyen associé.
+— Analyse des Habitudes par Gamme : Pénétration des catégories de café (Grains, Moulu, Capsules) selon
+le profil de l’acheteur.
+— Diagramme de Sankey (Dynamique Relationnelle) : Visualisation dynamique de l’évolution des clients
+(Nouveaux →Réguliers →Gros buveurs ou Décrochage vers Inactifs).
+— Pilotage du Parrainage & Viralité : Suivi des nouveaux clients recrutés par leurs pairs et du CA incrémental
+généré.
+j Dashboard 3 : Cagnottage, Rétention & Récompenses Personnalisées IA
+Public cible : Responsables Marketing, CRM & Analystes Data
+— Jauge de Santé Économique Earn & Burn : Suivi du ratio d’équilibre et alerte sur les dépassements de
+provisions de points.
+— Moteur IA de Récompenses Sur-Mesure : Module de ciblage proposant des privilèges adaptés aux gros
+consommateurs (ex. coffrets dégustation, tasses collectors) pour maximiser leur satisfaction et éviter l’effet
+d’aubaine des remises simples.
+— Scoring Prédictif de Churn (Machine Learning) : Liste des clients identifiés comme risquant de se
+désengager sous 30 jours pour déclencher des notifications push de réactivation.
+— Analyse des Associations de Produits (Market Basket) : Identification des produits fréquemment
+achetés ensemble pour booster les ventes croisées.
+Ò Pôle BI & Data Analytics | Programme 4 Semaines
+Page 3 / 4
+
+--- PAGE 4 ---
+Ca
+e
+des C a ges
+éc s o
+e
+a w
+o d
+|
+O
+&
+SS
+3. Architecture des Données & Planning de Déploiement
+3.1. Modèle Dimensionnel Simplifié (Schéma en Étoile)
+Le modèle est optimisé pour des requêtes analytiques rapides et fiables dans Power BI :
+O
+TABLES DE FAITS (Activité)
+ó
+TABLES DE DIMENSIONS (Contexte)
+1. Fait_Ventes_Fidelite : Ventes scannées (Date, Client, Pro-
+duit, Montant TND, Remise, Points gagnés).
+• Dim_Client : ID, Ville, Tranche d’âge, Date inscription, Seg-
+ment RFM.
+2. Fait_Mouvements_Points : Crédits/débits de points (Date,
+Client, Type mouvement, Points, Valeur TND).
+• Dim_Segment_Client : ID, Nom (Gros Acheteur, Régulier,
+Occasionnel), Seuil dépense.
+3. Fait_Parrainages : Liens parrains-filleuls (Date, Parrain,
+Filleul, Statut, CA premier achat).
+• Dim_Produit : Code, Nom, Gamme (Grains, Moulu, Cap-
+sules), Prix.
+• Dim_Recompense : ID, Nom, Coût points, Valeur, Cible IA.
+• Dim_Temps : Date, Jour, Semaine, Mois, Trimestre, Année.
+3.2. Sécurité des Données & Confidentialité (RLS)
+— Pseudonymisation : Les identités personnelles et numéros de téléphone sont masqués dans l’entrepôt analytique.
+— Sécurité par Rôle (Row-Level Security - RLS) : Direction Générale (vision globale consolidée) | Marketing
+& Fidélité (accès aux segments, campagnes et cagnotte) |
+Analyste Data (accès aux mesures techniques et
+données brutes).
+3.3. Planning de Déploiement Fast-Track (4 Semaines / Méthode Agile)
+Sprint Agile
+Période
+Objectifs & Activités
+Livrables
+Sprint 1 : Cadrage
+& Architecture
+Semaine 1
+Analyse des tables applicatives Fidness, validation des règles métier
+des KPIs, conception du modèle en étoile.
+Modèle dimensionnel
+validé & Spécifications
+finalisées.
+Sprint 2 : Pipeline
+ETL & Intégra-
+tion
+Semaine 2
+Développement des scripts Python d’extraction API, nettoyage des
+données et alimentation de l’entrepôt SQL.
+Base DWH opération-
+nelle & Données conso-
+lidées.
+Sprint 3 : Modéli-
+sation & 3 Dash-
+boards
+Semaine 3
+Création des mesures DAX, segmentation des consommateurs, simula-
+teur What-If et développement des 3 rapports Power BI.
+Fichiers Power BI
+(.pbix) complets et in-
+teractifs.
+Sprint 4 : Moteur
+IA, RLS & Clô-
+ture
+Semaine 4
+Intégration du moteur IA de récompenses personnalisées et churn,
+configuration de la sécurité RLS, recette finale.
+Solution clé en main,
+guide utilisateur et PV
+de recette.
+Solution Décisionnelle BI Déployée pour : FIDNESS & BONDIN
+Programme Fast-Track 4 Semaines • Pilotage de l’Application « Ena w Bondin » • 2026
+Ò Pôle BI & Data Analytics | Programme 4 Semaines
+Page 4 / 4

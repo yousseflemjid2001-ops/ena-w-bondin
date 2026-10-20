@@ -1,0 +1,4 @@
+database 'ENA W BONDIN - Cockpit BI'
+	compatibilityLevel: 1700
+	compatibilityMode: powerBI
+	language: 1033

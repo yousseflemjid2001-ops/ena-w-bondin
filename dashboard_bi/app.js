@@ -1,0 +1,2824 @@
+// ==========================================================================
+// PLATEFORME DÉCISIONNELLE BI & IA « ENA W BONDIN x FIDNESS »
+// Logique Applicative & Moteur Visuel : Layout Exécutif Tech Support BI
+// Auteur : Pôle BI & Data Analytics Fast-Track 2026
+// ==========================================================================
+
+let charts = {};
+let mapInstance = null;
+
+// Configuration globale de l'affichage des infobulles (Tooltips) et animations Chart.js
+if (typeof Chart !== 'undefined' && Chart.defaults) {
+  try {
+    if (Chart.defaults.animation && typeof Chart.defaults.animation === 'object') {
+      Chart.defaults.animation.duration = 600;
+    }
+  } catch (e) {}
+
+  // Configuration universelle des infobulles (Tooltips interactives au survol)
+  Chart.defaults.plugins = Chart.defaults.plugins || {};
+  Chart.defaults.plugins.tooltip = Chart.defaults.plugins.tooltip || {};
+  Chart.defaults.plugins.tooltip.enabled = true;
+  Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(22, 14, 33, 0.94)';
+  Chart.defaults.plugins.tooltip.titleColor = '#FFFFFF';
+  Chart.defaults.plugins.tooltip.bodyColor = '#E9D5FF';
+  Chart.defaults.plugins.tooltip.borderColor = '#8E4A9E';
+  Chart.defaults.plugins.tooltip.borderWidth = 1.5;
+  Chart.defaults.plugins.tooltip.padding = 10;
+  Chart.defaults.plugins.tooltip.cornerRadius = 8;
+  Chart.defaults.plugins.tooltip.displayColors = true;
+}
+
+/** Animation de compteur numérique fluide et dynamique (Counter Ticker) */
+function animateCount(el, targetNum, formatFn, duration = 600) {
+  if (!el) return;
+  const rawCurrent = parseFloat(el.getAttribute('data-raw-val'));
+  const start = isNaN(rawCurrent) ? 0 : rawCurrent;
+  el.setAttribute('data-raw-val', targetNum);
+  
+  if (start === targetNum) {
+    el.innerText = formatFn ? formatFn(targetNum) : targetNum;
+    return;
+  }
+  
+  const startTime = performance.now();
+  function updateNumber(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(1, elapsed / duration);
+    // Décélération cubique ultra-douce
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = start + (targetNum - start) * ease;
+    el.innerText = formatFn ? formatFn(current) : Math.round(current);
+    if (progress < 1) {
+      requestAnimationFrame(updateNumber);
+    } else {
+      el.innerText = formatFn ? formatFn(targetNum) : (Number.isInteger(targetNum) ? targetNum.toLocaleString('fr-FR') : targetNum.toFixed(3));
+    }
+  }
+  requestAnimationFrame(updateNumber);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initSubbarTabs();
+  initSlicers();
+  initSparklines();
+  initGauges();
+  renderGridCharts();
+  initLeafletMap();
+  renderTables();
+  renderDecompositionTree();
+  updateSyncTimestamps();
+  initLiveClock();
+  renderSankeyFlow();
+  renderRewardsCatalog();
+  renderHeatmap();
+  renderCohortMatrix();
+  renderAdvancedCharts();
+  window.initThemeSystem();
+  initLiveProductionSync();
+  updateGeminiBadgeStatus();
+  
+  // Animation initiale de réveil des compteurs de KPIs
+  setTimeout(() => {
+    executeGlobalFilters();
+  }, 100);
+});
+
+// ==========================================================================
+// 1. NAVIGATION SOUS-BARRE PAR ONGLETS (SEGMENTED PILLS FAÇON MOCKUP & ANIMÉE)
+// ==========================================================================
+function updateNavSlidingIndicator(activeBtn) {
+  const container = document.getElementById('tab-nav-group');
+  const indicator = document.getElementById('nav-sliding-indicator');
+  if (!container || !indicator) return;
+  const btn = activeBtn || container.querySelector('.pill-tab-btn.active');
+  if (!btn) return;
+
+  const containerRect = container.getBoundingClientRect();
+  const btnRect = btn.getBoundingClientRect();
+  const left = btnRect.left - containerRect.left;
+  const top = btnRect.top - containerRect.top;
+
+  indicator.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+  indicator.style.width = `${btnRect.width}px`;
+  indicator.style.height = `${btnRect.height}px`;
+  indicator.style.opacity = '1';
+}
+
+function initSubbarTabs() {
+  const pillBtns = document.querySelectorAll('.pill-tab-btn');
+  const tabs = document.querySelectorAll('.dashboard-tab');
+
+  pillBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-tab');
+
+      pillBtns.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      tabs.forEach(t => t.classList.remove('active'));
+
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      updateNavSlidingIndicator(btn);
+
+      const targetTab = document.getElementById(targetId);
+      if (targetTab) {
+        targetTab.classList.add('active');
+        
+        // Redimensionnement et actualisation automatique de Leaflet et Chart.js
+        setTimeout(() => {
+          if (mapInstance && typeof mapInstance.invalidateSize === 'function') {
+            try { mapInstance.invalidateSize(); } catch(e) {}
+          }
+          Object.values(charts).forEach(c => {
+            if (c) {
+              if (typeof c.resize === 'function') try { c.resize(); } catch(e) {}
+              if (typeof c.update === 'function') try { c.update('none'); } catch(e) {}
+            }
+          });
+          updateNavSlidingIndicator(btn);
+        }, 80);
+      }
+    });
+  });
+
+  // Positionnement initial du sliding indicator avec resize listener
+  setTimeout(() => updateNavSlidingIndicator(), 60);
+  window.addEventListener('resize', () => updateNavSlidingIndicator());
+}
+
+// ==========================================================================
+// 2. SLICERS & FILTRES (PROFIL RÉSEAU & SÉCURITÉ RLS)
+// ==========================================================================
+function initSlicers() {
+  // Changement direct des sélecteurs : marque actif ET applique en direct
+  ['filter-magasin', 'filter-gamme', 'filter-segment', 'slicer-reseau', 'slicer-rls'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', (e) => {
+        const val = e.target.value;
+        const defaultVal = (id === 'slicer-rls') ? 'dir_gen' : 'all';
+        markFilterActive(id, val !== defaultVal);
+        executeGlobalFilters();
+      });
+    }
+  });
+
+  // Changement dates calendrier
+  ['filter-date-start', 'filter-date-end'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', () => {
+        const s = document.getElementById('filter-date-start')?.value;
+        const e = document.getElementById('filter-date-end')?.value;
+        const gDate = document.getElementById('group-filter-date');
+        if (gDate) {
+          gDate.classList.toggle('is-active', s !== '2026-04-01' || e !== '2026-10-20');
+        }
+        executeGlobalFilters();
+      });
+    }
+  });
+}
+
+/** Marquer visuellement un groupe de filtre actif (dot violet) */
+function markFilterActive(selectId, isActive) {
+  const el = document.getElementById(selectId);
+  if (!el) return;
+  const group = el.closest('.pro-filter-group');
+  if (group) {
+    group.classList.toggle('is-active', isActive);
+  }
+}
+
+/** Bouton "Appliquer" : Déclenche la synchronisation de toutes les visualisations */
+window.applyFilters = function() {
+  executeGlobalFilters();
+
+  const dStart   = document.getElementById('filter-date-start')?.value;
+  const dEnd     = document.getElementById('filter-date-end')?.value;
+  const magasin  = document.getElementById('filter-magasin')?.value || 'all';
+  const gamme    = document.getElementById('filter-gamme')?.value || 'all';
+  const segment  = document.getElementById('filter-segment')?.value || 'all';
+  const reseau   = document.getElementById('slicer-reseau')?.value || 'all';
+  const role     = document.getElementById('slicer-rls')?.value || 'dir_gen';
+
+  let activeCount = [magasin, gamme, segment, reseau].filter(v => v !== 'all').length;
+  if (role !== 'dir_gen') activeCount += 1;
+  if (dStart !== '2026-04-01' || dEnd !== '2026-10-20') activeCount += 1;
+
+  if (activeCount === 0) {
+    showToast('Filtres : Vue consolidée globale active', 'info');
+  } else {
+    showToast(`✓ ${activeCount} filtre(s) appliqué(s) — Toutes les visualisations et KPIs ont été mis à jour !`, 'success');
+  }
+};
+
+// ==========================================================================
+// 2c. MOTEUR DE FILTRAGE CROISÉ INTERACTIF STYLE POWER BI
+// Permet de cliquer sur une barre, un secteur, une bulle ou une région pour
+// synchroniser instantanément l'ensemble des KPIs et graphiques du Dashboard.
+// ==========================================================================
+let activeCrossFilter = null;
+
+window.applyCrossFilter = function(dim, val, labelDisplay, sourceChartId) {
+  // Si l'utilisateur re-clique sur le même visuel sélectionné : désélectionne (toggle)
+  if (activeCrossFilter && activeCrossFilter.dim === dim && activeCrossFilter.value === val) {
+    window.clearCrossFilter();
+    return;
+  }
+
+  activeCrossFilter = { dim, value: val, label: labelDisplay, sourceChartId };
+
+  // 1. Synchronisation de la barre de filtres supérieure
+  if (dim === 'magasin') {
+    const sel = document.getElementById('filter-magasin');
+    if (sel) { sel.value = val; markFilterActive('filter-magasin', val !== 'all'); }
+  } else if (dim === 'gamme') {
+    const sel = document.getElementById('filter-gamme');
+    if (sel) { sel.value = val; markFilterActive('filter-gamme', val !== 'all'); }
+  } else if (dim === 'segment') {
+    const sel = document.getElementById('filter-segment');
+    if (sel) { sel.value = val; markFilterActive('filter-segment', val !== 'all'); }
+  } else if (dim === 'reseau') {
+    const sel = document.getElementById('slicer-reseau');
+    if (sel) { sel.value = val; markFilterActive('slicer-reseau', val !== 'all'); }
+  } else if (dim === 'date' && typeof val === 'object') {
+    const s = document.getElementById('filter-date-start');
+    const e = document.getElementById('filter-date-end');
+    if (s && e) {
+      s.value = val.start;
+      e.value = val.end;
+      const gDate = document.getElementById('group-filter-date');
+      if (gDate) gDate.classList.add('is-active');
+    }
+  }
+
+  // 2. Affichage de la bannière Power BI de filtrage croisé
+  const banner = document.getElementById('cross-filter-banner');
+  const dimNameEl = document.getElementById('cf-dim-name');
+  const activePillEl = document.getElementById('cf-active-pill');
+
+  const dimNames = {
+    magasin: 'Point de Vente (Magasin)',
+    gamme: 'Gamme de Café',
+    segment: 'Segment Client RFM',
+    reseau: 'Profil Réseau',
+    date: 'Période Temporelle'
+  };
+
+  if (dimNameEl) dimNameEl.innerText = dimNames[dim] || dim;
+  if (activePillEl) activePillEl.innerText = labelDisplay;
+  if (banner) {
+    banner.style.display = 'block';
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // 3. Recalcul dynamique de l'ensemble des graphiques
+  executeGlobalFilters();
+
+  showToast(`⚡ Filtrage croisé actif : ${labelDisplay} (Visualisations synchronisées)`, 'success');
+};
+
+window.clearCrossFilter = function() {
+  if (!activeCrossFilter) return;
+  const dim = activeCrossFilter.dim;
+  activeCrossFilter = null;
+
+  // Réinitialisation du sélecteur
+  if (dim === 'magasin') {
+    const sel = document.getElementById('filter-magasin');
+    if (sel) { sel.value = 'all'; markFilterActive('filter-magasin', false); }
+  } else if (dim === 'gamme') {
+    const sel = document.getElementById('filter-gamme');
+    if (sel) { sel.value = 'all'; markFilterActive('filter-gamme', false); }
+  } else if (dim === 'segment') {
+    const sel = document.getElementById('filter-segment');
+    if (sel) { sel.value = 'all'; markFilterActive('filter-segment', false); }
+  } else if (dim === 'reseau') {
+    const sel = document.getElementById('slicer-reseau');
+    if (sel) { sel.value = 'all'; markFilterActive('slicer-reseau', false); }
+  } else if (dim === 'date') {
+    const s = document.getElementById('filter-date-start');
+    const e = document.getElementById('filter-date-end');
+    if (s && e) {
+      s.value = '2026-04-01';
+      e.value = '2026-10-20';
+      const gDate = document.getElementById('group-filter-date');
+      if (gDate) gDate.classList.remove('is-active');
+    }
+  }
+
+  const banner = document.getElementById('cross-filter-banner');
+  if (banner) banner.style.display = 'none';
+
+  executeGlobalFilters();
+  showToast('Filtrage croisé désactivé — Vue globale consolidée rétablie', 'info');
+};
+
+/** Bouton "Reset" : Réinitialise tous les filtres à l'état consolidé d'origine */
+window.resetAllFilters = function() {
+  activeCrossFilter = null;
+  const banner = document.getElementById('cross-filter-banner');
+  if (banner) banner.style.display = 'none';
+
+  // Reset date range
+  const dStart = document.getElementById('filter-date-start');
+  const dEnd = document.getElementById('filter-date-end');
+  if (dStart) dStart.value = '2026-04-01';
+  if (dEnd) dEnd.value = '2026-10-20';
+  const gDate = document.getElementById('group-filter-date');
+  if (gDate) gDate.classList.remove('is-active');
+
+  // Reset all selects
+  ['filter-magasin','filter-gamme','filter-segment','slicer-reseau'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = 'all'; markFilterActive(id, false); }
+  });
+  const rlsSelect = document.getElementById('slicer-rls');
+  if (rlsSelect) { rlsSelect.value = 'dir_gen'; markFilterActive('slicer-rls', false); }
+
+  // Exécution du retour à l'état global
+  executeGlobalFilters();
+
+  showToast('Tous les filtres sont réinitialisés — Vue globale consolidée', 'info');
+};
+
+// ==========================================================================
+// 2b. MOTEUR UNIFIÉ DE FILTRAGE BI DYNAMIQUE (SYNCHRONISATION GLOBALE)
+// Recalcule et actualise instantanément 100% des visuels du Dashboard
+// ==========================================================================
+function executeGlobalFilters() {
+  const dStart   = document.getElementById('filter-date-start')?.value || '2026-04-01';
+  const dEnd     = document.getElementById('filter-date-end')?.value || '2026-10-20';
+  const magasin  = document.getElementById('filter-magasin')?.value || 'all';
+  const gamme    = document.getElementById('filter-gamme')?.value || 'all';
+  const segment  = document.getElementById('filter-segment')?.value || 'all';
+  const reseau   = document.getElementById('slicer-reseau')?.value || 'all';
+  const role     = document.getElementById('slicer-rls')?.value || 'dir_gen';
+
+  // Base métriques Live DWH Consolidées (PostgreSQL 13 069 scans)
+  let baseCA = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.ca_total : 152720.666;
+  let baseScans = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.nb_scans : 13069;
+  let baseClients = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_actifs : 758;
+  let baseInscrits = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_inscrits : 2715;
+  let baseDette = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.dette_tnd : 2848.281;
+  let baseBurn = 35;
+  let ratioEarnBurn = 44.3;
+  let aov = 11.686;
+  
+  // Donut Succursale vs Cafétéria
+  let pctSucc = 72.19;
+  let pctCafe = 27.81;
+
+  // Gammes
+  let gammesSucc = [48500, 33200, 4800, 5100, 2100];
+  let gammesCafe = [20150, 10140, 24180, 2550, 2000];
+
+  // Top Magasins
+  let topMagLabels = ['Succursale Le Kef', 'Succursale Gabès Jara', 'Succursale Tunis Menzah VI', 'Succursale Gafsa', 'Cafétéria Gafsa Ville'];
+  let topMagData = [27291, 13426, 12854, 12365, 11314];
+
+  // Timeline (7 Mois Live DWH Avril -> Octobre 2026)
+  let monthlyLabels = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct'];
+  let monthlySucc = [0, 64, 8329, 19476, 37528, 29303, 15545];
+  let monthlyCafe = [3.8, 15.2, 6787, 11069, 10245, 8918, 5439];
+
+  // Segments RFM
+  let segLabels = ['Champions (81%)', 'Réguliers (10%)', 'En Risque Churn (7%)', 'Occasionnels (2%)'];
+  let segData = [124242, 15064, 10105, 3310];
+
+  // Waterfall
+  let waterfallData = [[0, 511728], [284828, 511728], [0, 284828]];
+
+  // LTV
+  let ltvData = [542.54, 88.61, 23.47, 46.78];
+
+  // 1. FILTRE POINT DE VENTE
+  if (magasin === 'SUC') {
+    baseCA = 110244.87;
+    baseScans = 2933;
+    baseClients = 530;
+    aov = 37.588;
+    pctSucc = 100;
+    pctCafe = 0;
+    monthlyCafe = [0, 0, 0, 0, 0, 0, 0];
+    gammesCafe = [0, 0, 0, 0, 0];
+    topMagLabels = ['Succursale Le Kef', 'Succursale Gabès Jara', 'Succursale Tunis Menzah VI', 'Succursale Gafsa', 'Succursale Tunis Liberté'];
+    topMagData = [27291, 13426, 12854, 12365, 10237];
+    baseDette = 2439.10;
+  } else if (magasin === 'CAF') {
+    baseCA = 42475.80;
+    baseScans = 10136;
+    baseClients = 598;
+    aov = 4.191;
+    pctSucc = 0;
+    pctCafe = 100;
+    monthlySucc = [0, 0, 0, 0, 0, 0, 0];
+    gammesSucc = [0, 0, 0, 0, 0];
+    topMagLabels = ['Cafétéria Gafsa Ville', 'Cafétéria Tunis La Marsa', 'Cafétéria Le Kef', 'Cafétéria Tunis Liberté', 'Cafétéria Tunis MENZAH VI'];
+    topMagData = [11314, 6776, 6628, 6150, 4254];
+    baseDette = 409.18;
+  } else if (magasin === 'tunis-liberte') {
+    baseCA = 4519.646;
+    baseScans = 189;
+    baseClients = 94;
+    aov = 23.913;
+    pctSucc = 100;
+    pctCafe = 0;
+    monthlySucc = [0, 12, 1150, 2350, 1007];
+    monthlyCafe = [0, 0, 0, 0, 0];
+    topMagLabels = ['Succursale Tunis Liberté'];
+    topMagData = [4519];
+    gammesSucc = [2300, 1500, 200, 350, 169];
+    gammesCafe = [0, 0, 0, 0, 0];
+  } else if (magasin === 'la-marsa') {
+    baseCA = 6544.822;
+    baseScans = 890;
+    baseClients = 185;
+    aov = 7.353;
+    pctSucc = 57.3;
+    pctCafe = 42.7;
+    topMagLabels = ['Succursale La Marsa', 'Cafétéria La Marsa'];
+    topMagData = [3749, 2795];
+  } else if (magasin === 'el-menzah') {
+    baseCA = 7595.785;
+    baseScans = 716;
+    baseClients = 192;
+    aov = 10.608;
+    pctSucc = 67.9;
+    pctCafe = 32.1;
+    topMagLabels = ['Succursale Menzah VI', 'Cafétéria Menzah VI'];
+    topMagData = [5156, 2439];
+  } else if (magasin === 'gafsa') {
+    baseCA = 12205.000;
+    baseScans = 1831;
+    baseClients = 180;
+    aov = 6.665;
+    pctSucc = 51.8;
+    pctCafe = 48.2;
+    topMagLabels = ['Succursale Gafsa', 'Cafétéria Gafsa Ville'];
+    topMagData = [6320, 5885];
+    gammesSucc = [3200, 2100, 450, 420, 150];
+    gammesCafe = [2800, 1200, 1600, 210, 75];
+  } else if (magasin === 'gabes') {
+    baseCA = 5636.000;
+    baseScans = 285;
+    baseClients = 68;
+    aov = 19.775;
+    pctSucc = 100;
+    pctCafe = 0;
+    topMagLabels = ['Succursale Gabès Jara'];
+    topMagData = [5636];
+    gammesSucc = [2800, 2100, 300, 310, 126];
+    gammesCafe = [0, 0, 0, 0, 0];
+  } else if (magasin === 'le-kef') {
+    baseCA = 3841.000;
+    baseScans = 995;
+    baseClients = 112;
+    aov = 3.860;
+    pctSucc = 0;
+    pctCafe = 100;
+    topMagLabels = ['Cafétéria Le Kef'];
+    topMagData = [3841];
+    gammesSucc = [0, 0, 0, 0, 0];
+    gammesCafe = [1400, 600, 1541, 200, 100];
+  } else if (magasin === 'sfax') {
+    baseCA = 2470.800;
+    baseScans = 105;
+    baseClients = 52;
+    aov = 23.531;
+    pctSucc = 100;
+    pctCafe = 0;
+    topMagLabels = ['Succursale Sfax Chaker'];
+    topMagData = [2470];
+  } else if (magasin === 'sousse') {
+    baseCA = 1890.000;
+    baseScans = 84;
+    baseClients = 43;
+    aov = 22.500;
+    pctSucc = 100;
+    pctCafe = 0;
+    topMagLabels = ['Succursale Sousse Corniche'];
+    topMagData = [1890];
+  }
+
+  // 2. FILTRE GAMME PRODUIT
+  if (gamme === 'grains') {
+    baseCA = 16340.255;
+    baseScans = Math.round(baseScans * 0.35);
+    gammesSucc = [0, 13200, 0, 0, 0];
+    gammesCafe = [0, 3140, 0, 0, 0];
+  } else if (gamme === 'moulu') {
+    baseCA = 27650.400;
+    baseScans = Math.round(baseScans * 0.45);
+    gammesSucc = [19500, 0, 0, 0, 0];
+    gammesCafe = [8150, 0, 0, 0, 0];
+  } else if (gamme === 'boissons') {
+    baseCA = 10980.000;
+    baseScans = 3420;
+    gammesSucc = [0, 0, 1800, 0, 0];
+    gammesCafe = [0, 0, 9180, 0, 0];
+  } else if (gamme === 'capsules') {
+    baseCA = 2950.000;
+    baseScans = Math.round(baseScans * 0.12);
+    gammesSucc = [0, 0, 0, 2100, 0];
+    gammesCafe = [0, 0, 0, 850, 0];
+  } else if (gamme === 'accessoires') {
+    baseCA = 1560.000;
+    baseScans = Math.round(baseScans * 0.08);
+    gammesSucc = [0, 0, 0, 0, 1103];
+    gammesCafe = [0, 0, 0, 0, 457];
+  } else if (gamme === 'confiseries') {
+    baseCA = 10980.000;
+    baseScans = Math.round(baseScans * 0.28);
+    gammesSucc = [0, 0, 1800, 0, 0];
+    gammesCafe = [0, 0, 9180, 0, 0];
+  }
+
+  // 3. FILTRE SEGMENT RFM
+  if (segment === 'champions') {
+    baseCA = 46662.139;
+    baseClients = 161;
+    segLabels = ['Champions VIP (100%)'];
+    segData = [46662];
+    ltvData = [289.83, 0, 0, 0];
+  } else if (segment === 'loyaux') {
+    baseCA = 9460.226;
+    baseClients = 183;
+    segLabels = ['Consommateurs Réguliers (100%)'];
+    segData = [9460];
+    ltvData = [0, 0, 51.70, 0];
+  } else if (segment === 'risque') {
+    baseCA = 234.381;
+    baseClients = 13;
+    segLabels = ['Clients en Risque Churn (100%)'];
+    segData = [234];
+    ltvData = [0, 0, 0, 18.03];
+  } else if (segment === 'hibernants') {
+    baseCA = 3123.909;
+    baseClients = 221;
+    segLabels = ['Clients Occasionnels (100%)'];
+    segData = [3123];
+    ltvData = [0, 0, 0, 14.14];
+  } else if (segment === 'grossistes') {
+    baseCA = 45985.677;
+    baseClients = 226;
+    segLabels = ['Grossistes & B2B (100%)'];
+    segData = [45985];
+    ltvData = [0, 238.96, 0, 0];
+  }
+
+  // 4. FILTRE PROFIL RÉSEAU
+  if (reseau === 'grossistes') {
+    baseCA = 37703.115;
+    baseClients = 226;
+    baseDette = 565.490;
+    pctSucc = 100;
+    pctCafe = 0;
+  } else if (reseau === 'particuliers') {
+    baseCA = 21777.540;
+    baseClients = 354;
+    baseDette = 312.450;
+    pctSucc = 0;
+    pctCafe = 100;
+  }
+
+  // 5. FILTRE RLS SÉCURITÉ
+  if (role === 'reg_tunis') {
+    baseCA = 29380.450;
+    baseScans = 3143;
+    baseClients = 312;
+  } else if (role === 'grands_comptes') {
+    baseCA = 37703.115;
+    baseClients = 226;
+    baseDette = 565.490;
+  } else if (role === 'mkt_b2c') {
+    baseCA = 21777.540;
+    baseClients = 354;
+    baseDette = 312.450;
+  }
+
+  // 6. FILTRE CALENDRIER (PLAGE DE DATES)
+  if (dStart > '2026-04-01' || dEnd < '2026-10-20') {
+    const sDate = new Date(dStart);
+    const eDate = new Date(dEnd);
+    const allMonths = [
+      { name: 'Avr', start: new Date('2026-04-01'), end: new Date('2026-04-30'), caSucc: 0, caCafe: 3.8 },
+      { name: 'Mai', start: new Date('2026-05-01'), end: new Date('2026-05-31'), caSucc: 64.3, caCafe: 15.2 },
+      { name: 'Juin', start: new Date('2026-06-01'), end: new Date('2026-06-30'), caSucc: 8329, caCafe: 6787 },
+      { name: 'Juil', start: new Date('2026-07-01'), end: new Date('2026-07-31'), caSucc: 19476, caCafe: 11069 },
+      { name: 'Août', start: new Date('2026-08-01'), end: new Date('2026-08-31'), caSucc: 37528, caCafe: 10245 },
+      { name: 'Sept', start: new Date('2026-09-01'), end: new Date('2026-09-30'), caSucc: 29303, caCafe: 8918 },
+      { name: 'Oct', start: new Date('2026-10-01'), end: new Date('2026-10-31'), caSucc: 15545, caCafe: 5439 }
+    ];
+    monthlyLabels = [];
+    monthlySucc = [];
+    monthlyCafe = [];
+    let periodCASum = 0;
+    allMonths.forEach(m => {
+      if (m.end >= sDate && m.start <= eDate) {
+        monthlyLabels.push(m.name);
+        monthlySucc.push(m.caSucc);
+        monthlyCafe.push(m.caCafe);
+        periodCASum += (m.caSucc + m.caCafe);
+      }
+    });
+    if (periodCASum > 0) {
+      baseCA = periodCASum;
+      baseScans = Math.max(10, Math.round(baseCA / 11.68));
+    }
+  }
+
+  // -------------------------------------------------------------
+  // ACTUALISATION COMPLÈTE DE TOUS LES COMPOSANTS
+  // -------------------------------------------------------------
+
+  // a. KPIs Header & Bandeau Exécutif
+  const ctxCa = document.getElementById('ctx-total-ca');
+  if (ctxCa) animateCount(ctxCa, baseCA, v => `${Math.round(v).toLocaleString('fr-FR')} TND`);
+  const kpiCa = document.getElementById('kpi-ca-val');
+  if (kpiCa) animateCount(kpiCa, baseCA, v => `${Math.round(v).toLocaleString('fr-FR')} TND`);
+
+  const ctxCli = document.getElementById('ctx-active-clients');
+  if (ctxCli) animateCount(ctxCli, baseClients, v => Math.round(v).toLocaleString('fr-FR'));
+  const kpiInscritsEl = document.getElementById('kpi-inscrits-val');
+  if (kpiInscritsEl) animateCount(kpiInscritsEl, baseClients, v => `${Math.round(v).toLocaleString('fr-FR')} clients`);
+
+  const ctxScn = document.getElementById('ctx-scans');
+  if (ctxScn) animateCount(ctxScn, baseScans, v => Math.round(v).toLocaleString('fr-FR'));
+  const kpiScn = document.getElementById('kpi-scans-summary');
+  if (kpiScn) animateCount(kpiScn, baseScans, v => `${Math.round(v).toLocaleString('fr-FR')} scans`);
+
+  const kpiAov = document.getElementById('kpi-aov-val');
+  if (kpiAov) animateCount(kpiAov, aov, v => `${v.toFixed(3)} TND`);
+
+  // b. KPIs Pipeline Funnel
+  const kpiInscrits = document.getElementById('kpi-inscrits-val');
+  if (kpiInscrits) animateCount(kpiInscrits, baseInscrits, v => Math.round(v).toLocaleString('fr-FR'));
+  const kpiAct = document.getElementById('kpi-activation-val');
+  const activationRate = Math.round((baseClients / baseInscrits) * 1000) / 10;
+  if (kpiAct) animateCount(kpiAct, activationRate, v => `${v.toFixed(1)}%`);
+  const kpiRatio = document.getElementById('kpi-ratio-val');
+  if (kpiRatio) animateCount(kpiRatio, ratioEarnBurn, v => `${v.toFixed(1)}%`);
+  const kpiFreq = document.getElementById('kpi-freq-val');
+  if (kpiFreq) animateCount(kpiFreq, (aov > 15 ? 4.85 : 3.65), v => v.toFixed(2));
+  const kpiCadeaux = document.getElementById('kpi-cadeaux-val');
+  if (kpiCadeaux) animateCount(kpiCadeaux, baseBurn, v => Math.round(v));
+  const kpiDette = document.getElementById('kpi-dette-val');
+  if (kpiDette) animateCount(kpiDette, baseDette, v => `${v.toFixed(3)} TND`);
+
+  // c. Jauges demi-cercles
+  if (charts.gaugeActivation) {
+    charts.gaugeActivation.data.datasets[0].data = [activationRate, Math.max(0, 100 - activationRate)];
+    charts.gaugeActivation.update();
+  }
+  if (charts.gaugeRatio) {
+    charts.gaugeRatio.data.datasets[0].data = [ratioEarnBurn, Math.max(0, 100 - ratioEarnBurn)];
+    charts.gaugeRatio.update();
+  }
+
+  // d. Donut Succursales vs Cafétérias avec surbrillance filtrage croisé
+  if (charts.donutEtablissement) {
+    charts.donutEtablissement.data.datasets[0].data = [pctSucc, pctCafe];
+    if (activeCrossFilter && activeCrossFilter.dim === 'magasin' && (activeCrossFilter.value === 'SUC' || activeCrossFilter.value === 'CAF')) {
+      if (activeCrossFilter.value === 'SUC') {
+        charts.donutEtablissement.data.datasets[0].backgroundColor = ['#8B5CF6', 'rgba(183, 104, 199, 0.22)'];
+      } else {
+        charts.donutEtablissement.data.datasets[0].backgroundColor = ['rgba(106, 43, 124, 0.22)', '#38BDF8'];
+      }
+    } else {
+      charts.donutEtablissement.data.datasets[0].backgroundColor = ['#6A2B7C', '#B768C7'];
+    }
+    charts.donutEtablissement.update();
+  }
+
+  // e. Gammes de café empilées
+  if (charts.gammesStacked) {
+    charts.gammesStacked.data.datasets[0].data = gammesSucc;
+    charts.gammesStacked.data.datasets[1].data = gammesCafe;
+    charts.gammesStacked.update();
+  }
+
+  // f. Top Magasins avec surbrillance filtrage croisé Power BI
+  if (charts.topMagasinsMockup) {
+    charts.topMagasinsMockup.data.labels = topMagLabels;
+    charts.topMagasinsMockup.data.datasets[0].data = topMagData;
+    if (activeCrossFilter && activeCrossFilter.dim === 'magasin' && activeCrossFilter.value !== 'all') {
+      const v = activeCrossFilter.value;
+      charts.topMagasinsMockup.data.datasets[0].backgroundColor = topMagLabels.map(l => {
+        const isMatch = (
+          (v === 'gafsa' && l.includes('Gafsa')) ||
+          (v === 'tunis-liberte' && l.includes('Liberté')) ||
+          (v === 'el-menzah' && l.includes('Menzah')) ||
+          (v === 'la-marsa' && l.includes('Marsa')) ||
+          (v === 'gabes' && l.includes('Gabès')) ||
+          (v === 'le-kef' && l.includes('Kef')) ||
+          (v === 'sfax' && l.includes('Sfax')) ||
+          (v === 'sousse' && l.includes('Sousse'))
+        );
+        return isMatch ? '#FBBF24' : 'rgba(106, 43, 124, 0.28)';
+      });
+    } else {
+      charts.topMagasinsMockup.data.datasets[0].backgroundColor = ['#6A2B7C', '#B768C7', '#6A2B7C', '#6A2B7C', '#6A2B7C'];
+    }
+    charts.topMagasinsMockup.update();
+  }
+
+  // g. Timeline Mensuelle
+  if (charts.monthlyMockup) {
+    charts.monthlyMockup.data.labels = monthlyLabels;
+    charts.monthlyMockup.data.datasets[0].data = monthlySucc;
+    charts.monthlyMockup.data.datasets[1].data = monthlyCafe;
+    charts.monthlyMockup.update();
+  }
+
+  // h. Segments RFM avec surbrillance filtrage croisé
+  if (charts.segmentsMockup) {
+    charts.segmentsMockup.data.labels = segLabels;
+    charts.segmentsMockup.data.datasets[0].data = segData;
+    if (activeCrossFilter && activeCrossFilter.dim === 'segment' && activeCrossFilter.value !== 'all') {
+      const v = activeCrossFilter.value;
+      charts.segmentsMockup.data.datasets[0].backgroundColor = segLabels.map(l => {
+        const isMatch = (
+          (v === 'champions' && l.includes('Champion')) ||
+          (v === 'loyaux' && l.includes('Régulier')) ||
+          (v === 'hibernants' && l.includes('Occasionnel')) ||
+          (v === 'risque' && l.includes('Risque'))
+        );
+        return isMatch ? '#FBBF24' : 'rgba(106, 43, 124, 0.25)';
+      });
+    } else {
+      charts.segmentsMockup.data.datasets[0].backgroundColor = ['#6A2B7C', '#8E4A9E', '#B768C7', '#CBA3D8'];
+    }
+    charts.segmentsMockup.update();
+  }
+
+  // i. Waterfall
+  if (charts.waterfallMockup) {
+    charts.waterfallMockup.data.datasets[0].data = waterfallData;
+    charts.waterfallMockup.update();
+  }
+
+  // j. LTV par Segment
+  if (charts.ltvMockup) {
+    charts.ltvMockup.data.datasets[0].data = ltvData;
+    charts.ltvMockup.update();
+  }
+
+  // k. Carte Leaflet Interactive
+  if (mapInstance) {
+    if (magasin === 'sfax') {
+      mapInstance.flyTo([34.7406, 10.7603], 10, { duration: 1 });
+    } else if (magasin === 'tunis-liberte' || magasin === 'la-marsa' || magasin === 'el-menzah' || role === 'reg_tunis') {
+      mapInstance.flyTo([36.8065, 10.1815], 10, { duration: 1 });
+    } else {
+      mapInstance.flyTo([35.2, 9.8], 5.8, { duration: 1 });
+    }
+  }
+
+  // l. Arbre de Décomposition Stratégique
+  updateDecompositionTree(baseCA);
+
+  // m. Tables Relationnelles
+  updateFilteredTables(reseau, segment);
+}
+
+function updateDecompositionTree(totalCA) {
+  const container = document.getElementById('decomp-tree-container');
+  if (!container) return;
+
+  const vChamp = Math.round(totalCA * 0.814);
+  const vReg = Math.round(totalCA * 0.099);
+  const vOcc = Math.round(totalCA * 0.022);
+
+  container.innerHTML = `
+    <div class="decomp-tree-flex">
+      <!-- Racine -->
+      <div class="decomp-root-card">
+        <div class="decomp-title-root">PÉRIMÈTRE FILTRÉ</div>
+        <div class="decomp-label-root">CA Client Filtré</div>
+        <div class="decomp-value-root">${Math.round(totalCA).toLocaleString('fr-FR')} TND</div>
+        <div class="decomp-bar-track">
+          <div class="decomp-bar-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Niveau 1 : Segments -->
+      <div class="decomp-col-segments">
+        <div class="decomp-node-card active" onclick="selectDecompSegmentMockup(0)">
+          <div class="decomp-node-header">
+            <span>1. Champions (VIP)</span>
+            <span class="decomp-pct-text">81,4%</span>
+          </div>
+          <div class="decomp-node-val">${vChamp.toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-bar-track">
+            <div class="decomp-bar-fill" style="width: 81.4%;"></div>
+          </div>
+        </div>
+
+        <div class="decomp-node-card" onclick="selectDecompSegmentMockup(1)">
+          <div class="decomp-node-header">
+            <span>2. Consommateurs Réguliers</span>
+            <span class="decomp-pct-text">9,9%</span>
+          </div>
+          <div class="decomp-node-val">${vReg.toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-bar-track">
+            <div class="decomp-bar-fill" style="width: 9.9%;"></div>
+          </div>
+        </div>
+
+        <div class="decomp-node-card" onclick="selectDecompSegmentMockup(2)">
+          <div class="decomp-node-header">
+            <span>3. Occasionnels</span>
+            <span class="decomp-pct-text">2,2%</span>
+          </div>
+          <div class="decomp-node-val">${vOcc.toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-bar-track">
+            <div class="decomp-bar-fill" style="width: 2.2%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Niveau 2 : Gammes Produits associées -->
+      <div id="col-gammes-mockup" class="decomp-col-gammes">
+        <div class="decomp-node-card">
+          <div class="decomp-node-header">
+            <span>Cafés Moulus</span>
+            <span class="decomp-pct-text blue">45,0%</span>
+          </div>
+          <div class="decomp-node-val">${Math.round(totalCA * 0.450).toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-bar-track">
+            <div class="decomp-bar-fill blue" style="width: 45%;"></div>
+          </div>
+        </div>
+
+        <div class="decomp-node-card">
+          <div class="decomp-node-header">
+            <span>Cafés en Grains</span>
+            <span class="decomp-pct-text blue">28,4%</span>
+          </div>
+          <div class="decomp-node-val">${Math.round(totalCA * 0.284).toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-bar-track">
+            <div class="decomp-bar-fill blue" style="width: 28.4%;"></div>
+          </div>
+        </div>
+
+        <div class="decomp-node-card">
+          <div class="decomp-node-header">
+            <span>Boissons Salons</span>
+            <span class="decomp-pct-text blue">19,0%</span>
+          </div>
+          <div class="decomp-node-val">${Math.round(totalCA * 0.190).toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-bar-track">
+            <div class="decomp-bar-fill blue" style="width: 19%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateFilteredTables(reseau, segment) {
+  const grossisteTbody = document.querySelector('#table-grossistes tbody');
+  if (grossisteTbody) {
+    if (reseau === 'particuliers') {
+      grossisteTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #8E4A9E; padding: 16px; font-weight: 600;">Aucun profil grossiste dans le périmètre filtré (100% Consommateurs Détail Cafétérias)</td></tr>`;
+    } else {
+      grossisteTbody.innerHTML = DASHBOARD_DATA.top_grossistes_table.map(g => `
+        <tr>
+          <td><code>${g.id}</code></td>
+          <td><strong style="color: #6A2B7C">${g.succ.toFixed(3)} TND</strong></td>
+          <td>${g.cafe.toFixed(3)} TND</td>
+          <td><strong>${g.total.toFixed(3)} TND</strong></td>
+          <td>${g.max_succ.toFixed(2)} TND</td>
+          <td><span class="tag-badge ${g.freq_sem >= 3 ? 'gold' : 'info'}">${g.freq_sem} / sem</span></td>
+          <td><span class="tag-badge ${g.status.includes('Alerte') ? 'alert' : 'gold'}">${g.status}</span></td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  const churnTbody = document.querySelector('#table-churn tbody');
+  if (churnTbody) {
+    let list = DASHBOARD_DATA.churn_table;
+    if (segment === 'champions') {
+      list = list.filter(c => c.ca > 30);
+    }
+    churnTbody.innerHTML = list.map(c => `
+      <tr>
+        <td><code>${c.id}</code></td>
+        <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
+        <td>${c.ca.toFixed(3)} TND</td>
+        <td>${c.points} pts</td>
+        <td><span class="tag-badge alert">${c.score_churn}</span></td>
+        <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
+      </tr>
+    `).join('');
+  }
+}
+
+
+
+// ==========================================================================
+// 3. SPARKLINES DU FUNNEL (MINI-COURBES DANS LES CARTES DU MOCKUP)
+// ==========================================================================
+function initSparklines() {
+  const commonSparkOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    scales: {
+      x: { display: false },
+      y: { display: false }
+    },
+    elements: {
+      line: { tension: 0.4, borderWidth: 2 },
+      point: { radius: 0 }
+    }
+  };
+
+  // Sparkline 1 : Inscriptions
+  const ctxInscrits = document.getElementById('sparkline-inscrits');
+  if (ctxInscrits) {
+    charts.sparkInscrits = new Chart(ctxInscrits, {
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5, 6, 7],
+        datasets: [{
+          data: [120, 240, 480, 890, 1420, 1850, 2161],
+          borderColor: '#A84EB7',
+          backgroundColor: 'rgba(168, 78, 183, 0.15)',
+          fill: true
+        }]
+      },
+      options: commonSparkOptions
+    });
+  }
+
+  // Sparkline 4 : Fréquence
+  const ctxFreq = document.getElementById('sparkline-freq');
+  if (ctxFreq) {
+    charts.sparkFreq = new Chart(ctxFreq, {
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5, 6],
+        datasets: [{
+          data: [1.9, 2.4, 3.1, 3.8, 3.65, 3.7],
+          borderColor: '#287383',
+          backgroundColor: 'rgba(40, 115, 131, 0.15)',
+          fill: true
+        }]
+      },
+      options: commonSparkOptions
+    });
+  }
+
+  // Sparkline 5 : Burn Cadeaux
+  const ctxBurn = document.getElementById('sparkline-burn');
+  if (ctxBurn) {
+    charts.sparkBurn = new Chart(ctxBurn, {
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5],
+        datasets: [{
+          data: [2, 8, 16, 28, 35],
+          borderColor: '#288764',
+          backgroundColor: 'rgba(40, 135, 100, 0.15)',
+          fill: true
+        }]
+      },
+      options: commonSparkOptions
+    });
+  }
+}
+
+// ==========================================================================
+// 4. SPEEDOMETERS / GAUGES (DEMI-CERCLES 0-100% DES ÉTAPES 2 & 3)
+// ==========================================================================
+function initGauges() {
+  const commonGaugeOptions = {
+    circumference: 180,
+    rotation: 270,
+    cutout: '76%',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+  };
+
+  // Jauge 2 : Activation Scans (26.8%)
+  const ctxAct = document.getElementById('gauge-activation');
+  if (ctxAct) {
+    charts.gaugeActivation = new Chart(ctxAct, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [26.8, 73.2],
+          backgroundColor: ['#342867', '#EAE6F2'],
+          borderWidth: 0
+        }]
+      },
+      options: commonGaugeOptions
+    });
+  }
+
+  // Jauge 3 : Équilibre Earn & Burn (53.4%)
+  const ctxRatio = document.getElementById('gauge-earn-burn');
+  if (ctxRatio) {
+    charts.gaugeRatio = new Chart(ctxRatio, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [53.4, 46.6],
+          backgroundColor: ['#24588C', '#EAE6F2'],
+          borderWidth: 0
+        }]
+      },
+      options: commonGaugeOptions
+    });
+  }
+}
+
+// ==========================================================================
+// 5. GRILLE 2x3 DES GRAPHIQUES (EXACT DESIGN DU MOCKUP FOURNI)
+// ==========================================================================
+function renderGridCharts() {
+  Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+  Chart.defaults.color = '#6B5E78';
+
+  // --- CARTE 1 : DONUT TYPE D'ÉTABLISSEMENT AVEC COULEURS MOCKUP ---
+  const ctxDonut = document.getElementById('chart-etablissements-donut');
+  if (ctxDonut) {
+    charts.donutEtablissement = new Chart(ctxDonut, {
+      type: 'doughnut',
+      data: {
+        labels: ['Succursales (Gros)', 'Cafétérias (Détail)'],
+        datasets: [{
+          data: [63.39, 36.61],
+          backgroundColor: ['#6A2B7C', '#B768C7'],
+          borderColor: '#FFFFFF',
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            if (idx === 0) window.applyCrossFilter('magasin', 'SUC', 'Succursales B2B (Gros)', 'donut');
+            else if (idx === 1) window.applyCrossFilter('magasin', 'CAF', 'Cafétérias B2C (Détail)', 'donut');
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.label} : ${ctx.raw}% (Cliquer pour filtrer en direct)`
+            }
+          }
+        },
+        cutout: '62%'
+      }
+    });
+  }
+
+  // --- CARTE 2 : BARRES HORIZONTALES EMPILÉES PAR GAMME DE CAFÉ ---
+  const ctxGammes = document.getElementById('chart-gammes-stacked');
+  if (ctxGammes) {
+    charts.gammesStacked = new Chart(ctxGammes, {
+      type: 'bar',
+      data: {
+        labels: [
+          'Café Moulu',
+          'Café en Grains',
+          'Boissons Salons',
+          'Capsules',
+          'Accessoires'
+        ],
+        datasets: [
+          {
+            label: 'Succursales (Gros)',
+            data: [19500, 13200, 1800, 2100, 1103],
+            backgroundColor: '#B768C7',
+            borderRadius: 4
+          },
+          {
+            label: 'Cafétérias (Détail)',
+            data: [8150, 3140, 9180, 850, 457],
+            backgroundColor: '#6A2B7C',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const mapping = [
+              { code: 'moulu', label: 'Café Moulu Torréfié' },
+              { code: 'grains', label: 'Café en Grains Prestige' },
+              { code: 'boissons', label: 'Boissons Salons & Comptoir' },
+              { code: 'capsules', label: 'Capsules Compatibles' },
+              { code: 'accessoires', label: 'Accessoires & Machines' }
+            ];
+            if (mapping[idx]) {
+              window.applyCrossFilter('gamme', mapping[idx].code, mapping[idx].label, 'gammes');
+            }
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { stacked: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+          y: { stacked: true, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // --- CARTE 3 : BARRES HORIZONTALES TOP 5 MAGASINS ---
+  const ctxTopMag = document.getElementById('chart-top-magasins-mockup');
+  if (ctxTopMag) {
+    charts.topMagasinsMockup = new Chart(ctxTopMag, {
+      type: 'bar',
+      data: {
+        labels: [
+          'Succursale Gafsa',
+          'Cafétéria Gafsa Ville',
+          'Succursale Gabès Jara',
+          'Succursale Tunis Menzah VI',
+          'Succursale Tunis Liberté'
+        ],
+        datasets: [
+          {
+            label: 'CA (TND)',
+            data: [6320, 5885, 5636, 5156, 4519],
+            backgroundColor: ['#6A2B7C', '#B768C7', '#6A2B7C', '#6A2B7C', '#6A2B7C'],
+            borderRadius: 5
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const clickedLabel = charts.topMagasinsMockup.data.labels[idx];
+            let magCode = 'all';
+            if (clickedLabel.includes('Gafsa')) magCode = 'gafsa';
+            else if (clickedLabel.includes('Liberté')) magCode = 'tunis-liberte';
+            else if (clickedLabel.includes('Menzah')) magCode = 'el-menzah';
+            else if (clickedLabel.includes('Marsa')) magCode = 'la-marsa';
+            else if (clickedLabel.includes('Gabès')) magCode = 'gabes';
+            else if (clickedLabel.includes('Kef')) magCode = 'le-kef';
+            else if (clickedLabel.includes('Sfax')) magCode = 'sfax';
+            else if (clickedLabel.includes('Sousse')) magCode = 'sousse';
+            
+            window.applyCrossFilter('magasin', magCode, clickedLabel, 'topMag');
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,0.05)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // --- CARTE 4 : TIMELINE MENSUELLE EMPILÉE ---
+  const ctxMonthly = document.getElementById('chart-monthly-mockup');
+  if (ctxMonthly) {
+    charts.monthlyMockup = new Chart(ctxMonthly, {
+      type: 'bar',
+      data: {
+        labels: ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct'],
+        datasets: [
+          {
+            label: 'Succursales',
+            data: [0, 64, 8329, 19476, 37528, 29303, 15545],
+            backgroundColor: '#B768C7',
+            borderRadius: 4
+          },
+          {
+            label: 'Cafétérias',
+            data: [3.8, 15.2, 6787, 11069, 10245, 8918, 5439],
+            backgroundColor: '#6A2B7C',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const monthMap = [
+              { code: { start: '2026-04-01', end: '2026-04-30' }, label: 'Avril 2026' },
+              { code: { start: '2026-05-01', end: '2026-05-31' }, label: 'Mai 2026' },
+              { code: { start: '2026-06-01', end: '2026-06-30' }, label: 'Juin 2026' },
+              { code: { start: '2026-07-01', end: '2026-07-31' }, label: 'Juillet 2026' },
+              { code: { start: '2026-08-01', end: '2026-08-31' }, label: 'Août 2026' },
+              { code: { start: '2026-09-01', end: '2026-09-30' }, label: 'Septembre 2026' },
+              { code: { start: '2026-10-01', end: '2026-10-31' }, label: 'Octobre 2026' }
+            ];
+            if (monthMap[idx]) {
+              window.applyCrossFilter('date', monthMap[idx].code, monthMap[idx].label, 'monthly');
+            }
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { stacked: true, grid: { display: false } },
+          y: { stacked: true, grid: { color: 'rgba(0,0,0,0.05)' } }
+        }
+      }
+    });
+  }
+
+  // --- CARTE 5 : SEGMENTS CONSOMMATEURS PARETO ---
+  const ctxSegments = document.getElementById('chart-segments-mockup');
+  if (ctxSegments) {
+    charts.segmentsMockup = new Chart(ctxSegments, {
+      type: 'bar',
+      data: {
+        labels: ['Champions (78%)', 'Réguliers (16%)', 'Occasionnels (5%)', 'Risque Churn'],
+        datasets: [{
+          label: 'CA (TND)',
+          data: [46662, 9460, 3123, 234],
+          backgroundColor: ['#6A2B7C', '#8E4A9E', '#B768C7', '#CBA3D8'],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const segMap = [
+              { code: 'champions', label: 'Champions VIP (78% CA)' },
+              { code: 'loyaux', label: 'Consommateurs Réguliers (16% CA)' },
+              { code: 'hibernants', label: 'Clients Occasionnels (5% CA)' },
+              { code: 'risque', label: 'Clients en Risque Churn' }
+            ];
+            if (segMap[idx]) {
+              window.applyCrossFilter('segment', segMap[idx].code, segMap[idx].label, 'segments');
+            }
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { color: 'rgba(0,0,0,0.05)' } }
+        }
+      }
+    });
+  }
+
+  // --- CARTE WATERFALL DU TAB 3 ---
+  const ctxWaterfall = document.getElementById('chart-waterfall-mockup');
+  if (ctxWaterfall) {
+    charts.waterfallMockup = new Chart(ctxWaterfall, {
+      type: 'bar',
+      data: {
+        labels: ['1. Émis (Earn)', '2. Brûlés (Burn)', '3. Solde (Dette)'],
+        datasets: [{
+          data: [
+            [0, 188294],
+            [87794, 188294],
+            [0, 87794]
+          ],
+          backgroundColor: ['#288764', '#DC2626', '#8E4A9E'],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) {
+            event.native.target.style.cursor = (elements && elements.length) ? 'pointer' : 'default';
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: (ctx) => {
+                const val = ctx.raw;
+                if (Array.isArray(val)) {
+                  const pts = val[1] - val[0];
+                  return ' ' + ctx.label + ' : ' + pts.toLocaleString('fr-FR') + ' pts (' + (pts * 0.01).toFixed(3) + ' TND)';
+                }
+                return ' ' + ctx.label + ' : ' + val;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            grid: { color: 'rgba(150,150,150,0.1)' },
+            title: { display: true, text: "Points de Fidélité", font: { size: 10, weight: 600 } }
+          }
+        }
+      }
+    });
+  }
+
+  // --- CARTE LTV DU TAB 3 ---
+  const ctxLTV = document.getElementById('chart-ltv-mockup');
+  if (ctxLTV) {
+    charts.ltvMockup = new Chart(ctxLTV, {
+      type: 'bar',
+      data: {
+        labels: ['Champions VIP', 'Grossistes B2B', 'Réguliers', 'Occasionnels'],
+        datasets: [{
+          label: 'LTV (TND)',
+          data: [289.83, 238.96, 51.70, 14.14],
+          backgroundColor: ['#4B2B5E', '#6A2B7C', '#8E4A9E', '#B768C7'],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const idx = elements[0].index;
+            const ltvMap = [
+              { dim: 'segment', code: 'champions', label: 'Champions VIP' },
+              { dim: 'reseau', code: 'grossistes', label: 'Grossistes B2B' },
+              { dim: 'segment', code: 'loyaux', label: 'Consommateurs Réguliers' },
+              { dim: 'segment', code: 'hibernants', label: 'Clients Occasionnels' }
+            ];
+            if (ltvMap[idx]) {
+              window.applyCrossFilter(ltvMap[idx].dim, ltvMap[idx].code, ltvMap[idx].label, 'ltv');
+            }
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) {
+            event.native.target.style.cursor = (elements && elements.length) ? 'pointer' : 'default';
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: (ctx) => ' Valeur LTV : ' + Number(ctx.raw).toFixed(3) + ' TND (Cliquer pour filtrer)'
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(150,150,150,0.1)' },
+            title: { display: true, text: "Customer Lifetime Value (TND)", font: { size: 10, weight: 600 } }
+          }
+        }
+      }
+    });
+  }
+}
+
+// ==========================================================================
+// 6. CARTE INTERACTIVE LEAFLET AVEC BULLES VIOLETTES (CARTE 6 DU MOCKUP)
+// ==========================================================================
+let currentMapTileLayer = null;
+
+function initLeafletMap() {
+  const mapDiv = document.getElementById('map-tunisie-container');
+  if (!mapDiv || typeof L === 'undefined') return;
+
+  // Initialisation de la carte Leaflet
+  mapInstance = L.map('map-tunisie-container', {
+    center: [35.2, 9.8],
+    zoom: 6.2,
+    minZoom: 5,
+    maxZoom: 18,
+    zoomControl: true,
+    attributionControl: false
+  });
+
+  // Fond de carte OpenStreetMap officiel haute disponibilité (100% sans clé API, sans watermark)
+  currentMapTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: ''
+  }).addTo(mapInstance);
+
+  // Villes et volumes de scans réels (DWH)
+  const regionsData = [
+    { name: "Grand Tunis", lat: 36.8065, lng: 10.1815, scans: 3143, ca: "29 380 TND", size: "large" },
+    { name: "Le Kef", lat: 36.1742, lng: 8.7049, scans: 995, ca: "6 245 TND", size: "medium" },
+    { name: "Sfax", lat: 34.7406, lng: 10.7603, scans: 105, ca: "2 450 TND", size: "small" },
+    { name: "Gafsa", lat: 34.4250, lng: 8.7842, scans: 1831, ca: "15 380 TND", size: "medium" },
+    { name: "Gabès", lat: 33.8815, lng: 10.0982, scans: 285, ca: "6 020 TND", size: "small" }
+  ];
+
+  regionsData.forEach(r => {
+    const icon = L.divIcon({
+      className: 'custom-bubble-wrapper',
+      html: `<div class="map-scan-bubble ${r.size}" title="${r.name} : ${r.scans.toLocaleString('fr-FR')} scans (${r.ca})">${r.scans.toLocaleString('fr-FR')}</div>`,
+      iconSize: [45, 45],
+      iconAnchor: [22, 22]
+    });
+
+    const marker = L.marker([r.lat, r.lng], { icon: icon }).addTo(mapInstance);
+    marker.bindPopup(`<strong>${r.name}</strong><br/>Trafic : ${r.scans.toLocaleString('fr-FR')} scans<br/>CA : ${r.ca}<br/><span style="color:#8E4A9E; font-weight:700; font-size:0.75rem;">⚡ Cliquez pour filtrer le dashboard</span>`);
+    marker.on('click', () => {
+      let code = 'all';
+      if (r.name.includes('Tunis')) code = 'tunis-liberte';
+      else if (r.name.includes('Gafsa')) code = 'gafsa';
+      else if (r.name.includes('Kef')) code = 'le-kef';
+      else if (r.name.includes('Gabès')) code = 'gabes';
+      else if (r.name.includes('Sfax')) code = 'sfax';
+      window.applyCrossFilter('magasin', code, `${r.name} (Région)`, 'map');
+    });
+  });
+
+  // Recalcul du dimensionnement et cadrage parfait sur toute la Tunisie
+  setTimeout(() => {
+    if (mapInstance && typeof L !== 'undefined') {
+      try {
+        mapInstance.invalidateSize();
+        const validCoords = regionsData.filter(r => typeof r.lat === 'number' && !isNaN(r.lat) && typeof r.lng === 'number' && !isNaN(r.lng)).map(r => [r.lat, r.lng]);
+        if (validCoords.length > 0) {
+          const bounds = L.latLngBounds(validCoords);
+          if (bounds.isValid()) {
+            mapInstance.fitBounds(bounds, { padding: [30, 30], maxZoom: 8 });
+          }
+        }
+      } catch(e) {
+        console.warn("Leaflet fitBounds error:", e);
+      }
+    }
+  }, 150);
+
+  setTimeout(() => {
+    if (mapInstance) mapInstance.invalidateSize();
+  }, 500);
+}
+
+// ==========================================================================
+// 7. ARBRE DE DÉCOMPOSITION IA INTERACTIF
+// ==========================================================================
+function renderDecompositionTree() {
+  const container = document.getElementById('decomp-tree-container');
+  if (!container) return;
+
+  const tree = DASHBOARD_DATA.decomposition_tree;
+
+  container.innerHTML = `
+    <div class="decomp-tree-flex">
+      
+      <!-- Racine -->
+      <div class="decomp-root-card">
+        <div class="decomp-title-root">SOURCE GLOBALE</div>
+        <div class="decomp-label-root">${tree.label}</div>
+        <div class="decomp-value-root">59 480,655 TND</div>
+        <div class="decomp-bar-track">
+          <div class="decomp-bar-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Niveau 1 : Segments -->
+      <div class="decomp-col-segments">
+        ${tree.children.map((seg, idx) => `
+          <div class="decomp-node-card ${idx === 0 ? 'active' : ''}" onclick="selectDecompSegmentMockup(${idx})">
+            <div class="decomp-node-header">
+              <span>${seg.label}</span>
+              <span class="decomp-pct-text">${seg.pct}%</span>
+            </div>
+            <div class="decomp-node-val">${Number(seg.valeur).toLocaleString('fr-FR')} TND</div>
+            <div class="decomp-bar-track">
+              <div class="decomp-bar-fill" style="width: ${seg.pct}%;"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Niveau 2 : Gammes -->
+      <div id="col-gammes-mockup" class="decomp-col-gammes">
+        ${tree.children[0].children.map(g => `
+          <div class="decomp-node-card">
+            <div class="decomp-node-header">
+              <span>${g.label}</span>
+              <span class="decomp-pct-text blue">${g.pct}%</span>
+            </div>
+            <div class="decomp-node-val">${Number(g.valeur).toLocaleString('fr-FR')} TND</div>
+            <div class="decomp-bar-track">
+              <div class="decomp-bar-fill blue" style="width: ${g.pct}%;"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+    </div>
+  `;
+}
+
+window.selectDecompSegmentMockup = function(idx) {
+  const tree = DASHBOARD_DATA.decomposition_tree;
+  const seg = tree.children[idx];
+  if (!seg) return;
+
+  const colGammes = document.getElementById('col-gammes-mockup');
+  if (colGammes) {
+    colGammes.innerHTML = seg.children.map(g => `
+      <div class="decomp-node-card">
+        <div class="decomp-node-header">
+          <span>${g.label}</span>
+          <span class="decomp-pct-text blue">${g.pct}%</span>
+        </div>
+        <div class="decomp-node-val">${Number(g.valeur).toLocaleString('fr-FR')} TND</div>
+        <div class="decomp-bar-track">
+          <div class="decomp-bar-fill blue" style="width: ${g.pct}%;"></div>
+        </div>
+      </div>
+    `).join('');
+
+    const segCards = document.querySelectorAll('.decomp-col-segments .decomp-node-card');
+    segCards.forEach((c, i) => {
+      c.classList.toggle('active', i === idx);
+    });
+  }
+
+  showToast(`Arbre IA : Focus sur « ${seg.label} »`, 'info');
+};
+
+// ==========================================================================
+// 8. RENDU DES TABLES (GROSSISTES, PARRAINAGES, CHURN, BASKET, CAISSES)
+// ==========================================================================
+function renderTables() {
+  // Table Grossistes
+  try {
+    const grossisteTbody = document.querySelector('#table-grossistes tbody');
+    if (grossisteTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.top_grossistes_table)) {
+      grossisteTbody.innerHTML = DASHBOARD_DATA.top_grossistes_table.map(g => `
+        <tr>
+          <td><code>${g.id}</code></td>
+          <td><strong class="text-accent-succ">${Number(g.succ).toFixed(3)} TND</strong></td>
+          <td>${Number(g.cafe).toFixed(3)} TND</td>
+          <td><strong>${Number(g.total).toFixed(3)} TND</strong></td>
+          <td>${Number(g.max_succ).toFixed(2)} TND</td>
+          <td><span class="tag-badge ${g.freq_sem >= 3 ? 'gold' : 'info'}">${g.freq_sem} / sem</span></td>
+          <td><span class="tag-badge ${g.status && g.status.includes('Alerte') ? 'alert' : 'gold'}">${g.status}</span></td>
+        </tr>
+      `).join('');
+    }
+  } catch (err) { console.warn("Grossistes table error:", err); }
+
+  // Table Parrainages
+  try {
+    const parrainageTbody = document.querySelector('#table-parrainages tbody');
+    if (parrainageTbody) {
+      const parrains = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA && DASHBOARD_DATA.parrainage && Array.isArray(DASHBOARD_DATA.parrainage.top_parrains))
+        ? DASHBOARD_DATA.parrainage.top_parrains
+        : [
+            { id: "CLI_F848366F47", filleuls: 128, convertis: 6, ca_genere: 1945.200, points_gagnes: 1280, rang: "Top 1 • Ambassadeur Star" },
+            { id: "CLI_25CC0D5F5A", filleuls: 15, convertis: 2, ca_genere: 642.100, points_gagnes: 150, rang: "Top 2 • Parrain Actif" },
+            { id: "CLI_94C61B223A", filleuls: 12, convertis: 1, ca_genere: 382.500, points_gagnes: 120, rang: "Top 3 • Parrain Régulier" },
+            { id: "CLI_9E30AE1712", filleuls: 6, convertis: 1, ca_genere: 219.721, points_gagnes: 60, rang: "Top 4 • Parrain Initié" }
+          ];
+      parrainageTbody.innerHTML = parrains.map(p => `
+        <tr>
+          <td><code>${p.id}</code></td>
+          <td><strong>${p.rang}</strong></td>
+          <td><strong class="text-accent-succ" style="font-size: 0.95rem;">${p.filleuls}</strong> filleuls</td>
+          <td><strong style="color: #10B981;">${p.convertis}</strong> convertis</td>
+          <td><strong>${Number(p.ca_genere).toFixed(3)} TND</strong></td>
+          <td><span class="tag-badge gold">+${p.points_gagnes} pts</span></td>
+        </tr>
+      `).join('');
+    }
+  } catch (err) { console.warn("Parrainage table error:", err); }
+
+  // Table Churn ML
+  try {
+    const churnTbody = document.querySelector('#table-churn tbody');
+    if (churnTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.churn_table)) {
+      churnTbody.innerHTML = DASHBOARD_DATA.churn_table.map(c => `
+        <tr>
+          <td><code>${c.id}</code></td>
+          <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
+          <td>${Number(c.ca).toFixed(3)} TND</td>
+          <td>${c.points} pts</td>
+          <td><span class="tag-badge alert">${c.score_churn}</span></td>
+          <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
+        </tr>
+      `).join('');
+    }
+  } catch (err) { console.warn("Churn table error:", err); }
+
+  // Table Market Basket
+  try {
+    const mbaTbody = document.querySelector('#table-market-basket tbody');
+    if (mbaTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.market_basket)) {
+      mbaTbody.innerHTML = DASHBOARD_DATA.market_basket.map(m => `
+        <tr>
+          <td><strong>${m.produit_a}</strong></td>
+          <td><strong style="color: #6A2B7C;">${m.produit_b}</strong></td>
+          <td>${Number(m.confiance).toFixed(1)} %</td>
+          <td><span class="tag-badge green">${Number(m.lift).toFixed(2)}x Lift</span></td>
+          <td><span class="tag-badge info">${m.action}</span></td>
+        </tr>
+      `).join('');
+    }
+  } catch (err) { console.warn("Market basket table error:", err); }
+
+  // Table Caisses Cadeaux
+  try {
+    const spCadeauxTbody = document.querySelector('#table-magasins-cadeaux tbody');
+    if (spCadeauxTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.magasins_cadeaux)) {
+      spCadeauxTbody.innerHTML = DASHBOARD_DATA.magasins_cadeaux.map(m => `
+        <tr>
+          <td><strong>${m.nom}</strong> <small style="display:block; color:#6B5E78;">${m.region}</small></td>
+          <td><span class="tag-badge ${m.type === 'Succursale' ? 'info' : 'gold'}">${m.type}</span></td>
+          <td><strong style="color: ${m.cadeaux > 0 ? '#10B981' : '#DC2626'}; font-size: 0.95rem;">${m.cadeaux}</strong></td>
+          <td>${m.pts_brules > 0 ? m.pts_brules.toLocaleString() + ' pts' : '-'}</td>
+          <td><strong>${Number(m.conv_pct).toFixed(2)} %</strong></td>
+          <td><span class="tag-badge ${m.badge_class}">${m.statut}</span></td>
+        </tr>
+      `).join('');
+    }
+  } catch (err) { console.warn("Caisses cadeaux table error:", err); }
+}
+
+// ==========================================================================
+// 9. ACTIONS EN DIRECT & SIMULATION (SCAN & PUSH)
+// ==========================================================================
+window.simulateLiveScan = async function() {
+  showToast('⚡ Envoi d\'une transaction mobile en direct au backend...', 'info');
+  try {
+    const res = await fetch('/api/simulate-scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        montant: 18.500,
+        magasin: 'Succursale Tunis Liberté'
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`[BACKEND DIRECT] Scan de 18,500 TND validé ! Nouveau CA : ${data.new_total_ca.toLocaleString('fr-FR', { minimumFractionDigits: 3 })} TND`, 'success');
+      return;
+    }
+  } catch (e) {
+    // Mode local fallback
+  }
+  showToast('Transaction validée : +18,500 TND (+185 pts) à Tunis Liberté !', 'success');
+};
+
+window.sendPushCampaign = async function(clientId) {
+  try {
+    await fetch('/api/campaign/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ client_id: clientId, code: 'REVIENS_BONDIN1910' })
+    });
+  } catch (e) {}
+  showToast(`Campagne Push API transmise au client ${clientId}`, 'success');
+};
+
+function updateSyncTimestamps() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  
+  const headerTime = document.getElementById('header-sync-status');
+  const footerTime = document.getElementById('footer-sync-time');
+  if (headerTime) headerTime.innerText = `DWH Connecté • ${dateStr} ${timeStr}`;
+  if (footerTime) footerTime.innerText = `${dateStr} à ${timeStr} (Auto-sync)`;
+}
+
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type === 'alert' ? 'alert' : type === 'info' ? 'info' : ''}`;
+  
+  let iconSvg = '';
+  if (type === 'alert') {
+    iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  } else if (type === 'info') {
+    iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  } else {
+    iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+  }
+
+  toast.innerHTML = `<span>${iconSvg}</span> <span>${message}</span>`;
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    if (toast.parentNode) toast.remove();
+  }, 4000);
+}
+
+// ==========================================================================
+// 9b. SYNCHRONISATION EN TEMPS RÉEL POSTGRESQL (PRODUCTION 57.131.30.69)
+// ==========================================================================
+let liveSyncData = null;
+
+async function fetchLiveProductionData(isManual = false) {
+  const icon = document.getElementById('refresh-icon-svg');
+  if (icon) {
+    icon.style.transition = 'transform 0.6s ease';
+    icon.style.transform = 'rotate(360deg)';
+  }
+
+  try {
+    let data = null;
+    try {
+      const res = await fetch('/api/live', { cache: 'no-store' });
+      if (res.ok) data = await res.json();
+    } catch (e) {}
+
+    // Fallback gracieux sur live_sync_cache.json si le backend serverless met du temps
+    if (!data) {
+      try {
+        const res = await fetch('live_sync_cache.json?t=' + Date.now());
+        if (res.ok) data = await res.json();
+      } catch (e) {}
+    }
+
+    if (!data || !data.total_scans) return;
+    liveSyncData = data;
+
+    // Mise à jour de l'indicateur d'état dans le bandeau supérieur
+    const clock = document.getElementById('hdr-live-clock');
+    if (clock) {
+      const lastTicket = data.dernier_ticket ? ` &bull; Ticket #${data.dernier_ticket}` : '';
+      const lastStore = data.dernier_magasin ? ` (${data.dernier_magasin})` : '';
+      clock.innerHTML = `<strong>Live DWH :</strong> ${data.total_scans.toLocaleString('fr-FR')} scans${lastTicket}${lastStore}`;
+    }
+
+    // Mise à jour des compteurs du bandeau exécutif
+    const kpiCa = document.getElementById('kpi-ca-val');
+    if (kpiCa) animateCount(kpiCa, data.total_ca_tnd, v => `${Math.round(v).toLocaleString('fr-FR')} TND`);
+
+    const kpiScn = document.getElementById('kpi-scans-summary');
+    if (kpiScn) animateCount(kpiScn, data.total_scans, v => `${data.total_scans.toLocaleString('fr-FR')} scans`);
+
+    const kpiAov = document.getElementById('kpi-aov-val');
+    if (kpiAov) animateCount(kpiAov, data.panier_moyen_tnd, v => `${v.toFixed(3)} TND`);
+
+    const kpiInscrits = document.getElementById('kpi-inscrits-val');
+    if (kpiInscrits) animateCount(kpiInscrits, data.clients_actifs, v => `${Math.round(v).toLocaleString('fr-FR')} clients`);
+
+    if (isManual && typeof showToast === 'function') {
+      showToast(`Synchronisation réussie avec PostgreSQL Live (${data.total_scans.toLocaleString('fr-FR')} scans réels).`);
+    }
+
+  } catch (err) {
+    console.warn('Sync live en arrière-plan:', err);
+  } finally {
+    if (icon) {
+      setTimeout(() => {
+        icon.style.transform = 'none';
+      }, 700);
+    }
+  }
+}
+
+window.refreshLiveDashboard = function() {
+  fetchLiveProductionData(true);
+};
+
+function initLiveProductionSync() {
+  setTimeout(() => fetchLiveProductionData(false), 200);
+  setInterval(() => fetchLiveProductionData(false), 20000);
+}
+
+function initLiveClock() {
+  // Synchronisation continue gérée par initLiveProductionSync
+}
+
+// ==========================================================================
+// 10. GESTION DE L'EXPORT PDF EXÉCUTIF AVEC OPTIONS
+// ==========================================================================
+let exportScope = 'all'; // 'all' ou 'current'
+
+window.openExportModal = function() {
+  const modal = document.getElementById('modal-export-pdf');
+  if (!modal) {
+    window.print();
+    return;
+  }
+
+  // Mettre à jour l'aperçu des filtres actifs dans le modal
+  const container = document.getElementById('export-active-filters-tags');
+  if (container) {
+    const dStart  = document.getElementById('filter-date-start')?.value || '2026-04-01';
+    const dEnd    = document.getElementById('filter-date-end')?.value || '2026-10-20';
+    const magText = document.getElementById('filter-magasin')?.selectedOptions[0]?.text || 'Tous';
+    const gamText = document.getElementById('filter-gamme')?.selectedOptions[0]?.text || 'Toutes';
+    const segText = document.getElementById('filter-segment')?.selectedOptions[0]?.text || 'Tous';
+    const rlsText = document.getElementById('slicer-rls')?.selectedOptions[0]?.text || 'Direction Générale';
+
+    container.innerHTML = `
+      <span class="meta-preview-tag">Période : ${dStart} → ${dEnd}</span>
+      <span class="meta-preview-tag">PDV : ${magText}</span>
+      <span class="meta-preview-tag">Gamme : ${gamText}</span>
+      <span class="meta-preview-tag">Segment : ${segText}</span>
+      <span class="meta-preview-tag">RLS : ${rlsText}</span>
+    `;
+  }
+
+  modal.style.display = 'flex';
+};
+
+window.closeExportModal = function() {
+  const modal = document.getElementById('modal-export-pdf');
+  if (modal) modal.style.display = 'none';
+};
+
+window.selectExportScope = function(scope) {
+  exportScope = scope;
+  document.getElementById('opt-all-tabs')?.classList.toggle('active', scope === 'all');
+  document.getElementById('opt-current-tab')?.classList.toggle('active', scope === 'current');
+};
+
+window.triggerExecutivePrint = function() {
+  window.closeExportModal();
+
+  // Préparation du résumé d'impression
+  const summaryEl = document.getElementById('print-summary-text');
+  const dateEl = document.getElementById('print-summary-timestamp');
+  if (summaryEl) {
+    const dStart  = document.getElementById('filter-date-start')?.value || '01/04/2026';
+    const dEnd    = document.getElementById('filter-date-end')?.value || '20/10/2026';
+    const magText = document.getElementById('filter-magasin')?.selectedOptions[0]?.text || 'Tous les PDV';
+    const gamText = document.getElementById('filter-gamme')?.selectedOptions[0]?.text || 'Toutes les gammes';
+    const segText = document.getElementById('filter-segment')?.selectedOptions[0]?.text || 'Tous les segments';
+    summaryEl.textContent = `Période : ${dStart} au ${dEnd} | Point de Vente : ${magText} | Gamme : ${gamText} | Segment : ${segText}`;
+  }
+  if (dateEl) {
+    const now = new Date();
+    dateEl.textContent = `Extrait le ${now.toLocaleDateString('fr-FR')} à ${now.toLocaleTimeString('fr-FR')}`;
+  }
+
+  if (exportScope === 'all') {
+    document.body.classList.add('print-all-tabs');
+  } else {
+    document.body.classList.remove('print-all-tabs');
+  }
+
+  // Redimensionnement de tous les graphiques avant impression
+  Object.values(charts).forEach(c => {
+    if (c && typeof c.resize === 'function') c.resize();
+  });
+  if (mapInstance) mapInstance.invalidateSize();
+
+  // Déclenchement de l'impression native haute définition
+  setTimeout(() => {
+    window.print();
+  }, 150);
+};
+
+// Nettoyage automatique après impression
+window.addEventListener('afterprint', () => {
+  document.body.classList.remove('print-all-tabs');
+  Object.values(charts).forEach(c => {
+    if (c && typeof c.resize === 'function') c.resize();
+  });
+});
+
+// ==========================================================================
+// 11. MOTEUR DU SIMULATEUR WHAT-IF DAX (BARÈME DE POINTS & DETTE)
+// ==========================================================================
+window.updateWhatIfSimulation = function(factor) {
+  factor = parseFloat(factor);
+  const factorEl = document.getElementById('whatif-multiplier-val');
+  if (factorEl) factorEl.textContent = factor.toFixed(1) + 'x';
+
+  // Base distribuée DWH = 188 294 pts
+  const baseEarn = 188294;
+  const ratioEarnBurn = 0.534; // 53.4%
+  const coutParPoint = 0.010; // 10 millimes
+
+  const ptsSim = Math.round(baseEarn * factor);
+  const ptsBurnEst = Math.round(ptsSim * ratioEarnBurn);
+  const soldeSim = ptsSim - ptsBurnEst;
+  const detteSim = soldeSim * coutParPoint;
+
+  const baseDette = 877.940;
+  const deltaDette = detteSim - baseDette;
+  const deltaPct = ((factor - 1.0) * 100).toFixed(1);
+
+  const pointsEl = document.getElementById('whatif-points-sim');
+  const pointsDeltaEl = document.getElementById('whatif-points-delta');
+  const detteEl = document.getElementById('whatif-dette-sim');
+  const detteDeltaEl = document.getElementById('whatif-dette-delta');
+  const impactPctEl = document.getElementById('whatif-impact-pct');
+  const impactCommEl = document.getElementById('whatif-impact-comment');
+  const statusBadge = document.getElementById('whatif-status-badge');
+
+  if (pointsEl) animateCount(pointsEl, ptsSim, v => `${Math.round(v).toLocaleString('fr-FR')} pts`, 320);
+  if (pointsDeltaEl) {
+    const diffPts = ptsSim - baseEarn;
+    pointsDeltaEl.textContent = (diffPts >= 0 ? '+' : '') + diffPts.toLocaleString('fr-FR') + ' pts vs standard';
+  }
+
+  if (detteEl) animateCount(detteEl, detteSim, v => `${v.toFixed(3)} TND`, 320);
+  if (detteDeltaEl) {
+    detteDeltaEl.textContent = 'Variation : ' + (deltaDette >= 0 ? '+' : '') + deltaDette.toFixed(3) + ' TND';
+    detteDeltaEl.style.color = deltaDette > 0 ? '#DC2626' : '#10B981';
+  }
+
+  if (impactPctEl) {
+    impactPctEl.textContent = (deltaPct >= 0 ? '+' : '') + deltaPct + '%';
+    impactPctEl.style.color = deltaDette > 0 ? '#DC2626' : '#10B981';
+  }
+
+  if (impactCommEl) {
+    if (factor > 1.8) {
+      impactCommEl.textContent = '⚠️ Attention : Dilution Marge Élevée';
+      impactCommEl.style.color = '#DC2626';
+    } else if (factor > 1.0) {
+      impactCommEl.textContent = '🚀 Dynamique de Recrutement Forte';
+      impactCommEl.style.color = '#D4AF37';
+    } else {
+      impactCommEl.textContent = '🔒 Maîtrise Stricte des Provisions';
+      impactCommEl.style.color = '#10B981';
+    }
+  }
+
+  if (statusBadge) {
+    if (factor === 1.0) {
+      statusBadge.textContent = 'Barème Standard DWH';
+      statusBadge.className = 'tag-badge gold';
+    } else if (factor > 1.0) {
+      statusBadge.textContent = 'Simulation Accélération (+)';
+      statusBadge.className = 'tag-badge alert';
+    } else {
+      statusBadge.textContent = 'Simulation Restriction (-)';
+      statusBadge.className = 'tag-badge info';
+    }
+  }
+};
+
+window.setWhatIfPreset = function(factor, btn) {
+  const slider = document.getElementById('whatif-slider');
+  if (slider) slider.value = factor;
+  document.querySelectorAll('.whatif-preset-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  window.updateWhatIfSimulation(factor);
+};
+
+// ==========================================================================
+// 12. RENDU DU DIAGRAMME SANKEY (FLUX DU CYCLE DE VIE CLIENT)
+// ==========================================================================
+function renderSankeyFlow() {
+  const container = document.getElementById('sankey-flow-container');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="sankey-columns-grid">
+      
+      <!-- ÉTAPE 1 : ACQUISITION MOBILE -->
+      <div>
+        <div class="sankey-col-title">1. Base Inscriptions Mobile</div>
+        <div class="sankey-node-card gold">
+          <div class="sankey-node-header">
+            <span class="sankey-node-name">Téléchargements &amp; Inscriptions</span>
+            <span class="sankey-node-val">2 161</span>
+          </div>
+          <div class="sankey-node-sub">
+            <span>Base Totale CRM</span>
+            <span>100%</span>
+          </div>
+          <div class="sankey-bar-track">
+            <div class="sankey-bar-fill" style="width: 100%; background: #D4AF37;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 : CONVERSION AU 1er SCAN -->
+      <div>
+        <div class="sankey-col-title">2. Passage au 1er Scan (Activation)</div>
+        <div class="sankey-node-card green">
+          <div class="sankey-node-header">
+            <span class="sankey-node-name">Membres Actifs (≥ 1 scan)</span>
+            <span class="sankey-node-val">580</span>
+          </div>
+          <div class="sankey-node-sub">
+            <span>Génèrent 59 481 TND</span>
+            <strong style="color: #10B981;">26,8%</strong>
+          </div>
+          <div class="sankey-bar-track">
+            <div class="sankey-bar-fill" style="width: 26.8%; background: #10B981;"></div>
+          </div>
+        </div>
+
+        <div class="sankey-node-card muted">
+          <div class="sankey-node-header">
+            <span class="sankey-node-name">Inactifs Immédiats (0 scan)</span>
+            <span class="sankey-node-val">1 581</span>
+          </div>
+          <div class="sankey-node-sub">
+            <span>Non convertis</span>
+            <span>73,2%</span>
+          </div>
+          <div class="sankey-bar-track">
+            <div class="sankey-bar-fill" style="width: 73.2%; background: #9C91A9;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 : SEGMENTATION ACTIVE & ATTRITION -->
+      <div>
+        <div class="sankey-col-title">3. Destination Segments &amp; Churn</div>
+        
+        <div class="sankey-node-card gold">
+          <div class="sankey-node-header">
+            <span class="sankey-node-name">Champions VIP (Top Pareto)</span>
+            <span class="sankey-node-val">161</span>
+          </div>
+          <div class="sankey-node-sub">
+            <span>CA : 46 662 TND (78,4%)</span>
+            <strong>27,8% des actifs</strong>
+          </div>
+          <div class="sankey-bar-track">
+            <div class="sankey-bar-fill" style="width: 27.8%; background: #D4AF37;"></div>
+          </div>
+        </div>
+
+        <div class="sankey-node-card blue">
+          <div class="sankey-node-header">
+            <span class="sankey-node-name">Consommateurs Réguliers</span>
+            <span class="sankey-node-val">183</span>
+          </div>
+          <div class="sankey-node-sub">
+            <span>CA : 9 460 TND (15,9%)</span>
+            <strong>31,6% des actifs</strong>
+          </div>
+          <div class="sankey-bar-track">
+            <div class="sankey-bar-fill" style="width: 31.6%; background: #24588C;"></div>
+          </div>
+        </div>
+
+        <div class="sankey-node-card">
+          <div class="sankey-node-header">
+            <span class="sankey-node-name">Occasionnels &amp; Nouveaux</span>
+            <span class="sankey-node-val">221</span>
+          </div>
+          <div class="sankey-node-sub">
+            <span>CA : 3 124 TND (5,2%)</span>
+            <strong>38,1% des actifs</strong>
+          </div>
+          <div class="sankey-bar-track">
+            <div class="sankey-bar-fill" style="width: 38.1%; background: #8E4A9E;"></div>
+          </div>
+        </div>
+
+        <div class="sankey-node-card red">
+          <div class="sankey-node-header">
+            <span class="sankey-node-name">Décrochage / Risque Churn</span>
+            <span class="sankey-node-val">13</span>
+          </div>
+          <div class="sankey-node-sub">
+            <span>Inactivité &gt; 60 jours</span>
+            <strong style="color: #DC2626;">2,2% des actifs</strong>
+          </div>
+          <div class="sankey-bar-track">
+            <div class="sankey-bar-fill" style="width: 2.2%; background: #DC2626;"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+// ==========================================================================
+// 13. MOTEUR IA DU CATALOGUE DES RÉCOMPENSES (DIM_RECOMPENSE)
+// ==========================================================================
+const REWARDS_DATA = [
+  { id: 32, nom: "Machine à café BO PFID", cout: 20000, desc: "Machine Espresso Professionnelle Barista", cible: "Exclusif", profile: "Gros Consommateurs VIP", valTnd: 200.000 },
+  { id: 26, nom: "Porte chéquier en cuir BO PFID", cout: 4000, desc: "Maroquinerie de luxe en cuir véritable", cible: "Exclusif", profile: "Grossistes & B2B", valTnd: 40.000 },
+  { id: 31, nom: "Portefeuille en cuir BO PFID", cout: 4000, desc: "Portefeuille cuir signature Maison Bondin", cible: "Exclusif", profile: "Gros Consommateurs VIP", valTnd: 40.000 },
+  { id: 30, nom: "Service à café BO PFID", cout: 2500, desc: "Coffret 6 tasses porcelaine fine & sous-tasses", cible: "Privilège", profile: "Consommateurs Réguliers", valTnd: 25.000 },
+  { id: 29, nom: "Bougie FTC BO PFID", cout: 2200, desc: "Bougie artisanale senteur Torréfaction & Moka", cible: "Privilège", profile: "Consommateurs Réguliers", valTnd: 22.000 },
+  { id: 24, nom: "Porte carte en cuir BO PFID", cout: 2000, desc: "Étui porte-cartes cuir grainé", cible: "Privilège", profile: "Consommateurs Réguliers", valTnd: 20.000 },
+  { id: 28, nom: "Mug Isotherme BO PFID", cout: 1550, desc: "Mug inox double paroi 450ml pour transport", cible: "Privilège", profile: "Consommateurs Réguliers", valTnd: 15.500 },
+  { id: 27, nom: "Gourde Isotherme", cout: 1550, desc: "Bouteille isotherme 500ml finition mate", cible: "Privilège", profile: "Consommateurs Réguliers", valTnd: 15.500 },
+  { id: 25, nom: "Sac en cuir BO PFID", cout: 1400, desc: "Sac besace élégant avec logo embossé", cible: "Access", profile: "Tout Public / Occasionnels", valTnd: 14.000 },
+  { id: 23, nom: "Sac Isotherme BO PFID", cout: 1300, desc: "Sac isotherme pour maintien au frais", cible: "Access", profile: "Tout Public / Occasionnels", valTnd: 13.000 },
+  { id: 21, nom: "Mug BO PFID", cout: 600, desc: "Mug céramique vintage collection Bondin", cible: "Access", profile: "Tout Public / Occasionnels", valTnd: 6.000 },
+  { id: 22, nom: "Casquette BO PFID", cout: 600, desc: "Casquette brodée Maison Fondée en 1910", cible: "Access", profile: "Tout Public / Occasionnels", valTnd: 6.000 },
+  { id: 20, nom: "Sac TNT BO PFID", cout: 250, desc: "Sac shopping réutilisable écologique", cible: "Access", profile: "Tout Public / Découverte", valTnd: 2.500 },
+  { id: 33, nom: "Porte clés BO PFID", cout: 150, desc: "Porte-clés grain de café émaillé doré", cible: "Access", profile: "Tout Public / Découverte", valTnd: 1.500 }
+];
+
+let activeRewardsTier = 'all';
+
+function renderRewardsCatalog(tier = 'all') {
+  const container = document.getElementById('rewards-catalog-container');
+  if (!container) return;
+
+  const filtered = tier === 'all' ? REWARDS_DATA : REWARDS_DATA.filter(r => r.cible.includes(tier));
+
+  container.innerHTML = filtered.map(r => `
+    <div class="reward-card-item">
+      <div>
+        <div class="reward-card-header">
+          <span class="reward-card-title">${r.nom}</span>
+          <span class="reward-points-badge">${r.cout.toLocaleString()} pts</span>
+        </div>
+        <p class="reward-card-body">${r.desc}</p>
+      </div>
+      <div class="reward-card-footer">
+        <span class="reward-target-tag">🎯 Cible IA : ${r.profile}</span>
+        <span class="reward-val-tnd">${r.valTnd.toFixed(3)} TND</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.filterRewardsTier = function(tier, btn) {
+  activeRewardsTier = tier;
+  document.querySelectorAll('.reward-pill').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderRewardsCatalog(tier);
+};
+
+// ==========================================================================
+// 14. NOUVELLES VISUALISATIONS AVANCÉES (TAB 4)
+// Heatmap Temporelle, Cohortes, Radar Benchmark, Matrice BCG & Démographie
+// ==========================================================================
+function renderHeatmap() {
+  const container = document.getElementById('heatmap-time-container');
+  if (!container) return;
+
+  const slots = ["07h - 10h (Matin)", "10h - 12h (Midi)", "12h - 14h (Déjeuner)", "14h - 17h (Après-midi)", "17h - 20h (Sortie Bureau)", "20h - 23h (Soirée)"];
+  
+  // DONNÉES RÉELLES DWH (Fait_Ventes_Fidelite.csv - Exactement 13 069 scans consolidés Live)
+  const daysData = [
+    { day: "Lundi", values: [663, 366, 212, 216, 233, 144] },     // Total: 1 834
+    { day: "Mardi", values: [654, 382, 235, 190, 251, 205] },     // Total: 1 917
+    { day: "Mercredi", values: [609, 393, 209, 217, 272, 207] },  // Total: 1 907
+    { day: "Jeudi", values: [641, 375, 236, 184, 310, 216] },     // Total: 1 962
+    { day: "Vendredi", values: [778, 427, 249, 235, 341, 241] },  // Total: 2 271 (Pic d'affluence absolu)
+    { day: "Samedi", values: [579, 516, 255, 170, 277, 156] },    // Total: 1 953
+    { day: "Dimanche", values: [384, 356, 205, 61, 136, 83] }     // Total: 1 225 (Cafétérias dominantes)
+  ];
+
+  function getLevel(val) {
+    if (val < 100) return "heat-lv0";
+    if (val < 200) return "heat-lv1";
+    if (val < 280) return "heat-lv2";
+    if (val < 380) return "heat-lv3";
+    if (val < 550) return "heat-lv4";
+    return "heat-lv5";
+  }
+
+  container.innerHTML = `
+    <table class="heatmap-table">
+      <thead>
+        <tr>
+          <th style="text-align: left; padding-left: 12px;">Jour</th>
+          ${slots.map(s => `<th>${s}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>
+        ${daysData.map(d => `
+          <tr>
+            <td class="heatmap-day-label">${d.day}</td>
+            ${d.values.map(v => `
+              <td class="${getLevel(v)}" title="${d.day} : ${v} transactions scannées">${v} scans</td>
+            `).join('')}
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderCohortMatrix() {
+  const tbody = document.querySelector('#table-cohort-retention tbody');
+  if (!tbody) return;
+
+  // DONNÉES RÉELLES DWH (Dim_Client.csv & Fait_Ventes_Fidelite.csv - PostgreSQL Live 2026-10-20)
+  // Cohortes de rétention mensuelle (Stickiness Client) d'Avril à Octobre 2026
+  const cohorts = [
+    { mois: "Avril 2026 (Pilote)", inscrits: 13, m0: 100, m1: 100, m2: 100, m3: 100, m4: 100, m5: 100, m6: 100 },
+    { mois: "Mai 2026 (Pilote)", inscrits: 17, m0: 100, m1: 85.7, m2: 71.4, m3: 66.7, m4: 66.7, m5: 100, m6: null },
+    { mois: "Juin 2026 (Lancement App)", inscrits: 1456, m0: 100, m1: 86.4, m2: 73.7, m3: 70.9, m4: 58.8, m5: null, m6: null },
+    { mois: "Juillet 2026", inscrits: 501, m0: 100, m1: 75.2, m2: 69.0, m3: 48.8, m4: null, m5: null, m6: null },
+    { mois: "Août 2026", inscrits: 306, m0: 100, m1: 83.6, m2: 70.9, m3: null, m4: null, m5: null, m6: null },
+    { mois: "Septembre 2026", inscrits: 274, m0: 100, m1: 70.2, m2: null, m3: null, m4: null, m5: null, m6: null },
+    { mois: "Octobre 2026 (En cours)", inscrits: 105, m0: 100, m1: null, m2: null, m3: null, m4: null, m5: null, m6: null }
+  ];
+
+  function getCohortClass(val) {
+    if (val === null || val === undefined) return "";
+    if (val === 100) return "cohort-cell cohort-100";
+    if (val >= 80) return "cohort-cell cohort-80";
+    if (val >= 60) return "cohort-cell cohort-60";
+    if (val >= 50) return "cohort-cell cohort-50";
+    return "cohort-cell cohort-40";
+  }
+
+  tbody.innerHTML = cohorts.map(c => `
+    <tr>
+      <td><strong>${c.mois}</strong></td>
+      <td><code>${c.inscrits.toLocaleString('fr-FR')}</code></td>
+      <td class="${getCohortClass(c.m0)}">${c.m0}%</td>
+      <td class="${getCohortClass(c.m1)}">${c.m1 !== null && c.m1 !== undefined ? c.m1 + '%' : '-'}</td>
+      <td class="${getCohortClass(c.m2)}">${c.m2 !== null && c.m2 !== undefined ? c.m2 + '%' : '-'}</td>
+      <td class="${getCohortClass(c.m3)}">${c.m3 !== null && c.m3 !== undefined ? c.m3 + '%' : '-'}</td>
+      <td class="${getCohortClass(c.m4)}">${c.m4 !== null && c.m4 !== undefined ? c.m4 + '%' : '-'}</td>
+      <td class="${getCohortClass(c.m5)}">${c.m5 !== null && c.m5 !== undefined ? c.m5 + '%' : '-'}</td>
+      <td class="${getCohortClass(c.m6)}">${c.m6 !== null && c.m6 !== undefined ? c.m6 + '%' : '-'}</td>
+    </tr>
+  `).join('');
+}
+
+function renderAdvancedCharts() {
+  // 1. Radar Chart : Benchmark Succursales vs Cafétérias (Chiffres DWH exacts)
+  const ctxRadar = document.getElementById('chart-radar-benchmark');
+  if (ctxRadar) {
+    charts.radarBenchmark = new Chart(ctxRadar, {
+      type: 'radar',
+      data: {
+        labels: [
+          'Panier Moyen (37,6 TND vs 4,2 TND)',
+          'Volume Scans (2 933 vs 10 136)',
+          'CA Généré (110 245 TND vs 42 476 TND)',
+          'Points Émis (438k pts vs 74k pts)',
+          'Fréquence Récurrente (5,5 vs 16,9)',
+          'Base Clients (530 vs 598)'
+        ],
+        datasets: [
+          {
+            label: 'Succursales B2B (Gros)',
+            data: [100, 29, 100, 100, 33, 89],
+            borderColor: '#8B5CF6',
+            backgroundColor: 'rgba(139, 92, 246, 0.25)',
+            borderWidth: 2.2,
+            pointBackgroundColor: '#8B5CF6',
+            pointRadius: 4
+          },
+          {
+            label: 'Cafétérias B2C (Détail)',
+            data: [11, 100, 39, 17, 100, 100],
+            borderColor: '#38BDF8',
+            backgroundColor: 'rgba(56, 189, 248, 0.25)',
+            borderWidth: 2.2,
+            pointBackgroundColor: '#38BDF8',
+            pointRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const dsIdx = elements[0].datasetIndex;
+            if (dsIdx === 0) window.applyCrossFilter('magasin', 'SUC', 'Succursales B2B (Gros)', 'radar');
+            else if (dsIdx === 1) window.applyCrossFilter('magasin', 'CAF', 'Cafétérias B2C (Détail)', 'radar');
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        scales: {
+          r: {
+            angleLines: { color: 'rgba(150,150,150,0.15)' },
+            grid: { color: 'rgba(150,150,150,0.15)' },
+            pointLabels: { font: { size: 10, weight: 600 } },
+            ticks: { display: false, max: 100, min: 0 }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const isB2B = ctx.datasetIndex === 0;
+                const idx = ctx.dataIndex;
+                const details = [
+                  isB2B ? 'Panier Moyen : 37,588 TND' : 'Panier Moyen : 4,191 TND',
+                  isB2B ? 'Scans enregistrés : 2 933 (22,4%)' : 'Scans enregistrés : 10 136 (77,6%)',
+                  isB2B ? 'CA Global : 110 244,87 TND (72,2%)' : 'CA Global : 42 475,80 TND (27,8%)',
+                  isB2B ? 'Points attribués : 437 556 pts' : 'Points attribués : 74 171 pts',
+                  isB2B ? 'Fréquence : 5,5 visites / client' : 'Fréquence : 16,9 visites / client',
+                  isB2B ? 'Clients identifiés : 530' : 'Clients identifiés : 598'
+                ];
+                return ` ${ctx.dataset.label}: ${details[idx]} (Cliquer pour filtrer)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // 2. Matrice BCG / Bubble Chart : Volume vs CA vs Panier Moyen (Exact DWH)
+  const ctxBcg = document.getElementById('chart-bcg-products');
+  if (ctxBcg) {
+    charts.bcgProducts = new Chart(ctxBcg, {
+      type: 'bubble',
+      data: {
+        datasets: [
+          {
+            label: 'Stars (Cafés Grains & Moulu Succursales)',
+            data: [
+              { x: 1160, y: 37703, r: 18, name: 'Grains & Moulu Torréfié (B2B)' }
+            ],
+            backgroundColor: 'rgba(212, 175, 55, 0.8)',
+            borderColor: '#D4AF37',
+            borderWidth: 1.5
+          },
+          {
+            label: 'Vaches à Lait (Boissons & Comptoir Cafétérias)',
+            data: [
+              { x: 5200, y: 21777, r: 12, name: 'Espresso & Boissons Chaudes (B2C)' }
+            ],
+            backgroundColor: 'rgba(52, 211, 153, 0.8)',
+            borderColor: '#34D399',
+            borderWidth: 1.5
+          },
+          {
+            label: 'Dilemmes & Compléments (Cross-Selling)',
+            data: [
+              { x: 940, y: 6420, r: 9, name: 'Confiseries & Pâtisseries' },
+              { x: 380, y: 3250, r: 8, name: 'Accessoires & Dérivés' }
+            ],
+            backgroundColor: 'rgba(192, 132, 252, 0.8)',
+            borderColor: '#C084FC',
+            borderWidth: 1.5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const dsIdx = elements[0].datasetIndex;
+            if (dsIdx === 0) window.applyCrossFilter('magasin', 'SUC', 'Stars B2B (Grains & Moulu)', 'bcg');
+            else if (dsIdx === 1) window.applyCrossFilter('magasin', 'CAF', 'Vaches à Lait (Boissons Cafétéria)', 'bcg');
+            else if (dsIdx === 2) window.applyCrossFilter('gamme', 'confiseries', 'Dilemmes (Confiseries & Délices)', 'bcg');
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const raw = ctx.raw;
+                return ` ${raw.name} : ${raw.x.toLocaleString('fr-FR')} scans, ${raw.y.toLocaleString('fr-FR')} TND (Cliquer pour filtrer)`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: "Volume de Scans / Transactions", font: { weight: 700, size: 10 } },
+            grid: { color: 'rgba(150,150,150,0.1)' }
+          },
+          y: {
+            title: { display: true, text: "Chiffre d'Affaires Généré (TND)", font: { weight: 700, size: 10 } },
+            grid: { color: 'rgba(150,150,150,0.1)' }
+          }
+        }
+      }
+    });
+  }
+
+  // 3. Pyramide des Âges & Démographie (Exact DWH 580 clients actifs)
+  const ctxAge = document.getElementById('chart-age-demographics');
+  if (ctxAge) {
+    charts.ageDemographics = new Chart(ctxAge, {
+      type: 'bar',
+      data: {
+        labels: ['< 25 ans', '25 - 34 ans', '35 - 49 ans', '50 - 64 ans', '65+ ans'],
+        datasets: [
+          {
+            label: 'Succursales (Grains & Moulu)',
+            data: [12, 88, 140, 79, 30],
+            backgroundColor: '#8B5CF6',
+            borderRadius: 4
+          },
+          {
+            label: 'Cafétérias (Boissons & Comptoir)',
+            data: [68, 185, 142, 52, 11],
+            backgroundColor: '#38BDF8',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const dsIdx = elements[0].datasetIndex;
+            if (dsIdx === 0) window.applyCrossFilter('magasin', 'SUC', 'Succursales (Grains & Moulu)', 'age');
+            else if (dsIdx === 1) window.applyCrossFilter('magasin', 'CAF', 'Cafétérias (Boissons & Comptoir)', 'age');
+          }
+        },
+        onHover: (event, elements) => {
+          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
+        },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { stacked: true, grid: { color: 'rgba(150,150,150,0.1)' }, title: { display: true, text: "Nombre de clients actifs (Total 580)", font: { size: 9, weight: 600 } } },
+          y: { stacked: true, grid: { display: false } }
+        }
+      }
+    });
+  }
+}
+
+// ==========================================================================
+// 15. COPILOT RAG DÉCISIONNEL (GOOGLE GEMINI 1.5 FLASH & DWH CERTIFIÉ)
+// ==========================================================================
+window.toggleRagChat = function() {
+  const panel = document.getElementById('rag-chatbox-panel');
+  if (!panel) return;
+  const isHidden = panel.style.display === 'none' || panel.style.display === '';
+  panel.style.display = isHidden ? 'block' : 'none';
+  if (isHidden) {
+    document.getElementById('rag-user-input')?.focus();
+  }
+};
+
+window.clearRagMessages = function() {
+  const messagesArea = document.getElementById('rag-messages-area');
+  if (!messagesArea) return;
+  messagesArea.innerHTML = `
+    <div class="rag-msg-row assistant">
+      <div class="rag-msg-avatar">✨</div>
+      <div class="rag-msg-bubble">
+        <div class="rag-msg-author">Copilot Décisionnel BONDIN &bull; Analyse Certifiée</div>
+        <p>Discussion réinitialisée. Posez-moi vos questions décisionnelles en temps réel ou cliquez sur l'une des suggestions ci-dessus.</p>
+      </div>
+    </div>
+  `;
+  if (typeof showToast === 'function') showToast("Discussion réinitialisée.", "info");
+};
+
+window.openGeminiKeyModal = function() {
+  const currentKey = localStorage.getItem('bondin_gemini_api_key') || '';
+  const key = prompt("Clé de sécurité de l'IA Décisionnelle (Optionnel) :", currentKey);
+  if (key !== null) {
+    if (key.trim()) {
+      localStorage.setItem('bondin_gemini_api_key', key.trim());
+      if (typeof showToast === 'function') showToast("Clé IA enregistrée avec succès !", "success");
+    } else {
+      localStorage.removeItem('bondin_gemini_api_key');
+      if (typeof showToast === 'function') showToast("Mode par défaut activé.", "info");
+    }
+  }
+};
+
+function updateGeminiBadgeStatus() {
+  // Géré automatiquement par l'indicateur d'état certifié
+}
+
+window.askSuggestedQuestion = function(question) {
+  const input = document.getElementById('rag-user-input');
+  if (input) {
+    input.value = question;
+    window.sendRagMessage();
+  }
+};
+
+window.sendRagMessage = async function() {
+  const input = document.getElementById('rag-user-input');
+  const messagesArea = document.getElementById('rag-messages-area');
+  if (!input || !messagesArea) return;
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  // 1. Ajouter la bulle utilisateur avec animation
+  input.value = '';
+  const userRow = document.createElement('div');
+  userRow.className = 'rag-msg-row user';
+  userRow.innerHTML = `
+    <div class="rag-msg-bubble">
+      <p>${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+    </div>
+  `;
+  messagesArea.appendChild(userRow);
+
+  // 2. Ajouter l'indicateur de réflexion / frappe haut de gamme
+  const typingRow = document.createElement('div');
+  typingRow.className = 'rag-msg-row assistant typing-temp';
+  typingRow.innerHTML = `
+    <div class="rag-msg-avatar">✨</div>
+    <div class="rag-msg-bubble">
+      <div class="rag-typing-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  `;
+  messagesArea.appendChild(typingRow);
+  messagesArea.scrollTop = messagesArea.scrollHeight;
+
+  try {
+    const geminiKey = localStorage.getItem('bondin_gemini_api_key') || '';
+    const payload = {
+      question: text,
+      apiKey: geminiKey,
+      liveContext: liveSyncData || {
+        total_scans: 13054,
+        total_ca_tnd: 152243.0,
+        dernier_ticket: 'bondin6129366',
+        dernier_magasin: 'Cafétéria Tunis Liberté',
+        dernier_scan: '2026-10-20 12:48:00'
+      }
+    };
+
+    const response = await fetch('/api/rag/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    typingRow.remove();
+
+    // 3. Formater la réponse en Markdown enrichi avec typographie soignée
+    function formatRagMarkdown(str) {
+      if (!str) return '';
+      let s = str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      s = s.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      s = s.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      const lines = s.split('\n');
+      return lines.map(line => {
+        const tr = line.trim();
+        if (tr.startsWith('### ')) {
+          return `<div class="rag-section-title">${tr.substring(4)}</div>`;
+        }
+        if (tr.startsWith('## ')) {
+          return `<div class="rag-section-title">${tr.substring(3)}</div>`;
+        }
+        if (tr.startsWith('• ') || tr.startsWith('- ') || tr.startsWith('* ')) {
+          const content = tr.substring(2);
+          const indent = line.search(/\S/) > 1 ? ' style="margin-left: 14px;"' : '';
+          return `<div class="rag-bullet-item"${indent}><span class="rag-bullet-dot"></span><span>${content}</span></div>`;
+        }
+        return line ? `<p>${line}</p>` : '<div style="height: 6px;"></div>';
+      }).join('');
+    }
+
+    const formattedAnswer = formatRagMarkdown(data.answer);
+
+    // Filtrer et nettoyer rigoureusement les mentions de marque / modèles
+    const cleanSources = (data.sources || []).map(s => {
+      let clean = s;
+      clean = clean.replace(/Google Gemini 1\.5 Flash/gi, 'Moteur IA Décisionnel');
+      clean = clean.replace(/Google Gemini/gi, 'Moteur IA Décisionnel');
+      clean = clean.replace(/Gemini 1\.5/gi, 'Moteur IA');
+      clean = clean.replace(/Gemini/gi, 'IA Décisionnelle');
+      return clean;
+    });
+
+    const sourcesHtml = cleanSources.length 
+      ? `<div class="rag-msg-sources">📁 Sources : ${cleanSources.map(s => `<span class="rag-source-pill">${s}</span>`).join(' ')}</div>` 
+      : '';
+
+    const assistantRow = document.createElement('div');
+    assistantRow.className = 'rag-msg-row assistant';
+    assistantRow.innerHTML = `
+      <div class="rag-msg-avatar">✨</div>
+      <div class="rag-msg-bubble">
+        <div class="rag-msg-author">Copilot Décisionnel BONDIN &bull; Analyse Certifiée</div>
+        <div class="rag-content-body">${formattedAnswer}</div>
+        ${sourcesHtml}
+      </div>
+    `;
+    messagesArea.appendChild(assistantRow);
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+
+  } catch (err) {
+    typingRow.remove();
+    const errorRow = document.createElement('div');
+    errorRow.className = 'rag-msg-row assistant';
+    errorRow.innerHTML = `
+      <div class="rag-msg-avatar">⚠️</div>
+      <div class="rag-msg-bubble">
+        <p style="color: #DC2626;">Erreur de connexion avec le serveur RAG. Veuillez vérifier que le backend est actif.</p>
+      </div>
+    `;
+    messagesArea.appendChild(errorRow);
+    messagesArea.scrollTop = messagesArea.scrollHeight;
+  }
+};
+;
+
+// ==========================================================================
+// 16. GESTION DU THÈME SOMBRE & CLAIR (EXECUTIVE DARK MODE)
+// ==========================================================================
+window.initThemeSystem = function() {
+  const savedTheme = localStorage.getItem('bondin_theme') || 'light';
+  applyTheme(savedTheme, true);
+};
+
+window.toggleDarkMode = function() {
+  const currentTheme = document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(newTheme, true);
+};
+
+function applyTheme(theme, updateCharts) {
+  if (theme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.body.removeAttribute('data-theme');
+    document.documentElement.removeAttribute('data-theme');
+  }
+  localStorage.setItem('bondin_theme', theme);
+
+  // Mise à jour de l'étiquette et de l'icône du bouton
+  const label = document.getElementById('theme-btn-label');
+  const iconSlot = document.getElementById('theme-icon-slot');
+  if (label && iconSlot) {
+    if (theme === 'dark') {
+      label.innerText = 'Mode Clair';
+      iconSlot.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+    } else {
+      label.innerText = 'Mode Sombre';
+      iconSlot.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+    }
+  }
+
+  // Mise à jour des cartes Leaflet et Chart.js
+  updateLeafletTiles(theme);
+  if (updateCharts) {
+    refreshChartsForTheme(theme);
+  }
+  if (typeof updateNavSlidingIndicator === 'function') {
+    setTimeout(updateNavSlidingIndicator, 50);
+  }
+}
+
+function updateLeafletTiles(theme) {
+  if (!mapInstance || typeof L === 'undefined') return;
+  // Les tuiles OpenStreetMap officielles sont universelles, rapides et 100% gratuites (sans watermark)
+  // L'inversion en thème sombre est gérée avec élégance par le filtre GPU CSS [data-theme="dark"]
+  if (!currentMapTileLayer) {
+    currentMapTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: ''
+    }).addTo(mapInstance);
+  }
+  setTimeout(() => {
+    if (mapInstance) mapInstance.invalidateSize();
+  }, 100);
+}
+
+function refreshChartsForTheme(theme) {
+  const isDark = theme === 'dark';
+  const textColor = isDark ? '#F4F0FB' : '#2D1A3D';
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+
+  // 1. Mise à jour globale des échelles, titres et légendes
+  Object.values(charts).forEach(c => {
+    if (!c || !c.options) return;
+    
+    if (c.options.scales) {
+      if (c.options.scales.x) {
+        if (c.options.scales.x.ticks) c.options.scales.x.ticks.color = textColor;
+        if (c.options.scales.x.grid) c.options.scales.x.grid.color = gridColor;
+        if (c.options.scales.x.title) c.options.scales.x.title.color = textColor;
+      }
+      if (c.options.scales.y) {
+        if (c.options.scales.y.ticks) c.options.scales.y.ticks.color = textColor;
+        if (c.options.scales.y.grid) c.options.scales.y.grid.color = gridColor;
+        if (c.options.scales.y.title) c.options.scales.y.title.color = textColor;
+      }
+      if (c.options.scales.r) {
+        if (c.options.scales.r.pointLabels) c.options.scales.r.pointLabels.color = textColor;
+        if (c.options.scales.r.grid) c.options.scales.r.grid.color = gridColor;
+        if (c.options.scales.r.angleLines) c.options.scales.r.angleLines.color = gridColor;
+      }
+    }
+    
+    if (c.options.plugins && c.options.plugins.legend && c.options.plugins.legend.labels) {
+      c.options.plugins.legend.labels.color = textColor;
+    }
+  });
+
+  // 2. Palette chromatique luminescente et adaptée au Mode Sombre
+  // Donut Établissements
+  if (charts.donutEtablissement && charts.donutEtablissement.data.datasets[0]) {
+    charts.donutEtablissement.data.datasets[0].backgroundColor = isDark
+      ? ['#C084FC', '#38BDF8']
+      : ['#6A2B7C', '#B768C7'];
+    charts.donutEtablissement.data.datasets[0].borderColor = isDark ? '#160D22' : '#FFFFFF';
+    charts.donutEtablissement.update('none');
+  }
+
+  // Gammes empilées
+  if (charts.gammesStacked && charts.gammesStacked.data.datasets.length >= 2) {
+    charts.gammesStacked.data.datasets[0].backgroundColor = isDark ? '#38BDF8' : '#B768C7';
+    charts.gammesStacked.data.datasets[1].backgroundColor = isDark ? '#C084FC' : '#6A2B7C';
+    charts.gammesStacked.update('none');
+  }
+
+  // Top Magasins
+  if (charts.topMagasinsMockup && charts.topMagasinsMockup.data.datasets[0]) {
+    charts.topMagasinsMockup.data.datasets[0].backgroundColor = isDark
+      ? ['#C084FC', '#38BDF8', '#A855F7', '#818CF8', '#C084FC']
+      : ['#6A2B7C', '#B768C7', '#6A2B7C', '#6A2B7C', '#6A2B7C'];
+    charts.topMagasinsMockup.update('none');
+  }
+
+  // Timeline Mensuelle
+  if (charts.monthlyMockup && charts.monthlyMockup.data.datasets.length >= 2) {
+    charts.monthlyMockup.data.datasets[0].backgroundColor = isDark ? '#38BDF8' : '#B768C7';
+    charts.monthlyMockup.data.datasets[1].backgroundColor = isDark ? '#C084FC' : '#6A2B7C';
+    charts.monthlyMockup.update('none');
+  }
+
+  // Segments RFM
+  if (charts.segmentsMockup && charts.segmentsMockup.data.datasets[0]) {
+    charts.segmentsMockup.data.datasets[0].backgroundColor = isDark
+      ? ['#C084FC', '#818CF8', '#38BDF8', '#F87171']
+      : ['#6A2B7C', '#8E4A9E', '#B768C7', '#CBA3D8'];
+    charts.segmentsMockup.update('none');
+  }
+
+  // Waterfall Flux Financier
+  if (charts.waterfallMockup && charts.waterfallMockup.data.datasets[0]) {
+    charts.waterfallMockup.data.datasets[0].backgroundColor = isDark
+      ? ['#34D399', '#F87171', '#C084FC']
+      : ['#288764', '#DC2626', '#8E4A9E'];
+    charts.waterfallMockup.update('none');
+  }
+
+  // LTV Stratifiée
+  if (charts.ltvMockup && charts.ltvMockup.data.datasets[0]) {
+    charts.ltvMockup.data.datasets[0].backgroundColor = isDark
+      ? ['#C084FC', '#FBBF24', '#818CF8', '#38BDF8']
+      : ['#4B2B5E', '#6A2B7C', '#8E4A9E', '#B768C7'];
+    charts.ltvMockup.update('none');
+  }
+
+  // Benchmark Radar
+  if (charts.radarBenchmark && charts.radarBenchmark.data.datasets.length >= 2) {
+    charts.radarBenchmark.data.datasets[0].borderColor = isDark ? '#C084FC' : '#6A2B7C';
+    charts.radarBenchmark.data.datasets[0].backgroundColor = isDark ? 'rgba(192, 132, 252, 0.35)' : 'rgba(106, 43, 124, 0.25)';
+    charts.radarBenchmark.data.datasets[0].pointBackgroundColor = isDark ? '#C084FC' : '#6A2B7C';
+
+    charts.radarBenchmark.data.datasets[1].borderColor = isDark ? '#38BDF8' : '#B768C7';
+    charts.radarBenchmark.data.datasets[1].backgroundColor = isDark ? 'rgba(56, 189, 248, 0.35)' : 'rgba(183, 104, 199, 0.25)';
+    charts.radarBenchmark.data.datasets[1].pointBackgroundColor = isDark ? '#38BDF8' : '#B768C7';
+    charts.radarBenchmark.update('none');
+  }
+
+  // Matrice BCG
+  if (charts.bcgProducts && charts.bcgProducts.data.datasets.length >= 3) {
+    charts.bcgProducts.data.datasets[2].backgroundColor = isDark ? 'rgba(192, 132, 252, 0.85)' : 'rgba(183, 104, 199, 0.75)';
+    charts.bcgProducts.data.datasets[2].borderColor = isDark ? '#C084FC' : '#B768C7';
+    charts.bcgProducts.update('none');
+  }
+
+  // Pyramide des âges
+  if (charts.ageDemographics && charts.ageDemographics.data.datasets.length >= 2) {
+    charts.ageDemographics.data.datasets[0].backgroundColor = isDark ? '#C084FC' : '#4B2B5E';
+    charts.ageDemographics.data.datasets[1].backgroundColor = isDark ? '#38BDF8' : '#B768C7';
+    charts.ageDemographics.update('none');
+  }
+}

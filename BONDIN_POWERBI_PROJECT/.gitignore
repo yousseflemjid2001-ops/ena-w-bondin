@@ -1,0 +1,4 @@
+# Power BI local settings
+.pbi/
+*.pbix
+*.bak

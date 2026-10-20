@@ -1,0 +1,46 @@
+table Fait_Mouvements
+	lineageTag: 7a824840-dba6-4816-8c93-43b8028e9326
+
+	column Column1
+		dataType: string
+		lineageTag: 013a5ea8-d5d0-444e-9233-d2e59d475843
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column2
+		dataType: string
+		lineageTag: 4abec91a-0ea3-4f1f-90fd-97a538cc242c
+		summarizeBy: none
+		sourceColumn: Column2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column3
+		dataType: string
+		lineageTag: e48e3080-a3d1-4b7a-affd-f786ea4da881
+		summarizeBy: none
+		sourceColumn: Column3
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column4
+		dataType: string
+		lineageTag: 8d0b99e2-1bfb-4ecb-b438-fae6b7fb49d3
+		summarizeBy: none
+		sourceColumn: Column4
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fait_Mouvements = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\ena w bonda\BONDIN_DATA_WAREHOUSE.xlsx"), null, true),
+				    Fait_Mouvements_Sheet = Source{[Item="Fait_Mouvements",Kind="Sheet"]}[Data]
+				in
+				    Fait_Mouvements_Sheet
+
+	annotation PBI_ResultType = Table
+

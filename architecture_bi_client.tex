@@ -1,0 +1,310 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage[top=0.9cm, bottom=0.9cm, left=1.2cm, right=1.2cm, headheight=14pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc, shadows.blur, backgrounds}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{array}
+
+% ===================== PALETTE DE COULEURS PROFESSIONNELLE =====================
+\definecolor{c1border}{RGB}{18, 52, 102}      % Bleu marine foncé
+\definecolor{c1bg}{RGB}{236, 244, 255}
+\definecolor{c2border}{RGB}{190, 110, 15}     % Ambre / Cuivre ETL
+\definecolor{c2bg}{RGB}{255, 249, 235}
+\definecolor{c3border}{RGB}{24, 110, 56}      % Vert Émeraude DWH
+\definecolor{c3bg}{RGB}{234, 250, 238}
+\definecolor{c4border}{RGB}{168, 30, 30}      % Rouge Bordeaux Power BI
+\definecolor{c4bg}{RGB}{255, 238, 239}
+\definecolor{c5border}{RGB}{95, 36, 158}      % Violet IA
+\definecolor{c5bg}{RGB}{246, 238, 255}
+
+\definecolor{factred}{RGB}{185, 35, 35}
+\definecolor{factbg}{RGB}{255, 235, 235}
+\definecolor{dimblue}{RGB}{25, 75, 145}
+\definecolor{dimbg}{RGB}{232, 244, 255}
+\definecolor{pagebg}{RGB}{250, 251, 254}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\hypersetup{colorlinks=true, linkcolor=c1border, urlcolor=c1border}
+\pagecolor{pagebg}
+
+\begin{document}
+
+% =========================================================================
+% PAGE 1 : ARCHITECTURE VISUELLE GLOBALE AVEC FOCUS DWH
+% =========================================================================
+\thispagestyle{empty}
+
+% Bandeau Titre Page 1
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[c1border] (current page.north west) rectangle ++(21cm, -1.9cm);
+  \node[white, font=\Large\bfseries, anchor=west] at ([xshift=1.2cm, yshift=-0.65cm]current page.north west)
+    {ARCHITECTURE DECISIONNELLE GLOBALE (BI \& IA)};
+  \node[white!85!gray, font=\normalsize, anchor=west] at ([xshift=1.2cm, yshift=-1.25cm]current page.north west)
+    {Plateforme « ENA W BONDIN » \quad|\quad BONDIN $\times$ FIDNESS \quad|\quad Fast-Track Agile};
+  \node[white, fill=c3border, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=4pt, anchor=east]
+    at ([xshift=-1.2cm, yshift=-1.25cm]current page.north east) {LIVRABLE VALIDE};
+\end{tikzpicture}
+
+\vspace{1.5cm}
+
+\begin{center}
+\begin{tikzpicture}[
+  layerbg/.style={rectangle, rounded corners=6pt, draw=#1!85!black, line width=1.4pt,
+                   fill=#1!15, minimum width=18.0cm, drop shadow={shadow xshift=0.03cm, shadow yshift=-0.03cm, fill=black!8}},
+  layertitle/.style={rectangle, rounded corners=3pt, fill=#1, text=white,
+                     font=\scriptsize\bfseries, anchor=west, inner sep=3.5pt},
+  boxstd/.style={rectangle, rounded corners=4pt, draw=#1!80!black, line width=1.1pt,
+                 fill=white, minimum width=3.3cm, minimum height=1.05cm, align=center,
+                 font=\footnotesize, drop shadow={shadow xshift=0.03cm, shadow yshift=-0.03cm, fill=black!10}},
+  boxfact/.style={rectangle, rounded corners=4pt, draw=factred!85, line width=1.3pt,
+                  fill=factbg, minimum width=3.3cm, minimum height=1.05cm, align=center,
+                  font=\footnotesize\bfseries, drop shadow={shadow xshift=0.03cm, shadow yshift=-0.03cm, fill=black!10}},
+  boxdim/.style={rectangle, rounded corners=4pt, draw=dimblue!80, line width=1.1pt,
+                 fill=dimbg, minimum width=3.3cm, minimum height=1.05cm, align=center,
+                 font=\footnotesize, drop shadow={shadow xshift=0.03cm, shadow yshift=-0.03cm, fill=black!10}},
+  mainarrow/.style={-{Stealth[length=6pt, width=4.5pt]}, line width=2.0pt, color=#1},
+  etlarrow/.style={-{Stealth[length=4pt, width=3pt]}, line width=1.3pt, color=#1!80!black},
+  arrowbadge/.style={font=\tiny\bfseries, text=white, fill=#1!85!black, rounded corners=2pt, inner sep=2.5pt},
+]
+
+% =========================================================================
+% COUCHE 1 : SOURCES OPERATIONNELLES
+% =========================================================================
+\node[layerbg=c1border, minimum height=1.9cm] (L1) at (0, 0) {};
+\node[layertitle=c1border] at (-8.7, 0.62) {~~COUCHE 1 --- SOURCES OPERATIONNELLES \& TRANSACTIONNELLES~~};
+
+\node[boxstd=c1border] (s1) at (-5.7, -0.22) {\textbf{PostgreSQL Raw}\\\tiny Dump Fidness (2,3 Mo)\\\tiny 37 tables brutes};
+\node[boxstd=c1border] (s2) at (-1.9, -0.22) {\textbf{Application Mobile}\\\tiny Scans QR Code client\\\tiny Horodatage temps réel};
+\node[boxstd=c1border] (s3) at (1.9, -0.22)  {\textbf{Moteur Fidélité}\\\tiny Transactions de points\\\tiny Parrainages \& Récompenses};
+\node[boxstd=c1border] (s4) at (5.7, -0.22)  {\textbf{Référentiel Articles}\\\tiny Catalogue Bondin\\\tiny 538 produits / Gammes};
+
+% Fleche 1 -> 2
+\draw[mainarrow=c2border] (0, -0.95) -- (0, -1.65);
+\node[arrowbadge=c2border] at (0, -1.30) {EXTRACTION DES TABLES RAW};
+
+% =========================================================================
+% COUCHE 2 : PIPELINE ETL PYTHON
+% =========================================================================
+\node[layerbg=c2border, minimum height=1.9cm] (L2) at (0, -2.6) {};
+\node[layertitle=c2border] at (-8.7, -1.98) {~~COUCHE 2 --- PIPELINE ETL PYTHON (Extract $\rightarrow$ Transform $\rightarrow$ Load)~~};
+
+\node[boxstd=c2border, minimum width=2.5cm] (e1) at (-6.6, -2.82) {\textbf{1. EXTRACT}\\\tiny \texttt{pgdumplib}\\\tiny Lecture PGDMP};
+\node[boxstd=c2border, minimum width=2.5cm] (e2) at (-3.3, -2.82) {\textbf{2. NETTOYER}\\\tiny Millimes $\rightarrow$ TND\\\tiny Filtre Bondin ($C=2$)};
+\node[boxstd=c2border, minimum width=2.5cm] (e3) at (0.0, -2.82)  {\textbf{3. ANONYMISER}\\\tiny Hachage MD5\\\tiny RGPD / RLS};
+\node[boxstd=c2border, minimum width=2.5cm] (e4) at (3.3, -2.82)  {\textbf{4. SCORER RFM}\\\tiny Segmentation auto\\\tiny Récence / Fréq. / CA};
+\node[boxstd=c2border, minimum width=2.5cm] (e5) at (6.6, -2.82)  {\textbf{5. CHARGER}\\\tiny 8 CSV UTF-8\\\tiny \textbf{15 711 lignes}};
+
+\draw[etlarrow=c2border] (-5.35, -2.82) -- (-4.55, -2.82);
+\draw[etlarrow=c2border] (-2.05, -2.82) -- (-1.25, -2.82);
+\draw[etlarrow=c2border] (1.25, -2.82) -- (2.05, -2.82);
+\draw[etlarrow=c2border] (4.55, -2.82) -- (5.35, -2.82);
+
+% Fleche 2 -> 3
+\draw[mainarrow=c3border] (0, -3.55) -- (0, -4.25);
+\node[arrowbadge=c3border] at (0, -3.90) {CHARGEMENT DATA WAREHOUSE (ETL $\rightarrow$ DWH)};
+
+% =========================================================================
+% COUCHE 3 : DATA WAREHOUSE CENTRAL (SCHEMA EN ETOILE) -- COEUR DU SYSTEME
+% =========================================================================
+\node[layerbg=c3border, minimum height=3.6cm] (L3) at (0, -6.05) {};
+\node[layertitle=c3border] at (-8.7, -4.55)
+  {~~COUCHE 3 --- DATA WAREHOUSE CENTRAL (Star Schema) --- 8 Tables | 15 711 Enregistrements~~};
+
+% Ligne 1 DWH : Faits + Client
+\node[boxfact] (f1) at (-5.7, -5.35) {\textcolor{factred}{Fait\_Ventes}\\\scriptsize \textbf{6 360 scans} | 8 cols\\\tiny CA (59 480 TND) + Points};
+\node[boxfact] (f2) at (-1.9, -5.35) {\textcolor{factred}{Fait\_Points}\\\scriptsize \textbf{6 306 flux} | 4 cols\\\tiny Earn \& Burn (188k/100k pts)};
+\node[boxfact] (f3) at (1.9, -5.35)  {\textcolor{factred}{Fait\_Parrainages}\\\scriptsize \textbf{206 liens} | 5 cols\\\tiny Viralité Réseau Filleuls};
+\node[boxdim]  (d1) at (5.7, -5.35)  {\textbf{\textcolor{dimblue}{Dim\_Client}}\\\scriptsize \textbf{2 161 profils} | 9 cols\\\tiny Scores RFM \& Hachage MD5};
+
+% Ligne 2 DWH : Dimensions
+\node[boxdim]  (d2) at (-5.7, -6.65) {\textbf{\textcolor{dimblue}{Dim\_Produit}}\\\scriptsize \textbf{538 articles} | 5 cols\\\tiny Gammes Café \& Prix TND};
+\node[boxdim]  (d3) at (-1.9, -6.65) {\textbf{\textcolor{dimblue}{Dim\_Temps}}\\\scriptsize \textbf{121 jours} | 8 cols\\\tiny Calendrier Avr--Août 2026};
+\node[boxdim]  (d4) at (1.9, -6.65)  {\textbf{\textcolor{dimblue}{Dim\_Segment}}\\\scriptsize \textbf{5 segments} | 4 cols\\\tiny Champions / Réguliers...};
+\node[boxdim]  (d5) at (5.7, -6.65)  {\textbf{\textcolor{dimblue}{Dim\_Recompense}}\\\scriptsize \textbf{14 cadeaux} | 5 cols\\\tiny Machine, Tasses, Cible IA};
+
+% Légende DWH intégrée
+\node[rectangle, rounded corners=2pt, draw=factred!70, fill=factbg, font=\tiny\bfseries, inner sep=2pt] at (-6.2, -7.5) {\textcolor{factred}{$\blacksquare$} Tables de Faits (Actes)};
+\node[rectangle, rounded corners=2pt, draw=dimblue!70, fill=dimbg, font=\tiny\bfseries, inner sep=2pt] at (-2.3, -7.5) {\textcolor{dimblue}{$\blacksquare$} Tables de Dimensions (Axes)};
+\node[rectangle, rounded corners=2pt, draw=c3border!70, fill=white, font=\tiny\bfseries, inner sep=2pt] at (3.5, -7.5) {\textcolor{c3border!90!black}{\textbf{Volume Total : 15 711 lignes dans le DWH}}};
+
+% Fleche 3 -> 4
+\draw[mainarrow=c4border] (0, -7.85) -- (0, -8.55);
+\node[arrowbadge=c4border] at (0, -8.20) {ALIMENTATION POWER BI (MODELE EN ETOILE)};
+
+% =========================================================================
+% COUCHE 4 : RESTITUTION POWER BI (3 DASHBOARDS + RLS)
+% =========================================================================
+\node[layerbg=c4border, minimum height=3.0cm] (L4) at (0, -10.05) {};
+\node[layertitle=c4border] at (-8.7, -8.85) {~~COUCHE 4 --- RESTITUTION POWER BI --- 3 Dashboards Interactifs \& Sécurité RLS~~};
+
+% Ligne 1 Power BI : Dashboards
+\node[boxstd=c4border] (db1) at (-5.7, -9.60) {\textbf{Dashboard 1}\\\footnotesize Cockpit Direction\\\tiny CA, AOV, Scans, Taux};
+\node[boxstd=c4border] (db2) at (-1.9, -9.60) {\textbf{Dashboard 2}\\\footnotesize Segmentation RFM\\\tiny Répartition \& Sankey};
+\node[boxstd=c4border] (db3) at (1.9, -9.60)  {\textbf{Dashboard 3}\\\footnotesize Cagnotte Earn/Burn\\\tiny Alerte Churn \& Ratios};
+\node[boxstd=c4border] (dax) at (5.7, -9.60)  {\textbf{Moteur DAX \& RLS}\\\footnotesize Mesures dynamiques\\\tiny Sécurité par profil};
+
+% Ligne 2 Power BI : Rôles Métier
+\node[rectangle, rounded corners=3pt, draw=c4border!70, fill=white, font=\tiny, align=center, inner sep=3pt, minimum width=3.3cm]
+  (u1) at (-5.7, -10.85) {\textbf{Direction Générale}\\\tiny Pilotage Macro \& Performance};
+\node[rectangle, rounded corners=3pt, draw=c4border!70, fill=white, font=\tiny, align=center, inner sep=3pt, minimum width=3.3cm]
+  (u2) at (-1.9, -10.85) {\textbf{Équipe Marketing}\\\tiny Ciblage \& Campagnes Promo};
+\node[rectangle, rounded corners=3pt, draw=c4border!70, fill=white, font=\tiny, align=center, inner sep=3pt, minimum width=3.3cm]
+  (u3) at (1.9, -10.85)  {\textbf{Contrôle de Gestion}\\\tiny Suivi passif des points};
+\node[rectangle, rounded corners=3pt, draw=c4border!70, fill=white, font=\tiny, align=center, inner sep=3pt, minimum width=3.3cm]
+  (u4) at (5.7, -10.85)  {\textbf{Analyste Data}\\\tiny Exploration libre \& Drill};
+
+\draw[-{Stealth[length=3.5pt]}, c4border!60] (db1.south) -- (u1.north);
+\draw[-{Stealth[length=3.5pt]}, c4border!60] (db2.south) -- (u2.north);
+\draw[-{Stealth[length=3.5pt]}, c4border!60] (db3.south) -- (u3.north);
+\draw[-{Stealth[length=3.5pt]}, c4border!60] (dax.south) -- (u4.north);
+
+% Fleche 4 -> 5
+\draw[mainarrow=c5border] (0, -11.55) -- (0, -12.15);
+\node[arrowbadge=c5border] at (0, -11.85) {SCORING PREDICTIF \& RECOMMANDATIONS IA (SPRINT 4)};
+
+% =========================================================================
+% COUCHE 5 : IA & MACHINE LEARNING (SPRINT 4)
+% =========================================================================
+\node[layerbg=c5border, minimum height=1.9cm] (L5) at (0, -13.1) {};
+\node[layertitle=c5border] at (-8.7, -12.45) {~~COUCHE 5 --- MOTEURS IA \& MACHINE LEARNING (Sprint 4 --- Automatisation)~~};
+
+\node[boxstd=c5border] (ia1) at (-5.7, -13.3) {\textbf{Prédiction Churn}\\\tiny Random Forest Classifier\\\tiny Détection 13 clients à risque};
+\node[boxstd=c5border] (ia2) at (-1.9, -13.3) {\textbf{Reco. Récompenses}\\\tiny Filtrage collaboratif\\\tiny Proposition cadeau optimal};
+\node[boxstd=c5border] (ia3) at (1.9, -13.3)  {\textbf{Cross-Selling}\\\tiny Règles d'association\\\tiny Paniers mixtes café};
+\node[boxstd=c5border] (ia4) at (5.7, -13.3)  {\textbf{Scoring RFM Live}\\\tiny Clustering automatique\\\tiny Actualisation dynamique};
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.1cm}
+
+% Pied de page Page 1
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[c1border!90] (current page.south west) rectangle ++(21cm, 0.65cm);
+  \node[white, font=\tiny\bfseries, anchor=west] at ([xshift=1.2cm, yshift=0.32cm]current page.south west)
+    {Architecture BI Décisionnelle --- Application « ENA W BONDIN » --- BONDIN $\times$ FIDNESS --- Octobre 2026};
+  \node[white, font=\tiny\bfseries, anchor=east] at ([xshift=-1.2cm, yshift=0.32cm]current page.south east)
+    {Livrable Client --- Page 1 / 2};
+\end{tikzpicture}
+
+% =========================================================================
+% PAGE 2 : SYNTHÈSE CHIFFRÉE DU DATA WAREHOUSE & INDICATEURS CLÉS
+% =========================================================================
+\newpage
+\thispagestyle{empty}
+
+% Bandeau Titre Page 2
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[c1border] (current page.north west) rectangle ++(21cm, -1.8cm);
+  \node[white, font=\large\bfseries, anchor=west] at ([xshift=1.2cm, yshift=-0.65cm]current page.north west)
+    {SYNTHESE TECHNIQUE DU DATA WAREHOUSE (DWH)};
+  \node[white!85!gray, font=\small, anchor=west] at ([xshift=1.2cm, yshift=-1.25cm]current page.north west)
+    {Volumétrie réelle \& Indicateurs Décisionnels --- Application « ENA W BONDIN »};
+  \node[white, fill=c3border, rounded corners=3pt, font=\scriptsize\bfseries, inner sep=4pt, anchor=east]
+    at ([xshift=-1.2cm, yshift=-0.9cm]current page.north east) {15 711 LIGNES DWH};
+\end{tikzpicture}
+
+\vspace{0.75cm}
+
+% ---- TABLEAU 1 : INVENTAIRE DWH ----
+\noindent
+{\small\bfseries\color{c1border} TABLEAU 1 --- Inventaire exhaustif du Schéma en Étoile (DWH)}
+\vspace{0.08cm}
+
+\noindent
+\renewcommand{\arraystretch}{0.98}
+\begin{tabularx}{\textwidth}{>{\ttfamily\scriptsize}p{4.2cm} >{\scriptsize}p{2.1cm} >{\centering\scriptsize\bfseries}p{1.3cm} >{\centering\scriptsize}p{0.8cm} >{\scriptsize}X}
+\toprule
+\rowcolor{c1border}\color{white}\textbf{Table DWH} & \color{white}\textbf{Rôle Modèle} & \color{white}\textbf{Lignes} & \color{white}\textbf{Cols} & \color{white}\textbf{Description Métier \& Granularité} \\
+\midrule
+\rowcolor{c1bg!60} Fait\_Ventes\_Fidelite & Fait (Ventes) & 6 360 & 8 & 1 ligne par achat scanné (Montant TND + Points) \\
+\rowcolor{white} Fait\_Mouvements\_Points & Fait (Points) & 6 306 & 4 & Historique complet des flux Earn (gains) et Burn (dépenses) \\
+\rowcolor{c1bg!60} Fait\_Parrainages & Fait (Réseau) & 206 & 5 & Relations Parrain-Filleul avec validation \\
+\rowcolor{white} Dim\_Client & Dimension & 2 161 & 9 & Profils consommateurs pseudonymisés MD5 et scores RFM \\
+\rowcolor{c1bg!60} Dim\_Produit & Dimension & 538 & 5 & Référentiel catalogue Bondin et gammes de café \\
+\rowcolor{white} Dim\_Segment\_Client & Dimension & 5 & 4 & Grille des 5 segments (Cahier des charges) \\
+\rowcolor{c1bg!60} Dim\_Recompense & Dimension & 14 & 5 & Catalogue cadeaux échangeables contre des points \\
+\rowcolor{white} Dim\_Temps & Dimension & 121 & 8 & Calendrier dynamique jour/mois/trimestre (Avr--Août 2026) \\
+\midrule
+\rowcolor{c3bg}\multicolumn{2}{l}{\textbf{TOTAL GENERAL DATA WAREHOUSE}} & \textbf{15 711} & --- & \textbf{8 tables CSV prêtes pour Power BI} \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+
+% ---- TABLEAU 2 : INDICATEURS EXÉCUTIFS ----
+\noindent
+{\small\bfseries\color{c4border} TABLEAU 2 --- Métriques Clés d'Activité Fidélité Calculées}
+\vspace{0.08cm}
+
+\noindent
+\renewcommand{\arraystretch}{0.98}
+\begin{tabularx}{\textwidth}{>{\scriptsize}p{5.5cm} >{\scriptsize\centering\bfseries}p{3.2cm} >{\scriptsize}X}
+\toprule
+\rowcolor{c4border}\color{white}\textbf{Indicateur Exécutif} & \color{white}\textbf{Valeur Mesurée} & \color{white}\textbf{Signification \& Interprétation Décisionnelle} \\
+\midrule
+\rowcolor{c4bg!60} Chiffre d'Affaires Fidélité Total & 59 480,655 TND & Volume total des achats enregistrés via scan application. \\
+\rowcolor{white} Nombre de Transactions Scannées & 6 360 scans & Intensité d'usage de l'application par les clients Bondin. \\
+\rowcolor{c4bg!60} Panier Moyen par Scan (AOV) & 9,352 TND & Ticket moyen généré par un passage en caisse fidélisé. \\
+\rowcolor{white} Points de Fidélité Distribués (Earn) & 188 294 pts & Capital fidélité accordé pour récompenser les achats. \\
+\rowcolor{c4bg!60} Points Consommés en Récompenses (Burn) & 100 500 pts & Valeur convertie en cadeaux (tasses, machines, café). \\
+\rowcolor{white} \textbf{Ratio Earn \& Burn (Santé Cagnotte)} & \textcolor{c3border!80!black}{\textbf{53,4\,\%}} & \textcolor{c3border!80!black}{\textbf{Zone optimale : engagement fort sans fragiliser la marge.}} \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+
+% ---- TABLEAU 3 : SEGMENTS RFM ----
+\noindent
+{\small\bfseries\color{c5border} TABLEAU 3 --- Répartition des Consommateurs par Segment RFM}
+\vspace{0.08cm}
+
+\noindent
+\renewcommand{\arraystretch}{0.98}
+\begin{tabularx}{\textwidth}{>{\scriptsize}p{5.0cm} >{\centering\scriptsize\bfseries}p{1.5cm} >{\centering\scriptsize}p{1.2cm} >{\scriptsize}X}
+\toprule
+\rowcolor{c5border!75}\color{white}\textbf{Segment Client} & \color{white}\textbf{Effectif} & \color{white}\textbf{Part} & \color{white}\textbf{Plan d'Action Marketing Préconisé} \\
+\midrule
+\rowcolor{c5bg!50}\textbf{Gros Consommateurs (Champions)} & 161 & 7,5\,\% & Accès prioritaire aux séries limitées et cadeaux premium. \\
+\rowcolor{white}\textbf{Consommateurs Réguliers} & 183 & 8,5\,\% & Encourager la montée en gamme vers les cafés d'origine. \\
+\rowcolor{c5bg!50}\textbf{Consommateurs Occasionnels} & 221 & 10,2\,\% & Campagnes promotionnelles ciblées pour accroître la fréquence. \\
+\rowcolor{white}\textbf{En Risque d'Attrition (Churn)} & 13 & 0,6\,\% & Alerte prioritaire : message push et offre de réactivation. \\
+\rowcolor{c5bg!50}\textbf{Inactifs (Inscrits sans scan)} & 1 583 & 73,3\,\% & Offre de bienvenue au premier scan (réservoir de croissance). \\
+\midrule
+\rowcolor{white}\textbf{TOTAL CLIENTS INSCRITS} & \textbf{2 161} & \textbf{100\,\%} & Base active qualifiée dans le Data Warehouse. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+
+% Note de bas de page récapitulative
+\begin{center}
+  \scriptsize
+  \textcolor{c1border}{\textbf{Validation de passage :}} Données Data Warehouse validées pour amorcer les dashboards Power BI (Sprint 3).
+\end{center}
+
+% Pied de page Page 2
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[c1border!90] (current page.south west) rectangle ++(21cm, 0.65cm);
+  \node[white, font=\tiny\bfseries, anchor=west] at ([xshift=1.2cm, yshift=0.32cm]current page.south west)
+    {Architecture BI Décisionnelle --- Application « ENA W BONDIN » --- BONDIN $\times$ FIDNESS --- Octobre 2026};
+  \node[white, font=\tiny\bfseries, anchor=east] at ([xshift=-1.2cm, yshift=0.32cm]current page.south east)
+    {Livrable Client --- Page 2 / 2};
+\end{tikzpicture}
+
+\end{document}

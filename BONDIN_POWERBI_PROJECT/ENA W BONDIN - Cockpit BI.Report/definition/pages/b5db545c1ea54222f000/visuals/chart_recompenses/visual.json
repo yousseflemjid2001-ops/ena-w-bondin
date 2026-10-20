@@ -1,0 +1,98 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "chart_recompenses",
+  "position": {
+    "x": 35.0,
+    "y": 240.0,
+    "z": 3,
+    "height": 455.0,
+    "width": 590.0,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Recompense"
+                    }
+                  },
+                  "Property": "Column2"
+                }
+              },
+              "queryRef": "Dim_Recompense.Column2",
+              "nativeQueryRef": "Column2",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fait_Ventes"
+                    }
+                  },
+                  "Property": "Total_Points_Gagnes"
+                }
+              },
+              "queryRef": "Fait_Ventes.Total_Points_Gagnes",
+              "nativeQueryRef": "Total_Points_Gagnes"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Top Récompenses & Cadeaux Demandés (Points)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

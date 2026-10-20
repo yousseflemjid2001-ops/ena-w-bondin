@@ -1,0 +1,95 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "table_rfm_segments",
+  "position": {
+    "x": 655.0,
+    "y": 240.0,
+    "z": 5,
+    "height": 455.0,
+    "width": 590.0,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Magasin"
+                    }
+                  },
+                  "Property": "Region_Gouvernorat"
+                }
+              },
+              "queryRef": "Dim_Magasin.Region_Gouvernorat",
+              "nativeQueryRef": "Region_Gouvernorat",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Magasin"
+                    }
+                  },
+                  "Property": "Nom_Magasin"
+                }
+              },
+              "queryRef": "Dim_Magasin.Nom_Magasin",
+              "nativeQueryRef": "Nom_Magasin",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Répartition Régionale & Points de Vente'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

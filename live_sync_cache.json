@@ -1,0 +1,56 @@
+{
+  "status": "connected_live",
+  "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
+  "timestamp": "2026-10-20 16:48:32",
+  "company_name": "BONDIN",
+  "total_scans": 13078,
+  "total_ca_tnd": 152796.92,
+  "panier_moyen_tnd": 11.684,
+  "total_points_emis": 511994,
+  "clients_actifs": 758,
+  "dernier_scan": "2026-10-20 16:40:17",
+  "dernier_ticket": "bondin6133555",
+  "dernier_magasin": "Succursale Gafsa Ville",
+  "recent_scans": [
+    {
+      "id": 13089,
+      "ticket": "bondin6133555",
+      "montant_tnd": 9.25,
+      "points": 37.0,
+      "date": "2026-10-20 16:40:17",
+      "magasin": "Succursale Gafsa Ville"
+    },
+    {
+      "id": 13088,
+      "ticket": "bondin6133548",
+      "montant_tnd": 2.0,
+      "points": 3.8,
+      "date": "2026-10-20 16:39:48",
+      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
+    },
+    {
+      "id": 13087,
+      "ticket": "bondin6133524",
+      "montant_tnd": 2.0,
+      "points": 4.0,
+      "date": "2026-10-20 16:38:28",
+      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
+    },
+    {
+      "id": 13086,
+      "ticket": "bondin6133369",
+      "montant_tnd": 8.2,
+      "points": 18.0,
+      "date": "2026-10-20 16:29:59",
+      "magasin": "Caf\u00e9t\u00e9ria Tunis La Marsa"
+    },
+    {
+      "id": 13085,
+      "ticket": "bondin6133099",
+      "montant_tnd": 10.5,
+      "points": 42.0,
+      "date": "2026-10-20 16:14:48",
+      "magasin": "Succursale Le Kef"
+    }
+  ]
+}

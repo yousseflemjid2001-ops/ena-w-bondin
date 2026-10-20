@@ -1,0 +1,98 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "chart_magasins",
+  "position": {
+    "x": 35.0,
+    "y": 240.0,
+    "z": 4,
+    "height": 455.0,
+    "width": 590.0,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Magasin"
+                    }
+                  },
+                  "Property": "Nom_Magasin"
+                }
+              },
+              "queryRef": "Dim_Magasin.Nom_Magasin",
+              "nativeQueryRef": "Nom_Magasin",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fait_Ventes"
+                    }
+                  },
+                  "Property": "Total_CA_TND"
+                }
+              },
+              "queryRef": "Fait_Ventes.Total_CA_TND",
+              "nativeQueryRef": "Total_CA_TND"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Performance par Magasin (Ventes TND)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

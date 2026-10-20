@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
+  <link rel="stylesheet" href="style.css?v=20261020_live_v4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Leaflet CDN pour la carte interactive -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Favicon officiel BONDIN -->
+  <link rel="icon" type="image/png" href="bondin_logo.png">
+</head>
+<body>
+
+  <!-- ======================================================== -->
+  <!-- 1. EN-TÊTE PRINCIPAL : STYLE EXECUTIVE PRUNE & VIOLET    -->
+  <!-- ======================================================== -->
+    <!-- ======================================================== -->
+  <!-- 1. EN-TÊTE EXÉCUTIF PRESTIGE & MINIMALISTE               -->
+  <!-- ======================================================== -->
+  <header class="header-enterprise">
+    <!-- GAUCHE : IDENTITÉ MAISON BONDIN -->
+    <div class="hdr-left-identity">
+      <img src="bondin_logo.png" alt="BONDIN" class="bondin-logo-img">
+      <div class="hdr-title-col">
+        <div class="hdr-brand-title">BONDIN <span>· DEPUIS 1910</span></div>
+        <div class="hdr-app-title">Plateforme Décisionnelle BI &amp; IA Client &bull; <span>ENA W BONDIN</span></div>
+      </div>
+    </div>
+
+    <!-- CENTRE : STATUT SYNCHRO DISCRET -->
+    <div class="hdr-center-status">
+      <span class="live-status-pill">
+        <span class="pulse-dot"></span>
+        <span id="hdr-live-clock">Synchronisation DWH active (Temps Réel)</span>
+      </span>
+    </div>
+
+    <!-- DROITE : ACTIONS & LOGO FIDNESS -->
+    <div class="hdr-right-tools">
+            <button id="btn-theme-toggle" class="hdr-action-btn theme-toggle" onclick="window.toggleDarkMode()" title="Basculer Mode Clair / Mode Sombre">
+        <span class="theme-icon-indicator" id="theme-icon-slot">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+        <span id="theme-btn-label">Mode Sombre</span>
+      </button>
+
+      <button id="btn-refresh-data" class="hdr-action-btn" title="Actualiser les indicateurs en temps réel" onclick="window.refreshLiveDashboard()">
+        <svg id="refresh-icon-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Actualiser
+      </button>
+
+      <button id="btn-export-pdf" class="hdr-action-btn primary" title="Exporter le rapport décisionnel en PDF" onclick="window.openExportModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exporter PDF
+      </button>
+
+      <div class="fidness-brand-badge" title="FIDNESS · Plateforme Fidélité Digitale (Logo Officiel F)">
+        <img src="fidness_f_hd.png" alt="FIDNESS Logo F" class="fidness-f-icon">
+        <span class="fidness-brand-text">FIDNESS</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- BANNIÈRE RÉCAPITULATIVE IMPRIMÉE DANS LE PDF -->
+  <div class="print-only-filter-summary" id="print-filter-summary">
+    <div><strong>DOSSIER DÉCISIONNEL BI &amp; IA</strong> &bull; <span id="print-summary-text">Période: Tout l'historique | PDV: Réseau Global | RLS: Direction Générale</span></div>
+    <div id="print-summary-timestamp" style="font-weight: 700;"></div>
+  </div>
+
+  <!-- ======================================================== -->
+    <!-- ======================================================== -->
+  <!-- 2. BANDEAU DES INDICATEURS STRATÉGIQUES (EXECUTIVE KPIS) -->
+  <!-- ======================================================== -->
+  <section class="executive-kpi-banner">
+    
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Chiffre d'Affaires Fidélité</span>
+        <span class="exec-kpi-tag success">+102% MoM</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-ca-val">152 721 TND</div>
+      <div class="exec-kpi-footer">
+        <span>Scans enregistrés</span>
+        <strong id="kpi-scans-summary">13 070 scans</strong>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Panier Moyen (AOV)</span>
+        <span class="exec-kpi-tag info" id="kpi-aov-tag">Consolidé</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-aov-val">11,686 TND</div>
+      <div class="exec-kpi-footer">
+        <span>Succursales : <strong>37,59 TND</strong></span>
+        <span>Cafétérias : <strong>4,19 TND</strong></span>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Membres Actifs (≥ 1 scan)</span>
+        <span class="exec-kpi-tag highlight" id="kpi-activation-val">27,9%</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-inscrits-val">758 clients</div>
+      <div class="exec-kpi-footer">
+        <span>Sur <strong>2 715</strong> inscrits CRM</span>
+        <span id="kpi-freq-val" style="font-weight: 700; color: #6A2B7C;">3,65 visites/mois</span>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Équilibre Earn &amp; Burn</span>
+        <span class="exec-kpi-tag gold" id="kpi-ratio-val">44,3%</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-cadeaux-val">35 cadeaux</div>
+      <div class="exec-kpi-footer">
+        <span>Points brûlés : <strong>226 900</strong></span>
+        <span>Émis : <strong>511 728</strong></span>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card highlight-border">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Dette Provisionnée (Passif)</span>
+        <span class="exec-kpi-tag secure">Couverture 100%</span>
+      </div>
+      <div class="exec-kpi-value debt" id="kpi-dette-val">2 848,281 TND</div>
+      <div class="exec-kpi-footer">
+        <span>Solde net en circulation</span>
+        <strong>284 828 pts</strong>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ======================================================== -->
+    <!-- ======================================================== -->
+  <!-- 3. NAVIGATION PAR ONGLETS (ROW 2)                        -->
+  <!-- ======================================================== -->
+  <div class="subbar-nav-row">
+    
+    <!-- Onglets Segmented Pills Ultra-Design & Animé -->
+    <div class="segmented-pills-group" id="tab-nav-group" role="tablist" aria-label="Navigation des vues décisionnelles">
+      <div class="nav-sliding-indicator" id="nav-sliding-indicator" aria-hidden="true"></div>
+      
+      <button class="pill-tab-btn active" data-tab="tab-cockpit" role="tab" aria-selected="true" id="btn-tab-cockpit">
+        <span class="tab-badge">01</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <span class="tab-label">Cockpit Direction &amp; CA</span>
+      </button>
+      <button class="pill-tab-btn" data-tab="tab-segmentation" role="tab" aria-selected="false" id="btn-tab-segmentation">
+        <span class="tab-badge">02</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="tab-label">Segmentation &amp; Grossistes</span>
+      </button>
+      <button class="pill-tab-btn" data-tab="tab-cagnotte" role="tab" aria-selected="false" id="btn-tab-cagnotte">
+        <span class="tab-badge">03</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="tab-label">Cagnotte, LTV &amp; IA Client</span>
+      </button>
+      <button class="pill-tab-btn" data-tab="tab-avancees" role="tab" aria-selected="false" id="btn-tab-avancees">
+        <span class="tab-badge">04</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <span class="tab-label">Analyses Avancées &amp; Cohortes</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3b. BARRE DE FILTRES PROFESSIONNELLE POWER BI            -->
+  <!-- ======================================================== -->
+  <div class="pro-filter-bar" id="pro-filter-bar">
+
+    <div class="pro-filter-bar-title">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L13 10.414V17a1 1 0 01-.553.894l-4 2A1 1 0 017 19v-8.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/>
+      </svg>
+      Filtres
+    </div>
+
+    <!-- Calendrier : Plage de dates -->
+    <div class="pro-filter-group date-filter-group" id="group-filter-date">
+      <label class="pro-filter-label" for="filter-date-start">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Période (Calendrier)
+      </label>
+      <div class="pro-date-picker-wrap">
+        <input type="date" id="filter-date-start" class="pro-date-field" value="2026-04-01" min="2026-01-01" max="2026-12-31" title="Date début">
+        <span class="date-arrow">&rarr;</span>
+        <input type="date" id="filter-date-end" class="pro-date-field" value="2026-10-20" min="2026-01-01" max="2026-12-31" title="Date fin">
+      </div>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Magasin -->
+    <div class="pro-filter-group" id="group-filter-magasin">
+      <label class="pro-filter-label" for="filter-magasin">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Point de Vente
+      </label>
+      <select id="filter-magasin" class="pro-filter-select">
+        <option value="all" selected>Tous les PDV (Réseau)</option>
+        <option value="SUC">Succursales (B2B)</option>
+        <option value="CAF">Cafétérias (B2C)</option>
+        <option value="gafsa">Gafsa (Succursale &amp; Cafétéria)</option>
+        <option value="tunis-liberte">Tunis Liberté</option>
+        <option value="el-menzah">El Menzah</option>
+        <option value="la-marsa">La Marsa</option>
+        <option value="gabes">Gabès Jara</option>
+        <option value="le-kef">Le Kef</option>
+        <option value="sfax">Sfax</option>
+        <option value="sousse">Sousse</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Gamme Café -->
+    <div class="pro-filter-group" id="group-filter-gamme">
+      <label class="pro-filter-label" for="filter-gamme">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        Gamme Produit
+      </label>
+      <select id="filter-gamme" class="pro-filter-select">
+        <option value="all" selected>Toutes les gammes</option>
+        <option value="grains">Café en Grains Prestige</option>
+        <option value="moulu">Café Moulu Torréfié</option>
+        <option value="boissons">Boissons Salons &amp; Comptoir</option>
+        <option value="capsules">Capsules Compatibles</option>
+        <option value="accessoires">Accessoires &amp; Machines</option>
+        <option value="confiseries">Confiseries &amp; Délices</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Segment RFM -->
+    <div class="pro-filter-group" id="group-filter-segment">
+      <label class="pro-filter-label" for="filter-segment">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/></svg>
+        Segment RFM
+      </label>
+      <select id="filter-segment" class="pro-filter-select">
+        <option value="all" selected>Tous les segments</option>
+        <option value="champions">Champions &amp; Ambassadeurs</option>
+        <option value="loyaux">Clients Fidèles &amp; Réguliers</option>
+        <option value="risque">Clients à Risque (Churn)</option>
+        <option value="hibernants">Clients Hibernants</option>
+        <option value="grossistes">Grossistes &amp; B2B</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Réseau -->
+    <div class="pro-filter-group" id="group-slicer-reseau">
+      <label class="pro-filter-label" for="slicer-reseau">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Profil Réseau
+      </label>
+      <select id="slicer-reseau" class="pro-filter-select">
+        <option value="all" selected>Réseau Global Consolidé</option>
+        <option value="particuliers">Consommateurs Détail (Cafétérias)</option>
+        <option value="grossistes">Grossistes &amp; B2B Suspects (Succursales)</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Rôle RLS -->
+    <div class="pro-filter-group" id="group-slicer-rls">
+      <label class="pro-filter-label" for="slicer-rls">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Rôle RLS
+      </label>
+      <select id="slicer-rls" class="pro-filter-select">
+        <option value="dir_gen" selected>Direction Générale (Global)</option>
+        <option value="mkt_b2c">Marketing B2C (Particuliers)</option>
+        <option value="grands_comptes">Grands Comptes (B2B)</option>
+        <option value="reg_tunis">Resp. Régional Grand Tunis</option>
+      </select>
+    </div>
+
+    <!-- Actions filtres -->
+    <div class="pro-filter-actions">
+      <button class="pro-filter-btn-reset" onclick="window.resetAllFilters()" title="Réinitialiser tous les filtres">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        Reset
+      </button>
+      <button class="pro-filter-btn-apply" onclick="window.applyFilters()" title="Appliquer les filtres sélectionnés">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Appliquer
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- BANNIÈRE INTERACTIVE DE FILTRAGE CROISÉ (STYLE POWER BI) -->
+  <!-- ======================================================== -->
+  <div id="cross-filter-banner" class="cross-filter-banner" style="display: none;">
+    <div class="cf-banner-content">
+      <div class="cf-banner-left">
+        <span class="cf-indicator-pulse"></span>
+        <span class="cf-badge-text">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          FILTRAGE CROISÉ POWER BI ACTIF
+        </span>
+        <span class="cf-label-text">Dimension : <strong id="cf-dim-name">Point de Vente</strong></span>
+        <span class="cf-active-pill" id="cf-active-pill">Succursale Gafsa</span>
+        <span class="cf-explainer">Tous les graphiques et KPIs sont synchronisés sur cette sélection. Re-cliquez sur le visuel pour désactiver.</span>
+      </div>
+      <button class="cf-reset-button" onclick="window.clearCrossFilter()" title="Désélectionner et réinitialiser la vue">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Désélectionner (Reset)
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 4. CONTENU PRINCIPAL PAR ONGLETS                         -->
+  <!-- ======================================================== -->
+  <main>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 1 : COCKPIT DIRECTION & CA (GRILLE 2x3 DU MOCKUP) -->
+    <!-- ======================================================== -->
+    <section id="tab-cockpit" class="dashboard-tab active">
+      <div class="print-page-header">
+        <span>SECTION 1 : COCKPIT DIRECTION GÉNÉRALE &amp; ANALYSE DU CHIFFRE D'AFFAIRES</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+      
+      <div class="visuals-grid-3x2">
+        
+        <!-- CARTE 1 (HAUT-GAUCHE) : DONUT CHART AVEC CALLOUT LABELS -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Chiffre d'Affaires par Type d'Établissement</div>
+            <span class="visual-info-icon" title="Répartition du CA scanné entre les Succursales de vente en gros et les Cafétérias au comptoir">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-dark"></span> Succursales (63.39%)</span>
+            <span><span class="legend-dot purple-light"></span> Cafétérias (36.61%)</span>
+          </div>
+          <div class="chart-container-mockup">
+            <canvas id="chart-etablissements-donut"></canvas>
+          </div>
+        </div>
+
+        <!-- CARTE 2 (HAUT-MILIEU) : BARRES HORIZONTALES EMPILÉES GAMMES -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">CA par Gamme de Café & Type d'Établissement</div>
+            <span class="visual-info-icon" title="Ventilation des ventes de café en Succursales vs Cafétérias selon la nomenclature officielle">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-light"></span> Succursales (Gros)</span>
+            <span><span class="legend-dot purple-dark"></span> Cafétérias (Détail)</span>
+          </div>
+          <div class="chart-container-mockup">
+            <canvas id="chart-gammes-stacked"></canvas>
+          </div>
+        </div>
+
+        <!-- CARTE 3 (HAUT-DROITE) : BARRES HORIZONTALES TOP MAGASINS -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Top 5 Établissements BONDIN par Chiffre d'Affaires</div>
+            <span class="visual-info-icon" title="Classement des 5 points de vente leaders du réseau BONDIN en volume de CA scanné">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-light"></span> Succursales</span>
+            <span><span class="legend-dot purple-dark"></span> Cafétérias</span>
+          </div>
+          <div class="chart-container-mockup">
+            <canvas id="chart-top-magasins-mockup"></canvas>
+          </div>
+        </div>
+
+        <!-- CARTE 4 (BAS-GAUCHE) : BARRES VERTICALES TIMELINE MENSUELLE -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Évolution Mensuelle du Chiffre d'Affaires & Panier Moyen</div>
+            <span class="visual-info-icon" title="Historique mensuel d'Avril à Octobre 2026 en temps réel Live DWH">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-light"></span> CA Mensuel (TND)</span>
+            <span><span class="legend-dot purple-dark"></span> Panier Moyen (AOV)</span>
+          </div>
+          <div class="chart-container-mockup">
+            <canvas id="chart-monthly-mockup"></canvas>
+          </div>
+        </div>
+
+        <!-- CARTE 5 (BAS-MILIEU) : BARRES VERTICALES SEGMENTS PARETO -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Chiffre d'Affaires par Segment Consommateur (Pareto)</div>
+            <span class="visual-info-icon" title="Loi de Pareto : les 161 Champions VIP génèrent 78.4% du CA total scanné">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-light"></span> CA Cumulé (TND)</span>
+            <span><span class="legend-dot purple-dark"></span> Clients</span>
+          </div>
+          <div class="chart-container-mockup">
+            <canvas id="chart-segments-mockup"></canvas>
+          </div>
+        </div>
+
+        <!-- CARTE 6 (BAS-DROITE) : CARTE INTERACTIVE LEAFLET AVEC BULLES VIOLETTES -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Cartographie par Région & Magasins (Tunisie)</div>
+            <span class="visual-info-icon" title="Trafic scanné et volume de ventes par gouvernorat">?</span>
+          </div>
+          <div id="map-tunisie-container"></div>
+        </div>
+
+      </div>
+
+      <!-- Module IA CDC : Arbre de Décomposition IA -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Arbre de Décomposition Stratégique du CA Client</div>
+          <span class="visual-info-icon" title="Exploration guidée IA : Décomposition du CA Global -> Segments -> Gammes -> Magasins">?</span>
+        </div>
+        <div id="decomp-tree-container" style="overflow-x: auto; padding: 6px 0;">
+          <!-- Injecté par app.js -->
+        </div>
+      </div>
+
+          <!-- MODULE WHAT-IF SIMULATOR DAX (EXIGENCE EXPLICITE CAHIER DES CHARGES PAGE 3) -->
+      <div class="visual-card whatif-container" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Simulateur Dynamique What-If : Sensibilité du Barème de Points &amp; Impact Dette (Mesures DAX)
+          </div>
+          <span class="tag-badge info">DAX Param_Taux_Points (0.5x &rarr; 3.0x)</span>
+        </div>
+
+        <div class="whatif-body">
+          <div class="whatif-controls-col">
+            <div class="whatif-slider-header">
+              <label for="whatif-slider">Multiplicateur de Barème : <strong id="whatif-multiplier-val">1.0x</strong></label>
+              <span id="whatif-status-badge" class="tag-badge gold">Barème Standard DWH</span>
+            </div>
+            <input type="range" id="whatif-slider" min="0.5" max="3.0" step="0.1" value="1.0" class="whatif-range-input" oninput="window.updateWhatIfSimulation(this.value)">
+            <div class="whatif-scale-labels">
+              <span>0.5x (Frein Dette)</span>
+              <span>1.0x (Normal)</span>
+              <span>1.5x (Boost)</span>
+              <span>2.0x (Double Points)</span>
+              <span>3.0x (Max)</span>
+            </div>
+            
+            <div class="whatif-presets">
+              <button class="whatif-preset-btn active" onclick="window.setWhatIfPreset(1.0, this)">Standard (1.0x)</button>
+              <button class="whatif-preset-btn" onclick="window.setWhatIfPreset(1.5, this)">Campagne Boost (1.5x)</button>
+              <button class="whatif-preset-btn" onclick="window.setWhatIfPreset(2.0, this)">Offre Double Points (2.0x)</button>
+              <button class="whatif-preset-btn" onclick="window.setWhatIfPreset(0.7, this)">Optimisation Marge (0.7x)</button>
+            </div>
+          </div>
+
+          <div class="whatif-metrics-grid">
+            <div class="whatif-metric-card">
+              <span class="whatif-metric-label">Points Émis Simulés [Points_Earn_Simules]</span>
+              <span class="whatif-metric-num" id="whatif-points-sim">188 294 pts</span>
+              <span class="whatif-metric-sub" id="whatif-points-delta">Référence standard</span>
+            </div>
+            <div class="whatif-metric-card">
+              <span class="whatif-metric-label">Dette Estimée [Dette_Simulee_TND]</span>
+              <span class="whatif-metric-num" id="whatif-dette-sim">877,940 TND</span>
+              <span class="whatif-metric-sub" id="whatif-dette-delta">Variation : +0,000 TND</span>
+            </div>
+            <div class="whatif-metric-card">
+              <span class="whatif-metric-label">Impact Trésorerie &amp; Marge</span>
+              <span class="whatif-metric-num" id="whatif-impact-pct">+0,0%</span>
+              <span class="whatif-metric-sub" id="whatif-impact-comment">100% Couverture Réserve</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 2 : SEGMENTATION, GROSSISTES B2B & PARRAINAGE     -->
+    <!-- ======================================================== -->
+    <section id="tab-segmentation" class="dashboard-tab">
+      <div class="print-page-header">
+        <span>SECTION 2 : SEGMENTATION CLIENTS RFM &amp; DÉTECTION DES GROSSISTES B2B</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+      
+      <!-- Alerte Retours Clients Grossistes -->
+      <div class="alert-banner">
+        <div class="alert-banner-content">
+          <span style="font-size: 1.4rem;">⚡</span>
+          <div>
+            <strong>Alerte Spéciale Retours Clients :</strong> <strong>226 profils Grossistes & B2B</strong> identifiés générant <strong>77,3 % du CA global (45 985 TND)</strong> dont 144 clients mixtes achetant en gros en Succursale (panier moyen 39,64 TND) tout en consommant au comptoir !
+          </div>
+        </div>
+        <span class="tag-badge alert">Surveillance Active</span>
+      </div>
+
+      <!-- MINI STRIP KPI SEGMENTATION & RYTHME D'ACHAT (EXIGENCES CDC PAGE 2) -->
+      <div class="visuals-grid-4col" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px;">
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Fréquence d'Achat Moyenne</span>
+            <span class="exec-kpi-tag success">Cible Atteinte</span>
+          </div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">3,8 visites / mois</div>
+          <div class="exec-kpi-footer">
+            <span>Cible CDC : 3 à 4 visites</span>
+            <strong>Actifs : 580 clients</strong>
+          </div>
+        </div>
+
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Intervalle Moyen de Réachat</span>
+            <span class="exec-kpi-tag info">Rythme Client</span>
+          </div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">7,8 jours</div>
+          <div class="exec-kpi-footer">
+            <span>Champions : 3,2 j</span>
+            <strong>Occasionnels : 24,5 j</strong>
+          </div>
+        </div>
+
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Clients Ultra-Fréquents</span>
+            <span class="exec-kpi-tag purple">&ge; 3 scans / sem.</span>
+          </div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">147 clients</div>
+          <div class="exec-kpi-footer">
+            <span>Part de la base active</span>
+            <strong>25,3 % des scans</strong>
+          </div>
+        </div>
+
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Taux de Rédemption Cagnotte</span>
+            <span class="exec-kpi-tag gold">Burn Actif</span>
+          </div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">6,03 %</div>
+          <div class="exec-kpi-footer">
+            <span>35 clients convertis</span>
+            <strong>16 746 pts brûlés</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="6" x2="16" y2="10"/><line x1="16" y1="6" x2="12" y2="10"/></svg>
+            Diagramme Dynamique de Flux Relationnel (Sankey : Cycle de Vie &amp; Conversion des Membres)
+          </div>
+          <span class="tag-badge info">Cycle de Vie &amp; Attrition Base (2 715 Membres)</span>
+        </div>
+
+        <div class="sankey-flow-wrapper" id="sankey-flow-container">
+          <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+      </div>
+
+      <!-- Table des Grossistes sous surveillance -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Détection des Profils Grossistes &amp; Volumes B2B Suspects</div>
+          <span class="visual-info-icon" title="Détection automatique des comptes professionnels selon le ticket en succursale">?</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-grossistes">
+            <thead>
+              <tr>
+                <th>ID Client (Anonymisé)</th>
+                <th>Achats Succursale</th>
+                <th>Achats Cafétéria</th>
+                <th>Total CA Dépensé</th>
+                <th>Max Ticket Succursale</th>
+                <th>Fréquence Hebdo</th>
+                <th>Statut d'Alerte</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté par app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module Parrainage & Viralité -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Pilotage du Programme Parrainage &amp; Réseau Viral</div>
+          <span class="visual-info-icon" title="206 parrainages enregistrés avec suivi des filleuls et primes attribuées">?</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-parrainages">
+            <thead>
+              <tr>
+                <th>ID Parrain</th>
+                <th>Rang & Distinction</th>
+                <th>Filleuls Recrutés</th>
+                <th>Filleuls Convertis</th>
+                <th>CA Incrémental Généré</th>
+                <th>Points Primes Gagnés</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté par app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 3 : CAGNOTTE, LTV & IA CLIENT                    -->
+    <!-- ======================================================== -->
+    <section id="tab-cagnotte" class="dashboard-tab">
+      <div class="print-page-header">
+        <span>SECTION 3 : CAGNOTTE EARN &amp; BURN, LTV &amp; MOTEUR PRÉDICTIF CHURN</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+      
+      <!-- Grille LTV & Cascade -->
+      <div class="visuals-grid-3x2" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+        
+        <!-- Cascade Financière Waterfall -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Cascade Financière : Flux Earn &amp; Burn des Points de Fidélité</div>
+            <span class="visual-info-icon" title="Passif des points : Émis -> Consommés -> Solde actif">?</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-waterfall-mockup"></canvas>
+          </div>
+        </div>
+
+        <!-- LTV Stratifiée -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/></svg>Customer Lifetime Value (LTV Stratifiée par Segment)</div>
+            <span class="visual-info-icon" title="Valeur moyenne générée par profil : Champions (289,83 TND), Grossistes (238,96 TND)">?</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-ltv-mockup"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tables Churn & Market Basket -->
+      <div class="visuals-grid-3x2" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+        
+        <!-- Table Churn ML -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Moteur Prédictif : Risque de Churn &amp; Rétention Client (30 jours)</div>
+            <span class="visual-info-icon" title="Score Machine Learning identifiant les clients à réactiver d'urgence par push promo">?</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-churn">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Inactivité</th>
+                  <th>CA Cumulé</th>
+                  <th>Points</th>
+                  <th>Score Churn</th>
+                  <th>Action Push</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Injecté par app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Market Basket Analysis -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Analyse des Associations de Produits (Market Basket &amp; Cross-Selling)</div>
+            <span class="visual-info-icon" title="Panier de la ménagère : Articles fréquemment achetés ensemble et actions de cross-selling">?</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-market-basket">
+              <thead>
+                <tr>
+                  <th>Produit A</th>
+                  <th>Produit B</th>
+                  <th>Confiance</th>
+                  <th>Lift</th>
+                  <th>Action Caisse</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Injecté par app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Distribution Cadeaux par Magasin -->
+      <div class="visual-card">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Distribution des Cadeaux &amp; Taux de Conversion par Point de Vente</div>
+          <span class="visual-info-icon" title="Alerte logistique : 6 magasins concentrent 100% des cadeaux réclamés (Tunis Liberté 35)">?</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-magasins-cadeaux">
+            <thead>
+              <tr>
+                <th>Point de Vente</th>
+                <th>Type</th>
+                <th>Cadeaux Délivrés</th>
+                <th>Points Brûlés</th>
+                <th>Taux de Conv.</th>
+                <th>Statut Approvisionnement</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté par app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+          <!-- MOTEUR IA RÉCOMPENSES SUR-MESURE & PALMARÈS DU CATALOGUE (EXIGENCE CDC PAGE 2 & 3) -->
+      <div class="visual-card" style="margin-top: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+            Moteur IA de Récompenses Sur-Mesure &amp; Palmarès du Catalogue (Dim_Recompense)
+          </div>
+          <div class="reward-filter-pills">
+            <button class="reward-pill active" onclick="window.filterRewardsTier('all', this)">Tous (14)</button>
+            <button class="reward-pill" onclick="window.filterRewardsTier('Exclusif', this)">Exclusif VIP (Champions)</button>
+            <button class="reward-pill" onclick="window.filterRewardsTier('Privilège', this)">Privilège (Réguliers)</button>
+            <button class="reward-pill" onclick="window.filterRewardsTier('Access', this)">Access (Tout Public)</button>
+          </div>
+        </div>
+
+        <div class="rewards-catalog-grid" id="rewards-catalog-container">
+          <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+      </div>
+
+    </section>
+
+      <!-- ======================================================== -->
+    <!-- ONGLET 4 : ANALYSES AVANCÉES, HEATMAP & COHORTES         -->
+    <!-- ======================================================== -->
+    <section id="tab-avancees" class="dashboard-tab">
+      <div class="print-page-header">
+        <span>SECTION 4 : ANALYSES COMPORTEMENTALES AVANCÉES, HEATMAP &amp; COHORTES</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+
+      <!-- VISUEL 1 : HEATMAP TEMPORELLE D'AFFLUENCE -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Heatmap Temporelle : Affluence des Scans QR par Jour de Semaine &amp; Créneau Horaire (6 360 Transactions)
+          </div>
+          <span class="tag-badge info">Comportement &amp; Heures de Pointe</span>
+        </div>
+        <div class="heatmap-container" id="heatmap-time-container">
+          <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+      </div>
+
+      <!-- GRILLE 2 COLONNES : COHORTES & RADAR -->
+      <div class="visuals-grid-2col" style="margin-bottom: 20px;">
+        
+        <!-- VISUEL 2 : MATRICE DE RÉTENTION PAR COHORTE -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center" style="text-align: left;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Matrice de Rétention par Cohorte Mensuelle (Stickiness Client)
+            </div>
+            <span class="visual-info-icon" title="Pourcentage d'utilisateurs actifs scannant leur QR code au fil des mois après leur inscription initiale">?</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table cohort-table" id="table-cohort-retention">
+              <thead>
+                <tr>
+                  <th>Cohorte</th>
+                  <th>Inscrits</th>
+                  <th>Mois 0</th>
+                  <th>Mois +1</th>
+                  <th>Mois +2</th>
+                  <th>Mois +3</th>
+                  <th>Mois +4</th>
+                  <th>Mois +5</th>
+                  <th>Mois +6</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Injecté dynamiquement -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VISUEL 3 : RADAR BENCHMARK SUCCURSALES VS CAFÉTÉRIAS -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center" style="text-align: left;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Benchmark Multidimensionnel : Succursales (Gros) vs Cafétérias (Détail)
+            </div>
+            <span class="visual-info-icon" title="Comparaison normalisée à 6 dimensions de la performance commerciale et fidélité">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-dark"></span> Succursales B2B (Gros)</span>
+            <span><span class="legend-dot purple-light"></span> Cafétérias B2C (Détail)</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-radar-benchmark"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- GRILLE 2 COLONNES : MATRICE BCG & PYRAMIDE DES ÂGES -->
+      <div class="visuals-grid-2col">
+        
+        <!-- VISUEL 4 : MATRICE BCG / QUADRANT RENTABILITÉ PRODUITS -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center" style="text-align: left;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+              Matrice BCG &amp; Quadrant Rentabilité des Produits (Volume vs CA vs Panier)
+            </div>
+            <span class="visual-info-icon" title="Classification stratégique : Étoiles, Vaches à Lait, Dilemmes et Poids Morts">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot gold"></span> Stars (Moulu &amp; Grains)</span>
+            <span><span class="legend-dot green"></span> Vaches à Lait (Comptoir)</span>
+            <span><span class="legend-dot purple-light"></span> Dilemmes (Capsules)</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-bcg-products"></canvas>
+          </div>
+        </div>
+
+        <!-- VISUEL 5 : PYRAMIDE DES ÂGES & DÉMOGRAPHIE -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center" style="text-align: left;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              Pyramide des Âges &amp; Préférences de Consommation par Génération
+            </div>
+            <span class="visual-info-icon" title="Profil démographique des acheteurs croisé avec leur canal d'achat dominant">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-dark"></span> Succursales (Traditionnel Grains/Moulu)</span>
+            <span><span class="legend-dot purple-light"></span> Cafétérias (Boissons &amp; Capsules)</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-age-demographics"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- 5. FOOTER & NOTIFICATIONS TOAST                          -->
+  <!-- ======================================================== -->
+  <footer>
+    <div>
+      <strong>ENA W BONDIN &times; FIDNESS</strong> &bull; Plateforme Décisionnelle BI & IA Client &bull; Conforme Cahier des Charges 2026
+    </div>
+    <div>
+      Dernière synchronisation DWH : <strong id="footer-sync-time">20/10/2026 à 15:30</strong> &bull; Source : <code>data_dwh/</code> (9 tables consolidées &bull; PostgreSQL Live)
+    </div>
+  </footer>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="data.js?v=20261020_live_v4"></script>
+  <script src="app.js?v=20261020_live_v4"></script>
+  <!-- ======================================================== -->
+  <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
+  <!-- ======================================================== -->
+  <div id="modal-export-pdf" class="modal-overlay" style="display: none;" onclick="if(event.target === this) window.closeExportModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportation du Rapport Décisionnel PDF
+        </div>
+        <button class="modal-close-btn" onclick="window.closeExportModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-description">
+          Configurez votre document pour une présentation de Direction Générale, un audit ou un archivage officiel.
+        </p>
+
+        <div class="export-options-grid">
+          <div class="export-option-card active" id="opt-all-tabs" onclick="window.selectExportScope('all')">
+            <div class="export-opt-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="export-opt-text">
+              <strong>Dossier Exécutif Complet (Multipages A4 Paysage)</strong>
+              <span>Toutes les sections (Cockpit CA, Segments RFM, Cagnotte &amp; IA Client) avec mise en page optimisée et sauts de page automatiques.</span>
+            </div>
+          </div>
+
+          <div class="export-option-card" id="opt-current-tab" onclick="window.selectExportScope('current')">
+            <div class="export-opt-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            <div class="export-opt-text">
+              <strong>Synthèse de la Vue Active Uniquement (1 Page)</strong>
+              <span>Génère un document synthétique centré exclusivement sur la section actuellement sélectionnée à l'écran.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Traçabilité des filtres dans le document -->
+        <div class="export-meta-preview">
+          <div class="meta-preview-title">Traçabilité &amp; Filtres appliqués au document :</div>
+          <div class="meta-preview-tags" id="export-active-filters-tags">
+            <!-- Injecté dynamiquement par JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-btn-cancel" onclick="window.closeExportModal()">Annuler</button>
+        <button class="modal-btn-confirm" onclick="window.triggerExecutivePrint()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Générer / Imprimer le PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- BOUTON FLOTTANT COPILOT IA RAG DÉCISIONNEL               -->
+  <!-- ======================================================== -->
+  <button id="btn-open-rag-chat" class="rag-floating-trigger" onclick="window.toggleRagChat()" title="Ouvrir le Copilot Décisionnel RAG (IA)">
+    <div class="rag-trigger-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10a9.96 9.96 0 0 1-4.587-1.11L3 22l1.11-4.413A9.96 9.96 0 0 1 2 12 10 10 0 0 1 12 2z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
+    </div>
+    <span class="rag-trigger-label">Copilot IA RAG</span>
+    <span class="rag-trigger-dot"></span>
+  </button>
+
+  <!-- ======================================================== -->
+  <!-- MODAL / DRAWER CHATBOX RAG DÉCISIONNEL                  -->
+  <!-- ======================================================== -->
+  <div id="rag-chatbox-panel" class="rag-chatbox-container" style="display: none;">
+    <div class="rag-chatbox-card">
+      
+      <!-- HEADER CHATBOX -->
+      <div class="rag-chat-header">
+        <div class="rag-header-left">
+          <div class="rag-avatar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10a9.96 9.96 0 0 1-4.587-1.11L3 22l1.11-4.413A9.96 9.96 0 0 1 2 12 10 10 0 0 1 12 2z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
+            <div class="rag-avatar-glow"></div>
+          </div>
+          <div>
+            <div class="rag-header-title">
+              Copilot Décisionnel RAG
+              <span class="rag-badge-certified"><span class="rag-pulse-dot"></span> IA Certifiée</span>
+            </div>
+            <div class="rag-header-sub">BONDIN &times; FIDNESS &bull; Ancrage DWH Temps Réel</div>
+          </div>
+        </div>
+        <div class="rag-header-actions">
+          <button class="rag-header-icon-btn" onclick="window.clearRagMessages()" title="Nouvelle discussion (Effacer l'historique)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+          <div class="rag-status-pill">
+            <span class="rag-pulse-green"></span> Connecté Live
+          </div>
+          <button class="rag-close-btn" onclick="window.toggleRagChat()" title="Fermer le chat">&times;</button>
+        </div>
+      </div>
+
+      <!-- SUGGESTIONS DE QUESTIONS STRATÉGIQUES -->
+      <div class="rag-chips-bar">
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quel est le chiffre d affaires total et le panier moyen ?')">💰 Chiffre d'Affaires</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la difference entre les succursales et les cafeterias ?')">🏬 Succursales vs Cafétérias</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la dette des points et le ratio Earn & Burn ?')">📊 Dette &amp; Points</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les magasins les plus rentables ?')">🏆 Top Magasins</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Combien de profils grossistes B2B ont ete detectes ?')">⚡ Grossistes B2B</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les clients en risque d attrition churn ?')">🚨 Alerte Churn</button>
+      </div>
+
+      <!-- ZONE DES MESSAGES -->
+      <div class="rag-chat-messages" id="rag-messages-area">
+        <div class="rag-msg-row assistant">
+          <div class="rag-msg-avatar">✨</div>
+          <div class="rag-msg-bubble">
+            <div class="rag-msg-author">Copilot Décisionnel BONDIN &bull; Analyse Certifiée</div>
+            <p>Bonjour ! Je suis votre Copilot Décisionnel connecté en temps réel aux <strong>9 tables du Data Warehouse</strong>. Posez-moi vos questions stratégiques ou cliquez sur les suggestions ci-dessus.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE DE SAISIE -->
+      <div class="rag-chat-input-bar">
+        <input type="text" id="rag-user-input" class="rag-input-field" placeholder="Posez une question sur le CA, les points, les magasins..." onkeydown="if(event.key==='Enter') window.sendRagMessage()">
+        <button id="rag-send-btn" class="rag-send-button" onclick="window.sendRagMessage()" title="Envoyer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

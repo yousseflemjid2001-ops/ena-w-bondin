@@ -1,0 +1,223 @@
+{
+  "kpis": {
+    "ca_total": 59480.655,
+    "nb_scans": 6360,
+    "panier_moyen": 9.352,
+    "clients_inscrits": 2161,
+    "clients_actifs": 580,
+    "points_earn": 188294,
+    "points_burn": 100500,
+    "points_solde": 87794,
+    "dette_tnd": 877.94,
+    "ratio_earn_burn": 53.4,
+    "nb_grossistes": 226,
+    "ca_grossistes": 45985.677,
+    "nb_ultra_frequents": 147,
+    "ca_avant_cadeau": 60.63
+  },
+  "monthly": [
+    {
+      "Mois": 4,
+      "Nom_Mois": "April",
+      "sum": 3.8,
+      "count": 2,
+      "AOV": 1.9
+    },
+    {
+      "Mois": 5,
+      "Nom_Mois": "May",
+      "sum": 79.497,
+      "count": 11,
+      "AOV": 7.227
+    },
+    {
+      "Mois": 6,
+      "Nom_Mois": "June",
+      "sum": 15115.811,
+      "count": 1937,
+      "AOV": 7.804
+    },
+    {
+      "Mois": 7,
+      "Nom_Mois": "July",
+      "sum": 30544.845,
+      "count": 3209,
+      "AOV": 9.518
+    },
+    {
+      "Mois": 8,
+      "Nom_Mois": "August",
+      "sum": 13736.702,
+      "count": 1201,
+      "AOV": 11.438
+    }
+  ],
+  "top_magasins": [
+    {
+      "nom": "Succursale Gafsa",
+      "type": "Succursale",
+      "region": "Gafsa",
+      "ca": 6320.1,
+      "scans": 65
+    },
+    {
+      "nom": "Cafétéria Gafsa Ville",
+      "type": "Cafétéria",
+      "region": "Gafsa",
+      "ca": 5885.6,
+      "scans": 1635
+    },
+    {
+      "nom": "Succursale Gabès Jara",
+      "type": "Succursale",
+      "region": "Gabès",
+      "ca": 5636.014,
+      "scans": 111
+    },
+    {
+      "nom": "Succursale Tunis Menzah VI",
+      "type": "Succursale",
+      "region": "Grand Tunis",
+      "ca": 5156.385,
+      "scans": 189
+    },
+    {
+      "nom": "Succursale Tunis Liberté",
+      "type": "Succursale",
+      "region": "Grand Tunis",
+      "ca": 4519.646,
+      "scans": 189
+    },
+    {
+      "nom": "Cafétéria Le Kef",
+      "type": "Cafétéria",
+      "region": "Le Kef",
+      "ca": 3841.5,
+      "scans": 860
+    },
+    {
+      "nom": "Succursale Tunis La Marsa",
+      "type": "Succursale",
+      "region": "Grand Tunis",
+      "ca": 3599.157,
+      "scans": 85
+    },
+    {
+      "nom": "Succursale Tunis Espagne",
+      "type": "Succursale",
+      "region": "Grand Tunis",
+      "ca": 3516.328,
+      "scans": 103
+    },
+    {
+      "nom": "Cafétéria Tunis La Marsa",
+      "type": "Cafétéria",
+      "region": "Grand Tunis",
+      "ca": 3294.1,
+      "scans": 763
+    },
+    {
+      "nom": "Cafétéria Tunis Liberté",
+      "type": "Cafétéria",
+      "region": "Grand Tunis",
+      "ca": 2952.1,
+      "scans": 650
+    }
+  ],
+  "regions": [
+    {
+      "region": "Grand Tunis",
+      "ca": 31174.779,
+      "scans": 3143
+    },
+    {
+      "region": "Gafsa",
+      "ca": 14789.918,
+      "scans": 1831
+    },
+    {
+      "region": "Le Kef",
+      "ca": 6373.648,
+      "scans": 995
+    },
+    {
+      "region": "Gabès",
+      "ca": 6437.314,
+      "scans": 285
+    },
+    {
+      "region": "Sfax",
+      "ca": 637.006,
+      "scans": 105
+    },
+    {
+      "region": "Nabeul",
+      "ca": 67.99,
+      "scans": 1
+    }
+  ],
+  "segments": [
+    {
+      "segment": "Consommateur Occasionnel",
+      "clients": 221,
+      "ca_total": 3123.909,
+      "ltv_moyenne": 14.13533484162896
+    },
+    {
+      "segment": "Consommateur Régulier",
+      "clients": 183,
+      "ca_total": 9460.226,
+      "ltv_moyenne": 51.69522404371585
+    },
+    {
+      "segment": "En Risque d'Attrition (Churn)",
+      "clients": 13,
+      "ca_total": 234.381,
+      "ltv_moyenne": 18.029307692307693
+    },
+    {
+      "segment": "Gros Consommateur (Champion)",
+      "clients": 161,
+      "ca_total": 46662.138999999996,
+      "ltv_moyenne": 289.82695031055897
+    },
+    {
+      "segment": "Inactif / Jamais scanné",
+      "clients": 1583,
+      "ca_total": 0.0,
+      "ltv_moyenne": 0.0
+    }
+  ],
+  "reseaux": [
+    {
+      "profil": "Client Mixte Particulier",
+      "clients": 83,
+      "ca_total": 5204.028,
+      "panier_moyen": 62.69913253012049
+    },
+    {
+      "profil": "Consommateur 100% Cafeteria",
+      "clients": 230,
+      "ca_total": 7700.6,
+      "panier_moyen": 33.48086956521739
+    },
+    {
+      "profil": "Grossiste / Mixte Suspect",
+      "clients": 144,
+      "ca_total": 34410.14,
+      "panier_moyen": 238.95930555555555
+    },
+    {
+      "profil": "Grossiste Pur (Succursale)",
+      "clients": 81,
+      "ca_total": 11575.537,
+      "panier_moyen": 142.90786419753087
+    },
+    {
+      "profil": "Particulier (Succursale)",
+      "clients": 40,
+      "ca_total": 590.35,
+      "panier_moyen": 14.758750000000001
+    }
+  ]
+}

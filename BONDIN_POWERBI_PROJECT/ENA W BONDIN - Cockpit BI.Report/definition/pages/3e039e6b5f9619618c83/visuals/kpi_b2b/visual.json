@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "kpi_b2b",
+  "position": {
+    "x": 655.0,
+    "y": 135.0,
+    "z": 3,
+    "height": 90.0,
+    "width": 590.0,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Client"
+                    }
+                  },
+                  "Property": "Nb_Grossistes_B2B"
+                }
+              },
+              "queryRef": "Dim_Client.Nb_Grossistes_B2B",
+              "nativeQueryRef": "Nb_Grossistes_B2B"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Grossistes & Profils B2B Détectés'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

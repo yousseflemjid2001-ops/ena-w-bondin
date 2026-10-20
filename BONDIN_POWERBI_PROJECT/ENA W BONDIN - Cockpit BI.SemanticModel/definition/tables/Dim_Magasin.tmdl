@@ -1,0 +1,75 @@
+table Dim_Magasin
+	lineageTag: 9ccc2e03-f48b-4e5d-8b68-84e6edbaaf8d
+
+	column ID_Magasin
+		dataType: int64
+		formatString: 0
+		lineageTag: 4c66b436-4c18-4636-8c74-05be746d3d8c
+		summarizeBy: sum
+		sourceColumn: ID_Magasin
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nom_Magasin
+		dataType: string
+		lineageTag: 69f440fc-b15c-43b9-beea-0aab303d8a07
+		summarizeBy: none
+		sourceColumn: Nom_Magasin
+
+		annotation SummarizationSetBy = Automatic
+
+	column Code_Magasin
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c05ae0f-3851-49e9-b615-15c68171ccd5
+		summarizeBy: sum
+		sourceColumn: Code_Magasin
+
+		annotation SummarizationSetBy = Automatic
+
+	column Adresse
+		dataType: string
+		lineageTag: b39dbf01-e66a-4c47-8b8f-e05b125dd291
+		summarizeBy: none
+		sourceColumn: Adresse
+
+		annotation SummarizationSetBy = Automatic
+
+	column Localisation
+		dataType: int64
+		formatString: 0
+		lineageTag: 6ed41364-b48f-47ad-b70c-f030af756388
+		summarizeBy: sum
+		sourceColumn: Localisation
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type_Etablissement
+		dataType: string
+		lineageTag: d581d74e-dda0-40e6-9e8f-e4c9814bb94e
+		summarizeBy: none
+		sourceColumn: Type_Etablissement
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region_Gouvernorat
+		dataType: string
+		lineageTag: 4c1be0ea-3c5a-47d6-9e1a-e25bdc9817ab
+		summarizeBy: none
+		sourceColumn: Region_Gouvernorat
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Magasin = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\ena w bonda\BONDIN_DATA_WAREHOUSE.xlsx"), null, true),
+				    Dim_Magasin_Sheet = Source{[Item="Dim_Magasin",Kind="Sheet"]}[Data],
+				    #"En-têtes promus" = Table.PromoteHeaders(Dim_Magasin_Sheet, [PromoteAllScalars=true]),
+				    #"Type modifié" = Table.TransformColumnTypes(#"En-têtes promus",{{"ID_Magasin", Int64.Type}, {"Nom_Magasin", type text}, {"Code_Magasin", Int64.Type}, {"Adresse", type any}, {"Localisation", Int64.Type}, {"Type_Etablissement", type text}, {"Region_Gouvernorat", type text}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+

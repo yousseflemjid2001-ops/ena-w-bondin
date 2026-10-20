@@ -1,0 +1,9 @@
+relationship Relationship
+	crossFilteringBehavior: bothDirections
+	fromColumn: Fait_Ventes.Column3
+	toColumn: Dim_Magasin.ID_Magasin
+
+relationship 'Relationship 1'
+	crossFilteringBehavior: bothDirections
+	fromColumn: Fait_Ventes.Column2
+	toColumn: Dim_Client.Column1

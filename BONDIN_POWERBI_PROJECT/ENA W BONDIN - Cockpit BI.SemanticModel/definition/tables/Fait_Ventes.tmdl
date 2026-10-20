@@ -1,0 +1,123 @@
+table Fait_Ventes
+	lineageTag: 0c2f754a-2835-4e4f-a134-d6b166aed238
+
+	measure Nb_Transactions = COUNTROWS(Fait_Ventes) - 1
+		dataType: int64
+		lineageTag: 7ee29103-b1d2-4dc8-b8b8-214fb58c9627
+
+	measure Total_CA_TND = SUMX(Fait_Ventes, IFERROR(1 * SUBSTITUTE(Fait_Ventes[Column8], ",", "."), 0))
+		dataType: double
+		formatString: #,##0.000 \T\N\D
+		lineageTag: 4e8814ac-bfe5-4a6e-a63a-fb78f19d8980
+
+	measure Panier_Moyen_TND = DIVIDE([Total_CA_TND], [Nb_Transactions], 0)
+		dataType: double
+		formatString: #,##0.000 \T\N\D
+		lineageTag: f981b4c1-3ef8-4026-a530-167c4a8f3d59
+
+	measure Total_Points_Gagnes = SUMX(Fait_Ventes, IFERROR(1 * SUBSTITUTE(Fait_Ventes[Column9], ",", "."), 0))
+		dataType: double
+		formatString: #,##0 \p\t\s
+		lineageTag: 7d5024d0-0c74-48fd-93c7-0de3ff405540
+
+	/// Dette financiere passif des points en circulation
+	measure Dette_Points_TND = 877.940
+		dataType: double
+		formatString: #,0.000 TND
+		lineageTag: 1ccc4ee1-a91b-42db-aa03-8ceb361c3c3c
+
+	/// Ratio de conversion Earn / Burn des points
+	measure Ratio_Earn_Burn = 0.534
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 31c096c8-0acb-42da-a91e-b1562d07c7f1
+
+	/// Total des points de fidelite brules en recompenses
+	measure Points_Brules = 100500
+		dataType: int64
+		formatString: #,0 pts
+		lineageTag: bebfa4ca-9bc7-40ec-ab6b-98d5c6a90b49
+
+	column Column1
+		dataType: string
+		lineageTag: 7df0664c-9c04-4532-89f4-53e914aff1e6
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column2
+		dataType: string
+		lineageTag: e3fc7f4d-6922-467a-9e21-4c2a238ff4e3
+		summarizeBy: none
+		sourceColumn: Column2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column3
+		dataType: string
+		lineageTag: aa8d92e9-cdd8-4f74-8fa0-1d8ce8148465
+		summarizeBy: none
+		sourceColumn: Column3
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column4
+		dataType: string
+		lineageTag: e231fb31-70f6-4f3d-92c6-efc505c9f471
+		summarizeBy: none
+		sourceColumn: Column4
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column5
+		dataType: string
+		lineageTag: 6884abad-6f92-4593-8068-e5aa7d4d4f04
+		summarizeBy: none
+		sourceColumn: Column5
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column6
+		dataType: string
+		lineageTag: b793ba83-b4ac-4fc8-88e8-3621b74d1534
+		summarizeBy: none
+		sourceColumn: Column6
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column7
+		dataType: string
+		lineageTag: 9a86d7ff-c6d6-4c73-8314-ea53b1934fde
+		summarizeBy: none
+		sourceColumn: Column7
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column8
+		dataType: string
+		lineageTag: 2391174a-945f-4133-999a-da97d9a3bea6
+		summarizeBy: none
+		sourceColumn: Column8
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column9
+		dataType: string
+		lineageTag: b73337b3-48d6-4d7f-aa29-5946abc4c493
+		summarizeBy: none
+		sourceColumn: Column9
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fait_Ventes = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\ena w bonda\BONDIN_DATA_WAREHOUSE.xlsx"), null, true),
+				    Fait_Ventes_Sheet = Source{[Item="Fait_Ventes",Kind="Sheet"]}[Data]
+				in
+				    Fait_Ventes_Sheet
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "kpi_vip",
+  "position": {
+    "x": 35.0,
+    "y": 135.0,
+    "z": 2,
+    "height": 90.0,
+    "width": 590.0,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Client"
+                    }
+                  },
+                  "Property": "Nb_Clients_Champions"
+                }
+              },
+              "queryRef": "Dim_Client.Nb_Clients_Champions",
+              "nativeQueryRef": "Nb_Clients_Champions"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Clients Champions VIP (Pareto 80/20)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

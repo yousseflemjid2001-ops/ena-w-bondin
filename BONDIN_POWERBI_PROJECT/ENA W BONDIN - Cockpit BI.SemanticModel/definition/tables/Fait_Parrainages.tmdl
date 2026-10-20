@@ -1,0 +1,54 @@
+table Fait_Parrainages
+	lineageTag: 412d1cf1-3a70-4be2-91ce-a0c9b4f77e62
+
+	column Column1
+		dataType: string
+		lineageTag: 7d91e680-8d6b-416b-acb1-3828faeec636
+		summarizeBy: none
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column2
+		dataType: string
+		lineageTag: 9ccf885b-9db1-401d-a8d5-aca299a3de66
+		summarizeBy: none
+		sourceColumn: Column2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column3
+		dataType: string
+		lineageTag: 4fb33f31-5e60-4b66-959a-6a97f9aed6f2
+		summarizeBy: none
+		sourceColumn: Column3
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column4
+		dataType: string
+		lineageTag: f5529a8e-67bd-4bf3-84d1-7499da6fb862
+		summarizeBy: none
+		sourceColumn: Column4
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column5
+		dataType: string
+		lineageTag: 61fdbab3-d596-4a96-afe6-ac236e1f474d
+		summarizeBy: none
+		sourceColumn: Column5
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fait_Parrainages = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\ena w bonda\BONDIN_DATA_WAREHOUSE.xlsx"), null, true),
+				    Fait_Parrainages_Sheet = Source{[Item="Fait_Parrainages",Kind="Sheet"]}[Data]
+				in
+				    Fait_Parrainages_Sheet
+
+	annotation PBI_ResultType = Table
+
