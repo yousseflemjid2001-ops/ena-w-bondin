@@ -2,24 +2,24 @@
 // Version Exhaustive Conforme au Cahier des Charges & Cadrage Métier 2026 (Live PostgreSQL)
 const DASHBOARD_DATA = {
   kpis: {
-    ca_total: 152720.666,
-    nb_scans: 13069,
-    panier_moyen: 11.686,
+    ca_total: 153316.55,
+    nb_scans: 13097,
+    panier_moyen: 11.706,
     panier_moyen_succursale: 37.588,
     panier_moyen_cafeteria: 4.191,
     clients_inscrits: 2715,
-    clients_actifs: 758,
-    taux_activation: 27.9, // 758 / 2715
+    clients_actifs: 759,
+    taux_activation: 27.96, // 759 / 2715
     frequence_mois: 3.65, // Cible CDC: 3 à 4 visites / mois
     intervalle_moyen_jours: 8.2,
     retention_30j: 64.2,
     retention_60j: 48.7,
     retention_90j: 37.1,
-    points_earn: 511728,
+    points_earn: 513924,
     points_burn: 226900,
-    points_solde: 284828,
-    dette_tnd: 2848.281,
-    ratio_earn_burn: 44.3,
+    points_solde: 287024,
+    dette_tnd: 2870.240,
+    ratio_earn_burn: 44.15,
     nb_grossistes: 375,
     ca_grossistes: 118053.12,
     part_ca_grossistes: 77.3,

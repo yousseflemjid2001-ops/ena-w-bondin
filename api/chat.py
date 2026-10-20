@@ -37,12 +37,12 @@ def normalize_rag_query(q):
     return " ".join(q.split())
 
 def build_grounding_context(live_info=None):
-    scans = live_info.get("total_scans", 13070) if live_info else 13070
-    ca = live_info.get("total_ca_tnd", 152722.57) if live_info else 152722.57
-    dernier_ticket = live_info.get("dernier_ticket", "bondin6132461") if live_info else "bondin6132461"
+    scans = live_info.get("total_scans", 13097) if live_info else 13097
+    ca = live_info.get("total_ca_tnd", 153316.55) if live_info else 153316.55
+    dernier_ticket = live_info.get("dernier_ticket", "bondin6135748") if live_info else "bondin6135748"
     dernier_magasin = live_info.get("dernier_magasin", "Cafétéria Tunis La Marsa") if live_info else "Cafétéria Tunis La Marsa"
-    dernier_scan = live_info.get("dernier_scan", "2026-10-20 15:38:35") if live_info else "2026-10-20 15:38:35"
-    aov = ca / scans if scans > 0 else 11.685
+    dernier_scan = live_info.get("dernier_scan", "2026-10-20 19:44:52") if live_info else "2026-10-20 19:44:52"
+    aov = ca / scans if scans > 0 else 11.706
 
     return f"""
 [DONNÉES OFFICIELLES DU TABLEAU DE BORD ENA W BONDIN × FIDNESS - POSTGRESQL LIVE]

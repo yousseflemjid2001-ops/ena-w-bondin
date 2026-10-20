@@ -15,17 +15,33 @@ import json
 from datetime import datetime
 import pg8000.native
 
+# Chargement automatique de .env
+_env_f = os.path.join(os.path.dirname(__file__), "..", ".env")
+if os.path.exists(_env_f):
+    try:
+        with open(_env_f, "r", encoding="utf-8") as _f:
+            for _l in _f:
+                _l = _l.strip()
+                if _l and not _l.startswith("#") and "=" in _l:
+                    _k, _v = _l.split("=", 1)
+                    os.environ[_k.strip()] = _v.strip().strip("'\"")
+    except Exception:
+        pass
+
 # Configuration Live Production
 DB_CONFIG = {
-    "host": "57.131.30.69",
-    "port": 5432,
-    "database": "fidness",
-    "user": "fidness",
-    "password": "6a7ce156b7bc9445",
+    "host": os.environ.get("DB_HOST", "57.131.30.69"),
+    "port": int(os.environ.get("DB_PORT", 5432)),
+    "database": os.environ.get("DB_NAME", "fidness"),
+    "user": os.environ.get("DB_USER", "fidness"),
+    "password": os.environ.get("DB_PASSWORD", "6a7ce156b7bc9445"),
     "timeout": 10
 }
 
-CACHE_FILE = os.path.join(os.path.dirname(__file__), "..", "live_sync_cache.json")
+CACHE_FILES = [
+    os.path.join(os.path.dirname(__file__), "..", "live_sync_cache.json"),
+    os.path.join(os.path.dirname(__file__), "..", "dashboard_bi", "live_sync_cache.json")
+]
 
 class LivePostgresSync:
     def __init__(self, company_id=2):
@@ -94,12 +110,13 @@ class LivePostgresSync:
                 "dernier_scan": str(s[5]),
             }
             
-            # Sauvegarde locale en cache pour résilience
-            try:
-                with open(CACHE_FILE, "w", encoding="utf-8") as f:
-                    json.dump(data, f, indent=2)
-            except Exception:
-                pass
+            # Sauvegarde locale en cache pour résilience (racine et dashboard_bi)
+            for _cf in CACHE_FILES:
+                try:
+                    with open(_cf, "w", encoding="utf-8") as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
+                except Exception:
+                    pass
                 
             return data
             

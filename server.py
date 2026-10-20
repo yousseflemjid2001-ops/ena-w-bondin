@@ -17,6 +17,19 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data_dwh")
 STATIC_DIR = os.path.join(BASE_DIR, "dashboard_bi")
 
+# Chargement automatique des variables d'environnement depuis .env
+_env_path = os.path.join(BASE_DIR, ".env")
+if os.path.exists(_env_path):
+    try:
+        with open(_env_path, "r", encoding="utf-8") as _ef:
+            for _line in _ef:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    os.environ[_k.strip()] = _v.strip().strip("'\"")
+    except Exception as _e:
+        print(f"[WARN] Erreur lecture .env: {_e}")
+
 app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="")
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app)
@@ -163,13 +176,13 @@ def api_live():
             "recent_scans": recent_list
         }
         
-        # Mise à jour du cache de secours local
-        cache_p = os.path.join(BASE_DIR, "live_sync_cache.json")
-        try:
-            with open(cache_p, "w", encoding="utf-8") as f:
-                json.dump(result, f, indent=2)
-        except Exception:
-            pass
+        # Mise à jour du cache de secours local (racine et dossier statique)
+        for _cp in [os.path.join(BASE_DIR, "live_sync_cache.json"), os.path.join(STATIC_DIR, "live_sync_cache.json")]:
+            try:
+                with open(_cp, "w", encoding="utf-8") as f:
+                    json.dump(result, f, indent=2, ensure_ascii=False)
+            except Exception:
+                pass
 
         return jsonify(result)
         
@@ -271,13 +284,15 @@ def api_cron_sync():
             },
             "recent_transactions": recent_list
         }
-        # Update cache
-        cache_p = os.path.join(BASE_DIR, "live_sync_cache.json")
-        try:
-            with open(cache_p, "w", encoding="utf-8") as f:
-                json.dump(res, f, indent=2)
-        except Exception:
-            pass
+        # Update cache (with top-level keys and nested metrics for compatibility)
+        for k, v in res["metrics"].items():
+            res[k] = v
+        for _cp in [os.path.join(BASE_DIR, "live_sync_cache.json"), os.path.join(STATIC_DIR, "live_sync_cache.json")]:
+            try:
+                with open(_cp, "w", encoding="utf-8") as f:
+                    json.dump(res, f, indent=2, ensure_ascii=False)
+            except Exception:
+                pass
         return jsonify(res)
     except Exception as e:
         return jsonify({"success": False, "error": str(e), "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")}), 500
@@ -509,7 +524,7 @@ def api_campaign_push():
     }
     store.logs_audit.append(log_entry)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] 📲 PUSH NOTIFICATION DÉLIVRÉE au client {client_id} avec offre '{promo_code}'")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] [PUSH] NOTIFICATION DELIVREE au client {client_id} avec offre '{promo_code}'")
 
     return jsonify({
         "success": True,
@@ -849,4 +864,4 @@ if __name__ == "__main__":
     print(f"[*] API Endpoints   : http://localhost:{port}/api/kpis")
     print(f"[*] Statut DWH      : http://localhost:{port}/api/status")
     print("=" * 65)
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port, debug=False, threaded=True)
