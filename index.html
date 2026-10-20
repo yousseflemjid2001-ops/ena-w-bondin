@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
-  <link rel="stylesheet" href="style.css?v=20261020_sleek_chat_v10">
+  <link rel="stylesheet" href="style.css?v=20261020_executive_login_v12">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -54,278 +54,274 @@
 </head>
 <body>
 
-  <!-- =========================================================================
-       0. PAGE DE LOGIN HAUTE SÉCURITÉ & ANIMATIONS PRESTIGE (BONDIN × FIDNESS)
+    <!-- =========================================================================
+       0. PAGE DE LOGIN HAUTE SÉCURITÉ PRESTIGE (BONDIN × FIDNESS)
        ========================================================================= -->
   <div id="login-screen" class="login-screen-overlay" role="dialog" aria-modal="true" aria-label="Authentification Plateforme Décisionnelle">
-    <!-- Toile de particules interactives (volutes d'arôme café et étincelles dorées) -->
-    <canvas id="login-particles-canvas" class="login-particles-canvas"></canvas>
+    <!-- Toile de particules interactives subtiles -->
+    <canvas id="login-particles-canvas" class="login-particles-canvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 1;"></canvas>
 
-    <!-- Orbes lumineux Aurora d'arrière-plan -->
-    <div class="login-aurora-orb login-orb-1" aria-hidden="true"></div>
-    <div class="login-aurora-orb login-orb-2" aria-hidden="true"></div>
-    <div class="login-aurora-orb login-orb-3" aria-hidden="true"></div>
+    <!-- Top HUD Bar -->
+    <div class="w-full flex items-center justify-between px-6 sm:px-10 py-5 relative z-20">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-bold shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Live DWH : <strong class="text-white font-extrabold">13 097 scans</strong></span>
+        </div>
+        <span class="text-purple-300/40 text-xs hidden sm:inline">•</span>
+        <div class="hidden sm:flex items-center gap-1.5 text-xs font-mono text-amber-300">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+          <span>Latence IA : <strong class="text-emerald-300 font-bold">14ms</strong></span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="hidden md:flex items-center gap-1.5 text-purple-200/80 text-xs font-medium">
+          <i data-lucide="shield" class="w-3.5 h-3.5 text-purple-400"></i>
+          <span>Protocole RLS Strict (Direction Consolidée)</span>
+        </div>
+        <span class="px-2.5 py-1 rounded-lg bg-purple-900/40 border border-purple-400/30 text-purple-200 font-mono text-xs font-bold tracking-wide shadow-sm">
+          BI &amp; IA V4.8
+        </span>
+      </div>
+    </div>
 
-    <!-- Console Exécutive Bicolonne Grand Prestige (BONDIN 1910 × FIDNESS) -->
-    <div class="login-portal-wrapper">
-      <div class="login-portal-frame">
-        <!-- Ruban supérieur or & carmin animé -->
-        <div class="login-shimmer-top"></div>
+    <!-- Center 2-Column Content -->
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 lg:py-10 my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center relative z-20">
 
-        <!-- ============================================== -->
-        <!-- COLONNE GAUCHE : HÉRITAGE MAISON & LIVE HUD    -->
-        <!-- ============================================== -->
-        <div class="login-showcase-panel">
-          <div class="login-showcase-glow"></div>
+      <!-- COLONNE GAUCHE : PILOTAGE STRATÉGIQUE & TÉLÉMÉTRIE -->
+      <div class="lg:col-span-7 flex flex-col justify-center">
+        
+        <!-- Badge Tradition & Haute Technologie -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2A1D0B]/80 border border-amber-500/40 text-amber-300 text-xs font-bold tracking-wider uppercase mb-5 self-start shadow-sm">
+          <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>TRADITION &amp; HAUTE TECHNOLOGIE</span>
+        </div>
 
-          <!-- En-tête Marque de Prestige -->
-          <div class="login-brand-hero">
-            <div class="login-logo-cluster">
-              <div class="login-logo-halo"></div>
-              <!-- SVG Blason Officiel Rouge & Or BONDIN 1910 -->
-              <svg width="82" height="86" viewBox="0 0 120 124" fill="none" xmlns="http://www.w3.org/2000/svg" class="login-blason-svg">
-                <defs>
-                  <linearGradient id="loginBondinRed" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#D91432"/>
-                    <stop offset="60%" stop-color="#C00E29"/>
-                    <stop offset="100%" stop-color="#8B071B"/>
-                  </linearGradient>
-                  <linearGradient id="loginGoldRim" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.95"/>
-                    <stop offset="100%" stop-color="#D97706" stop-opacity="0.35"/>
-                  </linearGradient>
-                </defs>
-                <path d="M8 0H112C116.418 0 120 3.58172 120 8V98C120 111.255 109.255 120 96 121.2L10 124C4.47715 124 0 119.523 0 114V8C0 3.58172 3.58172 0 8 0Z" fill="url(#loginBondinRed)"/>
-                <path d="M8 1H112C115.866 1 119 4.13401 119 8V98C119 110.703 108.703 119.05 95.8 120.2L10 123C5.02944 123 1 118.971 1 114V8C1 4.13401 4.13401 1 8 1Z" stroke="url(#loginGoldRim)" stroke-width="1.8"/>
-                <path class="steam-path" d="M64 38 C63 34, 66 32, 65 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
-                <path class="steam-path" d="M71 38 C70 34, 73 32, 72 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
-                <g fill="#FFFFFF">
-                  <path d="M60 12 C65.5 11.5, 70 15.5, 69.5 22 C69 27.5, 65.5 31.5, 61.5 31.5 C57.5 31.5, 55 28, 55 22.5 C55 16.5, 56.5 12.5, 60 12 Z"/>
-                  <path d="M58.5 20.5 Q60 21.5 61.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-                  <path d="M63.5 20.5 Q65 21.5 66.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-                  <path d="M59.5 25.5 Q62.5 28 65.5 25.5" stroke="#C00E29" stroke-width="1.4" stroke-linecap="round" fill="none"/>
-                  <path d="M57 32 L63 34 L55 56 L51 44 Z"/>
-                  <path d="M40 26 C43 24, 48 26, 51 29 L48 33 C45 31, 41 31, 39 28 Z"/>
-                  <path d="M46 31 L54 34 L50 43 L43 39 Z"/>
-                  <path d="M54 36 Q61 37 63 42" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
-                  <rect x="60" y="42" width="5.5" height="4.2" rx="1"/>
-                  <rect x="67.5" y="42" width="5.5" height="4.2" rx="1"/>
-                  <rect x="54" y="46.8" width="26" height="2" rx="1"/>
-                  <path d="M62 49.5 L68 57.5 L72 56 L75 49.5 L72 52.5 L68 49.5 Z"/>
-                </g>
-                <text x="60" y="88" text-anchor="middle" fill="#FFFFFF" font-family="'Cinzel', 'Plus Jakarta Sans', serif" font-weight="800" font-size="23.5" letter-spacing="0.8">BONDIN</text>
-                <text x="60" y="106" text-anchor="middle" fill="#FFE4E6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="10.2" letter-spacing="1.6">DEPUIS 1910</text>
-              </svg>
+        <!-- Titre Géant Exécutif -->
+        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+          Pilotage Stratégique
+        </h1>
+        <h2 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-pink-200 to-amber-200 tracking-tight leading-tight mb-5">
+          ENA W BONDIN
+        </h2>
+
+        <p class="text-purple-200/75 text-sm sm:text-base leading-relaxed max-w-xl mb-7 font-normal">
+          Espace exécutif réservé aux membres du Conseil d'Administration et à la Direction Générale. Synthèse multidimensionnelle réseau &amp; fidélité en temps réel.
+        </p>
+
+        <!-- Métrique 1 : CA FIDÉLITÉ M-O-M -->
+        <div class="rounded-2xl bg-[#140820]/90 border border-purple-500/25 p-4 sm:p-4.5 flex items-center justify-between mb-3.5 hover:border-purple-500/50 transition-all shadow-[0_4px_24px_rgba(0,0,0,0.35)] backdrop-blur-md">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-300 flex-shrink-0 shadow-inner">
+              <i data-lucide="trending-up" class="w-5 h-5"></i>
             </div>
-
-            <div class="login-brand-meta">
-              <div class="login-heritage-badge">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
-                <span>MAISON DE TRADITION DEPUIS 1910</span>
-              </div>
-              <h1 class="login-hero-title">BONDIN</h1>
-              <p class="login-hero-subtitle">Plateforme Décisionnelle BI &amp; IA Client &bull; ENA W BONDIN</p>
-              <p class="login-hero-desc">
-                L’alliance exclusive de l’art de la torréfaction tunisienne et de l’intelligence prédictive Fidness pour un pilotage exécutif de précision.
-              </p>
+            <div>
+              <div class="text-[10px] sm:text-[11px] font-mono tracking-wider text-purple-300/80 uppercase font-semibold">CA FIDÉLITÉ M-O-M</div>
+              <div class="text-lg sm:text-xl font-mono font-black text-white tracking-tight">153 317 TND</div>
             </div>
           </div>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 font-mono text-xs font-bold shadow-sm">
+            +102%
+          </span>
+        </div>
 
-          <!-- Cartes Flottantes de Télémétrie en Direct (Live DWH Telemetry) -->
-          <div class="login-telemetry-grid">
-            <div class="login-telemetry-card">
-              <div class="login-telemetry-icon-box text-amber-400 bg-amber-500/15 border border-amber-500/30">
-                <i data-lucide="trending-up" class="w-4 h-4"></i>
-              </div>
-              <div class="login-telemetry-info">
-                <div class="flex items-center gap-2">
-                  <span class="telemetry-val">153 304 TND</span>
-                  <span class="telemetry-badge-green">+102% MoM</span>
-                </div>
-                <span class="telemetry-lbl">Chiffre d’Affaires Fidélité Consolidé</span>
-              </div>
+        <!-- Métrique 2 : MOTEUR PRÉDICTIF COPILOT IA -->
+        <div class="rounded-2xl bg-[#140820]/90 border border-purple-500/25 p-4 sm:p-4.5 flex items-center justify-between mb-4 hover:border-purple-500/50 transition-all shadow-[0_4px_24px_rgba(0,0,0,0.35)] backdrop-blur-md">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 flex-shrink-0 shadow-inner">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
             </div>
-
-            <div class="login-telemetry-card">
-              <div class="login-telemetry-icon-box text-purple-400 bg-purple-500/15 border border-purple-500/30">
-                <i data-lucide="database" class="w-4 h-4"></i>
-              </div>
-              <div class="login-telemetry-info">
-                <div class="flex items-center gap-2">
-                  <span class="telemetry-val">13 094 Scans</span>
-                  <span class="telemetry-badge-purple">PostgreSQL DWH</span>
-                </div>
-                <span class="telemetry-lbl">Volume de Transactions Consolidées</span>
-              </div>
-            </div>
-
-            <div class="login-telemetry-card">
-              <div class="login-telemetry-icon-box text-emerald-400 bg-emerald-500/15 border border-emerald-500/30">
-                <i data-lucide="shield-check" class="w-4 h-4"></i>
-              </div>
-              <div class="login-telemetry-info">
-                <div class="flex items-center gap-2">
-                  <span class="telemetry-val">Zero-Trust RLS</span>
-                  <span class="telemetry-badge-emerald">Cloisonné</span>
-                </div>
-                <span class="telemetry-lbl">Sécurité Row-Level Security 4 Profils</span>
-              </div>
+            <div>
+              <div class="text-[10px] sm:text-[11px] font-mono tracking-wider text-purple-300/80 uppercase font-semibold">MOTEUR PRÉDICTIF</div>
+              <div class="text-base sm:text-lg font-mono font-bold text-purple-100 tracking-tight">Copilot IA RAG Actif</div>
             </div>
           </div>
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#10B981] animate-pulse"></span>
+        </div>
 
-          <!-- Pied du volet de marque : Passerelle et Partenaire -->
-          <div class="login-showcase-footer">
-            <div class="login-live-ping">
-              <span class="live-pulse-dot"></span>
-              <span class="text-xs text-emerald-400 font-mono font-bold">Passerelle DWH Connectée (14ms)</span>
+        <!-- Note d'Audit et Sécurité ISO 27001 -->
+        <div class="rounded-xl bg-white/[0.03] border border-white/10 p-3.5 flex items-start gap-3">
+          <i data-lucide="shield-check" class="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5"></i>
+          <p class="text-xs text-purple-200/70 leading-relaxed font-sans">
+            Session auditée par jeton cryptographique éphémère. Chaque requête vers le DWH est tracée conformément à la politique ISO 27001.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- COLONNE DROITE : CARTE DE CONNEXION EXÉCUTIVE -->
+      <div class="lg:col-span-5">
+        <div class="rounded-3xl bg-[#13081e]/95 border border-purple-500/35 p-6 sm:p-8 shadow-[0_0_60px_rgba(147,51,234,0.25)] relative overflow-hidden backdrop-blur-2xl">
+          
+          <!-- Liseré supérieur lumineux or & carmin -->
+          <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400 via-purple-400 to-transparent"></div>
+
+          <!-- En-tête de la carte : LOGOS OFFICIELS BONDIN & FIDNESS -->
+          <div class="flex flex-col items-center text-center mb-6">
+            <div class="flex items-center justify-center gap-3.5 mb-3">
+              
+              <!-- BLASON OFFICIEL BONDIN (Rouge & Or depuis 1910) -->
+              <div class="relative flex-shrink-0" title="BONDIN Depuis 1910">
+                <svg width="44" height="48" viewBox="0 0 120 124" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_2px_12px_rgba(200,16,46,0.6)]">
+                  <defs>
+                    <linearGradient id="cardBondinRed" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#D91432"/>
+                      <stop offset="60%" stop-color="#C00E29"/>
+                      <stop offset="100%" stop-color="#8B071B"/>
+                    </linearGradient>
+                    <linearGradient id="cardGoldRim" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.95"/>
+                      <stop offset="100%" stop-color="#D97706" stop-opacity="0.35"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M8 0H112C116.418 0 120 3.58172 120 8V98C120 111.255 109.255 120 96 121.2L10 124C4.47715 124 0 119.523 0 114V8C0 3.58172 3.58172 0 8 0Z" fill="url(#cardBondinRed)"/>
+                  <path d="M8 1H112C115.866 1 119 4.13401 119 8V98C119 110.703 108.703 119.05 95.8 120.2L10 123C5.02944 123 1 118.971 1 114V8C1 4.13401 4.13401 1 8 1Z" stroke="url(#cardGoldRim)" stroke-width="1.8"/>
+                  <path class="steam-path" d="M64 38 C63 34, 66 32, 65 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
+                  <path class="steam-path" d="M71 38 C70 34, 73 32, 72 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
+                  <g fill="#FFFFFF">
+                    <path d="M60 12 C65.5 11.5, 70 15.5, 69.5 22 C69 27.5, 65.5 31.5, 61.5 31.5 C57.5 31.5, 55 28, 55 22.5 C55 16.5, 56.5 12.5, 60 12 Z"/>
+                    <path d="M58.5 20.5 Q60 21.5 61.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+                    <path d="M63.5 20.5 Q65 21.5 66.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+                    <path d="M59.5 25.5 Q62.5 28 65.5 25.5" stroke="#C00E29" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+                    <path d="M57 32 L63 34 L55 56 L51 44 Z"/>
+                    <path d="M40 26 C43 24, 48 26, 51 29 L48 33 C45 31, 41 31, 39 28 Z"/>
+                    <path d="M46 31 L54 34 L50 43 L43 39 Z"/>
+                    <path d="M54 36 Q61 37 63 42" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <rect x="60" y="42" width="5.5" height="4.2" rx="1"/>
+                    <rect x="67.5" y="42" width="5.5" height="4.2" rx="1"/>
+                    <rect x="54" y="46.8" width="26" height="2" rx="1"/>
+                    <path d="M62 49.5 L68 57.5 L72 56 L75 49.5 L72 52.5 L68 49.5 Z"/>
+                  </g>
+                  <text x="60" y="88" text-anchor="middle" fill="#FFFFFF" font-family="'Cinzel', serif" font-weight="800" font-size="23.5">BONDIN</text>
+                  <text x="60" y="106" text-anchor="middle" fill="#FFE4E6" font-family="sans-serif" font-weight="600" font-size="10.2">DEPUIS 1910</text>
+                </svg>
+              </div>
+
+              <!-- ALLIANCE SEPARATOR -->
+              <span class="text-purple-300/40 text-lg font-light">×</span>
+
+              <!-- LOGO FIDNESS OFFICIEL (Pastille orange + F Vectoriel) -->
+              <div class="relative flex-shrink-0 p-1.5 rounded-xl bg-white shadow-[0_2px_14px_rgba(86,100,245,0.45)] flex items-center justify-center" title="Partenaire FIDNESS">
+                <svg width="22" height="28" viewBox="0 0 110 175" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="22" cy="20" r="19" fill="#FF5500"/>
+                  <path d="M29 44 C12.9837 44 0 56.9837 0 73 V125 H38 V44 H29 Z" fill="#163396"/>
+                  <path d="M0 139 H38 V175 H25 C11.1929 175 0 163.807 0 150 V139 Z" fill="#163396"/>
+                  <path d="M49 44 H110 V54 C110 70.0163 97.0163 83 81 83 H49 V44 Z" fill="#5664F5"/>
+                  <path d="M38 92 H96 V100 C96 113.807 84.8071 125 71 125 H38 V92 Z" fill="#5664F5"/>
+                </svg>
+              </div>
+
             </div>
-            <div class="login-badge-partner">
-              <span class="login-partner-tag">Partenaire Fidélité</span>
-              <span class="login-fidness-inline">
-                <span class="text-[#163396] font-extrabold text-[12px]">FID</span><span class="text-slate-900 font-extrabold text-[12px]">NESS</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-[#FF5500] inline-block ml-1"></span>
+
+            <!-- Titre & Sous-titre -->
+            <div class="flex items-center justify-center gap-2 mb-1">
+              <span class="text-xl font-black text-white tracking-wider">BONDIN</span>
+              <span class="text-[10px] font-bold text-amber-300 bg-amber-500/20 border border-amber-500/40 px-1.5 py-0.5 rounded tracking-wide font-mono">DEPUIS 1910</span>
+            </div>
+            <div class="text-[11px] font-bold tracking-widest text-purple-200 uppercase mb-1">COCKPIT DIRECTION GÉNÉRALE</div>
+            <p class="text-xs text-purple-300/70">Authentification sécurisée au portail décisionnel &amp; BI client</p>
+          </div>
+
+          <!-- UN SEUL COMPTE DE DIRECTION AUTORISÉ -->
+          <div class="mb-5">
+            <label class="text-[11px] font-bold text-purple-300/80 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <i data-lucide="shield" class="w-3.5 h-3.5 text-purple-400"></i>
+              <span>PROFIL EXÉCUTIF AUTORISÉ</span>
+            </label>
+            
+            <div class="w-full p-2.5 rounded-xl bg-purple-950/70 border border-purple-500/60 shadow-[0_0_18px_rgba(168,85,247,0.25)] flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981] animate-pulse"></span>
+                <span class="text-sm font-bold text-white tracking-wide">DG Direction Générale</span>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-purple-200 bg-purple-800/70 border border-purple-400/40 px-2 py-0.5 rounded-full">
+                Accès Global
               </span>
             </div>
           </div>
-        </div>
 
-        <!-- ============================================== -->
-        <!-- COLONNE DROITE : CONSOLE D'AUTHENTIFICATION    -->
-        <!-- ============================================== -->
-        <div class="login-terminal-panel">
-          
-          <div class="login-terminal-header">
-            <div class="login-terminal-badge">
-              <i data-lucide="fingerprint" class="w-3.5 h-3.5 text-amber-400"></i>
-              <span>AUTHENTIFICATION EXÉCUTIVE</span>
-            </div>
-            <h2 class="login-terminal-title">Accès Cockpit Décisionnel</h2>
-            <p class="login-terminal-desc">Sélectionnez votre profil ou saisissez vos identifiants sécurisés.</p>
-          </div>
-
-          <!-- Sélecteur de profil exécutif rapide VIP -->
-          <div class="login-quick-profiles">
-            <label class="login-label-sm">
-              <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
-              <span>Profils Exécutifs Pré-configurés</span>
-            </label>
-            <div class="login-profile-selector-grid">
-              <button type="button" class="login-profile-card active" id="chip-dir_gen" onclick="window.selectQuickProfile('dir_gen')">
-                <div class="profile-card-badge dg">DG</div>
-                <div class="profile-card-text">
-                  <span class="profile-card-title">Direction Générale</span>
-                  <span class="profile-card-sub">Consolidé Réseau Global</span>
-                </div>
-                <i data-lucide="check" class="profile-check-icon"></i>
-              </button>
-
-              <button type="button" class="login-profile-card" id="chip-mkt_b2c" onclick="window.selectQuickProfile('mkt_b2c')">
-                <div class="profile-card-badge mkt">MKT</div>
-                <div class="profile-card-text">
-                  <span class="profile-card-title">Marketing B2C</span>
-                  <span class="profile-card-sub">Cafétérias &amp; Détail</span>
-                </div>
-                <i data-lucide="check" class="profile-check-icon"></i>
-              </button>
-
-              <button type="button" class="login-profile-card" id="chip-grands_comptes" onclick="window.selectQuickProfile('grands_comptes')">
-                <div class="profile-card-badge b2b">B2B</div>
-                <div class="profile-card-text">
-                  <span class="profile-card-title">Grands Comptes</span>
-                  <span class="profile-card-sub">Succursales &amp; B2B</span>
-                </div>
-                <i data-lucide="check" class="profile-check-icon"></i>
-              </button>
-
-              <button type="button" class="login-profile-card" id="chip-reg_tunis" onclick="window.selectQuickProfile('reg_tunis')">
-                <div class="profile-card-badge tun">TUN</div>
-                <div class="profile-card-text">
-                  <span class="profile-card-title">Région Tunis</span>
-                  <span class="profile-card-sub">Grand Tunis &amp; Salons</span>
-                </div>
-                <i data-lucide="check" class="profile-check-icon"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Formulaire de Connexion -->
-          <form id="login-form" class="login-form" onsubmit="window.handleLoginSubmit(event)">
+          <!-- FORMULAIRE DE CONNEXION -->
+          <form id="login-form" class="space-y-4" onsubmit="window.handleLoginSubmit(event)">
             
-            <!-- Identifiant -->
-            <div class="login-field-group">
-              <label class="login-label" for="login-email">
-                <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-400"></i>
-                <span>Identifiant Exécutif</span>
-              </label>
-              <div class="login-input-wrap">
-                <i data-lucide="mail" class="login-input-icon"></i>
-                <input type="email" id="login-email" class="login-input" required autocomplete="email" value="dir.generale@bondin.tn" placeholder="nom@bondin.tn">
+            <!-- Identifiant Exécutif / Email -->
+            <div>
+              <label class="text-xs font-semibold text-purple-200/90 mb-1.5 block" for="login-email">Identifiant Exécutif / Email</label>
+              <div class="relative flex items-center">
+                <i data-lucide="user" class="absolute left-3.5 w-4 h-4 text-purple-400 pointer-events-none"></i>
+                <input type="email" id="login-email" value="direction@bondin.tn" required readonly
+                  class="w-full bg-[#1b0c28] border border-purple-500/30 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white font-medium focus:border-purple-400 focus:outline-none transition-colors" />
               </div>
             </div>
 
-            <!-- Mot de passe -->
-            <div class="login-field-group">
-              <div class="flex items-center justify-between">
-                <label class="login-label" for="login-password">
-                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
-                  <span>Code d'Accès Sécurisé</span>
-                </label>
-                <span class="login-security-tag">AES-256 GCM</span>
+            <!-- Mot de passe chiffré -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-semibold text-purple-200/90" for="login-password">Mot de passe chiffré</label>
+                <span class="text-[10px] font-mono text-purple-300/70 flex items-center gap-1">
+                  <i data-lucide="lock" class="w-3 h-3 text-purple-400"></i> TLS 1.3
+                </span>
               </div>
-              <div class="login-input-wrap">
-                <i data-lucide="lock" class="login-input-icon"></i>
-                <input type="password" id="login-password" class="login-input" required autocomplete="current-password" value="••••••••••••" placeholder="Code secret">
-                <button type="button" class="login-eye-btn" onclick="window.toggleLoginPasswordVisibility()" title="Afficher/Masquer le mot de passe">
-                  <i id="login-eye-icon" data-lucide="eye" class="w-4 h-4 text-purple-300/70 hover:text-white transition-colors"></i>
+              <div class="relative flex items-center">
+                <i data-lucide="key-round" class="absolute left-3.5 w-4 h-4 text-purple-400 pointer-events-none"></i>
+                <input type="password" id="login-password" value="••••••••••••" required
+                  class="w-full bg-[#1b0c28] border border-purple-500/30 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white font-mono focus:border-purple-400 focus:outline-none transition-colors" />
+                <button type="button" onclick="window.toggleLoginPasswordVisibility()" class="absolute right-3 text-purple-300/70 hover:text-white transition-colors cursor-pointer" title="Afficher/Masquer">
+                  <i id="login-eye-icon" data-lucide="eye" class="w-4 h-4"></i>
                 </button>
               </div>
             </div>
 
-            <!-- Profil RLS -->
-            <div class="login-field-group">
-              <label class="login-label" for="login-role-select">
-                <i data-lucide="sliders" class="w-3.5 h-3.5 text-purple-400"></i>
-                <span>Périmètre Décisionnel Assigné (RLS)</span>
+            <!-- Champ caché rôle pour cohérence DWH RLS -->
+            <input type="hidden" id="login-role-select" value="dir_gen" />
+
+            <!-- Options session -->
+            <div class="flex items-center justify-between text-xs pt-1">
+              <label class="flex items-center gap-2 text-purple-200/80 cursor-pointer select-none">
+                <input type="checkbox" checked class="rounded border-purple-500/40 bg-[#1b0c28] text-purple-600 focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5 cursor-pointer accent-purple-600">
+                <span>Garder ma session active</span>
               </label>
-              <div class="login-input-wrap">
-                <i data-lucide="key" class="login-input-icon"></i>
-                <select id="login-role-select" class="login-input login-select" onchange="window.onLoginRoleChange(this.value)">
-                  <option value="dir_gen" selected>👑 Direction Générale (Consolidé Réseau Global)</option>
-                  <option value="mkt_b2c">🛍️ Direction Marketing B2C (Cafétérias &amp; Détail)</option>
-                  <option value="grands_comptes">🏢 Direction Grands Comptes B2B (Succursales)</option>
-                  <option value="reg_tunis">📍 Resp. Régional Grand Tunis</option>
-                </select>
-              </div>
+              <a href="javascript:void(0)" onclick="window.showToast('Contactez la Direction des Systèmes d'Information BONDIN', 'shield')" class="text-purple-300/80 hover:text-purple-100 hover:underline">Clé perdue ?</a>
             </div>
 
-            <!-- Bouton Ultra-Luxe Déverrouiller -->
-            <button type="submit" id="login-submit-btn" class="login-submit-btn btn-shine group">
-              <div class="login-btn-content" id="login-btn-content">
-                <i data-lucide="unlock" class="w-4 h-4 text-amber-200 transition-transform group-hover:scale-110"></i>
-                <span id="login-btn-label">Déverrouiller le Cockpit Décisionnel</span>
-                <i data-lucide="arrow-right" class="w-4 h-4 text-purple-200 transition-transform group-hover:translate-x-1.5"></i>
-              </div>
-              <!-- Spinner & multi-step state -->
-              <div class="login-btn-loading" id="login-btn-loading" style="display: none;">
-                <svg class="animate-spin w-5 h-5 text-amber-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span id="login-loading-text">Vérification des habilitations DWH...</span>
+            <!-- Bouton Déverrouiller Cockpit Décisionnel -->
+            <button type="submit" id="login-submit-btn" class="w-full mt-2 py-3.5 px-6 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-[#8B1846] via-[#B81D6D] to-[#9333EA] hover:from-[#78143c] hover:to-[#7E22CE] shadow-[0_4px_24px_rgba(184,29,109,0.45)] hover:shadow-[0_6px_30px_rgba(184,29,109,0.65)] transition-all duration-300 flex items-center justify-center gap-2 group active:scale-[0.99] cursor-pointer">
+              <span id="login-btn-content" class="flex items-center gap-2 font-bold">
+                <span>Accéder au Cockpit Décisionnel</span>
+                <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+              </span>
+              <div id="login-btn-loading" class="flex items-center gap-2" style="display: none;">
+                <svg class="animate-spin w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="opacity-75"></path></svg>
+                <span id="login-loading-text">Authentification en cours...</span>
               </div>
             </button>
+
           </form>
 
-          <!-- Pied de Sécurité & Conformité ISO -->
-          <div class="login-compliance-footer">
-            <span class="compliance-item"><i data-lucide="lock" class="w-3 h-3 text-amber-400"></i> TLS 1.3 / 256-Bit</span>
-            <span class="compliance-dot">&bull;</span>
-            <span class="compliance-item"><i data-lucide="database" class="w-3 h-3 text-emerald-400"></i> DWH 9 Tables</span>
-            <span class="compliance-dot">&bull;</span>
-            <span class="compliance-item"><i data-lucide="cpu" class="w-3 h-3 text-purple-400"></i> Copilot IA RAG</span>
+          <!-- Pied de carte de sécurité -->
+          <div class="flex items-center justify-between text-[11px] text-purple-300/70 pt-4 border-t border-white/5 mt-5">
+            <div class="flex items-center gap-1.5 text-emerald-400">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+              <span>Authentification 256-bit</span>
+            </div>
+            <div class="text-purple-300/80 font-mono">
+              Rôle : <strong class="text-white">Direction Générale</strong>
+            </div>
           </div>
 
         </div>
+      </div>
+
+    </div>
+
+    <!-- PIED DE PAGE LOGIN -->
+    <div class="w-full flex flex-col sm:flex-row items-center justify-between px-6 sm:px-10 py-4 text-[11px] text-purple-300/60 border-t border-white/5 relative z-20 bg-[#09030e]/80 backdrop-blur-md">
+      <div>
+        <strong class="text-purple-200">CAFÉS BONDIN</strong> &mdash; Fondé en 1910 en Tunisie
+      </div>
+      <div class="flex items-center gap-2 font-mono text-[10.5px] mt-2 sm:mt-0">
+        <span>ENA W BONDIN • BI &amp; Data Warehouse</span>
+        <span class="text-white/20">|</span>
+        <span>Système Confidentiel Défense &amp; Gouvernance</span>
       </div>
     </div>
   </div>
@@ -919,7 +915,7 @@
           <span class="visual-info-icon" title="Exploration guidée IA : Décomposition du CA Global -> Segments -> Gammes -> Magasins">?</span>
         </div>
         <div id="decomp-tree-container" style="overflow-x: auto; padding: 6px 0;">
-          <!-- Injecté par app.js -->
+          <!-- Injecté par app.js?v=20261020_executive_login_v12 -->
         </div>
       </div>
 
@@ -1083,7 +1079,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js -->
+              <!-- Injecté par app.js?v=20261020_executive_login_v12 -->
             </tbody>
           </table>
         </div>
@@ -1108,7 +1104,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js -->
+              <!-- Injecté par app.js?v=20261020_executive_login_v12 -->
             </tbody>
           </table>
         </div>
@@ -1174,7 +1170,7 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Injecté par app.js -->
+                <!-- Injecté par app.js?v=20261020_executive_login_v12 -->
               </tbody>
             </table>
           </div>
@@ -1198,7 +1194,7 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Injecté par app.js -->
+                <!-- Injecté par app.js?v=20261020_executive_login_v12 -->
               </tbody>
             </table>
           </div>
@@ -1225,7 +1221,7 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js -->
+              <!-- Injecté par app.js?v=20261020_executive_login_v12 -->
             </tbody>
           </table>
         </div>
@@ -1390,8 +1386,8 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="data.js?v=20261020_sleek_chat_v10"></script>
-  <script src="app.js?v=20261020_sleek_chat_v10"></script>
+  <script src="data.js?v=20261020_executive_login_v12"></script>
+  <script src="app.js?v=20261020_executive_login_v12"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->

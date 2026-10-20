@@ -2171,15 +2171,18 @@ window.openExportModal = function() {
     return;
   }
 
-  // Mettre à jour l'aperçu des filtres actifs dans le modal
+  // Mettre à jour l'aperçu des filtres actifs dans le modal de manière sécurisée
   const container = document.getElementById('export-active-filters-tags');
   if (container) {
-    const dStart  = document.getElementById('filter-date-start')?.value || '2026-04-01';
-    const dEnd    = document.getElementById('filter-date-end')?.value || '2026-10-20';
-    const magText = document.getElementById('filter-magasin')?.selectedOptions[0]?.text || 'Tous';
-    const gamText = document.getElementById('filter-gamme')?.selectedOptions[0]?.text || 'Toutes';
-    const segText = document.getElementById('filter-segment')?.selectedOptions[0]?.text || 'Tous';
-    const rlsText = document.getElementById('slicer-rls')?.selectedOptions[0]?.text || 'Direction Générale';
+    const dStart  = document.getElementById('filter-date-start')?.value || '01/04/2026';
+    const dEnd    = document.getElementById('filter-date-end')?.value || '20/10/2026';
+    const magSelect = document.getElementById('filter-magasin');
+    const magText = magSelect?.options?.[magSelect.selectedIndex]?.text || 'Tous les PDV';
+    const gamSelect = document.getElementById('filter-gamme');
+    const gamText = gamSelect?.options?.[gamSelect.selectedIndex]?.text || 'Toutes les gammes';
+    const segSelect = document.getElementById('filter-segment');
+    const segText = segSelect?.options?.[segSelect.selectedIndex]?.text || 'Tous les segments';
+    const rlsText = 'Direction Générale (Consolidé Réseau)';
 
     container.innerHTML = `
       <span class="meta-preview-tag">Période : ${dStart} → ${dEnd}</span>
@@ -2207,46 +2210,75 @@ window.selectExportScope = function(scope) {
 window.triggerExecutivePrint = function() {
   window.closeExportModal();
 
-  // Préparation du résumé d'impression
+  // Préparation du résumé officiel d'impression
   const summaryEl = document.getElementById('print-summary-text');
   const dateEl = document.getElementById('print-summary-timestamp');
   if (summaryEl) {
     const dStart  = document.getElementById('filter-date-start')?.value || '01/04/2026';
     const dEnd    = document.getElementById('filter-date-end')?.value || '20/10/2026';
-    const magText = document.getElementById('filter-magasin')?.selectedOptions[0]?.text || 'Tous les PDV';
-    const gamText = document.getElementById('filter-gamme')?.selectedOptions[0]?.text || 'Toutes les gammes';
-    const segText = document.getElementById('filter-segment')?.selectedOptions[0]?.text || 'Tous les segments';
-    summaryEl.textContent = `Période : ${dStart} au ${dEnd} | Point de Vente : ${magText} | Gamme : ${gamText} | Segment : ${segText}`;
+    const magSelect = document.getElementById('filter-magasin');
+    const magText = magSelect?.options?.[magSelect.selectedIndex]?.text || 'Tous les PDV (Réseau Global)';
+    const gamSelect = document.getElementById('filter-gamme');
+    const gamText = gamSelect?.options?.[gamSelect.selectedIndex]?.text || 'Toutes les gammes';
+    const segSelect = document.getElementById('filter-segment');
+    const segText = segSelect?.options?.[segSelect.selectedIndex]?.text || 'Tous les segments';
+    summaryEl.textContent = `Période : ${dStart} au ${dEnd} | Point de Vente : ${magText} | Gamme : ${gamText} | Segment : ${segText} | RLS : Direction Générale`;
   }
   if (dateEl) {
     const now = new Date();
-    dateEl.textContent = `Extrait le ${now.toLocaleDateString('fr-FR')} à ${now.toLocaleTimeString('fr-FR')}`;
+    dateEl.textContent = `Extrait officiel le ${now.toLocaleDateString('fr-FR')} à ${now.toLocaleTimeString('fr-FR')}`;
+  }
+
+  if (window.showToast) {
+    window.showToast('Préparation du document PDF haute fidélité...', 'file-text');
   }
 
   if (exportScope === 'all') {
     document.body.classList.add('print-all-tabs');
+    // Forcer l'affichage de tous les onglets pour le calcul des canvas
+    document.querySelectorAll('.dashboard-tab').forEach(t => {
+      t.style.display = 'block';
+    });
   } else {
     document.body.classList.remove('print-all-tabs');
   }
 
-  // Redimensionnement de tous les graphiques avant impression
-  Object.values(charts).forEach(c => {
-    if (c && typeof c.resize === 'function') c.resize();
-  });
-  if (mapInstance) mapInstance.invalidateSize();
-
-  // Déclenchement de l'impression native haute définition
+  // Laisser le moteur de rendu recalculer les dimensions des graphiques
   setTimeout(() => {
-    window.print();
-  }, 150);
+    Object.values(charts).forEach(c => {
+      if (c && typeof c.resize === 'function') {
+        try { c.resize(); } catch(e) {}
+      }
+    });
+    if (mapInstance && typeof mapInstance.invalidateSize === 'function') {
+      try { mapInstance.invalidateSize(); } catch(e) {}
+    }
+
+    // Déclenchement de la fenêtre d'impression native
+    setTimeout(() => {
+      window.print();
+    }, 250);
+  }, 120);
 };
 
 // Nettoyage automatique après impression
 window.addEventListener('afterprint', () => {
   document.body.classList.remove('print-all-tabs');
-  Object.values(charts).forEach(c => {
-    if (c && typeof c.resize === 'function') c.resize();
+  document.querySelectorAll('.dashboard-tab').forEach(t => {
+    if (!t.classList.contains('active')) {
+      t.style.display = 'none';
+    } else {
+      t.style.display = 'block';
+    }
   });
+  Object.values(charts).forEach(c => {
+    if (c && typeof c.resize === 'function') {
+      try { c.resize(); } catch(e) {}
+    }
+  });
+  if (mapInstance && typeof mapInstance.invalidateSize === 'function') {
+    try { mapInstance.invalidateSize(); } catch(e) {}
+  }
 });
 
 // ==========================================================================
