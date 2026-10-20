@@ -2890,25 +2890,27 @@ body {
    NAVIGATION SOUS-BARRE DES ONGLETS - DESIGN ULTRA-MODERNE & ANIMATION FLUIDE
    ========================================================================== */
 .subbar-nav-row {
-  margin-bottom: 16px !important;
+  margin-bottom: 18px !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: flex-start !important;
+  width: 100% !important;
 }
 
 .segmented-pills-group {
   position: relative !important;
-  display: inline-flex !important;
+  display: flex !important;
+  width: 100% !important;
   align-items: center !important;
-  gap: 5px !important;
-  padding: 5px !important;
-  border-radius: 14px !important;
+  gap: 8px !important;
+  padding: 8px 10px !important;
+  border-radius: 18px !important;
   background: rgba(234, 229, 243, 0.75) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(106, 43, 124, 0.16) !important;
   box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 4px 16px rgba(43, 21, 57, 0.06) !important;
   user-select: none !important;
+  box-sizing: border-box !important;
 }
 
 /* Sliding Highlighter Pill Animation */
@@ -2916,10 +2918,10 @@ body {
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
-  border-radius: 10px !important;
+  border-radius: 13px !important;
   background: #FFFFFF !important;
-  box-shadow: 0 4px 14px rgba(58, 25, 80, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-  border: 1.5px solid rgba(106, 43, 124, 0.18) !important;
+  box-shadow: 0 4px 16px rgba(58, 25, 80, 0.14), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  border: 1.5px solid rgba(106, 43, 124, 0.22) !important;
   pointer-events: none !important;
   z-index: 1 !important;
   opacity: 0;
@@ -2930,20 +2932,22 @@ body {
               opacity 0.2s ease !important;
 }
 
-/* Bouton d'onglet */
+/* Bouton d'onglet pleine largeur & haute visibilité */
 .pill-tab-btn {
+  flex: 1 1 0 !important;
   position: relative !important;
   z-index: 2 !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
-  padding: 8px 18px !important;
-  border-radius: 10px !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 12px 20px !important;
+  border-radius: 13px !important;
   border: 1.5px solid transparent !important;
   background: transparent !important;
   color: #4A3A5B !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  font-size: 0.82rem !important;
+  font-size: 0.94rem !important;
   font-weight: 700 !important;
   letter-spacing: 0.2px !important;
   cursor: pointer !important;
@@ -2958,7 +2962,7 @@ body {
 }
 
 .pill-tab-btn:active {
-  transform: scale(0.97) !important;
+  transform: scale(0.98) !important;
 }
 
 .pill-tab-btn.active {
@@ -2967,6 +2971,24 @@ body {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
+}
+
+.pill-tab-btn .tab-badge {
+  font-size: 0.76rem !important;
+  padding: 2px 7px !important;
+  border-radius: 6px !important;
+  background: rgba(106, 43, 124, 0.1) !important;
+  font-weight: 800 !important;
+}
+
+.pill-tab-btn .tab-icon {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.pill-tab-btn .tab-label {
+  font-size: 0.94rem !important;
+  font-weight: 700 !important;
 }
 
 /* Badge numérique élégant (01, 02, ...) */
@@ -4279,10 +4301,32 @@ canvas {
 /* ==========================================================================
    ANIMATIONS & EFFETS EXTRAORDINAIRES (AURORA, RADAR, STEAM, CYBER-GRID)
    ========================================================================== */
+header.aurora-header,
 .aurora-header {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin-bottom: 18px !important;
+  border-radius: 16px !important;
   background: linear-gradient(125deg, #1b071a 0%, #2d0c28 38%, #1e0b29 72%, #130616 100%) !important;
-  position: relative;
-  overflow: hidden;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 30px rgba(27, 7, 26, 0.45) !important;
+}
+
+.aurora-header-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+
+.aurora-row-between {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
 }
 
 .aurora-orb-1 {
