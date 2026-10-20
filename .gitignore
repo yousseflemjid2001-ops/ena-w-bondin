@@ -3,7 +3,6 @@ __pycache__/
 *$py.class
 *.log
 *.dump
-*.sql
 .env
 .venv/
 env/

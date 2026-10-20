@@ -1,4 +1,10 @@
-# Vercel Ignore file - Keeps deployments ultra-fast and lightweight
+# Vercel Ignore file - Keeps deployments ultra-fast, lightweight and 100% stable
+server.py
+audit*.py
+scripts/
+scratch/
+scratch_test/
+BONDIN_POWERBI_PROJECT/
 *.log
 *.aux
 *.out
@@ -7,10 +13,6 @@
 *.dump
 *.sql
 *.xlsx
-BONDIN_POWERBI_PROJECT/
-scratch/
-scratch_test/
 __pycache__/
 .git/
 tests/
-scripts/
