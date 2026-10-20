@@ -8,6 +8,8 @@
   ],
   "rewrites": [
     { "source": "/api/rag/chat", "destination": "/api/chat" },
-    { "source": "/api/cron/sync", "destination": "/api/sync" }
+    { "source": "/api/cron/sync", "destination": "/api/sync" },
+    { "source": "/", "destination": "/dashboard_bi/index.html" },
+    { "source": "/(.*)", "destination": "/dashboard_bi/$1" }
   ]
 }

@@ -1,56 +1,56 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-20 12:24:49",
+  "timestamp": "2026-10-20 17:04:49",
   "company_name": "BONDIN",
-  "total_scans": 13051,
-  "total_ca_tnd": 152234.95,
-  "panier_moyen_tnd": 11.665,
-  "total_points_emis": 509959,
-  "clients_actifs": 757,
-  "dernier_scan": "2026-10-20 12:17:04",
-  "dernier_ticket": "bondin6128916",
-  "dernier_magasin": "Caf\u00e9t\u00e9ria Tunis Espagne",
+  "total_scans": 13081,
+  "total_ca_tnd": 153108.32,
+  "panier_moyen_tnd": 11.705,
+  "total_points_emis": 513208,
+  "clients_actifs": 758,
+  "dernier_scan": "2026-10-20 16:56:07",
+  "dernier_ticket": "bondin6133817",
+  "dernier_magasin": "Succursale Gab\u00e8s Jara",
   "recent_scans": [
     {
-      "id": 13062,
-      "ticket": "bondin6128916",
-      "montant_tnd": 17.3,
-      "points": 17.4,
-      "date": "2026-10-20 12:17:04",
-      "magasin": "Caf\u00e9t\u00e9ria Tunis Espagne"
+      "id": 13092,
+      "ticket": "bondin6133817",
+      "montant_tnd": 296.0,
+      "points": 1184.0,
+      "date": "2026-10-20 16:56:07",
+      "magasin": "Succursale Gab\u00e8s Jara"
     },
     {
-      "id": 13061,
-      "ticket": "bondin6128760",
-      "montant_tnd": 5.8,
-      "points": 9.6,
-      "date": "2026-10-20 12:08:53",
-      "magasin": "Caf\u00e9t\u00e9ria Gab\u00e8s Jara"
-    },
-    {
-      "id": 13060,
-      "ticket": "bondin6128324",
-      "montant_tnd": 3.3,
-      "points": 5.4,
-      "date": "2026-10-20 11:48:43",
-      "magasin": "Caf\u00e9t\u00e9ria Tunis MENZAH VI"
-    },
-    {
-      "id": 13059,
-      "ticket": "bondin6128226",
-      "montant_tnd": 3.4,
-      "points": 3.8,
-      "date": "2026-10-20 11:44:38",
+      "id": 13091,
+      "ticket": "bondin6133781",
+      "montant_tnd": 11.8,
+      "points": 26.6,
+      "date": "2026-10-20 16:54:07",
       "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
     },
     {
-      "id": 13058,
-      "ticket": "bondin6128032",
-      "montant_tnd": 2.2,
-      "points": 4.4,
-      "date": "2026-10-20 11:35:39",
-      "magasin": "Caf\u00e9t\u00e9ria Tunis La Marsa"
+      "id": 13090,
+      "ticket": "bondin6133740",
+      "montant_tnd": 3.6,
+      "points": 4.2,
+      "date": "2026-10-20 16:51:42",
+      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
+    },
+    {
+      "id": 13089,
+      "ticket": "bondin6133555",
+      "montant_tnd": 9.25,
+      "points": 37.0,
+      "date": "2026-10-20 16:40:17",
+      "magasin": "Succursale Gafsa Ville"
+    },
+    {
+      "id": 13088,
+      "ticket": "bondin6133548",
+      "montant_tnd": 2.0,
+      "points": 3.8,
+      "date": "2026-10-20 16:39:48",
+      "magasin": "Caf\u00e9t\u00e9ria Gafsa Ville"
     }
   ]
 }
