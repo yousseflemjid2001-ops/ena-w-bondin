@@ -18,6 +18,7 @@ DATA_DIR = os.path.join(BASE_DIR, "data_dwh")
 STATIC_DIR = os.path.join(BASE_DIR, "dashboard_bi")
 
 app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="")
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app)
 
 # ========================================================
