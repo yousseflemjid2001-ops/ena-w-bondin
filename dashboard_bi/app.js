@@ -59,6 +59,7 @@ function animateCount(el, targetNum, formatFn, duration = 600) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initAuthGate();
   initSubbarTabs();
   initSlicers();
   initSparklines();
@@ -90,6 +91,257 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 100);
 });
+
+// ==========================================================================
+// 0. GESTIONNAIRE D'AUTHENTIFICATION & PAGE DE LOGIN PRESTIGE (BONDIN x FIDNESS)
+// ==========================================================================
+const DEMO_PROFILES = {
+  dir_gen: {
+    email: 'dir.generale@bondin.tn',
+    password: '••••••••••••',
+    role: 'dir_gen',
+    title: 'Direction Générale (Consolidé)',
+    avatar: 'DG',
+    badgeColor: 'from-amber-400 to-[#C8102E]'
+  },
+  mkt_b2c: {
+    email: 'mkt.fidness@bondin.tn',
+    password: '••••••••••••',
+    role: 'mkt_b2c',
+    title: 'Marketing B2C (Cafétérias)',
+    avatar: 'MKT',
+    badgeColor: 'from-pink-500 to-rose-600'
+  },
+  grands_comptes: {
+    email: 'b2b.grossistes@bondin.tn',
+    password: '••••••••••••',
+    role: 'grands_comptes',
+    title: 'Grands Comptes (B2B)',
+    avatar: 'B2B',
+    badgeColor: 'from-blue-500 to-indigo-700'
+  },
+  reg_tunis: {
+    email: 'resp.tunis@bondin.tn',
+    password: '••••••••••••',
+    role: 'reg_tunis',
+    title: 'Resp. Grand Tunis',
+    avatar: 'TUN',
+    badgeColor: 'from-emerald-400 to-teal-700'
+  }
+};
+
+window.selectQuickProfile = function(profileKey) {
+  const profile = DEMO_PROFILES[profileKey];
+  if (!profile) return;
+  
+  const emailInput = document.getElementById('login-email');
+  const roleSelect = document.getElementById('login-role-select');
+  if (emailInput) emailInput.value = profile.email;
+  if (roleSelect) roleSelect.value = profile.role;
+  
+  // Mettre à jour l'état actif des pastilles
+  document.querySelectorAll('.login-chip').forEach(c => c.classList.remove('active'));
+  const activeChip = document.getElementById(`chip-${profileKey}`);
+  if (activeChip) activeChip.classList.add('active');
+
+  if (window.showToast) {
+    window.showToast(`Profil ${profile.title} sélectionné`, 'user-check');
+  }
+};
+
+window.onLoginRoleChange = function(roleVal) {
+  document.querySelectorAll('.login-chip').forEach(c => c.classList.remove('active'));
+  const matchingChip = document.getElementById(`chip-${roleVal}`);
+  if (matchingChip) matchingChip.classList.add('active');
+  
+  const profile = DEMO_PROFILES[roleVal];
+  if (profile) {
+    const emailInput = document.getElementById('login-email');
+    if (emailInput) emailInput.value = profile.email;
+  }
+};
+
+window.toggleLoginPasswordVisibility = function() {
+  const pwdInput = document.getElementById('login-password');
+  const eyeIcon = document.getElementById('login-eye-icon');
+  if (!pwdInput) return;
+  
+  if (pwdInput.type === 'password') {
+    pwdInput.type = 'text';
+    if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye-off');
+  } else {
+    pwdInput.type = 'password';
+    if (eyeIcon) eyeIcon.setAttribute('data-lucide', 'eye');
+  }
+  if (window.lucide) {
+    try { lucide.createIcons(); } catch(e) {}
+  }
+};
+
+window.handleLoginSubmit = function(e) {
+  if (e) e.preventDefault();
+  
+  const btnContent = document.getElementById('login-btn-content');
+  const btnLoading = document.getElementById('login-btn-loading');
+  const loadingText = document.getElementById('login-loading-text');
+  const submitBtn = document.getElementById('login-submit-btn');
+  const roleSelect = document.getElementById('login-role-select');
+  const selectedRole = roleSelect ? roleSelect.value : 'dir_gen';
+  
+  if (btnContent) btnContent.style.display = 'none';
+  if (btnLoading) btnLoading.style.display = 'flex';
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Séquence d'authentification haute sécurité en plusieurs étapes
+  setTimeout(() => {
+    if (loadingText) loadingText.innerText = 'Vérification Chiffrement AES-256 & RLS...';
+  }, 400);
+
+  setTimeout(() => {
+    if (loadingText) loadingText.innerText = 'Accès Autorisé • Initialisation Cockpit...';
+  }, 850);
+
+  setTimeout(() => {
+    // Enregistrement de session
+    sessionStorage.setItem('bondin_authenticated', 'true');
+    sessionStorage.setItem('bondin_auth_role', selectedRole);
+
+    // Synchronisation du slicer RLS du dashboard
+    const slicerRls = document.getElementById('slicer-rls');
+    if (slicerRls) {
+      slicerRls.value = selectedRole;
+      if (window.applyFilters) window.applyFilters();
+    }
+
+    // Mise à jour de l'avatar et libellé de direction dans l'en-tête
+    updateHeaderProfileBadge(selectedRole);
+
+    // Animation de transition warp
+    const loginOverlay = document.getElementById('login-screen');
+    if (loginOverlay) {
+      loginOverlay.classList.remove('login-fade-in');
+      loginOverlay.classList.add('login-success-warp');
+      setTimeout(() => {
+        loginOverlay.style.display = 'none';
+        loginOverlay.classList.remove('login-success-warp');
+        // Réinitialiser le bouton pour la prochaine connexion
+        if (btnContent) btnContent.style.display = 'flex';
+        if (btnLoading) btnLoading.style.display = 'none';
+        if (submitBtn) submitBtn.disabled = false;
+        if (loadingText) loadingText.innerText = 'Authentification DWH en cours...';
+      }, 650);
+    }
+
+    const profile = DEMO_PROFILES[selectedRole];
+    if (window.showToast) {
+      window.showToast(`Bienvenue sur BONDIN × FIDNESS • Session [${profile ? profile.title : 'Direction'}]`, 'shield-check');
+    }
+  }, 1300);
+};
+
+function updateHeaderProfileBadge(roleKey) {
+  const profile = DEMO_PROFILES[roleKey] || DEMO_PROFILES.dir_gen;
+  const dgAvatar = document.querySelector('.aurora-header button span.rounded-full');
+  const dgLabel = document.querySelector('.aurora-header button span.text-purple-100');
+  if (dgAvatar) {
+    dgAvatar.innerText = profile.avatar;
+  }
+  if (dgLabel) {
+    dgLabel.innerText = profile.avatar === 'DG' ? 'Direction' : profile.avatar;
+  }
+}
+
+window.logoutToLoginScreen = function() {
+  sessionStorage.removeItem('bondin_authenticated');
+  const loginOverlay = document.getElementById('login-screen');
+  if (loginOverlay) {
+    loginOverlay.style.display = 'flex';
+    loginOverlay.classList.add('login-fade-in');
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch(e) {}
+    }
+  }
+  if (window.showToast) {
+    window.showToast('Session verrouillée. Veuillez vous reconnecter.', 'lock');
+  }
+};
+
+// Canvas Particules Ambiantes pour le Login
+function initLoginParticles() {
+  const canvas = document.getElementById('login-particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let animationId;
+  let particles = [];
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  
+  const particleCount = Math.min(45, Math.floor(window.innerWidth / 30));
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2.2 + 0.8,
+      speedY: Math.random() * 0.45 + 0.15,
+      speedX: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.6 + 0.2,
+      color: Math.random() > 0.4 ? 'rgba(245, 158, 11, ' : 'rgba(200, 16, 46, '
+    });
+  }
+  
+  function animate() {
+    if (!document.getElementById('login-screen') || document.getElementById('login-screen').style.display === 'none') {
+      animationId = requestAnimationFrame(animate);
+      return;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let p of particles) {
+      p.y -= p.speedY;
+      p.x += p.speedX;
+      if (p.y < -10) {
+        p.y = canvas.height + 10;
+        p.x = Math.random() * canvas.width;
+      }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.opacity + ')';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#F59E0B';
+      ctx.fill();
+    }
+    animationId = requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+function initAuthGate() {
+  initLoginParticles();
+  const urlParams = new URLSearchParams(window.location.search);
+  const forceLogout = urlParams.get('logout') === 'true';
+  const forceLogin = urlParams.get('login') === 'true';
+  const isAuth = sessionStorage.getItem('bondin_authenticated') === 'true';
+  const loginOverlay = document.getElementById('login-screen');
+  
+  if (!loginOverlay) return;
+
+  if (forceLogout) {
+    sessionStorage.removeItem('bondin_authenticated');
+    loginOverlay.style.display = 'flex';
+  } else if (forceLogin || !isAuth) {
+    loginOverlay.style.display = 'flex';
+  } else {
+    loginOverlay.style.display = 'none';
+    const savedRole = sessionStorage.getItem('bondin_auth_role');
+    if (savedRole) {
+      updateHeaderProfileBadge(savedRole);
+    }
+  }
+}
 
 // ==========================================================================
 // 1. NAVIGATION SOUS-BARRE PAR ONGLETS (SEGMENTED PILLS FAÇON MOCKUP & ANIMÉE)

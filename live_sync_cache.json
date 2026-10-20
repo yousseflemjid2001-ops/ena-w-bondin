@@ -1,17 +1,41 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-20 18:34:27",
+  "timestamp": "2026-10-20 18:44:22",
   "company_name": "BONDIN",
-  "total_scans": 13091,
-  "total_ca_tnd": 153279.97,
-  "panier_moyen_tnd": 11.709,
-  "total_points_emis": 513808,
+  "total_scans": 13094,
+  "total_ca_tnd": 153304.25,
+  "panier_moyen_tnd": 11.708,
+  "total_points_emis": 513905,
   "clients_actifs": 759,
-  "dernier_scan": "2026-10-20 18:32:10",
-  "dernier_ticket": "bondin6135206",
-  "dernier_magasin": "Succursale Gafsa Ville",
+  "dernier_scan": "2026-10-20 18:40:48",
+  "dernier_ticket": "bondin6135299",
+  "dernier_magasin": "Succursale Gab\u00e8s Jara",
   "recent_scans": [
+    {
+      "id": 13105,
+      "ticket": "bondin6135299",
+      "montant_tnd": 9.25,
+      "points": 37.0,
+      "date": "2026-10-20 18:40:48",
+      "magasin": "Succursale Gab\u00e8s Jara"
+    },
+    {
+      "id": 13104,
+      "ticket": "bondin6135281",
+      "montant_tnd": 10.0,
+      "points": 40.0,
+      "date": "2026-10-20 18:39:13",
+      "magasin": "Succursale Gafsa Ville"
+    },
+    {
+      "id": 13103,
+      "ticket": "bondin6135253",
+      "montant_tnd": 5.032,
+      "points": 20.128,
+      "date": "2026-10-20 18:36:58",
+      "magasin": "Succursale Gafsa Ville"
+    },
     {
       "id": 13102,
       "ticket": "bondin6135206",
@@ -27,30 +51,6 @@
       "points": 26.6,
       "date": "2026-10-20 18:25:04",
       "magasin": "Caf\u00e9t\u00e9ria Gab\u00e8s Jara"
-    },
-    {
-      "id": 13100,
-      "ticket": "bondin6135118",
-      "montant_tnd": 9.25,
-      "points": 37.0,
-      "date": "2026-10-20 18:24:07",
-      "magasin": "Succursale Gab\u00e8s Jara"
-    },
-    {
-      "id": 13099,
-      "ticket": "bondin6135008",
-      "montant_tnd": 9.6,
-      "points": 23.8,
-      "date": "2026-10-20 18:15:18",
-      "magasin": "Caf\u00e9t\u00e9ria Gab\u00e8s Jara"
-    },
-    {
-      "id": 13098,
-      "ticket": "bondin6134974",
-      "montant_tnd": 74.0,
-      "points": 296.0,
-      "date": "2026-10-20 18:12:37",
-      "magasin": "Succursale Gab\u00e8s Jara"
     }
   ]
 }
