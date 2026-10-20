@@ -139,20 +139,20 @@ window.selectQuickProfile = function(profileKey) {
   if (emailInput) emailInput.value = profile.email;
   if (roleSelect) roleSelect.value = profile.role;
   
-  // Mettre à jour l'état actif des pastilles
-  document.querySelectorAll('.login-chip').forEach(c => c.classList.remove('active'));
-  const activeChip = document.getElementById(`chip-${profileKey}`);
-  if (activeChip) activeChip.classList.add('active');
+  // Mettre à jour l'état actif des cartes et pastilles
+  document.querySelectorAll('.login-profile-card, .login-chip').forEach(c => c.classList.remove('active'));
+  const activeCard = document.getElementById(`chip-${profileKey}`);
+  if (activeCard) activeCard.classList.add('active');
 
   if (window.showToast) {
-    window.showToast(`Profil ${profile.title} sélectionné`, 'user-check');
+    window.showToast(`Profil Exécutif [${profile.title}] activé`, 'user-check');
   }
 };
 
 window.onLoginRoleChange = function(roleVal) {
-  document.querySelectorAll('.login-chip').forEach(c => c.classList.remove('active'));
-  const matchingChip = document.getElementById(`chip-${roleVal}`);
-  if (matchingChip) matchingChip.classList.add('active');
+  document.querySelectorAll('.login-profile-card, .login-chip').forEach(c => c.classList.remove('active'));
+  const matchingCard = document.getElementById(`chip-${roleVal}`);
+  if (matchingCard) matchingCard.classList.add('active');
   
   const profile = DEMO_PROFILES[roleVal];
   if (profile) {
