@@ -414,101 +414,598 @@ function initSubbarTabs() {
 }
 
 // ==========================================================================
-// 2. SLICERS & FILTRES (PROFIL RÉSEAU & SÉCURITÉ RLS)
+// 2. CONTRÔLEUR INTELLIGENT DE FILTRAGE POWER BI (ENA W BONDIN × FIDNESS)
 // ==========================================================================
-/** Met à jour dynamiquement le badge du compteur de filtres actifs (ex: "5 ACTIFS" ou "CONSOLIDÉ") */
-function updateActiveFiltersBadge() {
-  const dStart   = document.getElementById('filter-date-start')?.value;
-  const dEnd     = document.getElementById('filter-date-end')?.value;
-  const magasin  = document.getElementById('filter-magasin')?.value || 'all';
-  const gamme    = document.getElementById('filter-gamme')?.value || 'all';
-  const segment  = document.getElementById('filter-segment')?.value || 'all';
-  const reseau   = document.getElementById('slicer-reseau')?.value || 'all';
-  const role     = document.getElementById('slicer-rls')?.value || 'dir_gen';
+let currentPeriod = 'YTD';
+let currentRange = '01/04/2026 - 20/10/2026';
+let vsN1Active = true;
+let isSlicersCollapsed = false;
 
-  let activeCount = [magasin, gamme, segment, reseau].filter(v => v !== 'all').length;
-  if (role !== 'dir_gen') activeCount += 1;
-  if ((dStart && dStart !== '2026-04-01') || (dEnd && dEnd !== '2026-10-20')) activeCount += 1;
+// Gestion intelligente des pilules Time IA
+window.setTimePeriod = function(period, range, btn) {
+  document.querySelectorAll('.time-pill').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  currentPeriod = period;
+  currentRange = range;
+  
+  const rangeDisplay = document.getElementById('dateRangeDisplay');
+  if (rangeDisplay) rangeDisplay.textContent = currentRange;
 
-  const countBadge = document.getElementById('active-filters-count');
-  if (countBadge) {
-    if (activeCount === 0) {
-      countBadge.textContent = 'CONSOLIDÉ';
-      countBadge.style.color = '#34D399';
-    } else {
-      countBadge.textContent = `${activeCount} ACTIF${activeCount > 1 ? 'S' : ''}`;
-      countBadge.style.color = '#10B981';
-    }
+  if (period === 'Personnalisé') {
+    window.promptCustomDateRange();
+    return;
   }
-}
-window.updateActiveFiltersBadge = updateActiveFiltersBadge;
 
-function initSlicers() {
-  // Changement direct des sélecteurs : marque actif ET applique en direct
-  ['filter-magasin', 'filter-gamme', 'filter-segment', 'slicer-reseau', 'slicer-rls'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('change', (e) => {
-        const val = e.target.value;
-        const defaultVal = (id === 'slicer-rls') ? 'dir_gen' : 'all';
-        markFilterActive(id, val !== defaultVal);
-        executeGlobalFilters();
-      });
-    }
-  });
-
-  // Changement dates calendrier
-  ['filter-date-start', 'filter-date-end'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('change', () => {
-        const s = document.getElementById('filter-date-start')?.value;
-        const e = document.getElementById('filter-date-end')?.value;
-        const gDate = document.getElementById('group-filter-date');
-        if (gDate) {
-          gDate.classList.toggle('is-active', s !== '2026-04-01' || e !== '2026-10-20');
-        }
-        executeGlobalFilters();
-      });
-    }
-  });
-
-  // Mise à jour initiale du badge de filtres actifs
-  updateActiveFiltersBadge();
-}
-
-/** Marquer visuellement un groupe de filtre actif (dot violet) */
-function markFilterActive(selectId, isActive) {
-  const el = document.getElementById(selectId);
-  if (!el) return;
-  const group = el.closest('.pro-filter-group');
-  if (group) {
-    group.classList.toggle('is-active', isActive);
-  }
-}
-
-/** Bouton "Appliquer" : Déclenche la synchronisation de toutes les visualisations */
-window.applyFilters = function() {
+  window.renderChips();
   executeGlobalFilters();
-
-  const dStart   = document.getElementById('filter-date-start')?.value;
-  const dEnd     = document.getElementById('filter-date-end')?.value;
-  const magasin  = document.getElementById('filter-magasin')?.value || 'all';
-  const gamme    = document.getElementById('filter-gamme')?.value || 'all';
-  const segment  = document.getElementById('filter-segment')?.value || 'all';
-  const reseau   = document.getElementById('slicer-reseau')?.value || 'all';
-  const role     = document.getElementById('slicer-rls')?.value || 'dir_gen';
-
-  let activeCount = [magasin, gamme, segment, reseau].filter(v => v !== 'all').length;
-  if (role !== 'dir_gen') activeCount += 1;
-  if (dStart !== '2026-04-01' || dEnd !== '2026-10-20') activeCount += 1;
-
-  if (activeCount === 0) {
-    showToast('Filtres : Vue consolidée globale active', 'info');
-  } else {
-    showToast(`✓ ${activeCount} filtre(s) appliqué(s) — Toutes les visualisations et KPIs ont été mis à jour !`, 'success');
+  if (typeof showToast === 'function') {
+    showToast(`Période sélectionnée : ${period} (${range})`, 'info');
   }
 };
+
+window.promptCustomDateRange = function() {
+  const current = currentRange || '01/04/2026 - 20/10/2026';
+  const custom = prompt("Définir la plage de dates personnalisée (JJ/MM/AAAA - JJ/MM/AAAA) :", current);
+  if (custom && custom.trim()) {
+    currentRange = custom.trim();
+    currentPeriod = 'Personnalisé';
+    const rangeDisplay = document.getElementById('dateRangeDisplay');
+    if (rangeDisplay) rangeDisplay.textContent = currentRange;
+    document.querySelectorAll('.time-pill').forEach(b => {
+      b.classList.toggle('active', b.dataset.period === 'Personnalisé');
+    });
+    window.renderChips();
+    executeGlobalFilters();
+    if (typeof showToast === 'function') {
+      showToast(`Plage personnalisée appliquée : ${currentRange}`, 'success');
+    }
+  }
+};
+
+// Bascule intelligente de la comparaison N-1
+window.toggleVsN1Comparison = function() {
+  vsN1Active = !vsN1Active;
+  const toggleBtn = document.getElementById('toggleVsN1');
+  if (toggleBtn) {
+    toggleBtn.style.opacity = vsN1Active ? '1' : '0.4';
+    toggleBtn.style.transform = vsN1Active ? 'scale(1)' : 'scale(0.95)';
+  }
+  window.renderChips();
+  executeGlobalFilters();
+  if (typeof showToast === 'function') {
+    showToast(vsN1Active ? 'Comparaison VS N-1 activée' : 'Comparaison VS N-1 désactivée', 'info');
+  }
+};
+
+// Réduire / Déplier la grille des 6 slicers
+window.toggleSlicersCollapse = function() {
+  const grid = document.getElementById('slicersGrid');
+  const chevron = document.getElementById('collapseChevron');
+  if (!grid) return;
+  isSlicersCollapsed = !isSlicersCollapsed;
+  grid.classList.toggle('collapsed', isSlicersCollapsed);
+  if (chevron) {
+    chevron.style.transform = isSlicersCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+  }
+};
+
+// Événements de changement des 5 slicers
+window.onPdvChange = function(val) {
+  const legacy = document.getElementById('filter-magasin');
+  if (legacy) legacy.value = val;
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+window.onGammeChange = function(val) {
+  const legacy = document.getElementById('filter-gamme');
+  if (legacy) legacy.value = val;
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+window.onRfmChange = function(val) {
+  const legacy = document.getElementById('filter-segment');
+  if (legacy) legacy.value = val;
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+window.onReseauChange = function(val) {
+  const legacy = document.getElementById('slicer-reseau');
+  if (legacy) legacy.value = val;
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+window.onRlsChange = function(val) {
+  const legacy = document.getElementById('slicer-rls');
+  if (legacy) legacy.value = val;
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+// Bookmarks intelligents (Vues stratégiques préconfigurées)
+window.handleBookmarkChange = function(val) {
+  const pdv = document.getElementById('pdvSelect');
+  const gamme = document.getElementById('gammeSelect');
+  const rfm = document.getElementById('rfmSelect');
+  const reseau = document.getElementById('reseauSelect');
+  const rls = document.getElementById('rlsSelect');
+
+  if (val === 'dg') {
+    if (pdv) pdv.value = 'all';
+    if (gamme) gamme.value = 'all';
+    if (rfm) rfm.value = 'all';
+    if (reseau) reseau.value = 'all';
+    if (rls) rls.value = 'dir_gen';
+    window.setTimePeriod('YTD', '01/04/2026 - 20/10/2026', document.querySelector('.time-pill[data-period="YTD"]'));
+    if (typeof showToast === 'function') showToast('Vue Direction Générale activée (Réseau Global Consolidé)', 'success');
+  } else if (val === 'b2b') {
+    if (pdv) pdv.value = 'SUC';
+    if (gamme) gamme.value = 'all';
+    if (rfm) rfm.value = 'all';
+    if (reseau) reseau.value = 'grossistes';
+    if (rls) rls.value = 'grands_comptes';
+    window.setTimePeriod('YTD', '01/04/2026 - 20/10/2026', document.querySelector('.time-pill[data-period="YTD"]'));
+    if (typeof switchTab === 'function') switchTab('tab-segmentation');
+    if (typeof showToast === 'function') showToast('Vue Focus Grossistes B2B activée (Succursales & CHR)', 'success');
+  } else if (val === 'turc') {
+    if (pdv) pdv.value = 'all';
+    if (gamme) gamme.value = 'turc';
+    if (rfm) rfm.value = 'all';
+    if (reseau) reseau.value = 'all';
+    if (rls) rls.value = 'dir_gen';
+    if (typeof switchTab === 'function') switchTab('tab-cockpit');
+    if (typeof showToast === 'function') showToast('Vue Top Café Turc Moulu activée (Gamme phare 1910)', 'success');
+  } else if (val === 'retention') {
+    if (pdv) pdv.value = 'all';
+    if (gamme) gamme.value = 'all';
+    if (rfm) rfm.value = 'risque';
+    if (reseau) reseau.value = 'all';
+    if (rls) rls.value = 'dir_gen';
+    window.setTimePeriod('7J', '13/10/2026 - 20/10/2026', document.querySelector('.time-pill[data-period="7J"]'));
+    if (typeof switchTab === 'function') switchTab('tab-cagnotte');
+    if (typeof showToast === 'function') showToast('Vue Alerte Rétention IA activée (Clients à risque de churn)', 'warning');
+  }
+
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+// Recherche globale intelligente (Ctrl+K)
+window.handleGlobalSearch = function(query) {
+  if (!query) return;
+  const q = query.toLowerCase().trim();
+  const pdv = document.getElementById('pdvSelect');
+  const gamme = document.getElementById('gammeSelect');
+  const rfm = document.getElementById('rfmSelect');
+
+  // Recherche dans les magasins
+  if (pdv) {
+    for (let opt of pdv.options) {
+      if (opt.text.toLowerCase().includes(q) && opt.value !== 'all') {
+        pdv.value = opt.value;
+        break;
+      }
+    }
+  }
+
+  // Recherche dans les gammes
+  if (gamme) {
+    for (let opt of gamme.options) {
+      if (opt.text.toLowerCase().includes(q) && opt.value !== 'all') {
+        gamme.value = opt.value;
+        break;
+      }
+    }
+  }
+
+  // Recherche dans les segments
+  if (rfm) {
+    for (let opt of rfm.options) {
+      if (opt.text.toLowerCase().includes(q) && opt.value !== 'all') {
+        rfm.value = opt.value;
+        break;
+      }
+    }
+  }
+
+  window.renderChips();
+};
+
+window.applyGlobalSearchFilter = function() {
+  executeGlobalFilters();
+  const input = document.getElementById('globalSearchInput');
+  const val = input ? input.value : '';
+  if (typeof showToast === 'function') {
+    showToast(`Recherche exécutée : "${val}" (Filtres synchronisés)`, 'success');
+  }
+};
+
+// Rendu dynamique et intelligent des puces (Chips)
+function renderChips() {
+  const container = document.getElementById('chipsContainer');
+  if (!container) return;
+
+  let chipsHTML = `
+    <span class="chips-label">
+      <i data-lucide="tag" style="width:13px;height:13px;color:#c084fc;"></i>
+      Filtres appliqués :
+    </span>
+  `;
+  let count = 0;
+
+  // 1. Période active
+  if (currentPeriod) {
+    count++;
+    chipsHTML += `
+      <span class="filter-chip chip-purple">
+        Période : ${currentPeriod} (${currentRange})
+        <button type="button" class="chip-remove" onclick="window.removePeriodChip()" title="Réinitialiser la période">✕</button>
+      </span>
+    `;
+  }
+
+  // 2. Comparaison N-1
+  if (vsN1Active) {
+    count++;
+    chipsHTML += `
+      <span class="filter-chip chip-green">
+        Comparaison : vs N-1 actif
+        <button type="button" class="chip-remove" onclick="window.removeVsN1Chip()" title="Désactiver la comparaison">✕</button>
+      </span>
+    `;
+  }
+
+  // 3. Point de Vente
+  const pdvEl = document.getElementById('pdvSelect') || document.getElementById('filter-magasin');
+  if (pdvEl && pdvEl.value !== 'all') {
+    count++;
+    const label = pdvEl.options[pdvEl.selectedIndex]?.text.split('(')[0].trim() || pdvEl.value;
+    chipsHTML += `
+      <span class="filter-chip chip-purple">
+        PDV : ${label}
+        <button type="button" class="chip-remove" onclick="window.resetSlicerChip('pdvSelect', 'all')" title="Retirer">✕</button>
+      </span>
+    `;
+  }
+
+  // 4. Gamme Produit
+  const gammeEl = document.getElementById('gammeSelect') || document.getElementById('filter-gamme');
+  if (gammeEl && gammeEl.value !== 'all') {
+    count++;
+    const label = gammeEl.options[gammeEl.selectedIndex]?.text || gammeEl.value;
+    chipsHTML += `
+      <span class="filter-chip chip-purple">
+        Gamme : ${label}
+        <button type="button" class="chip-remove" onclick="window.resetSlicerChip('gammeSelect', 'all')" title="Retirer">✕</button>
+      </span>
+    `;
+  }
+
+  // 5. Segment RFM
+  const rfmEl = document.getElementById('rfmSelect') || document.getElementById('filter-segment');
+  if (rfmEl && rfmEl.value !== 'all') {
+    count++;
+    const label = rfmEl.options[rfmEl.selectedIndex]?.text || rfmEl.value;
+    chipsHTML += `
+      <span class="filter-chip chip-purple">
+        RFM : ${label}
+        <button type="button" class="chip-remove" onclick="window.resetSlicerChip('rfmSelect', 'all')" title="Retirer">✕</button>
+      </span>
+    `;
+  }
+
+  // 6. Profil Réseau
+  const reseauEl = document.getElementById('reseauSelect') || document.getElementById('slicer-reseau');
+  if (reseauEl && reseauEl.value !== 'all') {
+    count++;
+    const label = reseauEl.options[reseauEl.selectedIndex]?.text || reseauEl.value;
+    chipsHTML += `
+      <span class="filter-chip chip-purple">
+        Réseau : ${label}
+        <button type="button" class="chip-remove" onclick="window.resetSlicerChip('reseauSelect', 'all')" title="Retirer">✕</button>
+      </span>
+    `;
+  }
+
+  // 7. Rôle RLS
+  const rlsEl = document.getElementById('rlsSelect') || document.getElementById('slicer-rls');
+  if (rlsEl && rlsEl.value !== 'dir_gen') {
+    count++;
+    const label = rlsEl.options[rlsEl.selectedIndex]?.text || rlsEl.value;
+    chipsHTML += `
+      <span class="filter-chip chip-purple">
+        RLS : ${label}
+        <button type="button" class="chip-remove" onclick="window.resetSlicerChip('rlsSelect', 'dir_gen')" title="Retirer">✕</button>
+      </span>
+    `;
+  }
+
+  container.innerHTML = chipsHTML;
+
+  // Mise à jour des compteurs visuels
+  const countBadge = document.getElementById('activeCountBadge');
+  const countText = document.getElementById('activeCountText');
+  const legacyBadge = document.getElementById('active-filters-count');
+
+  if (countBadge) countBadge.textContent = count;
+  if (countText) countText.textContent = `${count} filtre${count > 1 ? 's' : ''} actif${count > 1 ? 's' : ''}`;
+  if (legacyBadge) {
+    legacyBadge.textContent = count === 0 ? 'CONSOLIDÉ' : `${count} ACTIF${count > 1 ? 'S' : ''}`;
+    legacyBadge.style.color = count === 0 ? '#34D399' : '#10B981';
+  }
+
+  // Mise à jour du badge PDV
+  const pdvBadge = document.getElementById('pdvCountBadge');
+  if (pdvBadge && pdvEl) {
+    pdvBadge.textContent = pdvEl.value === 'all' ? 'TOUS (6)' : '1 SÉL.';
+  }
+
+  if (window.lucide) {
+    try { lucide.createIcons(); } catch(e) {}
+  }
+}
+window.renderChips = renderChips;
+
+window.removePeriodChip = function() {
+  currentPeriod = '';
+  document.querySelectorAll('.time-pill').forEach(b => b.classList.remove('active'));
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+window.removeVsN1Chip = function() {
+  vsN1Active = false;
+  const toggleBtn = document.getElementById('toggleVsN1');
+  if (toggleBtn) {
+    toggleBtn.style.opacity = '0.4';
+    toggleBtn.style.transform = 'scale(0.95)';
+  }
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+window.resetSlicerChip = function(id, defaultVal) {
+  const el = document.getElementById(id);
+  if (el) el.value = defaultVal;
+  const legacyMap = {
+    'pdvSelect': 'filter-magasin',
+    'gammeSelect': 'filter-gamme',
+    'rfmSelect': 'filter-segment',
+    'reseauSelect': 'slicer-reseau',
+    'rlsSelect': 'slicer-rls'
+  };
+  if (legacyMap[id]) {
+    const leg = document.getElementById(legacyMap[id]);
+    if (leg) leg.value = defaultVal;
+  }
+  window.renderChips();
+  executeGlobalFilters();
+};
+
+window.resetAllFilters = function() {
+  currentPeriod = 'YTD';
+  currentRange = '01/04/2026 - 20/10/2026';
+  vsN1Active = true;
+  isSlicersCollapsed = false;
+
+  const grid = document.getElementById('slicersGrid');
+  if (grid) grid.classList.remove('collapsed');
+  const chevron = document.getElementById('collapseChevron');
+  if (chevron) chevron.style.transform = 'rotate(0deg)';
+
+  const toggleBtn = document.getElementById('toggleVsN1');
+  if (toggleBtn) {
+    toggleBtn.style.opacity = '1';
+    toggleBtn.style.transform = 'scale(1)';
+  }
+
+  const rangeDisplay = document.getElementById('dateRangeDisplay');
+  if (rangeDisplay) rangeDisplay.textContent = currentRange;
+
+  document.querySelectorAll('.time-pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.period === 'YTD');
+  });
+
+  const searchInput = document.getElementById('globalSearchInput');
+  if (searchInput) searchInput.value = '';
+
+  const bookmark = document.getElementById('bookmarkSelect');
+  if (bookmark) bookmark.value = 'dg';
+
+  window.resetSlicerChip('pdvSelect', 'all');
+  window.resetSlicerChip('gammeSelect', 'all');
+  window.resetSlicerChip('rfmSelect', 'all');
+  window.resetSlicerChip('reseauSelect', 'all');
+  window.resetSlicerChip('rlsSelect', 'dir_gen');
+
+  const banner = document.getElementById('cross-filter-banner');
+  if (banner) banner.style.display = 'none';
+
+  window.renderChips();
+  executeGlobalFilters();
+
+  if (typeof showToast === 'function') {
+    showToast('Tous les filtres sont réinitialisés — Vue globale consolidée', 'info');
+  }
+};
+
+window.applyFiltersEffect = function() {
+  executeGlobalFilters();
+  const btn = document.querySelector('.btn-apply');
+  if (btn) {
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i data-lucide="check" style="width:16px;height:16px;"></i> Filtres synchronisés !';
+    if (window.lucide) { try { lucide.createIcons(); } catch(e) {} }
+    setTimeout(() => {
+      btn.innerHTML = original;
+      if (window.lucide) { try { lucide.createIcons(); } catch(e) {} }
+    }, 1200);
+  }
+  if (typeof showToast === 'function') {
+    showToast('✓ Filtres appliqués avec succès — Visualisations et KPIs synchronisés !', 'success');
+  }
+};
+
+// ==========================================================================
+// MODAL POWER BI CODE (DAX & M-QUERY)
+// ==========================================================================
+const PBI_CODES = {
+  dax: `// ========================================================
+// MESURES DAX — ENA W BONDIN × FIDNESS (LIVE DWH 2026)
+// ========================================================
+
+// 1. Chiffre d'Affaires Fidélité Consolidé
+[CA_Fidelite_TND] = 
+CALCULATE(
+    SUM(Fait_Ventes_Fidelite[Montant_Net_TND]),
+    USERELATIONSHIP(Fait_Ventes_Fidelite[ID_Temps], Dim_Temps[ID_Temps])
+)
+
+// 2. Panier Moyen (AOV - Average Order Value)
+[Panier_Moyen_AOV] = 
+DIVIDE(
+    [CA_Fidelite_TND],
+    DISTINCTCOUNT(Fait_Ventes_Fidelite[ID_Transaction]),
+    0
+)
+
+// 3. Taux d'Utilisation de la Cagnotte (Burn Rate)
+[Taux_Burn_Fidelite] = 
+DIVIDE(
+    SUM(Fait_Mouvements_Points[Points_Brules]),
+    SUM(Fait_Mouvements_Points[Points_Emis]),
+    0
+)
+
+// 4. Provision Dette Fidélité (Passif Bilan)
+[Dette_Provision_TND] = 
+SUM(Dim_Client[Points_Actuels_Solde]) * 0.01
+
+// 5. Comparaison Dynamique VS N-1
+[CA_N_Moins_1] = 
+CALCULATE(
+    [CA_Fidelite_TND],
+    SAMEPERIODLASTYEAR(Dim_Temps[Date])
+)
+
+[Croissance_CA_MoM] = 
+DIVIDE([CA_Fidelite_TND] - [CA_N_Moins_1], [CA_N_Moins_1], 0)`,
+
+  rls: `// ========================================================
+// RÈGLE ROW-LEVEL SECURITY (RLS) DYNAMIQUE POWER BI
+// Tables concernées : Dim_Magasin & Fait_Ventes_Fidelite
+// ========================================================
+
+VAR CurrentUserEmail = USERPRINCIPALNAME()
+RETURN
+SWITCH(
+    TRUE(),
+    // 1. Direction Générale : Accès à 100% du réseau consolidé
+    CurrentUserEmail IN {"dg@bondin.tn", "direction@bondin.tn"}, 1,
+
+    // 2. Grands Comptes : Focus Succursales & Grossistes B2B
+    CurrentUserEmail = "b2b@bondin.tn", 
+    RELATED(Dim_Magasin[Type_Magasin]) = "Succursale",
+
+    // 3. Région Tunis : 13 Magasins Grand Tunis
+    CurrentUserEmail = "reg.tunis@bondin.tn", 
+    RELATED(Dim_Magasin[Region_Gouvernorat]) = "Grand Tunis",
+
+    // 4. Marketing B2C : Consommateurs Particuliers (hors grossistes suspects)
+    CurrentUserEmail = "mkt.b2c@fidness.com",
+    RELATED(Dim_Client[Flag_Grossiste_Suspect]) = 0,
+
+    // Filtrage strict par défaut
+    0
+)`,
+
+  m: `// ========================================================
+// SCRIPT POWER QUERY (M) — INGESTION POSTGRESQL LIVE DWH
+// ========================================================
+let
+    Source = PostgreSQL.Database("srv-dwh-prod.bondin.tn", "dwh_fidelite_bondin", [
+        Query = "
+            SELECT 
+                v.id_vente, v.date_vente, v.montant_net_tnd, v.points_attribues,
+                m.nom_magasin, m.type_magasin, m.region_gouvernorat,
+                c.id_client_hache, c.segment_rfm, c.flag_grossiste_suspect,
+                p.nom_gamme
+            FROM fait_ventes_fidelite v
+            JOIN dim_magasin m ON v.id_magasin = m.id_magasin
+            JOIN dim_client c ON v.id_client_hache = c.id_client_hache
+            JOIN dim_produit p ON v.id_produit = p.id_produit
+            WHERE v.date_vente >= '2026-04-01'
+        "
+    ]),
+    TypageTypes = Table.TransformColumnTypes(Source, {
+        {"montant_net_tnd", Currency.Type},
+        {"date_vente", type datetime},
+        {"points_attribues", Int64.Type}
+    })
+in
+    TypageTypes`
+};
+
+let currentPbiTab = 'dax';
+
+window.openPowerBiCodeModal = function() {
+  const modal = document.getElementById('modal-powerbi-code');
+  if (modal) {
+    modal.style.display = 'flex';
+    window.switchPbiCodeTab('dax');
+    if (window.lucide) { try { lucide.createIcons(); } catch(e) {} }
+  }
+};
+
+window.closePowerBiCodeModal = function() {
+  const modal = document.getElementById('modal-powerbi-code');
+  if (modal) modal.style.display = 'none';
+};
+
+window.switchPbiCodeTab = function(tab) {
+  currentPbiTab = tab;
+  ['dax', 'rls', 'm'].forEach(t => {
+    const btn = document.getElementById(`pbi-tab-${t}`);
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  const display = document.getElementById('pbi-code-display');
+  if (display) {
+    display.textContent = PBI_CODES[tab] || '';
+  }
+};
+
+window.copyPowerBiCode = function() {
+  const text = PBI_CODES[currentPbiTab] || '';
+  navigator.clipboard.writeText(text).then(() => {
+    const btnText = document.getElementById('copyCodeBtnText');
+    if (btnText) {
+      btnText.textContent = 'Copié !';
+      setTimeout(() => { btnText.textContent = 'Copier'; }, 1500);
+    }
+    if (typeof showToast === 'function') {
+      showToast('✓ Code copié dans le presse-papier !', 'success');
+    }
+  }).catch(() => {
+    if (typeof showToast === 'function') {
+      showToast('Code sélectionné pour copie manuelle.', 'info');
+    }
+  });
+};
+
+// Raccourci clavier Ctrl+K pour la recherche globale
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    const input = document.getElementById('globalSearchInput');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }
+});
 
 // ==========================================================================
 // 2c. MOTEUR DE FILTRAGE CROISÉ INTERACTIF STYLE POWER BI
@@ -645,25 +1142,48 @@ window.resetAllFilters = function() {
 // Recalcule et actualise instantanément 100% des visuels du Dashboard
 // ==========================================================================
 function executeGlobalFilters() {
-  updateActiveFiltersBadge();
+  if (typeof renderChips === 'function') renderChips();
 
-  const dStart   = document.getElementById('filter-date-start')?.value || '2026-04-01';
-  const dEnd     = document.getElementById('filter-date-end')?.value || '2026-10-20';
-  const magasin  = document.getElementById('filter-magasin')?.value || 'all';
-  const gamme    = document.getElementById('filter-gamme')?.value || 'all';
-  const segment  = document.getElementById('filter-segment')?.value || 'all';
-  const reseau   = document.getElementById('slicer-reseau')?.value || 'all';
-  const role     = document.getElementById('slicer-rls')?.value || 'dir_gen';
+  const magasin  = document.getElementById('pdvSelect')?.value || document.getElementById('filter-magasin')?.value || 'all';
+  const gamme    = document.getElementById('gammeSelect')?.value || document.getElementById('filter-gamme')?.value || 'all';
+  const segment  = document.getElementById('rfmSelect')?.value || document.getElementById('filter-segment')?.value || 'all';
+  const reseau   = document.getElementById('reseauSelect')?.value || document.getElementById('slicer-reseau')?.value || 'all';
+  const role     = document.getElementById('rlsSelect')?.value || document.getElementById('slicer-rls')?.value || 'dir_gen';
 
-  // Base métriques Live DWH Consolidées (PostgreSQL 13 069 scans)
-  let baseCA = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.ca_total : 152720.666;
-  let baseScans = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.nb_scans : 13069;
-  let baseClients = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_actifs : 758;
+  // Base métriques Live DWH Consolidées (PostgreSQL 13 097 scans)
+  let baseCA = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.ca_total : 153317.0;
+  let baseScans = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.nb_scans : 13097;
+  let baseClients = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_actifs : 759;
   let baseInscrits = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_inscrits : 2715;
   let baseDette = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.dette_tnd : 2848.281;
   let baseBurn = 35;
   let ratioEarnBurn = 44.3;
-  let aov = 11.686;
+  let aov = 11.706;
+
+  // Ajustement dynamique selon le filtre Time IA
+  if (typeof currentPeriod !== 'undefined') {
+    if (currentPeriod === "Aujourd'hui") {
+      baseCA = 2418.50;
+      baseScans = 214;
+      baseClients = 189;
+      aov = 11.30;
+    } else if (currentPeriod === '7J') {
+      baseCA = 18420.00;
+      baseScans = 1540;
+      baseClients = 412;
+      aov = 11.96;
+    } else if (currentPeriod === 'MTD') {
+      baseCA = 24510.00;
+      baseScans = 2100;
+      baseClients = 520;
+      aov = 11.67;
+    } else if (currentPeriod === 'QTD') {
+      baseCA = 76800.00;
+      baseScans = 6500;
+      baseClients = 680;
+      aov = 11.81;
+    }
+  }
   
   // Donut Succursale vs Cafétéria
   let pctSucc = 72.19;
