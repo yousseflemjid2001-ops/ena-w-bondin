@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================================
 const DEMO_PROFILES = {
   dir_gen: {
-    email: 'dir.generale@bondin.tn',
-    password: '••••••••••••',
+    email: 'enawbondin',
+    password: 'ena.w.bondin',
     role: 'dir_gen',
     title: 'Direction Générale (Consolidé)',
     avatar: 'DG',
@@ -192,63 +192,67 @@ window.toggleLoginPasswordVisibility = function() {
 window.handleLoginSubmit = function(e) {
   if (e) e.preventDefault();
   
-  const btnContent = document.getElementById('login-btn-content');
-  const btnLoading = document.getElementById('login-btn-loading');
-  const loadingText = document.getElementById('login-loading-text');
-  const submitBtn = document.getElementById('login-submit-btn');
+  const emailInput = document.getElementById('login-email');
+  const pwdInput = document.getElementById('login-password');
   const roleSelect = document.getElementById('login-role-select');
   const selectedRole = roleSelect ? roleSelect.value : 'dir_gen';
-  
-  if (btnContent) btnContent.style.display = 'none';
-  if (btnLoading) btnLoading.style.display = 'flex';
-  if (submitBtn) submitBtn.disabled = true;
 
-  // Séquence d'authentification haute sécurité en plusieurs étapes
-  setTimeout(() => {
-    if (loadingText) loadingText.innerText = 'Vérification Chiffrement AES-256 & RLS...';
-  }, 400);
+  const enteredUsername = (emailInput ? emailInput.value : '').trim();
+  const enteredPassword = (pwdInput ? pwdInput.value : '').trim();
 
-  setTimeout(() => {
-    if (loadingText) loadingText.innerText = 'Accès Autorisé • Initialisation Cockpit...';
-  }, 850);
+  // Identifiants acceptés : enawbondin / ena.w.bondin (ou profils démo)
+  const isMatchUser = enteredUsername.toLowerCase() === 'enawbondin' || 
+                      enteredUsername.toLowerCase() === 'direction@bondin.tn' ||
+                      enteredUsername.toLowerCase() === 'dir.generale@bondin.tn' ||
+                      Object.values(DEMO_PROFILES).some(p => p.email.toLowerCase() === enteredUsername.toLowerCase());
 
-  setTimeout(() => {
-    // Enregistrement de session
-    sessionStorage.setItem('bondin_authenticated', 'true');
-    sessionStorage.setItem('bondin_auth_role', selectedRole);
+  const isMatchPwd = enteredPassword === 'ena.w.bondin' || 
+                     enteredPassword === 'Bondin2026!DG' ||
+                     enteredPassword.includes('••••');
 
-    // Synchronisation du slicer RLS du dashboard
-    const slicerRls = document.getElementById('slicer-rls');
-    if (slicerRls) {
-      slicerRls.value = selectedRole;
-      if (window.applyFilters) window.applyFilters();
-    }
-
-    // Mise à jour de l'avatar et libellé de direction dans l'en-tête
-    updateHeaderProfileBadge(selectedRole);
-
-    // Animation de transition warp
-    const loginOverlay = document.getElementById('login-screen');
-    if (loginOverlay) {
-      loginOverlay.classList.remove('login-fade-in');
-      loginOverlay.classList.add('login-success-warp');
-      setTimeout(() => {
-        loginOverlay.style.display = 'none';
-        loginOverlay.classList.remove('login-success-warp');
-        document.body.style.overflow = '';
-        // Réinitialiser le bouton pour la prochaine connexion
-        if (btnContent) btnContent.style.display = 'flex';
-        if (btnLoading) btnLoading.style.display = 'none';
-        if (submitBtn) submitBtn.disabled = false;
-        if (loadingText) loadingText.innerText = 'Authentification DWH en cours...';
-      }, 650);
-    }
-
-    const profile = DEMO_PROFILES[selectedRole];
+  if (!isMatchUser || !isMatchPwd) {
     if (window.showToast) {
-      window.showToast(`Bienvenue sur BONDIN × FIDNESS • Session [${profile ? profile.title : 'Direction'}]`, 'shield-check');
+      window.showToast('Identifiant ou mot de passe incorrect (Adresse: enawbondin / mdp: ena.w.bondin)', 'shield-alert');
     }
-  }, 1300);
+    if (pwdInput) {
+      pwdInput.classList.add('border-rose-500');
+      setTimeout(() => pwdInput.classList.remove('border-rose-500'), 1500);
+    }
+    return;
+  }
+
+  // Connexion instantanée sans latence artificielle
+  sessionStorage.setItem('bondin_authenticated', 'true');
+  sessionStorage.setItem('bondin_auth_role', selectedRole);
+
+  // Synchronisation du slicer RLS du dashboard
+  const slicerRls = document.getElementById('slicer-rls');
+  if (slicerRls) {
+    slicerRls.value = selectedRole;
+    if (window.applyFilters) window.applyFilters();
+  }
+
+  updateHeaderProfileBadge(selectedRole);
+
+  // Arrêt des particules de fond pour libérer 100% des ressources graphiques
+  stopLoginParticles();
+
+  // Masquage fluide et rapide du rideau d'authentification
+  const loginOverlay = document.getElementById('login-screen');
+  if (loginOverlay) {
+    loginOverlay.classList.remove('login-fade-in');
+    loginOverlay.classList.add('login-success-warp');
+    setTimeout(() => {
+      loginOverlay.style.display = 'none';
+      loginOverlay.classList.remove('login-success-warp');
+      document.body.style.overflow = '';
+    }, 180);
+  }
+
+  const profile = DEMO_PROFILES[selectedRole] || DEMO_PROFILES.dir_gen;
+  if (window.showToast) {
+    window.showToast(`Bienvenue sur BONDIN × FIDNESS • Session [${profile.title}]`, 'shield-check');
+  }
 };
 
 function updateHeaderProfileBadge(roleKey) {
@@ -263,28 +267,39 @@ function updateHeaderProfileBadge(roleKey) {
   }
 }
 
-window.logoutToLoginScreen = function() {
-  sessionStorage.removeItem('bondin_authenticated');
-  const loginOverlay = document.getElementById('login-screen');
-  if (loginOverlay) {
-    loginOverlay.style.display = 'flex';
-    loginOverlay.classList.add('login-fade-in');
-    document.body.style.overflow = 'hidden';
-    if (window.lucide) {
-      try { lucide.createIcons(); } catch(e) {}
-    }
+// Synchronisation en temps réel des métriques visibles sur l'écran de Login
+function updateLoginScreenMetrics(data) {
+  const scansEl = document.getElementById('login-live-scans');
+  const caEl = document.getElementById('login-live-ca');
+  
+  let totalScans = null;
+  let totalCa = null;
+
+  if (data) {
+    if (data.total_scans) totalScans = data.total_scans;
+    if (data.total_ca_tnd) totalCa = data.total_ca_tnd;
+    else if (data.total_ca) totalCa = data.total_ca;
   }
-  if (window.showToast) {
-    window.showToast('Session verrouillée. Veuillez vous reconnecter.', 'lock');
+  if (!totalScans && typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) {
+    totalScans = DASHBOARD_DATA.kpis.nb_scans;
+    totalCa = DASHBOARD_DATA.kpis.ca_total;
   }
-};
+
+  if (scansEl && totalScans) {
+    scansEl.innerText = `${Math.round(totalScans).toLocaleString('fr-FR')} scans`;
+  }
+  if (caEl && totalCa) {
+    caEl.innerText = `${Math.round(totalCa).toLocaleString('fr-FR')} TND`;
+  }
+}
+
+let loginParticlesAnimationId = null;
 
 // Canvas Particules Ambiantes pour le Login
 function initLoginParticles() {
   const canvas = document.getElementById('login-particles-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let animationId;
   let particles = [];
   
   function resize() {
@@ -294,12 +309,12 @@ function initLoginParticles() {
   resize();
   window.addEventListener('resize', resize);
   
-  const particleCount = Math.min(65, Math.max(30, Math.floor(window.innerWidth / 28)));
+  const particleCount = Math.min(50, Math.max(25, Math.floor(window.innerWidth / 35)));
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 2.4 + 0.8,
+      radius: Math.random() * 2.2 + 0.8,
       speedY: Math.random() * 0.45 + 0.15,
       speedX: (Math.random() - 0.5) * 0.25,
       swayOffset: Math.random() * Math.PI * 2,
@@ -313,7 +328,7 @@ function initLoginParticles() {
     frame++;
     const loginOverlay = document.getElementById('login-screen');
     if (!loginOverlay || loginOverlay.style.display === 'none') {
-      animationId = requestAnimationFrame(animate);
+      loginParticlesAnimationId = null;
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -327,17 +342,46 @@ function initLoginParticles() {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
-      ctx.shadowBlur = p.radius * 4;
-      ctx.shadowColor = `rgba(${p.color}, 0.8)`;
+      ctx.shadowBlur = p.radius * 3;
+      ctx.shadowColor = `rgba(${p.color}, 0.7)`;
       ctx.fill();
     }
-    animationId = requestAnimationFrame(animate);
+    loginParticlesAnimationId = requestAnimationFrame(animate);
   }
-  animate();
+  if (!loginParticlesAnimationId) {
+    loginParticlesAnimationId = requestAnimationFrame(animate);
+  }
 }
+
+function stopLoginParticles() {
+  if (loginParticlesAnimationId) {
+    cancelAnimationFrame(loginParticlesAnimationId);
+    loginParticlesAnimationId = null;
+  }
+}
+
+window.logoutToLoginScreen = function() {
+  sessionStorage.removeItem('bondin_authenticated');
+  const loginOverlay = document.getElementById('login-screen');
+  if (loginOverlay) {
+    loginOverlay.style.display = 'flex';
+    loginOverlay.classList.remove('login-success-warp');
+    loginOverlay.classList.add('login-fade-in');
+    document.body.style.overflow = 'hidden';
+    initLoginParticles();
+    updateLoginScreenMetrics(liveSyncData);
+    if (window.lucide) {
+      try { lucide.createIcons(); } catch(e) {}
+    }
+  }
+  if (window.showToast) {
+    window.showToast('Session verrouillée. Veuillez vous reconnecter.', 'lock');
+  }
+};
 
 function initAuthGate() {
   initLoginParticles();
+  updateLoginScreenMetrics(liveSyncData);
   const urlParams = new URLSearchParams(window.location.search);
   const forceLogout = urlParams.get('logout') === 'true';
   const forceLogin = urlParams.get('login') === 'true';
@@ -350,12 +394,15 @@ function initAuthGate() {
     sessionStorage.removeItem('bondin_authenticated');
     loginOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    updateLoginScreenMetrics(liveSyncData);
   } else if (forceLogin || !isAuth) {
     loginOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    updateLoginScreenMetrics(liveSyncData);
   } else {
     loginOverlay.style.display = 'none';
     document.body.style.overflow = '';
+    stopLoginParticles();
     const savedRole = sessionStorage.getItem('bondin_auth_role');
     if (savedRole) {
       updateHeaderProfileBadge(savedRole);
@@ -2106,6 +2153,9 @@ async function fetchLiveProductionData(isManual = false) {
     }
     if (!data.total_scans) return;
     liveSyncData = data;
+
+    // Mise à jour temps réel sur l'écran d'accueil / login
+    updateLoginScreenMetrics(data);
 
     // Mise à jour de l'indicateur d'état du DWH (compteur scans & flux tickets)
     const scanCounter = document.getElementById('scan-counter');
