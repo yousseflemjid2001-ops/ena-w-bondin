@@ -189,6 +189,205 @@ window.toggleLoginPasswordVisibility = function() {
   }
 };
 
+let loaderParticlesAnimationId = null;
+
+function initLoaderParticles() {
+  const canvas = document.getElementById('loader-particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const particles = [];
+  const count = 45;
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2.2 + 0.8,
+      speedY: Math.random() * 0.9 + 0.3,
+      speedX: (Math.random() - 0.5) * 0.4,
+      opacity: Math.random() * 0.75 + 0.25,
+      swayOffset: Math.random() * Math.PI * 2,
+      color: Math.random() > 0.4 ? '245, 158, 11' : (Math.random() > 0.5 ? '225, 29, 72' : '254, 240, 138')
+    });
+  }
+
+  let frame = 0;
+  function animate() {
+    frame++;
+    const loaderScreen = document.getElementById('executive-loader-screen');
+    if (!loaderScreen || loaderScreen.style.display === 'none') {
+      loaderParticlesAnimationId = null;
+      return;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let p of particles) {
+      p.y -= p.speedY;
+      p.x += Math.sin(frame * 0.02 + p.swayOffset) * 0.3 + p.speedX;
+      if (p.y < -10) {
+        p.y = canvas.height + 10;
+        p.x = Math.random() * canvas.width;
+      }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
+      ctx.shadowBlur = p.radius * 4;
+      ctx.shadowColor = `rgba(${p.color}, 0.8)`;
+      ctx.fill();
+    }
+    loaderParticlesAnimationId = requestAnimationFrame(animate);
+  }
+  if (!loaderParticlesAnimationId) {
+    loaderParticlesAnimationId = requestAnimationFrame(animate);
+  }
+}
+
+function stopLoaderParticles() {
+  if (loaderParticlesAnimationId) {
+    cancelAnimationFrame(loaderParticlesAnimationId);
+    loaderParticlesAnimationId = null;
+  }
+}
+
+function triggerExecutiveCinematicLoading(selectedRole) {
+  const loaderScreen = document.getElementById('executive-loader-screen');
+  const progressBar = document.getElementById('loader-progress-fill');
+  const percentCounter = document.getElementById('loader-percent-counter');
+  const telemetryText = document.getElementById('loader-telemetry-text');
+  const loginOverlay = document.getElementById('login-screen');
+
+  if (!loaderScreen) {
+    finalizeDirectLogin(selectedRole);
+    return;
+  }
+
+  // Initialisation de l'affichage
+  loaderScreen.classList.remove('loader-warp-exit');
+  loaderScreen.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  if (progressBar) progressBar.style.width = '0%';
+  if (percentCounter) percentCounter.textContent = '0%';
+  if (telemetryText) telemetryText.textContent = 'Authentification cryptographique TLS 1.3...';
+
+  initLoaderParticles();
+  if (window.lucide) {
+    try { lucide.createIcons(); } catch(e) {}
+  }
+
+  // Étape 1 : 120ms -> 28%
+  setTimeout(() => {
+    if (progressBar) progressBar.style.width = '28%';
+    if (percentCounter) percentCounter.textContent = '28%';
+    if (telemetryText) telemetryText.textContent = 'Connexion sécurisée au Data Warehouse PostgreSQL 17.7...';
+  }, 120);
+
+  // Étape 2 : 460ms -> 62%
+  setTimeout(() => {
+    if (progressBar) progressBar.style.width = '62%';
+    if (percentCounter) percentCounter.textContent = '62%';
+    if (telemetryText) telemetryText.textContent = 'Synchronisation temps réel des 22 visualisations...';
+  }, 460);
+
+  // Étape 3 : 840ms -> 86%
+  setTimeout(() => {
+    if (progressBar) progressBar.style.width = '86%';
+    if (percentCounter) percentCounter.textContent = '86%';
+    if (telemetryText) telemetryText.textContent = 'Vérification accréditation RLS Direction Générale...';
+  }, 840);
+
+  // Étape 4 : 1150ms -> 97%
+  setTimeout(() => {
+    if (progressBar) progressBar.style.width = '97%';
+    if (percentCounter) percentCounter.textContent = '97%';
+    if (telemetryText) telemetryText.textContent = 'Activation du Moteur Prédictif Copilot IA...';
+  }, 1150);
+
+  // Étape 5 : 1380ms -> 100%
+  setTimeout(() => {
+    if (progressBar) progressBar.style.width = '100%';
+    if (percentCounter) percentCounter.textContent = '100%';
+    if (telemetryText) telemetryText.textContent = 'Cockpit Décisionnel Prêt • Déploiement...';
+  }, 1380);
+
+  // Étape 6 : 1580ms -> Déclenchement de l'effet d'expansion Warp
+  setTimeout(() => {
+    loaderScreen.classList.add('loader-warp-exit');
+
+    // Sauvegarde immédiate des accréditations
+    localStorage.setItem('bondin_authenticated', 'true');
+    localStorage.setItem('bondin_auth_role', selectedRole);
+    sessionStorage.setItem('bondin_authenticated', 'true');
+    sessionStorage.setItem('bondin_auth_role', selectedRole);
+    document.documentElement.classList.add('is-authenticated');
+
+    // Synchronisation du slicer RLS du dashboard
+    const slicerRls = document.getElementById('slicer-rls');
+    if (slicerRls) {
+      slicerRls.value = selectedRole;
+      if (window.applyFilters) window.applyFilters();
+    }
+
+    updateHeaderProfileBadge(selectedRole);
+
+    // Arrêt des particules de login
+    stopLoginParticles();
+
+    // Masquage du rideau de login
+    if (loginOverlay) {
+      loginOverlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // Après l'animation d'expansion Warp (420ms)
+    setTimeout(() => {
+      loaderScreen.style.display = 'none';
+      loaderScreen.classList.remove('loader-warp-exit');
+      stopLoaderParticles();
+
+      const profile = DEMO_PROFILES[selectedRole] || DEMO_PROFILES.dir_gen;
+      if (window.showToast) {
+        window.showToast(`Bienvenue sur BONDIN × FIDNESS • Session [${profile.title}]`, 'shield-check');
+      }
+    }, 420);
+
+  }, 1580);
+}
+
+function finalizeDirectLogin(selectedRole) {
+  localStorage.setItem('bondin_authenticated', 'true');
+  localStorage.setItem('bondin_auth_role', selectedRole);
+  sessionStorage.setItem('bondin_authenticated', 'true');
+  sessionStorage.setItem('bondin_auth_role', selectedRole);
+  document.documentElement.classList.add('is-authenticated');
+
+  const slicerRls = document.getElementById('slicer-rls');
+  if (slicerRls) {
+    slicerRls.value = selectedRole;
+    if (window.applyFilters) window.applyFilters();
+  }
+
+  updateHeaderProfileBadge(selectedRole);
+  stopLoginParticles();
+
+  const loginOverlay = document.getElementById('login-screen');
+  if (loginOverlay) {
+    loginOverlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  const profile = DEMO_PROFILES[selectedRole] || DEMO_PROFILES.dir_gen;
+  if (window.showToast) {
+    window.showToast(`Bienvenue sur BONDIN × FIDNESS • Session [${profile.title}]`, 'shield-check');
+  }
+}
+
 window.handleLoginSubmit = function(e) {
   if (e) e.preventDefault();
   
@@ -221,36 +420,8 @@ window.handleLoginSubmit = function(e) {
     return;
   }
 
-  // Connexion instantanée sans latence artificielle
-  localStorage.setItem('bondin_authenticated', 'true');
-  localStorage.setItem('bondin_auth_role', selectedRole);
-  sessionStorage.setItem('bondin_authenticated', 'true');
-  sessionStorage.setItem('bondin_auth_role', selectedRole);
-  document.documentElement.classList.add('is-authenticated');
-
-  // Synchronisation du slicer RLS du dashboard
-  const slicerRls = document.getElementById('slicer-rls');
-  if (slicerRls) {
-    slicerRls.value = selectedRole;
-    if (window.applyFilters) window.applyFilters();
-  }
-
-  updateHeaderProfileBadge(selectedRole);
-
-  // Arrêt des particules de fond pour libérer 100% des ressources graphiques
-  stopLoginParticles();
-
-  // Masquage fluide et instantané du rideau d'authentification
-  const loginOverlay = document.getElementById('login-screen');
-  if (loginOverlay) {
-    loginOverlay.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-
-  const profile = DEMO_PROFILES[selectedRole] || DEMO_PROFILES.dir_gen;
-  if (window.showToast) {
-    window.showToast(`Bienvenue sur BONDIN × FIDNESS • Session [${profile.title}]`, 'shield-check');
-  }
+  // Déclenchement de la cinématique de chargement exécutif haut degré
+  triggerExecutiveCinematicLoading(selectedRole);
 };
 
 function updateHeaderProfileBadge(roleKey) {
@@ -364,6 +535,14 @@ window.logoutToLoginScreen = function() {
   sessionStorage.removeItem('bondin_authenticated');
   sessionStorage.removeItem('bondin_auth_role');
   document.documentElement.classList.remove('is-authenticated');
+
+  const loaderScreen = document.getElementById('executive-loader-screen');
+  if (loaderScreen) {
+    loaderScreen.style.display = 'none';
+    loaderScreen.classList.remove('loader-warp-exit');
+    stopLoaderParticles();
+  }
+
   const loginOverlay = document.getElementById('login-screen');
   if (loginOverlay) {
     loginOverlay.style.display = 'flex';
