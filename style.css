@@ -5130,3 +5130,23 @@ header.aurora-header,
   box-shadow: none !important;
   outline: none !important;
 }
+
+/* Animation Impulsion Visuelle Synchronisation Intelligente DWH */
+@keyframes kpiGlowPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    border-color: rgba(16, 185, 129, 0.85);
+  }
+  50% {
+    box-shadow: 0 0 26px 6px rgba(16, 185, 129, 0.4);
+    border-color: rgba(16, 185, 129, 1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.kpi-glow-pulse {
+  animation: kpiGlowPulse 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
