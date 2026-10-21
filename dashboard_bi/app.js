@@ -3729,10 +3729,12 @@ window.sendRagMessage = async function() {
       renderAssistantBubble(clientAnswer, 'Moteur Décisionnel DWH Live Certifié');
     } else {
       try {
-        const geminiKey = localStorage.getItem('bondin_gemini_api_key') || '';
-        const payload = { question: text, apiKey: geminiKey, liveContext: liveSyncData };
+        // La clé Gemini est gérée côté serveur (variable d'env Vercel GEMINI_API_KEY)
+        // On n'a plus besoin de la stocker dans localStorage
+        const payload = { question: text, liveContext: liveSyncData };
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2600);
+        // Timeout 9s (le serveur Vercel a 10s max, Gemini est configuré à 8s)
+        const timeoutId = setTimeout(() => controller.abort(), 9000);
         const response = await fetch('/api/rag/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -3740,8 +3742,13 @@ window.sendRagMessage = async function() {
           signal: controller.signal
         });
         clearTimeout(timeoutId);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        renderAssistantBubble(data.answer, data.sources?.[0] || 'Moteur IA Décisionnel');
+        if (data.answer) {
+          renderAssistantBubble(data.answer, data.sources?.[0] || 'Moteur IA Décisionnel Gemini');
+        } else {
+          renderAssistantBubble(getClientRagAnswer(text, liveSyncData, true), 'Data Warehouse Fallback');
+        }
       } catch (e) {
         renderAssistantBubble(getClientRagAnswer(text, liveSyncData, true), 'Data Warehouse Fallback');
       }

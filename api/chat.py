@@ -126,8 +126,9 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
         }
     }
 
-    # Modèle cible direct (pas de boucle lente pour éviter le timeout Vercel)
-    for model_name in ['gemini-1.5-flash', 'gemini-2.0-flash']:
+    # Modèle cible : gemini-2.0-flash-lite en premier (le plus rapide), puis flash stable
+    # Timeout = 8s (Vercel max 10s — l'ancien 3s expirait systématiquement)
+    for model_name in ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash']:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         req = urllib.request.Request(
             url,
@@ -136,14 +137,19 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
             method="POST"
         )
         try:
-            with urllib.request.urlopen(req, timeout=3.0) as response:
+            with urllib.request.urlopen(req, timeout=8.0) as response:
                 res = json.loads(response.read().decode("utf-8"))
                 candidate = res.get("candidates", [{}])[0]
-                text = candidate.get("content", {}).get("parts", [{}])[0].get("text")
-                if text:
-                    return text
-        except Exception:
-            # En cas de 429 quota ou timeout, ne pas bloquer, tester au max 1 autre ou basculer
+                # Vérifier si bloqué par safety filter
+                finish_reason = candidate.get("finishReason", "")
+                if finish_reason == "SAFETY":
+                    continue
+                text = candidate.get("content", {}).get("parts", [{}])[0].get("text", "")
+                if text and len(text.strip()) > 10:
+                    return text.strip()
+        except Exception as ex:
+            # 429 quota, timeout réseau → essayer modèle suivant
+            print(f"[WARN] {model_name} failed: {ex}")
             continue
 
     return None
@@ -447,6 +453,7 @@ class handler(BaseHTTPRequestHandler):
             }, ensure_ascii=False).encode('utf-8'))
 
     def do_GET(self):
+        gemini_key = (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or "").strip()
         self.send_response(200)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -454,5 +461,9 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({
             "status": "online",
             "service": "Copilot RAG Décisionnel ENA W BONDIN x FIDNESS",
-            "capabilities": ["gemini_ai", "dwh_deterministic_rag", "realtime_grounding"]
-        }).encode('utf-8'))
+            "gemini_key_configured": bool(gemini_key),
+            "gemini_key_preview": (gemini_key[:8] + "..." + gemini_key[-4:]) if len(gemini_key) > 12 else "NOT SET",
+            "capabilities": ["gemini_ai", "dwh_deterministic_rag", "realtime_grounding"],
+            "timeout_ms": 8000,
+            "models_tried": ["gemini-2.0-flash-lite", "gemini-2.0-flash", "gemini-1.5-flash"]
+        }, ensure_ascii=False).encode('utf-8'))
