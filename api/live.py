@@ -26,7 +26,7 @@ class handler(BaseHTTPRequestHandler):
                 host=db_host,
                 port=db_port,
                 database=db_name,
-                timeout=6
+                timeout=2.5
             )
             
             # 1. Statistiques globales BONDIN (company_id = 2)

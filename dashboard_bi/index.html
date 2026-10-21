@@ -2,9 +2,31 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <script>
+    /* ZÉRO LATENCE & ANTI-CLIGNOTEMENT SESSION DÉCISIONNELLE */
+    (function() {
+      try {
+        var isAuth = localStorage.getItem('bondin_authenticated') === 'true' || 
+                     sessionStorage.getItem('bondin_authenticated') === 'true';
+        var params = new URLSearchParams(window.location.search);
+        if (isAuth && params.get('logout') !== 'true') {
+          document.documentElement.classList.add('is-authenticated');
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <style>
+    /* Masquage immédiat garanti zéro latence au rechargement (F5) */
+    html.is-authenticated #login-screen {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
-  <link rel="stylesheet" href="style.css?v=20261020_executive_login_dark_v17">
+  <link rel="stylesheet" href="style.css?v=20261021_zero_latency_v18">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1372,8 +1394,8 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="data.js?v=20261020_executive_login_dark_v17"></script>
-  <script src="app.js?v=20261020_executive_login_dark_v17"></script>
+  <script src="data.js?v=20261021_zero_latency_v18"></script>
+  <script src="app.js?v=20261021_zero_latency_v18"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->
