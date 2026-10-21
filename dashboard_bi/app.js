@@ -2055,12 +2055,14 @@ window.simulateLiveScan = async function() {
     const data = await res.json();
     if (data.success) {
       showToast(`[BACKEND DIRECT] Scan de 18,500 TND validé ! Nouveau CA : ${data.new_total_ca.toLocaleString('fr-FR', { minimumFractionDigits: 3 })} TND`, 'success');
+      fetchLiveProductionData(false);
       return;
     }
   } catch (e) {
     // Mode local fallback
   }
   showToast('Transaction validée : +18,500 TND (+185 pts) à Tunis Liberté !', 'success');
+  fetchLiveProductionData(false);
 };
 
 window.sendPushCampaign = async function(clientId) {
@@ -2195,6 +2197,11 @@ async function fetchLiveProductionData(isManual = false) {
       DASHBOARD_DATA.kpis.panier_moyen = data.panier_moyen_tnd;
       DASHBOARD_DATA.kpis.clients_actifs = data.clients_actifs;
     }
+
+    // Répercuter instantanément le nouveau CA et volume sur tous les graphiques et visuels
+    try {
+      executeGlobalFilters();
+    } catch(e) {}
 
     if (isManual && typeof showToast === 'function') {
       showToast(`✓ DWH Connecté en Direct : ${data.total_scans.toLocaleString('fr-FR')} scans réels (PostgreSQL)`, 'success');
