@@ -123,7 +123,7 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
         }
     }
 
-    models_to_try = ['gemini-3-flash-preview', 'gemini-3.5-flash-lite', 'gemini-flash-latest']
+    models_to_try = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-flash-latest']
     last_err = None
 
     for m in models_to_try:

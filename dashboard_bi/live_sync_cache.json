@@ -1,55 +1,55 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-21 12:01:29",
+  "timestamp": "2026-10-21 12:15:28",
   "company_name": "BONDIN",
-  "total_scans": 13155,
-  "total_ca_tnd": 154180.19,
-  "panier_moyen_tnd": 11.72,
-  "total_points_emis": 516757,
+  "total_scans": 13160,
+  "total_ca_tnd": 154284.39,
+  "panier_moyen_tnd": 11.724,
+  "total_points_emis": 517149,
   "clients_actifs": 761,
-  "dernier_scan": "2026-10-21 11:56:06",
-  "dernier_ticket": "bondin6144735",
-  "dernier_magasin": "Cafétéria Tunis La Marsa",
+  "dernier_scan": "2026-10-21 12:14:30",
+  "dernier_ticket": "bondin6145138",
+  "dernier_magasin": "Cafétéria Gabès Jara",
   "recent_scans": [
     {
-      "id": 13166,
-      "ticket": "bondin6144735",
+      "id": 13171,
+      "ticket": "bondin6145138",
+      "montant_tnd": 7.7,
+      "points": 13.4,
+      "date": "2026-10-21 12:14:30",
+      "magasin": "Cafétéria Gabès Jara"
+    },
+    {
+      "id": 13170,
+      "ticket": "bondin6145135",
       "montant_tnd": 1.9,
       "points": 3.8,
-      "date": "2026-10-21 11:56:06",
-      "magasin": "Cafétéria Tunis La Marsa"
+      "date": "2026-10-21 12:14:17",
+      "magasin": "Cafétéria Tunis France"
     },
     {
-      "id": 13165,
-      "ticket": "bondin6144209",
-      "montant_tnd": 3.4,
-      "points": 0.0,
-      "date": "2026-10-21 11:32:28",
-      "magasin": "Cafétéria Tunis Espagne"
+      "id": 13169,
+      "ticket": "bondin6145020",
+      "montant_tnd": 18.5,
+      "points": 74.0,
+      "date": "2026-10-21 12:08:54",
+      "magasin": "Succursale Gabès Jara"
     },
     {
-      "id": 13164,
-      "ticket": "bondin6144162",
-      "montant_tnd": 10.5,
-      "points": 42.0,
-      "date": "2026-10-21 11:30:16",
-      "magasin": "Succursale Le Kef"
-    },
-    {
-      "id": 13163,
-      "ticket": "bondin6144048",
+      "id": 13168,
+      "ticket": "bondin6144908",
       "montant_tnd": 2.1,
       "points": 4.2,
-      "date": "2026-10-21 11:25:44",
+      "date": "2026-10-21 12:04:08",
       "magasin": "Cafétéria Tunis MENZAH VI"
     },
     {
-      "id": 13162,
-      "ticket": "bondin6143977",
-      "montant_tnd": 37.0,
-      "points": 148.0,
-      "date": "2026-10-21 11:22:47",
+      "id": 13167,
+      "ticket": "bondin6144899",
+      "montant_tnd": 74.0,
+      "points": 296.0,
+      "date": "2026-10-21 12:03:40",
       "magasin": "Succursale Gabès Jara"
     }
   ]
