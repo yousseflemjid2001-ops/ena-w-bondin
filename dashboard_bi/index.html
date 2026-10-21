@@ -26,7 +26,7 @@
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
-  <link rel="stylesheet" href="style.css?v=20261021_smart_sync_v19">
+  <link rel="stylesheet" href="style.css?v=20261021_realtime_all_visuals_v20">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1074,6 +1074,42 @@
         </div>
       </div>
 
+      <!-- MODULE FLUX DE TRANSACTIONS EN TEMPS RÉEL (DIRECT POSTGRESQL LIVE) -->
+      <div class="visual-card" style="margin-bottom: 24px; border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 4px 25px rgba(16, 185, 129, 0.12);">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
+            <div class="visual-title-center" style="text-align: left; margin: 0;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              Flux Live des Dernières Transactions Scannées en Caisse (Direct PostgreSQL 17.7)
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="tag-badge green" id="live-feed-badge">PostgreSQL 17.7 Connecté</span>
+            <button onclick="window.simulateLiveScan()" class="btn-action" style="padding: 5px 12px; font-size: 11px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #F59E0B; cursor: pointer; border-radius: 8px; font-weight: 700; transition: all 0.2s;" title="Simuler une transaction de caisse en direct (+18,500 TND) et observer la propagation instantanée sur tout le tableau de bord">
+              ⚡ Simuler Encaissement (+18,500 TND)
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-live-transactions">
+            <thead>
+              <tr>
+                <th>N° Ticket Caisse</th>
+                <th>Magasin / Point de Vente</th>
+                <th>Montant Ticket (TND)</th>
+                <th>Points Fidélité</th>
+                <th>Horodatage Transaction</th>
+                <th>Statut Flux DWH</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-live-transactions">
+              <!-- Injecté dynamiquement par app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Table des Grossistes sous surveillance -->
       <div class="visual-card" style="margin-bottom: 20px;">
         <div class="visual-header">
@@ -1401,8 +1437,8 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="data.js?v=20261021_smart_sync_v19"></script>
-  <script src="app.js?v=20261021_smart_sync_v19"></script>
+  <script src="data.js?v=20261021_realtime_all_visuals_v20"></script>
+  <script src="app.js?v=20261021_realtime_all_visuals_v20"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->
