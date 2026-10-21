@@ -551,9 +551,9 @@ def normalize_rag_query(q):
     if not q:
         return ""
     q = unicodedata.normalize('NFD', q.lower())
-    for p in ["'", "-", "_", ",", ";", ".", "?", "!", ":", "(", ")", "/", '"']:
+    q = ''.join(c for c in q if unicodedata.category(c) != 'Mn')
+    for p in ["'", "-", "_", ",", ";", ".", "?", "!", ":", "(", ")", "/", '"', "«", "»", "•", "–"]:
         q = q.replace(p, " ")
-    return " ".join(q.split())
     return " ".join(q.split())
 
 @app.route("/api/rag/chat", methods=["POST"])

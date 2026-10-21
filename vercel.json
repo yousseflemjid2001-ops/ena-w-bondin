@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" }
+  ],
   "functions": {
     "api/*.py": {
       "includeFiles": "{index.html,app.js,style.css,data.js,dashboard_data.json,live_sync_cache.json,*.png,*.jpg,dashboard_bi/**}"
