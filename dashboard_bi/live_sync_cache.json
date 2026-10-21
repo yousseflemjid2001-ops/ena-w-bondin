@@ -1,17 +1,41 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-21 11:28:29",
+  "timestamp": "2026-10-21 11:59:13",
   "company_name": "BONDIN",
-  "total_scans": 13152,
-  "total_ca_tnd": 154164.39,
-  "panier_moyen_tnd": 11.722,
-  "total_points_emis": 516712,
+  "total_scans": 13155,
+  "total_ca_tnd": 154180.19,
+  "panier_moyen_tnd": 11.72,
+  "total_points_emis": 516757,
   "clients_actifs": 761,
-  "dernier_scan": "2026-10-21 11:25:44",
-  "dernier_ticket": "bondin6144048",
-  "dernier_magasin": "Cafétéria Tunis MENZAH VI",
+  "dernier_scan": "2026-10-21 11:56:06",
+  "dernier_ticket": "bondin6144735",
+  "dernier_magasin": "Cafétéria Tunis La Marsa",
   "recent_scans": [
+    {
+      "id": 13166,
+      "ticket": "bondin6144735",
+      "montant_tnd": 1.9,
+      "points": 3.8,
+      "date": "2026-10-21 11:56:06",
+      "magasin": "Cafétéria Tunis La Marsa"
+    },
+    {
+      "id": 13165,
+      "ticket": "bondin6144209",
+      "montant_tnd": 3.4,
+      "points": 0.0,
+      "date": "2026-10-21 11:32:28",
+      "magasin": "Cafétéria Tunis Espagne"
+    },
+    {
+      "id": 13164,
+      "ticket": "bondin6144162",
+      "montant_tnd": 10.5,
+      "points": 42.0,
+      "date": "2026-10-21 11:30:16",
+      "magasin": "Succursale Le Kef"
+    },
     {
       "id": 13163,
       "ticket": "bondin6144048",
@@ -27,30 +51,6 @@
       "points": 148.0,
       "date": "2026-10-21 11:22:47",
       "magasin": "Succursale Gabès Jara"
-    },
-    {
-      "id": 13161,
-      "ticket": "bondin6143923",
-      "montant_tnd": 24.0,
-      "points": 24.0,
-      "date": "2026-10-21 11:20:48",
-      "magasin": "Cafétéria Gabès Jara"
-    },
-    {
-      "id": 13160,
-      "ticket": "bondin6143873",
-      "montant_tnd": 26.4,
-      "points": 16.8,
-      "date": "2026-10-21 11:18:49",
-      "magasin": "Cafétéria Gabès Jara"
-    },
-    {
-      "id": 13159,
-      "ticket": "bondin6143816",
-      "montant_tnd": 30.044,
-      "points": 120.176,
-      "date": "2026-10-21 11:16:17",
-      "magasin": "Succursale Sfax Chaker"
     }
   ]
 }
