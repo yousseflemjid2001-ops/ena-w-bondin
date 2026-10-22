@@ -105,9 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initLiveClock();
   renderSankeyFlow();
   renderRewardsCatalog();
-  renderHeatmap();
-  renderCohortMatrix();
-  renderAdvancedCharts();
+  // renderHeatmap / renderCohortMatrix / renderAdvancedCharts sont appelés
+  // à la demande quand l'onglet tab-avancees est activé (canvas caché = taille 0 sinon)
   window.initThemeSystem();
   initLiveProductionSync();
   updateGeminiBadgeStatus();
@@ -684,6 +683,31 @@ function initSubbarTabs() {
       const targetTab = document.getElementById(targetId);
       if (targetTab) {
         targetTab.classList.add('active');
+        
+        // Rendu immédiat selon l'onglet activé
+        if (targetId === 'tab-avancees') {
+          // Détruire les charts existants (créés avec canvas caché = taille 0)
+          try {
+            if (charts.radarBenchmark) { charts.radarBenchmark.destroy(); charts.radarBenchmark = null; }
+            if (charts.bcgProducts)    { charts.bcgProducts.destroy();    charts.bcgProducts = null; }
+            if (charts.ageDemographics){ charts.ageDemographics.destroy(); charts.ageDemographics = null; }
+          } catch(e) {}
+          // Laisser le DOM afficher le tab avant de rendre les charts
+          setTimeout(() => {
+            try {
+              renderHeatmap(window.lastScanCount);
+              renderCohortMatrix(window.lastLiveData || liveSyncData);
+              renderAdvancedCharts();
+            } catch(e) {
+              console.warn('Init tab-avancees visuals:', e);
+            }
+          }, 80);
+        } else if (targetId === 'tab-cagnotte') {
+          try {
+            renderRewardsCatalog();
+            renderSankeyFlow(liveSyncData);
+          } catch(e) {}
+        }
         
         // Redimensionnement et actualisation automatique de Leaflet et Chart.js
         setTimeout(() => {
@@ -4072,6 +4096,7 @@ function updateAllVisualsRealTime(data) {
   updateLoginScreenMetrics(data);
   updateSyncTimestamps();
 
+  window.lastScanCount = currentScans;
   const scanCounter = document.getElementById('scan-counter');
   if (scanCounter) {
     animateCount(scanCounter, currentScans, v => Math.round(v).toLocaleString('fr-FR'));

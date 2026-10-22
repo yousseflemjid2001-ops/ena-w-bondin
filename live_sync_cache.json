@@ -1,17 +1,33 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 14:49:55",
+  "timestamp": "2026-10-22 15:50:24",
   "company_name": "BONDIN",
-  "total_scans": 13292,
-  "total_ca_tnd": 155854.94,
-  "panier_moyen_tnd": 11.725,
-  "total_points_emis": 522784,
+  "total_scans": 13294,
+  "total_ca_tnd": 155863.47,
+  "panier_moyen_tnd": 11.724,
+  "total_points_emis": 522814,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 14:40:44",
-  "dernier_ticket": "bondin6165535",
-  "dernier_magasin": "Cafétéria Tunis France",
+  "dernier_scan": "2026-10-22 15:35:53",
+  "dernier_ticket": "bondin6166477",
+  "dernier_magasin": "Succursale Tunis Liberté",
   "recent_scans": [
+    {
+      "id": 13305,
+      "ticket": "bondin6166477",
+      "montant_tnd": 6.426,
+      "points": 25.704,
+      "date": "2026-10-22 15:35:53",
+      "magasin": "Succursale Tunis Liberté"
+    },
+    {
+      "id": 13304,
+      "ticket": "bondin6166429",
+      "montant_tnd": 2.1,
+      "points": 4.2,
+      "date": "2026-10-22 15:33:11",
+      "magasin": "Cafétéria Le Kef"
+    },
     {
       "id": 13303,
       "ticket": "bondin6165535",
@@ -35,22 +51,6 @@
       "points": 148.0,
       "date": "2026-10-22 14:32:48",
       "magasin": "Succursale Gabès Jara"
-    },
-    {
-      "id": 13300,
-      "ticket": "bondin6165069",
-      "montant_tnd": 18.1,
-      "points": 48.2,
-      "date": "2026-10-22 14:13:59",
-      "magasin": "Cafétéria Tunis La Marsa"
-    },
-    {
-      "id": 13299,
-      "ticket": "bondin6164676",
-      "montant_tnd": 5.587,
-      "points": 22.348,
-      "date": "2026-10-22 13:50:43",
-      "magasin": "Succursale Tunis Liberté"
     }
   ]
 }

@@ -831,7 +831,7 @@ header {
 }
 
 .dashboard-tab.active {
-  display: block;
+  display: block !important;
 }
 
 .table-responsive {
@@ -2012,40 +2012,12 @@ header.header-enterprise {
   box-shadow: 0 2px 8px rgba(142, 14, 20, 0.35) !important;
 }
 
-/* Badge de Certification DWH PostgreSQL Live sur chaque visuel */
+/* Suppression de la barre de télémétrie DWH et des badges Live selon demande utilisateur */
+.dwh-telemetry-banner,
+#dwh-telemetry-banner,
+#dwh-live-pill,
 .visual-live-tag {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  padding: 2.5px 8px !important;
-  border-radius: 6px !important;
-  background: rgba(16, 185, 129, 0.08) !important;
-  border: 1px solid rgba(16, 185, 129, 0.3) !important;
-  color: #065F46 !important;
-  font-size: 0.68rem !important;
-  font-weight: 700 !important;
-  font-family: 'JetBrains Mono', monospace !important;
-  letter-spacing: 0.2px !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  user-select: none !important;
-  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.06) !important;
-}
-
-.visual-live-tag:hover {
-  background: rgba(16, 185, 129, 0.16) !important;
-  border-color: #10B981 !important;
-  transform: translateY(-0.5px) !important;
-}
-
-.visual-live-tag .live-dot-pulse {
-  width: 6px !important;
-  height: 6px !important;
-  border-radius: 50% !important;
-  background: #10B981 !important;
-  box-shadow: 0 0 6px #10B981 !important;
-  display: inline-block !important;
-  animation: livePingDot 1.8s infinite ease-in-out !important;
+  display: none !important;
 }
 
 @keyframes livePingDot {

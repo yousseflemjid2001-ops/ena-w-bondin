@@ -560,36 +560,7 @@
           </div>
         </div>
 
-        <!-- DROITE : CAPSULE LIVE DWH TEMPS RÉEL (AGRANDIE & POUSSÉE À DROITE) -->
-        <div class="flex items-center self-start lg:self-center ml-auto lg:ml-0">
-          <div id="dwh-live-pill" onclick="window.refreshLiveDashboard()" class="group cursor-pointer relative flex items-center gap-3.5 px-5 py-3 rounded-2xl bg-black/55 hover:bg-black/70 border border-emerald-500/40 hover:border-emerald-400/80 backdrop-blur-xl shadow-[0_0_30px_rgba(16,185,129,0.2)] transition-all duration-300">
-            
-            <!-- Point Radar Émeraude Pulsant Agrandie -->
-            <div class="relative flex items-center justify-center w-3.5 h-3.5">
-              <span class="radar-dot w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_12px_#10B981]"></span>
-            </div>
 
-            <!-- Compteur DWH Dynamique Agrandie -->
-            <div class="flex items-center gap-2 text-sm sm:text-base font-semibold whitespace-nowrap">
-              <span class="text-emerald-400 font-bold tracking-wide">Live DWH :</span>
-              <span id="scan-counter" class="font-mono font-extrabold text-white text-base sm:text-lg tracking-tight inline-block">13 097</span>
-              <span class="text-emerald-400 font-bold">scans</span>
-            </div>
-
-            <span class="text-purple-400/60 font-bold">&bull;</span>
-
-            <!-- Flux de Tickets Dynamique avec transition fluide et Nom du Client -->
-            <div class="overflow-hidden h-6 flex items-center min-w-[340px] sm:min-w-[440px]">
-              <div id="hdr-live-clock" class="text-xs sm:text-sm text-rose-100 font-mono truncate ticket-slide-enter">
-                Client : <strong class="text-white font-bold">Karim Ben Salem</strong> &bull; Ticket <span class="text-amber-300 font-bold">#bondin6164087</span> <span class="text-amber-200/90 font-sans">(Succursale Tunis Menzah VI)</span>
-              </div>
-            </div>
-
-            <span class="hidden xl:inline-flex items-center px-2 py-0.5 text-[11px] font-mono rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 opacity-0 group-hover:opacity-100 transition-opacity">
-              +1 live
-            </span>
-          </div>
-        </div>
 
       </div>
 
@@ -755,48 +726,7 @@
 
   </section>
 
-  <!-- ======================================================== -->
-  <!-- BARRE DE CERTIFICATION & TÉLÉMÉTRIE DWH TEMPS RÉEL       -->
-  <!-- ======================================================== -->
-  <div class="dwh-telemetry-banner" id="dwh-telemetry-banner">
-    <div class="dwh-telemetry-left">
-      <div class="dwh-pulse-indicator">
-        <span class="live-dot-pulse"></span>
-        <span class="dwh-pulse-status">DWH TEMPS RÉEL CONNECTÉ</span>
-      </div>
-      <div class="dwh-telemetry-meta">
-        <span class="dwh-meta-item">
-          <strong>PostgreSQL 17.7</strong>
-          <span class="dwh-meta-sub">57.131.30.69:5432 (SSL Direct)</span>
-        </span>
-        <span class="dwh-meta-sep">&bull;</span>
-        <span class="dwh-meta-item">
-          <strong>Latence Requête :</strong>
-          <span class="dwh-badge-latency" id="dwh-banner-latency">12 ms</span>
-        </span>
-        <span class="dwh-meta-sep">&bull;</span>
-        <span class="dwh-meta-item">
-          <strong>Scans DWH :</strong>
-          <span id="dwh-banner-scans">13 172 scans certifiés</span>
-        </span>
-        <span class="dwh-meta-sep">&bull;</span>
-        <span class="dwh-meta-item">
-          <strong>Dernière Sync :</strong>
-          <span id="dwh-banner-sync" style="color: #059669; font-weight: 700;">À l'instant</span>
-        </span>
-      </div>
-    </div>
-    <div class="dwh-telemetry-actions">
-      <button type="button" class="btn-dwh-audit" onclick="window.openSqlAuditModal('overview')" title="Inspecter les requêtes SQL directes et les tables du Data Warehouse">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span>Inspecter Requêtes SQL Directes</span>
-      </button>
-      <button type="button" class="btn-dwh-ping" onclick="window.simulateLiveScan()" title="Simuler un scan caisse mobile en direct et voir la mise à jour immédiate sur tous les graphiques">
-        <span class="live-dot-pulse"></span>
-        <span>Simuler Scan Caisse Live</span>
-      </button>
-    </div>
-  </div>
+
 
   <!-- ======================================================== -->
   <!-- 3. NAVIGATION PAR ONGLETS (ROW 2)                        -->
@@ -1028,7 +958,7 @@
           <div class="visual-header">
             <div class="visual-title-center">Chiffre d'Affaires par Type d'Établissement</div>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('donut')" title="Source : public.sell_points & public.purchase (Cliquez pour inspecter la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Répartition du CA scanné entre les Succursales de vente en gros et les Cafétérias au comptoir">?</span>
             </div>
           </div>
@@ -1046,7 +976,7 @@
           <div class="visual-header">
             <div class="visual-title-center">CA par Gamme de Café &amp; Type d'Établissement</div>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('gammes')" title="Source : public.purchase_details & dim_products (Cliquez pour inspecter la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Ventilation des ventes de café en Succursales vs Cafétérias selon la nomenclature officielle">?</span>
             </div>
           </div>
@@ -1064,7 +994,7 @@
           <div class="visual-header">
             <div class="visual-title-center">Top 5 Établissements BONDIN par Chiffre d'Affaires</div>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('top_magasins')" title="Source : public.sell_points & public.purchase (Cliquez pour inspecter la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Classement des 5 points de vente leaders du réseau BONDIN en volume de CA scanné">?</span>
             </div>
           </div>
@@ -1082,7 +1012,7 @@
           <div class="visual-header">
             <div class="visual-title-center">Évolution Mensuelle du Chiffre d'Affaires &amp; Panier Moyen</div>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('timeline')" title="Source : public.purchase agrégée par mois (Cliquez pour inspecter la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Historique mensuel d'Avril à Octobre 2026 en temps réel Live DWH">?</span>
             </div>
           </div>
@@ -1100,7 +1030,7 @@
           <div class="visual-header">
             <div class="visual-title-center">Chiffre d'Affaires par Segment Consommateur (Pareto)</div>
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('pareto')" title="Source : public.clients & public.purchase (Cliquez pour inspecter la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Loi de Pareto : les 161 Champions VIP génèrent 78.4% du CA total scanné">?</span>
             </div>
           </div>
@@ -1128,7 +1058,7 @@
                 <span class="live-dot-pulse" style="width: 5px; height: 5px;"></span>
                 <span>Tester Scan Magasin</span>
               </button>
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('map')" title="Source : public.sell_points & public.purchase (Cliquez pour inspecter la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Trafic scanné et volume de ventes par gouvernorat">?</span>
             </div>
           </div>
@@ -1142,7 +1072,7 @@
         <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
           <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Arbre de Décomposition Stratégique du CA Client</div>
           <div style="display:flex; align-items:center; gap:6px;">
-            <span class="visual-live-tag" onclick="window.openSqlAuditModal('tree')" title="Moteur de décomposition hiérarchique IA DWH"><span class="live-dot-pulse"></span>DWH Live</span>
+            
             <span class="visual-info-icon" title="Exploration guidée IA : Décomposition du CA Global -> Segments -> Gammes -> Magasins">?</span>
           </div>
         </div>
@@ -1344,7 +1274,7 @@
               <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10 des plus grands grossistes">Top 10</button>
               <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20 des plus grands grossistes">Top 20</button>
             </div>
-            <span class="visual-live-tag" onclick="window.openSqlAuditModal('grossistes')" title="Source : public.clients & public.purchase (Cliquez pour auditer la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+            
             <span class="visual-info-icon" title="Détection automatique des comptes professionnels selon le ticket en succursale">?</span>
           </div>
         </div>
@@ -1384,7 +1314,7 @@
               <button type="button" class="btn-parrainage-top btn-grossiste-top" data-top="10" onclick="window.filterTopParrainages(10)" title="Afficher le Top 10 des meilleurs ambassadeurs">Top 10</button>
               <button type="button" class="btn-parrainage-top btn-grossiste-top" data-top="20" onclick="window.filterTopParrainages(20)" title="Afficher le Top 20 des meilleurs ambassadeurs">Top 20</button>
             </div>
-            <span class="visual-live-tag" onclick="window.openSqlAuditModal('parrainage')" title="Source : public.fait_parrainages & public.clients (Cliquez pour auditer la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+            
             <span class="visual-info-icon" title="206 parrainages enregistrés avec suivi des filleuls et primes attribuées">?</span>
           </div>
         </div>
@@ -1426,7 +1356,7 @@
           <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Cascade Financière : Flux Earn &amp; Burn des Points de Fidélité</div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('waterfall')" title="Source : public.loyalty_points_ledger (Cliquez pour auditer la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Passif des points : Émis -> Consommés -> Solde actif">?</span>
             </div>
           </div>
@@ -1440,7 +1370,7 @@
           <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/></svg>Customer Lifetime Value (LTV Stratifiée par Segment)</div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('ltv')" title="Source : public.clients (Cliquez pour auditer la requête SQL)"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Valeur moyenne générée par profil : Champions (289,83 TND), Grossistes (238,96 TND)">?</span>
             </div>
           </div>
@@ -1568,7 +1498,7 @@
             Heatmap Temporelle : Affluence des Scans QR par Jour de Semaine &amp; Créneau Horaire (6 360 Transactions)
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
-            <span class="visual-live-tag" onclick="window.openSqlAuditModal('heatmap')" title="Source : public.purchase (Extraction horaire et hebdomadaire)"><span class="live-dot-pulse"></span>DWH Live</span>
+            
             <span class="tag-badge info">Comportement &amp; Heures de Pointe</span>
           </div>
         </div>
@@ -1593,7 +1523,7 @@
                 <button type="button" class="btn-cohort-grain" data-grain="week" onclick="window.setCohortGranularity('week')" title="Analyser les cohortes par semaine">Par Semaine</button>
                 <button type="button" class="btn-cohort-grain" data-grain="day" onclick="window.setCohortGranularity('day')" title="Analyser les cohortes journalières (30 derniers jours)">Par Jour</button>
               </div>
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('timeline')" title="Calcul de rétention multi-cohortes DWH"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Pourcentage d'utilisateurs actifs scannant leur QR code au fil du temps après leur date d'adhésion">?</span>
             </div>
           </div>
@@ -1627,7 +1557,7 @@
               Benchmark Multidimensionnel : Succursales (Gros) vs Cafétérias (Détail)
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('donut')" title="Benchmark 6 axes consolidé DWH"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Comparaison normalisée à 6 dimensions de la performance commerciale et fidélité">?</span>
             </div>
           </div>
@@ -1653,7 +1583,7 @@
               Matrice BCG &amp; Quadrant Rentabilité des Produits (Volume vs CA vs Panier)
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span class="visual-live-tag" onclick="window.openSqlAuditModal('gammes')" title="Portefeuille produits et élasticité prix DWH"><span class="live-dot-pulse"></span>DWH Live</span>
+              
               <span class="visual-info-icon" title="Classification stratégique : Étoiles, Vaches à Lait, Dilemmes et Poids Morts">?</span>
             </div>
           </div>
