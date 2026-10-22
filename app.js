@@ -1573,6 +1573,30 @@ function executeGlobalFilters() {
   const kpiDette = document.getElementById('kpi-dette-val');
   if (kpiDette) animateCount(kpiDette, baseDette, v => `${v.toFixed(3)} DT`);
 
+  // Tab 2: Mini-strip Segmentation & Rythme d'achat synchronisé DWH
+  const elTab2Freq = document.getElementById('kpi-tab2-freq');
+  if (elTab2Freq) {
+    const dynFreq = Math.min(6.5, Math.max(1.8, (baseScans / Math.max(1, baseClients)) * 0.42));
+    elTab2Freq.innerText = `${dynFreq.toFixed(1)} visites / mois`;
+  }
+  const elTab2Actifs = document.getElementById('kpi-tab2-actifs');
+  if (elTab2Actifs) elTab2Actifs.innerText = `Actifs : ${Math.round(baseClients).toLocaleString('fr-FR')} clients`;
+  const elTab2Interval = document.getElementById('kpi-tab2-interval');
+  if (elTab2Interval) {
+    const dynInterval = Math.max(2.5, Math.min(28.0, 30.0 / Math.max(0.5, (baseScans / Math.max(1, baseClients)) * 0.42)));
+    elTab2Interval.innerText = `${dynInterval.toFixed(1)} jours`;
+  }
+  const elTab2Ultra = document.getElementById('kpi-tab2-ultrafreq');
+  if (elTab2Ultra) {
+    const dynUltra = Math.max(5, Math.round(baseClients * 0.192));
+    elTab2Ultra.innerText = `${dynUltra.toLocaleString('fr-FR')} clients`;
+  }
+  const elTab2Burn = document.getElementById('kpi-tab2-burn');
+  if (elTab2Burn) {
+    const dynPtsBurn = Math.max(100, Math.round(baseCA * 0.108 * 100));
+    elTab2Burn.innerText = `${dynPtsBurn.toLocaleString('fr-FR')} pts brûlés`;
+  }
+
   // c. Jauges demi-cercles
   if (charts.gaugeActivation) {
     charts.gaugeActivation.data.datasets[0].data = [activationRate, Math.max(0, 100 - activationRate)];

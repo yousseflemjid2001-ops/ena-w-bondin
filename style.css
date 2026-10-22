@@ -3546,8 +3546,10 @@ body {
 }
 
 .pro-filter-group.date-filter-group {
-  min-width: 255px !important;
-  flex: 1.5 1 0 !important;
+  min-width: 285px !important;
+  max-width: 320px !important;
+  flex: 1.8 0 auto !important;
+  box-sizing: border-box !important;
 }
 
 .pro-filter-label {
@@ -3617,14 +3619,17 @@ body {
 .pro-date-picker-wrap {
   display: flex !important;
   align-items: center !important;
-  justify-content: space-between !important;
+  justify-content: center !important;
+  gap: 4px !important;
   background-color: #F9FAFB !important;
   border: 1.5px solid #D1D5DB !important;
   border-radius: 12px !important;
-  padding: 4px 10px !important;
+  padding: 4px 6px !important;
   height: 42px !important;
   box-sizing: border-box !important;
   width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
 
 [data-theme="dark"] .pro-date-picker-wrap {
@@ -3646,12 +3651,14 @@ body {
   border: none !important;
   color: #111827 !important;
   font-family: 'JetBrains Mono', monospace !important;
-  font-size: 0.82rem !important;
+  font-size: 0.80rem !important;
   font-weight: 800 !important;
-  padding: 0 2px !important;
-  width: 112px !important;
+  padding: 0 1px !important;
+  width: 106px !important;
+  max-width: calc(50% - 10px) !important;
   outline: none !important;
   cursor: pointer !important;
+  box-sizing: border-box !important;
 }
 
 [data-theme="dark"] .pro-date-field {
@@ -3675,9 +3682,11 @@ body {
 
 .date-arrow {
   color: #8E0E14 !important;
-  font-size: 0.95rem !important;
+  font-size: 0.88rem !important;
   font-weight: bold !important;
-  padding: 0 4px !important;
+  padding: 0 2px !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
 }
 
 .pro-filter-actions {
