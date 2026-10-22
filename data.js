@@ -2,9 +2,9 @@
 // Version Exhaustive Conforme au Cahier des Charges & Cadrage Métier 2026 (Live PostgreSQL)
 const DASHBOARD_DATA = {
   kpis: {
-    ca_total: 153316.55,
-    nb_scans: 13097,
-    panier_moyen: 11.706,
+    ca_total: 156007.26,
+    nb_scans: 13306,
+    panier_moyen: 11.725,
     panier_moyen_succursale: 37.588,
     panier_moyen_cafeteria: 4.191,
     clients_inscrits: 2715,
@@ -96,26 +96,50 @@ const DASHBOARD_DATA = {
 
   // 7. Table des Profils Grossistes sous Surveillance (Top 5, Top 10, Top 20)
   top_grossistes_table: [
-    { id: "CLI_0580F7CD5E", nom: "Sté Distribution Ben Salem (Mohamed)", succ: 354.330, cafe: 4.200, total: 358.530, max_succ: 223.60, freq_sem: 5.5, status: "Alerte Grossiste B2B" },
-    { id: "CLI_91A2DBA24D", nom: "Café & Comptoir El Andalous (Karim T.)", succ: 284.100, cafe: 14.800, total: 298.900, max_succ: 145.00, freq_sem: 4.2, status: "Alerte Grossiste B2B" },
-    { id: "CLI_6694456D51", nom: "Établissements Khelifi & Frères (Sami)", succ: 257.188, cafe: 8.600, total: 265.788, max_succ: 195.00, freq_sem: 3.8, status: "Alerte Grossiste B2B" },
-    { id: "CLI_3595C46849", nom: "Cafétéria Prestige & Dérivés (Tarek M.)", succ: 102.326, cafe: 14.600, total: 116.926, max_succ: 85.00, freq_sem: 5.5, status: "Alerte Churn & Gros" },
-    { id: "CLI_06C9F42F20", nom: "Hôtel & Salon Le Diplomate (Belgacem)", succ: 102.500, cafe: 2.400, total: 104.900, max_succ: 51.25, freq_sem: 2.1, status: "Grossiste Suspect" },
-    { id: "CLI_050C1C5789", nom: "Comptoir Central Bourguiba (Hassen)", succ: 79.019, cafe: 6.900, total: 85.919, max_succ: 45.00, freq_sem: 3.2, status: "Grossiste Suspect" },
-    { id: "CLI_011A5AE03B", nom: "Superette Moderne La Marsa (Moncef)", succ: 75.744, cafe: 5.200, total: 80.944, max_succ: 38.00, freq_sem: 3.0, status: "Grossiste Suspect" },
-    { id: "CLI_0B823FE6C6", nom: "Salon de Thé & Torréfaction Gafsa (Tahar)", succ: 63.000, cafe: 6.600, total: 69.600, max_succ: 42.00, freq_sem: 2.4, status: "Grossiste Suspect" },
-    { id: "CLI_7A28F10D12", nom: "Comptoir Torréfaction Nabeul (Zied B.)", succ: 59.800, cafe: 4.450, total: 64.250, max_succ: 32.50, freq_sem: 2.8, status: "Grossiste Suspect" },
-    { id: "CLI_4C991E334F", nom: "Ets Ben Abdallah & Cie (Mounir)", succ: 54.200, cafe: 4.500, total: 58.700, max_succ: 29.00, freq_sem: 2.5, status: "Grossiste Régulier" },
-    { id: "CLI_8E31AA0288", nom: "Café Lounge Les Berges (Mehdi)", succ: 48.100, cafe: 4.240, total: 52.340, max_succ: 26.50, freq_sem: 2.2, status: "Grossiste Régulier" },
-    { id: "CLI_12F009BA57", nom: "Distribution Boissons Sousse (Anouar)", succ: 46.300, cafe: 3.500, total: 49.800, max_succ: 25.00, freq_sem: 2.0, status: "Grossiste Régulier" },
-    { id: "CLI_99E10C7A14", nom: "Hôtel Rosa Rivage B2B (Foued M.)", succ: 43.500, cafe: 2.620, total: 46.120, max_succ: 24.00, freq_sem: 1.8, status: "Compte Pro Validé" },
-    { id: "CLI_54B200DD83", nom: "Alimentation Générale Bizerte (Béchir)", succ: 39.800, cafe: 2.800, total: 42.600, max_succ: 22.00, freq_sem: 2.1, status: "Compte Pro Validé" },
-    { id: "CLI_31A882EF19", nom: "Torréfaction Artisanale Kairouan (Lotfi)", succ: 36.900, cafe: 2.550, total: 39.450, max_succ: 20.50, freq_sem: 1.9, status: "Compte Pro Validé" },
-    { id: "CLI_62C553AA71", nom: "Café des Délices Sidi Bou (Hichem)", succ: 34.200, cafe: 2.600, total: 36.800, max_succ: 19.00, freq_sem: 2.3, status: "Grossiste Suspect" },
-    { id: "CLI_88D919FC02", nom: "Comptoir El Manar Restauration (Walid)", succ: 31.800, cafe: 2.400, total: 34.200, max_succ: 18.50, freq_sem: 1.7, status: "Compte Pro Validé" },
-    { id: "CLI_77E0411B93", nom: "Espace Pause Café Lac 2 (Farid)", succ: 29.700, cafe: 2.200, total: 31.900, max_succ: 17.00, freq_sem: 1.6, status: "Compte Pro Validé" },
-    { id: "CLI_44B7629C50", nom: "Grossiste Sud Épicerie (Chokri)", succ: 27.500, cafe: 2.000, total: 29.500, max_succ: 16.00, freq_sem: 1.5, status: "Compte Pro Validé" },
-    { id: "CLI_22A3098E64", nom: "Relais Autoroute Grombalia (Kamel B.)", succ: 25.900, cafe: 1.900, total: 27.800, max_succ: 15.50, freq_sem: 1.4, status: "Compte Pro Validé" }
+    { id: "CLI_0580F7CD5E", nom: "Sté Distribution Ben Salem (Mohamed)", profil: "Grossiste B2B", succ: 354.330, cafe: 4.200, total: 358.530, max_succ: 223.60, freq_sem: 5.5, status: "Alerte Grossiste B2B" },
+    { id: "CLI_91A2DBA24D", nom: "Café & Comptoir El Andalous (Karim T.)", profil: "Grossiste B2B", succ: 284.100, cafe: 14.800, total: 298.900, max_succ: 145.00, freq_sem: 4.2, status: "Alerte Grossiste B2B" },
+    { id: "CLI_6694456D51", nom: "Établissements Khelifi & Frères (Sami)", profil: "Grossiste B2B", succ: 257.188, cafe: 8.600, total: 265.788, max_succ: 195.00, freq_sem: 3.8, status: "Alerte Grossiste B2B" },
+    { id: "CLI_3595C46849", nom: "Cafétéria Prestige & Dérivés (Tarek M.)", profil: "Grossiste B2B", succ: 102.326, cafe: 14.600, total: 116.926, max_succ: 85.00, freq_sem: 5.5, status: "Alerte Churn & Gros" },
+    { id: "CLI_06C9F42F20", nom: "Hôtel & Salon Le Diplomate (Belgacem)", profil: "Grossiste B2B", succ: 102.500, cafe: 2.400, total: 104.900, max_succ: 51.25, freq_sem: 2.1, status: "Grossiste Suspect" },
+    { id: "CLI_050C1C5789", nom: "Comptoir Central Bourguiba (Hassen)", profil: "Grossiste B2B", succ: 79.019, cafe: 6.900, total: 85.919, max_succ: 45.00, freq_sem: 3.2, status: "Grossiste Suspect" },
+    { id: "CLI_011A5AE03B", nom: "Superette Moderne La Marsa (Moncef)", profil: "Grossiste B2B", succ: 75.744, cafe: 5.200, total: 80.944, max_succ: 38.00, freq_sem: 3.0, status: "Grossiste Suspect" },
+    { id: "CLI_0B823FE6C6", nom: "Salon de Thé & Torréfaction Gafsa (Tahar)", profil: "Grossiste B2B", succ: 63.000, cafe: 6.600, total: 69.600, max_succ: 42.00, freq_sem: 2.4, status: "Grossiste Suspect" },
+    { id: "CLI_7A28F10D12", nom: "Comptoir Torréfaction Nabeul (Zied B.)", profil: "Grossiste B2B", succ: 59.800, cafe: 4.450, total: 64.250, max_succ: 32.50, freq_sem: 2.8, status: "Grossiste Suspect" },
+    { id: "CLI_4C991E334F", nom: "Ets Ben Abdallah & Cie (Mounir)", profil: "Grossiste B2B", succ: 54.200, cafe: 4.500, total: 58.700, max_succ: 29.00, freq_sem: 2.5, status: "Grossiste Régulier" },
+    { id: "CLI_8E31AA0288", nom: "Café Lounge Les Berges (Mehdi)", profil: "Grossiste B2B", succ: 48.100, cafe: 4.240, total: 52.340, max_succ: 26.50, freq_sem: 2.2, status: "Grossiste Régulier" },
+    { id: "CLI_12F009BA57", nom: "Distribution Boissons Sousse (Anouar)", profil: "Grossiste B2B", succ: 46.300, cafe: 3.500, total: 49.800, max_succ: 25.00, freq_sem: 2.0, status: "Grossiste Régulier" },
+    { id: "CLI_99E10C7A14", nom: "Hôtel Rosa Rivage B2B (Foued M.)", profil: "Grossiste B2B", succ: 43.500, cafe: 2.620, total: 46.120, max_succ: 24.00, freq_sem: 1.8, status: "Compte Pro Validé" },
+    { id: "CLI_54B200DD83", nom: "Alimentation Générale Bizerte (Béchir)", profil: "Grossiste B2B", succ: 39.800, cafe: 2.800, total: 42.600, max_succ: 22.00, freq_sem: 2.1, status: "Compte Pro Validé" },
+    { id: "CLI_31A882EF19", nom: "Torréfaction Artisanale Kairouan (Lotfi)", profil: "Grossiste B2B", succ: 36.900, cafe: 2.550, total: 39.450, max_succ: 20.50, freq_sem: 1.9, status: "Compte Pro Validé" },
+    { id: "CLI_62C553AA71", nom: "Café des Délices Sidi Bou (Hichem)", profil: "Grossiste B2B", succ: 34.200, cafe: 2.600, total: 36.800, max_succ: 19.00, freq_sem: 2.3, status: "Grossiste Suspect" },
+    { id: "CLI_88D919FC02", nom: "Comptoir El Manar Restauration (Walid)", profil: "Grossiste B2B", succ: 31.800, cafe: 2.400, total: 34.200, max_succ: 18.50, freq_sem: 1.7, status: "Compte Pro Validé" },
+    { id: "CLI_77E0411B93", nom: "Espace Pause Café Lac 2 (Farid)", profil: "Grossiste B2B", succ: 29.700, cafe: 2.200, total: 31.900, max_succ: 17.00, freq_sem: 1.6, status: "Compte Pro Validé" },
+    { id: "CLI_44B7629C50", nom: "Grossiste Sud Épicerie (Chokri)", profil: "Grossiste B2B", succ: 27.500, cafe: 2.000, total: 29.500, max_succ: 16.00, freq_sem: 1.5, status: "Compte Pro Validé" },
+    { id: "CLI_22A3098E64", nom: "Relais Autoroute Grombalia (Kamel B.)", profil: "Grossiste B2B", succ: 25.900, cafe: 1.900, total: 27.800, max_succ: 15.50, freq_sem: 1.4, status: "Compte Pro Validé" }
+  ],
+
+  // 7b. Top Clients Particuliers (B2C & Cafétéria)
+  top_clients_b2c_table: [
+    { id: "CLI_4877D51D7B", nom: "Mariem Ben Amor", profil: "Particulier B2C", succ: 0.0, cafe: 823.100, total: 823.100, max_succ: 0.0, freq_sem: 6.0, status: "Champion VIP (B2C)" },
+    { id: "CLI_E77828106D", nom: "Youssef Trabelsi", profil: "Particulier B2C", succ: 24.410, cafe: 607.400, total: 631.810, max_succ: 14.41, freq_sem: 5.7, status: "Champion VIP (B2C)" },
+    { id: "CLI_1B05E58234", nom: "Syrine Ghedira", profil: "Particulier B2C", succ: 46.250, cafe: 530.800, total: 577.050, max_succ: 18.50, freq_sem: 8.9, status: "Champion VIP (B2C)" },
+    { id: "CLI_4D644A0082", nom: "Hédi Chaabane", profil: "Particulier B2C", succ: 0.0, cafe: 492.500, total: 492.500, max_succ: 0.0, freq_sem: 5.0, status: "Champion VIP (B2C)" },
+    { id: "CLI_72D012B93A", nom: "Amira Karray", profil: "Particulier B2C", succ: 9.990, cafe: 429.000, total: 438.990, max_succ: 9.99, freq_sem: 4.1, status: "Champion VIP (B2C)" },
+    { id: "CLI_EF8C419947", nom: "Mohamed Ali Belhadj", profil: "Particulier B2C", succ: 28.950, cafe: 407.000, total: 435.950, max_succ: 19.70, freq_sem: 5.1, status: "Champion VIP (B2C)" },
+    { id: "CLI_5045A0DF83", nom: "Inès Mejdoub", profil: "Particulier B2C", succ: 7.400, cafe: 386.500, total: 393.900, max_succ: 12.47, freq_sem: 5.5, status: "Fidèle Régulier" },
+    { id: "CLI_C1A645048C", nom: "Karim Jaziri", profil: "Particulier B2C", succ: 38.000, cafe: 345.900, total: 383.900, max_succ: 19.50, freq_sem: 5.6, status: "Fidèle Régulier" },
+    { id: "CLI_D1B23F98F4", nom: "Nour El Houda Dridi", profil: "Particulier B2C", succ: 7.400, cafe: 336.900, total: 344.300, max_succ: 7.40, freq_sem: 4.3, status: "Fidèle Régulier" },
+    { id: "CLI_DC93433A1B", nom: "Bilel Rekik", profil: "Particulier B2C", succ: 18.500, cafe: 287.300, total: 305.800, max_succ: 9.25, freq_sem: 4.9, status: "Fidèle Régulier" },
+    { id: "CLI_3720973C0F", nom: "Salma Bouzid", profil: "Particulier B2C", succ: 0.0, cafe: 300.200, total: 300.200, max_succ: 0.0, freq_sem: 1.4, status: "Fidèle Régulier" },
+    { id: "CLI_977A91B3FA", nom: "Firas Louati", profil: "Particulier B2C", succ: 0.0, cafe: 287.300, total: 287.300, max_succ: 0.0, freq_sem: 3.4, status: "Fidèle Régulier" },
+    { id: "CLI_535D017F21", nom: "Amina Ben Salem", profil: "Particulier B2C", succ: 0.0, cafe: 272.200, total: 272.200, max_succ: 0.0, freq_sem: 3.4, status: "Fidèle Régulier" },
+    { id: "CLI_169875BF24", nom: "Zied Ben Abdallah", profil: "Particulier B2C", succ: 42.294, cafe: 228.200, total: 270.494, max_succ: 19.98, freq_sem: 3.5, status: "Fidèle Régulier" },
+    { id: "CLI_FB1121469F", nom: "Dorra Mansour", profil: "Particulier B2C", succ: 7.511, cafe: 253.800, total: 261.311, max_succ: 7.51, freq_sem: 5.9, status: "Fidèle Régulier" },
+    { id: "CLI_79D65250A0", nom: "Hamza Gharbi", profil: "Particulier B2C", succ: 37.000, cafe: 222.200, total: 259.200, max_succ: 18.50, freq_sem: 4.5, status: "Fidèle Régulier" },
+    { id: "CLI_324551529F", nom: "Rym Chaouch", profil: "Particulier B2C", succ: 0.0, cafe: 222.700, total: 222.700, max_succ: 0.0, freq_sem: 3.0, status: "Fidèle Régulier" },
+    { id: "CLI_335CD48F46", nom: "Skander Ayari", profil: "Particulier B2C", succ: 48.696, cafe: 172.900, total: 221.596, max_succ: 17.70, freq_sem: 3.5, status: "Fidèle Régulier" },
+    { id: "CLI_0E1BBB9DC5", nom: "Nadia Ben Romdhane", profil: "Particulier B2C", succ: 19.750, cafe: 199.500, total: 219.250, max_succ: 10.50, freq_sem: 5.3, status: "Fidèle Régulier" },
+    { id: "CLI_80E754AB6D", nom: "Mehdi Zaïm", profil: "Particulier B2C", succ: 0.0, cafe: 219.100, total: 219.100, max_succ: 0.0, freq_sem: 2.0, status: "Fidèle Régulier" }
   ],
 
   // 8. Pilotage du Parrainage & Viralité (Fait_Parrainages - Exigence explicite CDC)

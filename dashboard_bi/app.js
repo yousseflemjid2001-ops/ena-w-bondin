@@ -105,8 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initLiveClock();
   renderSankeyFlow();
   renderRewardsCatalog();
-  // renderHeatmap / renderCohortMatrix / renderAdvancedCharts sont appelés
-  // à la demande quand l'onglet tab-avancees est activé (canvas caché = taille 0 sinon)
+  // Rendu immédiat des visualisations du Cockpit d'Accueil (Conforme Rapport ENA w BONDIN)
+  try { renderHeatmap(13306, 'Historique Global Consolidé (Avril - Octobre 2026)'); } catch(e) {}
+  try { renderCohortMatrix(); } catch(e) {}
   window.initThemeSystem();
   initLiveProductionSync();
   updateGeminiBadgeStatus();
@@ -724,6 +725,19 @@ function initSubbarTabs() {
   window.addEventListener('resize', () => updateNavSlidingIndicator());
 }
 
+window.switchToTab = function(tabId) {
+  const btn = document.querySelector(`.pill-tab-btn[data-tab="${tabId}"]`);
+  if (btn) btn.click();
+};
+
+window.filterByClientName = function(clientName) {
+  if (!clientName) return;
+  if (typeof showToast === 'function') {
+    showToast(`Client sélectionné : ${clientName} (Rapport ENA w BONDIN)`, 'coffee');
+  }
+  window.switchToTab('tab-segmentation');
+};
+
 // ==========================================================================
 // 2. SLICERS & FILTRES (PROFIL RÉSEAU & SÉCURITÉ RLS)
 // ==========================================================================
@@ -1057,7 +1071,7 @@ function executeGlobalFilters() {
     : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.ca_total : 153316.55);
   let baseScans = (liveSyncData && liveSyncData.total_scans) 
     ? liveSyncData.total_scans 
-    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.nb_scans : 13097);
+    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.nb_scans : 13306);
   let baseClients = (liveSyncData && liveSyncData.clients_actifs) 
     ? liveSyncData.clients_actifs 
     : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_actifs : 759);
@@ -2627,10 +2641,10 @@ function initLeafletMap() {
     mapInstance = null;
   }
 
-  // Initialisation de la carte Leaflet
+  // Initialisation de la carte Leaflet (Cadrage centré sur la Tunisie)
   mapInstance = L.map('map-tunisie-container', {
-    center: [35.2, 9.8],
-    zoom: 6.2,
+    center: [35.5, 9.8],
+    zoom: 7,
     minZoom: 5,
     maxZoom: 18,
     zoomControl: true,
@@ -2687,14 +2701,14 @@ function initLeafletMap() {
         if (validCoords.length > 0) {
           const bounds = L.latLngBounds(validCoords);
           if (bounds.isValid()) {
-            mapInstance.fitBounds(bounds, { padding: [25, 25], maxZoom: 8 });
+            mapInstance.fitBounds(bounds, { padding: [35, 35], maxZoom: 7.8 });
           }
         }
       } catch(e) {
         console.warn("Leaflet fitBounds error:", e);
       }
     }
-  }, 150);
+  }, 350);
 
   setTimeout(() => {
     if (mapInstance) mapInstance.invalidateSize();
@@ -3669,8 +3683,8 @@ function renderHeatmap(customScansTotal, customPeriodLabel) {
   const container = document.getElementById('heatmap-time-container');
   if (!container) return;
 
-  const scans = customScansTotal ? Math.round(customScansTotal) : 13097;
-  const scale = customScansTotal ? Math.max(0.015, customScansTotal / 13097) : 1.0;
+  const scans = customScansTotal ? Math.round(customScansTotal) : ((window.liveSyncData && window.liveSyncData.total_scans) ? window.liveSyncData.total_scans : 13306);
+  const scale = customScansTotal ? Math.max(0.015, customScansTotal / 13306) : 1.0;
 
   const titleEl = document.getElementById('heatmap-title-text');
   if (titleEl) {
