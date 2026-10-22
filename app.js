@@ -376,6 +376,9 @@ function triggerExecutiveCinematicLoading(selectedRole) {
     if (loginOverlay) {
       loginOverlay.style.display = 'none';
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflowY = 'auto';
+      document.documentElement.style.overflowY = 'auto';
     }
 
     // Après l'animation d'expansion Warp (420ms)
@@ -383,6 +386,10 @@ function triggerExecutiveCinematicLoading(selectedRole) {
       loaderScreen.style.display = 'none';
       loaderScreen.classList.remove('loader-warp-exit');
       stopLoaderParticles();
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.overflowY = 'auto';
+      document.documentElement.style.overflowY = 'auto';
 
       const profile = DEMO_PROFILES[selectedRole] || DEMO_PROFILES.dir_gen;
       if (window.showToast) {
@@ -413,6 +420,9 @@ function finalizeDirectLogin(selectedRole) {
   if (loginOverlay) {
     loginOverlay.style.display = 'none';
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
   }
 
   const profile = DEMO_PROFILES[selectedRole] || DEMO_PROFILES.dir_gen;
@@ -621,6 +631,9 @@ function initAuthGate() {
     document.documentElement.classList.add('is-authenticated');
     loginOverlay.style.display = 'none';
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
     stopLoginParticles();
     const savedRole = localStorage.getItem('bondin_auth_role') || sessionStorage.getItem('bondin_auth_role');
     if (savedRole) {
@@ -2349,6 +2362,7 @@ function initLeafletMap() {
     minZoom: 5,
     maxZoom: 18,
     zoomControl: true,
+    scrollWheelZoom: false, // Évite d'intercepter la molette de la souris et de bloquer le défilement de la page
     attributionControl: false
   });
 
@@ -3109,6 +3123,7 @@ window.openExportModal = function() {
 window.closeExportModal = function() {
   const modal = document.getElementById('modal-export-pdf');
   if (modal) modal.style.display = 'none';
+  if (typeof ensurePageScrollable === 'function') ensurePageScrollable();
 };
 
 window.selectExportScope = function(scope) {
@@ -4372,6 +4387,7 @@ window.openSqlAuditModal = function(key = 'overview') {
 window.closeSqlAuditModal = function() {
   const modal = document.getElementById('modal-sql-audit');
   if (modal) modal.style.display = 'none';
+  if (typeof ensurePageScrollable === 'function') ensurePageScrollable();
 };
 
 window.runLiveSqlPing = function() {
@@ -4398,6 +4414,34 @@ window.runLiveSqlPing = function() {
     }
   }, 420);
 };
+
+// ==========================================================================
+// 14c. GARANTIE ABSOLUE ANTI-BLOCAGE DU DÉFILEMENT (PAGE SCROLL UNFREEZE)
+// ==========================================================================
+function ensurePageScrollable() {
+  const loginOverlay = document.getElementById('login-screen');
+  const isLoginVisible = loginOverlay && loginOverlay.style.display !== 'none' && !document.documentElement.classList.contains('is-authenticated');
+  if (!isLoginVisible) {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.body.style.overflowY = 'auto';
+    document.documentElement.style.overflowY = 'auto';
+  }
+}
+window.ensurePageScrollable = ensurePageScrollable;
+
+window.addEventListener('DOMContentLoaded', ensurePageScrollable);
+window.addEventListener('load', ensurePageScrollable);
+setInterval(ensurePageScrollable, 2000); // Surveillance continue pour débloquer automatiquement tout gel intempestif
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (window.closeSqlAuditModal) window.closeSqlAuditModal();
+    if (window.closeExportModal) window.closeExportModal();
+    if (window.closeOfficialReportModal) window.closeOfficialReportModal();
+    ensurePageScrollable();
+  }
+});
 
 // ==========================================================================
 // 15. COPILOT RAG DÉCISIONNEL (GOOGLE GEMINI 1.5 FLASH & DWH CERTIFIÉ)
@@ -5008,6 +5052,7 @@ window.openOfficialReportModal = function() {
 window.closeOfficialReportModal = function() {
   const modal = document.getElementById('modal-official-report');
   if (modal) modal.style.display = 'none';
+  if (typeof ensurePageScrollable === 'function') ensurePageScrollable();
 };
 
 window.showReportPage = function(pageNum) {
