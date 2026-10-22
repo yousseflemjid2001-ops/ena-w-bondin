@@ -6367,3 +6367,269 @@ header.aurora-header,
   opacity: 0 !important;
   visibility: hidden !important;
 }
+
+/* ==========================================================================
+   CHARTE EXACTE DU RAPPORT HEBDOMADAIRE ENA W BONDIN (PAGE 2)
+   ========================================================================== */
+.report-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+  .report-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.report-kpi-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.report-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+.report-kpi-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6B7280;
+  margin-bottom: 8px;
+}
+.report-kpi-val {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.1;
+  margin-bottom: 4px;
+  font-feature-settings: "tnum";
+}
+.report-kpi-sub {
+  font-size: 0.84rem;
+  color: #6B7280;
+  font-weight: 500;
+}
+[data-theme="dark"] .report-kpi-card {
+  background: #1A0D0B;
+  border-color: rgba(217, 119, 6, 0.25);
+}
+[data-theme="dark"] .report-kpi-label {
+  color: #D97706;
+}
+[data-theme="dark"] .report-kpi-val {
+  color: #FFFFFF;
+}
+[data-theme="dark"] .report-kpi-sub {
+  color: #9CA3AF;
+}
+
+/* Donut Wrapper Répartition par point de vente */
+.report-donut-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 24px;
+  padding: 16px 8px;
+  flex-wrap: wrap;
+}
+.report-donut-chart-box {
+  position: relative;
+  width: 230px;
+  height: 230px;
+  flex-shrink: 0;
+}
+.report-donut-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+.report-donut-center-num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1;
+}
+.report-donut-center-sub {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #8E0E14;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+[data-theme="dark"] .report-donut-center-num {
+  color: #FFFFFF;
+}
+.report-donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 220px;
+}
+.report-donut-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #374151;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+.report-donut-legend-item:hover {
+  background: rgba(142, 14, 20, 0.06);
+}
+.report-donut-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+[data-theme="dark"] .report-donut-legend-item {
+  color: #E5E7EB;
+}
+
+/* Table Rouge Top 5 Clients */
+.report-table-top5 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.report-table-top5 th {
+  background: #C00E29 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  font-size: 0.76rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  padding: 12px 16px !important;
+  border: none !important;
+}
+.report-table-top5 td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #F3F4F6 !important;
+  color: #1F2937 !important;
+}
+.report-table-top5 tr:nth-child(even) td {
+  background: #FAFAFA;
+}
+.report-table-top5 tr:hover td {
+  background: rgba(142, 14, 20, 0.04);
+}
+.report-table-top5 .rank-cell {
+  color: #C00E29 !important;
+  font-weight: 800 !important;
+  font-size: 1rem !important;
+}
+[data-theme="dark"] .report-table-top5 th {
+  background: #8E0E14 !important;
+}
+[data-theme="dark"] .report-table-top5 td {
+  color: #F3F4F6 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+[data-theme="dark"] .report-table-top5 tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* En-têtes officiels ENA w BONDIN avec barre et pastille rouge */
+.bondin-report-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 30px 0 16px 0;
+  flex-wrap: wrap;
+}
+.bondin-section-bar {
+  width: 6px;
+  height: 26px;
+  background: #8E0E14;
+  border-radius: 3px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.bondin-section-badge {
+  width: 28px;
+  height: 28px;
+  background: #8E0E14;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 14px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(142, 14, 20, 0.35);
+}
+.bondin-section-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #8E0E14;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+[data-theme="dark"] .bondin-section-bar {
+  background: #D97706;
+}
+[data-theme="dark"] .bondin-section-badge {
+  background: #8E0E14;
+  border: 1px solid #D97706;
+}
+[data-theme="dark"] .bondin-section-title {
+  color: #F87171;
+}
+
+/* Toggle mode Rapport Hebdo vs DWH Live Consolidé */
+.report-mode-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(142, 14, 20, 0.07);
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid rgba(142, 14, 20, 0.2);
+  gap: 4px;
+}
+.btn-report-mode {
+  background: transparent;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 7px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-report-mode.active {
+  background: #8E0E14;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(142, 14, 20, 0.3);
+}
+[data-theme="dark"] .report-mode-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .btn-report-mode {
+  color: #9CA3AF;
+}
+[data-theme="dark"] .btn-report-mode.active {
+  background: #8E0E14;
+  color: #FFFFFF;
+}

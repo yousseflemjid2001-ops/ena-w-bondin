@@ -32,35 +32,146 @@ if (typeof Chart !== 'undefined' && Chart.defaults) {
 
 
 // Plugin Officiel Charte BONDIN : Affichage dynamique du volume au centre du Donut
+// Plugin Officiel Charte BONDIN : Le texte central est géré par l'overlay HTML .report-donut-center-text
 const bondinDonutCenterPlugin = {
   id: 'bondinDonutCenterPlugin',
-  afterDraw: (chart) => {
-    if (chart.canvas.id !== 'chart-etablissements-donut') return;
-    const { ctx, chartArea: { top, bottom, left, right, width, height } } = chart;
-    ctx.save();
-    const centerX = (left + right) / 2;
-    const centerY = (top + bottom) / 2;
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    
-    // Valeur dynamique selon filtre actif
-    const scanEl = document.getElementById('scan-counter');
-    const scanText = scanEl ? scanEl.innerText : '13 097';
-    
-    ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
-    ctx.fillStyle = isDark ? '#FFFFFF' : '#111827';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(scanText, centerX, centerY - 10);
-    
-    ctx.font = '700 12px "Plus Jakarta Sans", sans-serif';
-    ctx.fillStyle = '#C31C23';
-    ctx.fillText('achats', centerX, centerY + 14);
-    ctx.restore();
+  afterDraw: () => {
+    // Rendu géré en overlay HTML responsive (.report-donut-center-text) pour une netteté absolue
+    return;
   }
 };
 if (typeof Chart !== 'undefined' && Chart.register) {
   try { Chart.register(bondinDonutCenterPlugin); } catch(e) {}
 }
+
+// Mode d'affichage du rapport ENA w BONDIN (Snapshot PDF 11-18 Juin vs DWH Live Consolidé)
+window.reportViewMode = 'snapshot';
+
+window.setReportViewMode = function(mode) {
+  window.reportViewMode = mode;
+  const btnSnap = document.getElementById('btn-mode-snapshot');
+  const btnLive = document.getElementById('btn-mode-live');
+  if (btnSnap && btnLive) {
+    if (mode === 'snapshot') {
+      btnSnap.classList.add('active');
+      btnLive.classList.remove('active');
+    } else {
+      btnSnap.classList.remove('active');
+      btnLive.classList.add('active');
+    }
+  }
+  applyReportViewMode();
+};
+
+function applyReportViewMode() {
+  const isSnap = window.reportViewMode === 'snapshot';
+  const elAchats = document.getElementById('report-total-achats');
+  const elCa = document.getElementById('report-ca-total');
+  const elAov = document.getElementById('report-panier-moyen');
+  const elUniques = document.getElementById('report-acheteurs-uniques');
+  const elInscrits = document.getElementById('report-nouveaux-inscrits');
+  const elPdv = document.getElementById('report-pdv-actifs');
+  const elDonutNum = document.getElementById('donut-center-num');
+  const elDonutSub = document.getElementById('donut-center-sub');
+  const elDonutTitle = document.getElementById('donut-section-title');
+  const elSubInscrits = document.getElementById('report-sub-inscrits');
+  const elSubAchats = document.getElementById('report-sub-achats');
+  const elSubCa = document.getElementById('report-sub-ca');
+  const elSubAcheteurs = document.getElementById('report-sub-acheteurs');
+
+  if (isSnap) {
+    if (elAchats) elAchats.innerText = '527';
+    if (elSubAchats) elSubAchats.innerText = 'transactions';
+    if (elCa) elCa.innerText = '3 736.4 DT';
+    if (elSubCa) elSubCa.innerText = 'montant total';
+    if (elAov) elAov.innerText = '7.1 DT';
+    if (elUniques) elUniques.innerText = '171';
+    if (elSubAcheteurs) elSubAcheteurs.innerText = 'clients actifs';
+    if (elInscrits) elInscrits.innerText = '728';
+    if (elSubInscrits) elSubInscrits.innerText = 'sur 742 au total (cumulé)';
+    if (elPdv) elPdv.innerText = '16 / 20';
+    if (elDonutNum) elDonutNum.innerText = '527';
+    if (elDonutSub) elDonutSub.innerText = 'achats';
+    if (elDonutTitle) elDonutTitle.innerText = 'RÉPARTITION DES ACHATS DE LA SEMAINE';
+
+    // Répartition exacte Donut Page 2
+    if (charts.donutEtablissement) {
+      charts.donutEtablissement.data.labels = [
+        'Cafétéria Le Kef (27%)',
+        'Cafétéria Tunis Liberté (17%)',
+        'Cafétéria Tunis La Marsa (16%)',
+        'Cafétéria Tunis MENZAH VI (13%)',
+        'Succursale Tunis Menzah VI (5%)',
+        'Autres (22%)'
+      ];
+      charts.donutEtablissement.data.datasets[0].data = [27, 17, 16, 13, 5, 22];
+      charts.donutEtablissement.data.datasets[0].backgroundColor = ['#8E0E14', '#C00E29', '#C68A36', '#E06D75', '#F8B4B4', '#D1D5DB'];
+      charts.donutEtablissement.update();
+    }
+
+    // Top PDV Achats (Section 3 Gauche)
+    if (charts.topPdvAchats) {
+      charts.topPdvAchats.data.labels = [
+        'Cafétéria Le Kef',
+        'Cafétéria Tunis Liberté',
+        'Cafétéria Tunis La Marsa',
+        'Cafétéria Tunis MENZAH VI',
+        'Succursale Tunis Menzah VI',
+        'Cafétéria Tunis France',
+        'Succursale Tunis Liberté',
+        'Cafétéria Tunis Espagne'
+      ];
+      charts.topPdvAchats.data.datasets[0].data = [143, 92, 85, 67, 26, 25, 16, 12];
+      charts.topPdvAchats.update();
+    }
+
+    // Top PDV CA (Section 3 Droite)
+    if (charts.topMagasinsMockup) {
+      charts.topMagasinsMockup.data.labels = [
+        'Cafétéria Le Kef',
+        'Succursale Tunis Menzah VI',
+        'Cafétéria Tunis Liberté',
+        'Succursale Tunis Liberté',
+        'Cafétéria Tunis La Marsa',
+        'Succursale Tunis Espagne',
+        'Cafétéria Tunis MENZAH VI',
+        'Succursale Tunis Ariana'
+      ];
+      charts.topMagasinsMockup.data.datasets[0].data = [628, 499, 424, 404, 338, 286, 275, 203];
+      charts.topMagasinsMockup.update();
+    }
+  } else {
+    // Mode DWH Live Consolidé
+    const liveScans = (typeof liveSyncData !== 'undefined' && liveSyncData && liveSyncData.total_scans) || 13306;
+    const liveCa = (typeof liveSyncData !== 'undefined' && liveSyncData && liveSyncData.total_ca_tnd) || 156007;
+    const liveAov = (typeof liveSyncData !== 'undefined' && liveSyncData && liveSyncData.panier_moyen_tnd) || 11.725;
+    const liveCli = (typeof liveSyncData !== 'undefined' && liveSyncData && liveSyncData.clients_actifs) || 765;
+
+    if (elAchats) elAchats.innerText = liveScans.toLocaleString('fr-FR');
+    if (elSubAchats) elSubAchats.innerText = 'scans consolidés';
+    if (elCa) elCa.innerText = `${Math.round(liveCa).toLocaleString('fr-FR')} DT`;
+    if (elSubCa) elSubCa.innerText = 'CA fidélité réseau';
+    if (elAov) elAov.innerText = `${liveAov.toFixed(1)} DT`;
+    if (elUniques) elUniques.innerText = liveCli.toLocaleString('fr-FR');
+    if (elSubAcheteurs) elSubAcheteurs.innerText = 'membres actifs DWH';
+    if (elInscrits) elInscrits.innerText = '2 715';
+    if (elSubInscrits) elSubInscrits.innerText = 'sur 2 715 inscrits CRM';
+    if (elPdv) elPdv.innerText = '16 / 20';
+    if (elDonutNum) elDonutNum.innerText = liveScans.toLocaleString('fr-FR');
+    if (elDonutSub) elDonutSub.innerText = 'scans';
+    if (elDonutTitle) elDonutTitle.innerText = 'RÉPARTITION GLOBALE DES SCANS DWH CONSOLIDÉS';
+
+    if (charts.topPdvAchats) {
+      charts.topPdvAchats.data.datasets[0].data = [3841, 2410, 2210, 1850, 920, 680, 540, 420];
+      charts.topPdvAchats.update();
+    }
+    if (charts.topMagasinsMockup) {
+      charts.topMagasinsMockup.data.datasets[0].data = [27291, 13426, 12854, 12365, 11314, 8600, 6776, 5636];
+      charts.topMagasinsMockup.update();
+    }
+  }
+}
+window.applyReportViewMode = applyReportViewMode;
 
 /** Animation de compteur numérique fluide et dynamique (Counter Ticker) */
 function animateCount(el, targetNum, formatFn, duration = 600) {
@@ -119,6 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Animation initiale de réveil des compteurs de KPIs
   setTimeout(() => {
     executeGlobalFilters();
+    try { applyReportViewMode(); } catch(e) {}
     if (window.lucide) {
       try { lucide.createIcons(); } catch(e) {}
     }
@@ -1668,7 +1780,23 @@ function executeGlobalFilters() {
     charts.topMagasinsMockup.update();
   }
 
-  // g. Timeline (Dynamique Journalière, Hebdo ou Mensuelle)
+  // g. Mise à jour des cartes du Rapport ENA w BONDIN (Section 1)
+  if (window.reportViewMode === 'live' || (typeof activeCrossFilter !== 'undefined' && activeCrossFilter) || magasin !== 'all' || segment !== 'all' || reseau !== 'all' || (typeof isPresetAll !== 'undefined' && !isPresetAll)) {
+    const elAchats = document.getElementById('report-total-achats');
+    if (elAchats) animateCount(elAchats, baseScans, v => Math.round(v).toLocaleString('fr-FR'));
+    const elCa = document.getElementById('report-ca-total');
+    if (elCa) animateCount(elCa, baseCA, v => `${Math.round(v).toLocaleString('fr-FR')} DT`);
+    const elAov = document.getElementById('report-panier-moyen');
+    if (elAov) animateCount(elAov, aov, v => `${v.toFixed(1)} DT`);
+    const elCli = document.getElementById('report-acheteurs-uniques');
+    if (elCli) animateCount(elCli, baseClients, v => Math.round(v).toLocaleString('fr-FR'));
+    const elInsc = document.getElementById('report-nouveaux-inscrits');
+    if (elInsc) animateCount(elInsc, baseInscrits, v => Math.round(v).toLocaleString('fr-FR'));
+    const elDonutNum = document.getElementById('donut-center-num');
+    if (elDonutNum) animateCount(elDonutNum, baseScans, v => Math.round(v).toLocaleString('fr-FR'));
+  }
+
+  // h. Timeline (Dynamique Journalière, Hebdo ou Mensuelle)
   if (charts.monthlyMockup) {
     charts.monthlyMockup.data.labels = monthlyLabels;
     charts.monthlyMockup.data.datasets[0].data = monthlySucc;
@@ -2254,42 +2382,39 @@ function renderGridCharts() {
   Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
   Chart.defaults.color = '#6B5E78';
 
-  // --- CARTE 1 : DONUT TYPE D'ÉTABLISSEMENT AVEC COULEURS MOCKUP ---
+  // --- SECTION 2 DU RAPPORT : RÉPARTITION PAR POINT DE VENTE (DONUT) ---
   const ctxDonut = document.getElementById('chart-etablissements-donut');
   if (ctxDonut) {
     charts.donutEtablissement = new Chart(ctxDonut, {
       type: 'doughnut',
       data: {
-        labels: ['Succursales (Gros)', 'Cafétérias (Détail)'],
+        labels: [
+          'Cafétéria Le Kef (27%)',
+          'Cafétéria Tunis Liberté (17%)',
+          'Cafétéria Tunis La Marsa (16%)',
+          'Cafétéria Tunis MENZAH VI (13%)',
+          'Succursale Tunis Menzah VI (5%)',
+          'Autres (22%)'
+        ],
         datasets: [{
-          data: [63.39, 36.61],
-          backgroundColor: ['#8E0E14', '#D97706'],
+          data: [27, 17, 16, 13, 5, 22],
+          backgroundColor: ['#8E0E14', '#C00E29', '#B45309', '#D97706', '#F87171', '#CBD5E1'],
           borderColor: '#FFFFFF',
-          borderWidth: 3
+          borderWidth: 2
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        onClick: (event, elements) => {
-          if (elements.length > 0) {
-            const idx = elements[0].index;
-            if (idx === 0) window.applyCrossFilter('magasin', 'SUC', 'Succursales B2B (Gros)', 'donut');
-            else if (idx === 1) window.applyCrossFilter('magasin', 'CAF', 'Cafétérias B2C (Détail)', 'donut');
-          }
-        },
-        onHover: (event, elements) => {
-          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
-        },
         plugins: {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: (ctx) => ` ${ctx.label} : ${ctx.raw}% (Cliquer pour filtrer en direct)`
+              label: (ctx) => ` ${ctx.label} : ${ctx.raw}% des achats`
             }
           }
         },
-        cutout: '62%'
+        cutout: '66%'
       }
     });
   }
@@ -2353,25 +2478,73 @@ function renderGridCharts() {
     });
   }
 
-  // --- CARTE 3 : BARRES HORIZONTALES TOP 5 MAGASINS ---
+  // --- SECTION 3 DU RAPPORT : CLASSEMENT TOP POINTS DE VENTE (ACHATS & CA) ---
+  const ctxTopAchats = document.getElementById('chart-top-pdv-achats');
+  if (ctxTopAchats) {
+    charts.topPdvAchats = new Chart(ctxTopAchats, {
+      type: 'bar',
+      data: {
+        labels: [
+          'Cafétéria Le Kef',
+          'Cafétéria Tunis Liberté',
+          'Cafétéria Tunis La Marsa',
+          'Cafétéria Tunis MENZAH VI',
+          'Succursale Tunis Menzah VI',
+          'Cafétéria Tunis France',
+          'Succursale Tunis Liberté',
+          'Cafétéria Tunis Espagne'
+        ],
+        datasets: [{
+          label: "Nombre d'achats",
+          data: [143, 92, 85, 67, 26, 25, 16, 12],
+          backgroundColor: '#8E0E14',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.raw} achats enregistrés`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            suggestedMax: 150
+          },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
   const ctxTopMag = document.getElementById('chart-top-magasins-mockup');
   if (ctxTopMag) {
     charts.topMagasinsMockup = new Chart(ctxTopMag, {
       type: 'bar',
       data: {
         labels: [
-          'Succursale Gafsa',
-          'Cafétéria Gafsa Ville',
-          'Succursale Gabès Jara',
+          'Cafétéria Le Kef',
           'Succursale Tunis Menzah VI',
-          'Succursale Tunis Liberté'
+          'Cafétéria Tunis Liberté',
+          'Succursale Tunis Liberté',
+          'Cafétéria Tunis La Marsa',
+          'Succursale Tunis Espagne',
+          'Cafétéria Tunis MENZAH VI',
+          'Succursale Tunis Ariana'
         ],
         datasets: [
           {
-            label: 'CA (TND)',
-            data: [6320, 5885, 5636, 5156, 4519],
-            backgroundColor: ['#8E0E14', '#C31C23', '#8E0E14', '#8E0E14', '#8E0E14'],
-            borderRadius: 5
+            label: 'CA (DT)',
+            data: [628, 499, 424, 404, 338, 286, 275, 203],
+            backgroundColor: '#8E0E14',
+            borderRadius: 4
           }
         ]
       },
@@ -2379,29 +2552,19 @@ function renderGridCharts() {
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        onClick: (event, elements) => {
-          if (elements.length > 0) {
-            const idx = elements[0].index;
-            const clickedLabel = charts.topMagasinsMockup.data.labels[idx];
-            let magCode = 'all';
-            if (clickedLabel.includes('Gafsa')) magCode = 'gafsa';
-            else if (clickedLabel.includes('Liberté')) magCode = 'tunis-liberte';
-            else if (clickedLabel.includes('Menzah')) magCode = 'el-menzah';
-            else if (clickedLabel.includes('Marsa')) magCode = 'la-marsa';
-            else if (clickedLabel.includes('Gabès')) magCode = 'gabes';
-            else if (clickedLabel.includes('Kef')) magCode = 'le-kef';
-            else if (clickedLabel.includes('Sfax')) magCode = 'sfax';
-            else if (clickedLabel.includes('Sousse')) magCode = 'sousse';
-            
-            window.applyCrossFilter('magasin', magCode, clickedLabel, 'topMag');
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.raw} DT de Chiffre d'Affaires`
+            }
           }
         },
-        onHover: (event, elements) => {
-          if (event && event.native && event.native.target) { event.native.target.style.cursor = (elements && elements.length) ? "pointer" : "default"; }
-        },
-        plugins: { legend: { display: false } },
         scales: {
-          x: { grid: { color: 'rgba(0,0,0,0.05)' } },
+          x: {
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            suggestedMax: 700
+          },
           y: { grid: { display: false } }
         }
       }

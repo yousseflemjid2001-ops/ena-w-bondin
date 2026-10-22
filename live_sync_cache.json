@@ -1,19 +1,28 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 17:37:48",
+  "timestamp": "2026-10-22 18:04:31",
   "company_name": "BONDIN",
-  "total_scans": 13307,
-  "total_ca_tnd": 156011.26,
+  "total_scans": 13308,
+  "total_ca_tnd": 156018.36,
   "panier_moyen_tnd": 11.724,
-  "total_points_emis": 523334,
+  "total_points_emis": 523351,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 17:34:20",
-  "dernier_ticket": "bondin6168720",
-  "dernier_client": "REKIk Ahmed",
-  "dernier_montant": 3.996,
-  "dernier_magasin": "Succursale Tunis Ariana",
+  "dernier_scan": "2026-10-22 17:38:27",
+  "dernier_ticket": "bondin6168796",
+  "dernier_client": "Mohamed Ben Moallem",
+  "dernier_montant": 7.1,
+  "dernier_magasin": "Cafétéria Tunis Ariana",
   "recent_scans": [
+    {
+      "id": 13319,
+      "ticket": "bondin6168796",
+      "montant_tnd": 7.1,
+      "points": 17.2,
+      "date": "2026-10-22 17:38:27",
+      "magasin": "Cafétéria Tunis Ariana",
+      "client": "Mohamed Ben Moallem"
+    },
     {
       "id": 13318,
       "ticket": "bondin6168720",
@@ -49,15 +58,6 @@
       "date": "2026-10-22 16:52:44",
       "magasin": "Cafétéria Gafsa Ville",
       "client": "Baaguig Bechir"
-    },
-    {
-      "id": 13314,
-      "ticket": "bondin6167828",
-      "montant_tnd": 5.9,
-      "points": 8.8,
-      "date": "2026-10-22 16:47:46",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Ali Zitouni"
     }
   ]
 }
