@@ -773,16 +773,44 @@
 
     <div class="pro-filter-divider"></div>
 
-    <!-- Calendrier : Plage de dates -->
+    <!-- Sélecteur Période Rapide Exécutif (7j, 30j, Q3, YTD, Tout) -->
+    <div class="pro-filter-group period-preset-filter-group" id="group-filter-period-preset">
+      <label class="pro-filter-label">
+        <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span>Période d'Analyse</span>
+      </label>
+      <div class="pro-period-pill-group" role="group" aria-label="Sélecteur de période">
+        <button type="button" class="preset-period-btn active" data-period="all" onclick="window.selectPeriodPreset('all')" title="Consolider tout l'historique DWH (Avril à Octobre 2026)">
+          <span>Tout</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="7d" onclick="window.selectPeriodPreset('7d')" title="Filtrer sur les 7 derniers jours (14 au 20 Octobre 2026)">
+          <span class="period-dot"></span>
+          <span>7 Jours</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="30d" onclick="window.selectPeriodPreset('30d')" title="Filtrer sur le dernier mois (30 jours glissants)">
+          <span>30 Jours (Mois)</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="90d" onclick="window.selectPeriodPreset('90d')" title="Filtrer sur le 3ème Trimestre Q3 (Juillet à Septembre)">
+          <span>Trimestre Q3</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="ytd" onclick="window.selectPeriodPreset('ytd')" title="Filtrer sur l'Année 2026 en cours (YTD)">
+          <span>Année 2026</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Calendrier : Plage de dates personnalisées -->
     <div class="pro-filter-group date-filter-group" id="group-filter-date">
       <label class="pro-filter-label" for="filter-date-start">
         <i data-lucide="calendar" class="w-3.5 h-3.5 text-purple-400"></i>
-        <span>Période (Calendrier)</span>
+        <span>Plage Personnalisée</span>
       </label>
       <div class="pro-date-picker-wrap">
-        <input type="date" id="filter-date-start" class="pro-date-field" value="2026-04-01" min="2026-01-01" max="2026-12-31" title="Date début">
+        <input type="date" id="filter-date-start" class="pro-date-field" value="2026-04-01" min="2026-01-01" max="2026-12-31" title="Date début" onchange="window.handleManualDateChange()">
         <span class="date-arrow">&rarr;</span>
-        <input type="date" id="filter-date-end" class="pro-date-field" value="2026-10-20" min="2026-01-01" max="2026-12-31" title="Date fin">
+        <input type="date" id="filter-date-end" class="pro-date-field" value="2026-10-20" min="2026-01-01" max="2026-12-31" title="Date fin" onchange="window.handleManualDateChange()">
       </div>
     </div>
 
