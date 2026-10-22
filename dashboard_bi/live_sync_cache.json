@@ -1,56 +1,56 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-21 14:47:42",
+  "timestamp": "2026-10-22 10:18:48",
   "company_name": "BONDIN",
-  "total_scans": 13176,
-  "total_ca_tnd": 154660.39,
-  "panier_moyen_tnd": 11.738,
-  "total_points_emis": 518579,
-  "clients_actifs": 762,
-  "dernier_scan": "2026-10-21 14:39:56",
-  "dernier_ticket": "bondin6147816",
-  "dernier_magasin": "Succursale Gafsa Ville",
+  "total_scans": 13255,
+  "total_ca_tnd": 155452.88,
+  "panier_moyen_tnd": 11.728,
+  "total_points_emis": 521358,
+  "clients_actifs": 764,
+  "dernier_scan": "2026-10-22 10:10:01",
+  "dernier_ticket": "bondin6159543",
+  "dernier_magasin": "Cafétéria Le Kef",
   "recent_scans": [
     {
-      "id": 13187,
-      "ticket": "bondin6147816",
-      "montant_tnd": 24.8,
-      "points": 99.2,
-      "date": "2026-10-21 14:39:56",
-      "magasin": "Succursale Gafsa Ville"
+      "id": 13266,
+      "ticket": "bondin6159543",
+      "montant_tnd": 3.1,
+      "points": 5.2,
+      "date": "2026-10-22 10:10:01",
+      "magasin": "Cafétéria Le Kef"
     },
     {
-      "id": 13186,
-      "ticket": "bondin6147527",
-      "montant_tnd": 5.4,
-      "points": 7.8,
-      "date": "2026-10-21 14:22:47",
-      "magasin": "Cafétéria Tunis Liberté"
+      "id": 13265,
+      "ticket": "bondin6159446",
+      "montant_tnd": 6.3,
+      "points": 12.6,
+      "date": "2026-10-22 10:06:52",
+      "magasin": "Cafétéria Tunis Ariana"
     },
     {
-      "id": 13185,
-      "ticket": "bondin6147523",
-      "montant_tnd": 23.058,
-      "points": 92.232,
-      "date": "2026-10-21 14:22:32",
-      "magasin": "Succursale Tunis Liberté"
-    },
-    {
-      "id": 13184,
-      "ticket": "bondin6147457",
-      "montant_tnd": 2.0,
-      "points": 3.8,
-      "date": "2026-10-21 14:18:56",
-      "magasin": "Cafétéria Gafsa Ville"
-    },
-    {
-      "id": 13183,
-      "ticket": "bondin6147240",
+      "id": 13264,
+      "ticket": "bondin6159409",
       "montant_tnd": 2.4,
       "points": 4.8,
-      "date": "2026-10-21 14:05:55",
+      "date": "2026-10-22 10:05:41",
       "magasin": "Cafétéria Tunis Liberté"
+    },
+    {
+      "id": 13263,
+      "ticket": "bondin6159145",
+      "montant_tnd": 2.1,
+      "points": 4.2,
+      "date": "2026-10-22 09:56:12",
+      "magasin": "Cafétéria Sfax Chaker"
+    },
+    {
+      "id": 13262,
+      "ticket": "bondin6159027",
+      "montant_tnd": 4.3,
+      "points": 6.2,
+      "date": "2026-10-22 09:51:45",
+      "magasin": "Cafétéria Tunis La Marsa"
     }
   ]
 }

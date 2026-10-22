@@ -126,9 +126,9 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
         }
     }
 
-    # Modèle cible : gemini-2.0-flash-lite en premier (le plus rapide), puis flash stable
-    # Timeout = 8s (Vercel max 10s — l'ancien 3s expirait systématiquement)
-    for model_name in ['gemini-2.0-flash-lite', 'gemini-2.0-flash', 'gemini-1.5-flash']:
+    # Modèles cibles vérifiés 2026 : gemini-3.5-flash (actif & quota dispo), puis flash-lite et alternatives
+    # Timeout = 8s (Vercel max 10s)
+    for model_name in ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-3.1-flash-lite', 'gemini-3.7-flash', 'gemini-3.8-flash']:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         req = urllib.request.Request(
             url,
@@ -140,7 +140,6 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
             with urllib.request.urlopen(req, timeout=8.0) as response:
                 res = json.loads(response.read().decode("utf-8"))
                 candidate = res.get("candidates", [{}])[0]
-                # Vérifier si bloqué par safety filter
                 finish_reason = candidate.get("finishReason", "")
                 if finish_reason == "SAFETY":
                     continue
@@ -148,7 +147,7 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
                 if text and len(text.strip()) > 10:
                     return text.strip()
         except Exception as ex:
-            # 429 quota, timeout réseau → essayer modèle suivant
+            # 429 quota, timeout réseau -> essayer modèle suivant
             print(f"[WARN] {model_name} failed: {ex}")
             continue
 

@@ -1441,7 +1441,10 @@ function updateFilteredTables(reseau, segment) {
     } else {
       grossisteTbody.innerHTML = DASHBOARD_DATA.top_grossistes_table.map(g => `
         <tr>
-          <td><code>${g.id}</code></td>
+          <td>
+            <div style="font-weight: 700; color: var(--text-primary);">${g.nom || g.id}</div>
+            <div style="font-size: 11px; opacity: 0.7; font-family: monospace;">${g.id}</div>
+          </td>
           <td><strong style="color: #6A2B7C">${g.succ.toFixed(3)} TND</strong></td>
           <td>${g.cafe.toFixed(3)} TND</td>
           <td><strong>${g.total.toFixed(3)} TND</strong></td>
@@ -1461,12 +1464,15 @@ function updateFilteredTables(reseau, segment) {
     }
     churnTbody.innerHTML = list.map(c => `
       <tr>
-        <td><code>${c.id}</code></td>
+        <td>
+          <div style="font-weight: 700; color: var(--text-primary);">${c.nom || c.id}</div>
+          <div style="font-size: 11px; opacity: 0.7; font-family: monospace;">${c.id}</div>
+        </td>
         <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
         <td>${c.ca.toFixed(3)} TND</td>
         <td>${c.points} pts</td>
         <td><span class="tag-badge alert">${c.score_churn}</span></td>
-        <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
+        <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}', '${(c.nom || c.id).replace(/'/g, "\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
       </tr>
     `).join('');
   }
@@ -2134,11 +2140,11 @@ function renderLiveTransactionsTable(scans) {
   if (!tbody) return;
 
   const defaultScans = [
-    { id: 13172, ticket: "bondin6139824", montant_tnd: 18.500, points: 185.0, date: "2026-10-21 13:42:15", magasin: "Succursale Tunis Liberté" },
-    { id: 13171, ticket: "bondin6139810", montant_tnd: 24.200, points: 242.0, date: "2026-10-21 13:38:40", magasin: "Cafétéria Tunis La Marsa" },
-    { id: 13170, ticket: "bondin6139788", montant_tnd: 8.500, points: 85.0, date: "2026-10-21 13:31:02", magasin: "Cafétéria Tunis Espagne" },
-    { id: 13169, ticket: "bondin6139745", montant_tnd: 45.000, points: 450.0, date: "2026-10-21 13:15:19", magasin: "Succursale Le Kef" },
-    { id: 13168, ticket: "bondin6139712", montant_tnd: 12.000, points: 120.0, date: "2026-10-21 13:02:44", magasin: "Cafétéria Gafsa Centre" }
+    { id: 13265, ticket: "bondin6159446", client: "Abdallah Ghedifi", montant_tnd: 6.300, points: 12.6, date: "2026-10-22 10:06:52", magasin: "Cafétéria Tunis Ariana" },
+    { id: 13264, ticket: "bondin6159409", client: "Dorra Rihani", montant_tnd: 2.400, points: 4.8, date: "2026-10-22 10:05:41", magasin: "Cafétéria Tunis Liberté" },
+    { id: 13263, ticket: "bondin6159145", client: "Slim Abid", montant_tnd: 2.100, points: 4.2, date: "2026-10-22 09:56:12", magasin: "Cafétéria Sfax Chaker" },
+    { id: 13262, ticket: "bondin6159027", client: "Med Aziz Trabelsi", montant_tnd: 4.300, points: 6.2, date: "2026-10-22 09:51:45", magasin: "Cafétéria Tunis La Marsa" },
+    { id: 13261, ticket: "bondin6158502", client: "Imen Massoud", montant_tnd: 14.985, points: 59.94, date: "2026-10-22 09:33:35", magasin: "Succursale Gafsa Ville" }
   ];
 
   const list = (Array.isArray(scans) && scans.length > 0) ? scans : (liveSyncData?.recent_scans || defaultScans);
@@ -2146,6 +2152,9 @@ function renderLiveTransactionsTable(scans) {
   tbody.innerHTML = list.map((s, idx) => `
     <tr class="${idx === 0 ? 'bg-emerald-500/15 border-l-4 border-emerald-500 font-semibold' : ''}">
       <td><span class="inline-block px-2.5 py-1 rounded-md font-mono font-bold text-xs text-amber-900 dark:text-amber-300 bg-amber-500/15 border border-amber-500/40">#${s.ticket}</span></td>
+      <td>
+        <strong class="text-slate-900 dark:text-slate-100">${s.client || 'Client Fidélité'}</strong>
+      </td>
       <td><strong class="text-slate-900 dark:text-slate-100">${s.magasin}</strong></td>
       <td><strong class="text-emerald-700 dark:text-emerald-400 font-mono text-[13px] font-bold">${Number(s.montant_tnd).toFixed(3)} TND</strong></td>
       <td><span class="tag-badge gold font-bold">+${Math.round(s.points)} pts</span></td>
@@ -2170,7 +2179,10 @@ function renderTables(liveCA) {
     if (grossisteTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.top_grossistes_table)) {
       grossisteTbody.innerHTML = DASHBOARD_DATA.top_grossistes_table.map(g => `
         <tr>
-          <td><code>${g.id}</code></td>
+          <td>
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${g.nom || g.id}</div>
+            <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${g.id}</div>
+          </td>
           <td><strong class="text-accent-succ">${(Number(g.succ) * scale).toFixed(3)} TND</strong></td>
           <td>${(Number(g.cafe) * scale).toFixed(3)} TND</td>
           <td><strong>${(Number(g.total) * scale).toFixed(3)} TND</strong></td>
@@ -2189,14 +2201,17 @@ function renderTables(liveCA) {
       const parrains = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA && DASHBOARD_DATA.parrainage && Array.isArray(DASHBOARD_DATA.parrainage.top_parrains))
         ? DASHBOARD_DATA.parrainage.top_parrains
         : [
-            { id: "CLI_F848366F47", filleuls: 128, convertis: 6, ca_genere: 1945.200, points_gagnes: 1280, rang: "Top 1 • Ambassadeur Star" },
-            { id: "CLI_25CC0D5F5A", filleuls: 15, convertis: 2, ca_genere: 642.100, points_gagnes: 150, rang: "Top 2 • Parrain Actif" },
-            { id: "CLI_94C61B223A", filleuls: 12, convertis: 1, ca_genere: 382.500, points_gagnes: 120, rang: "Top 3 • Parrain Régulier" },
-            { id: "CLI_9E30AE1712", filleuls: 6, convertis: 1, ca_genere: 219.721, points_gagnes: 60, rang: "Top 4 • Parrain Initié" }
+            { id: "CLI_F848366F47", nom: "Med Kamel Hamdouni", filleuls: 271, convertis: 12, ca_genere: 1945.200, points_gagnes: 1280, rang: "Top 1 • Ambassadeur Star" },
+            { id: "CLI_25CC0D5F5A", nom: "Ali Ben Romdhane", filleuls: 48, convertis: 4, ca_genere: 642.100, points_gagnes: 240, rang: "Top 2 • Parrain Actif" },
+            { id: "CLI_94C61B223A", nom: "Mohamed Saied", filleuls: 27, convertis: 2, ca_genere: 382.500, points_gagnes: 135, rang: "Top 3 • Parrain Régulier" },
+            { id: "CLI_9E30AE1712", nom: "Mahdi Nabli", filleuls: 23, convertis: 2, ca_genere: 219.721, points_gagnes: 115, rang: "Top 4 • Parrain Initié" }
           ];
       parrainageTbody.innerHTML = parrains.map(p => `
         <tr>
-          <td><code>${p.id}</code></td>
+          <td>
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${p.nom || p.id}</div>
+            <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${p.id}</div>
+          </td>
           <td><strong>${p.rang}</strong></td>
           <td><strong class="text-accent-succ" style="font-size: 0.95rem;">${p.filleuls}</strong> filleuls</td>
           <td><strong style="color: #10B981;">${p.convertis}</strong> convertis</td>
@@ -2213,12 +2228,15 @@ function renderTables(liveCA) {
     if (churnTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.churn_table)) {
       churnTbody.innerHTML = DASHBOARD_DATA.churn_table.map(c => `
         <tr>
-          <td><code>${c.id}</code></td>
+          <td>
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${c.nom || c.id}</div>
+            <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${c.id}</div>
+          </td>
           <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
           <td>${(Number(c.ca) * scale).toFixed(3)} TND</td>
           <td>${Math.round(c.points * scale)} pts</td>
           <td><span class="tag-badge alert">${c.score_churn}</span></td>
-          <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
+          <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}', '${(c.nom || c.id).replace(/'/g, "\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
         </tr>
       `).join('');
     }
@@ -2281,6 +2299,7 @@ window.simulateLiveScan = async function() {
   const newScan = {
     id: lastKnownScansCount,
     ticket: newTicketNum,
+    client: 'Néji Ben Amor (VIP)',
     montant_tnd: simulatedAmount,
     points: 185.0,
     date: dateStr,
@@ -2334,15 +2353,15 @@ window.simulateLiveScan = async function() {
   }, 1000);
 };
 
-window.sendPushCampaign = async function(clientId) {
+window.sendPushCampaign = async function(clientId, clientName) {
   try {
     await fetch('/api/campaign/push', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ client_id: clientId, code: 'REVIENS_BONDIN1910' })
+      body: JSON.stringify({ client_id: clientId, client_name: clientName, code: 'REVIENS_BONDIN1910' })
     });
   } catch (e) {}
-  showToast(`Campagne Push API transmise au client ${clientId}`, 'success');
+  showToast(`Campagne Push API transmise avec succès à ${clientName || clientId}`, 'success');
 };
 
 function updateSyncTimestamps() {

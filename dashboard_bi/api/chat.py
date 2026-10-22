@@ -126,8 +126,8 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
         }
     }
 
-    # Modèle cible direct (pas de boucle lente pour éviter le timeout Vercel)
-    for model_name in ['gemini-1.5-flash', 'gemini-2.0-flash']:
+    # Modèles cibles vérifiés 2026 : gemini-3.5-flash (actif & quota dispo), puis alternatives
+    for model_name in ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-3.1-flash-lite', 'gemini-3.7-flash', 'gemini-3.8-flash']:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         req = urllib.request.Request(
             url,
@@ -136,14 +136,13 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
             method="POST"
         )
         try:
-            with urllib.request.urlopen(req, timeout=3.0) as response:
+            with urllib.request.urlopen(req, timeout=8.0) as response:
                 res = json.loads(response.read().decode("utf-8"))
                 candidate = res.get("candidates", [{}])[0]
                 text = candidate.get("content", {}).get("parts", [{}])[0].get("text")
-                if text:
-                    return text
+                if text and len(text.strip()) > 10:
+                    return text.strip()
         except Exception:
-            # En cas de 429 quota ou timeout, ne pas bloquer, tester au max 1 autre ou basculer
             continue
 
     return None

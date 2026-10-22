@@ -96,14 +96,14 @@ const DASHBOARD_DATA = {
 
   // 7. Table des Profils Grossistes sous Surveillance
   top_grossistes_table: [
-    { id: "CLI_0580F7CD5E", succ: 354.330, cafe: 4.200, total: 358.530, max_succ: 223.60, freq_sem: 5.5, status: "Alerte Grossiste B2B" },
-    { id: "CLI_91A2DBA24D", succ: 284.100, cafe: 14.800, total: 298.900, max_succ: 145.00, freq_sem: 4.2, status: "Alerte Grossiste B2B" },
-    { id: "CLI_6694456D51", succ: 257.188, cafe: 8.600, total: 265.788, max_succ: 195.00, freq_sem: 3.8, status: "Alerte Grossiste B2B" },
-    { id: "CLI_06C9F42F20", succ: 102.500, cafe: 2.400, total: 104.900, max_succ: 51.25, freq_sem: 2.1, status: "Grossiste Suspect" },
-    { id: "CLI_050C1C5789", succ: 79.019, cafe: 6.900, total: 85.919, max_succ: 45.00, freq_sem: 3.2, status: "Grossiste Suspect" },
-    { id: "CLI_011A5AE03B", succ: 75.744, cafe: 5.200, total: 80.944, max_succ: 38.00, freq_sem: 3.0, status: "Grossiste Suspect" },
-    { id: "CLI_0B823FE6C6", succ: 63.000, cafe: 6.600, total: 69.600, max_succ: 42.00, freq_sem: 2.4, status: "Grossiste Suspect" },
-    { id: "CLI_3595C46849", succ: 102.326, cafe: 14.600, total: 116.926, max_succ: 85.00, freq_sem: 5.5, status: "Alerte Churn & Gros" }
+    { id: "CLI_0580F7CD5E", nom: "Sté Distribution Ben Salem (Mohamed)", succ: 354.330, cafe: 4.200, total: 358.530, max_succ: 223.60, freq_sem: 5.5, status: "Alerte Grossiste B2B" },
+    { id: "CLI_91A2DBA24D", nom: "Café & Comptoir El Andalous (Karim T.)", succ: 284.100, cafe: 14.800, total: 298.900, max_succ: 145.00, freq_sem: 4.2, status: "Alerte Grossiste B2B" },
+    { id: "CLI_6694456D51", nom: "Établissements Khelifi & Frères (Sami)", succ: 257.188, cafe: 8.600, total: 265.788, max_succ: 195.00, freq_sem: 3.8, status: "Alerte Grossiste B2B" },
+    { id: "CLI_06C9F42F20", nom: "Hôtel & Salon Le Diplomate (Belgacem)", succ: 102.500, cafe: 2.400, total: 104.900, max_succ: 51.25, freq_sem: 2.1, status: "Grossiste Suspect" },
+    { id: "CLI_050C1C5789", nom: "Comptoir Central Bourguiba (Hassen)", succ: 79.019, cafe: 6.900, total: 85.919, max_succ: 45.00, freq_sem: 3.2, status: "Grossiste Suspect" },
+    { id: "CLI_011A5AE03B", nom: "Superette Moderne La Marsa (Moncef)", succ: 75.744, cafe: 5.200, total: 80.944, max_succ: 38.00, freq_sem: 3.0, status: "Grossiste Suspect" },
+    { id: "CLI_0B823FE6C6", nom: "Salon de Thé & Torréfaction Gafsa (Tahar)", succ: 63.000, cafe: 6.600, total: 69.600, max_succ: 42.00, freq_sem: 2.4, status: "Grossiste Suspect" },
+    { id: "CLI_3595C46849", nom: "Cafétéria Prestige & Dérivés (Tarek M.)", succ: 102.326, cafe: 14.600, total: 116.926, max_succ: 85.00, freq_sem: 5.5, status: "Alerte Churn & Gros" }
   ],
 
   // 8. Pilotage du Parrainage & Viralité (Fait_Parrainages - Exigence explicite CDC)
@@ -117,10 +117,10 @@ const DASHBOARD_DATA = {
     ca_filleuls: 3189.521,
     panier_moyen_filleul: 12.174,
     top_parrains: [
-      { id: "CLI_F848366F47", filleuls: 128, convertis: 6, ca_genere: 1945.200, points_gagnes: 1280, rang: "Top 1 • Ambassadeur Star" },
-      { id: "CLI_25CC0D5F5A", filleuls: 15, convertis: 2, ca_genere: 642.100, points_gagnes: 150, rang: "Top 2 • Parrain Actif" },
-      { id: "CLI_94C61B223A", filleuls: 12, convertis: 1, ca_genere: 382.500, points_gagnes: 120, rang: "Top 3 • Parrain Régulier" },
-      { id: "CLI_9E30AE1712", filleuls: 6, convertis: 1, ca_genere: 219.721, points_gagnes: 60, rang: "Top 4 • Parrain Initié" }
+      { id: "CLI_F848366F47", nom: "Amine Bouaziz", filleuls: 128, convertis: 6, ca_genere: 1945.200, points_gagnes: 1280, rang: "Top 1 • Ambassadeur Star" },
+      { id: "CLI_25CC0D5F5A", nom: "Sonia Mansour", filleuls: 15, convertis: 2, ca_genere: 642.100, points_gagnes: 150, rang: "Top 2 • Parrain Actif" },
+      { id: "CLI_94C61B223A", nom: "Yassine Dridi", filleuls: 12, convertis: 1, ca_genere: 382.500, points_gagnes: 120, rang: "Top 3 • Parrain Régulier" },
+      { id: "CLI_9E30AE1712", nom: "Nadia Chérif", filleuls: 6, convertis: 1, ca_genere: 219.721, points_gagnes: 60, rang: "Top 4 • Parrain Initié" }
     ]
   },
 
@@ -265,11 +265,11 @@ const DASHBOARD_DATA = {
 
   // 12. Table des Clients en Risque de Churn (Scoring Prédictif ML)
   churn_table: [
-    { id: "CLI_3595C46849", recence: 64, ca: 116.926, achats: 11, points: 356.9, score_churn: "88% (Élevé)" },
-    { id: "CLI_7A2B81C9D0", recence: 72, ca: 34.500, achats: 4, points: 68.0, score_churn: "92% (Critique)" },
-    { id: "CLI_8C3F11A4E2", recence: 61, ca: 28.200, achats: 3, points: 54.0, score_churn: "84% (Élevé)" },
-    { id: "CLI_1B90E341C7", recence: 68, ca: 22.400, achats: 3, points: 42.0, score_churn: "86% (Élevé)" },
-    { id: "CLI_5E42C098B1", recence: 80, ca: 18.000, achats: 2, points: 36.0, score_churn: "95% (Critique)" }
+    { id: "CLI_3595C46849", nom: "Tarek Meddeb", recence: 64, ca: 116.926, achats: 11, points: 356.9, score_churn: "88% (Élevé)" },
+    { id: "CLI_7A2B81C9D0", nom: "Henda Gharbi", recence: 72, ca: 34.500, achats: 4, points: 68.0, score_churn: "92% (Critique)" },
+    { id: "CLI_8C3F11A4E2", nom: "Kamel Zouari", recence: 61, ca: 28.200, achats: 3, points: 54.0, score_churn: "84% (Élevé)" },
+    { id: "CLI_1B90E341C7", nom: "Rim Ben Ammar", recence: 68, ca: 22.400, achats: 3, points: 42.0, score_churn: "86% (Élevé)" },
+    { id: "CLI_5E42C098B1", nom: "Fethi Mahjoub", recence: 80, ca: 18.000, achats: 2, points: 36.0, score_churn: "95% (Critique)" }
   ],
 
   // 13. Catalogue des Récompenses & Ciblage IA

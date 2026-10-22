@@ -136,9 +136,11 @@ def api_live():
         """)[0]
 
         recent = con.run("""
-            SELECT p.id, p.ticket, p.amount, p.points, p.created_at, coalesce(s.name, 'BONDIN Magasin') as store_name
+            SELECT p.id, p.ticket, p.amount, p.points, p.created_at, coalesce(s.name, 'BONDIN Magasin') as store_name,
+                   coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'Client Fidélité') as client_name
             FROM public.purchase p
             LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
+            LEFT JOIN public.user u ON p.user_id = u.id
             WHERE p.company_id = 2
             ORDER BY p.created_at DESC
             LIMIT 5
@@ -154,7 +156,8 @@ def api_live():
                 "montant_tnd": round(amt, 3),
                 "points": float(r[3]),
                 "date": str(r[4]),
-                "magasin": str(r[5])
+                "magasin": str(r[5]),
+                "client": str(r[6])
             })
 
         tot_ca = float(stats[1]) / 1000.0 if float(stats[1]) > 100000 else float(stats[1])
