@@ -139,7 +139,7 @@
             </div>
             <div>
               <div class="text-[11px] sm:text-xs font-mono tracking-wider text-amber-300/80 uppercase font-semibold">CA FIDÉLITÉ M-O-M</div>
-              <div id="login-live-ca" class="text-2xl sm:text-3xl font-mono font-black text-white tracking-tight">153 317 TND</div>
+              <div id="login-live-ca" class="text-2xl sm:text-3xl font-mono font-black text-white tracking-tight">153 317 DT</div>
             </div>
           </div>
           <span id="login-live-growth" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono text-xs sm:text-sm font-extrabold shadow-sm">
@@ -587,10 +587,17 @@
             <span class="hidden xl:inline font-bold">Simuler Scan</span>
           </button>
 
-          <!-- Bouton Exporter PDF Agrandie -->
-          <button id="btn-export-pdf" onclick="window.openExportModal()" class="btn-shine group relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#7E22CE] via-[#9333EA] to-[#C026D3] hover:from-[#6B21A8] hover:to-[#A21CAF] border border-purple-400/40 shadow-[0_4px_22px_rgba(147,51,234,0.5)] hover:shadow-[0_6px_28px_rgba(192,38,211,0.7)] transition-all duration-300 active:scale-95">
-            <i data-lucide="download" class="w-4 h-4 text-purple-100 transition-transform duration-300 group-hover:translate-y-0.5"></i>
+          <!-- Bouton Exporter PDF Officiel BONDIN -->
+          <button id="btn-export-pdf" onclick="window.openExportModal()" class="btn-shine group relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#8E0E14] via-[#B91C1C] to-[#C31C23] hover:from-[#73080E] hover:to-[#991B1B] border border-amber-400/40 shadow-[0_4px_20px_rgba(142,14,20,0.45)] hover:shadow-[0_6px_26px_rgba(195,28,35,0.6)] transition-all duration-300 active:scale-95">
+            <i data-lucide="download" class="w-4 h-4 text-amber-200 transition-transform duration-300 group-hover:translate-y-0.5"></i>
             <span>Exporter PDF</span>
+          </button>
+
+          <!-- Bouton Vue Rapport Officiel BONDIN (Format PDF 11-18 Juin) -->
+          <button id="btn-view-official-report" onclick="window.openOfficialReportModal()" class="group relative inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-amber-200 bg-black/45 hover:bg-black/65 border border-amber-400/50 hover:border-amber-300 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-all duration-300 active:scale-95" title="Consulter le rapport officiel hebdomadaire ENA w BONDIN en haute résolution (5 pages)">
+            <i data-lucide="file-text" class="w-4 h-4 text-amber-300"></i>
+            <span class="hidden md:inline">Rapport Hebdo</span>
+            <span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-extrabold bg-amber-500/25 text-amber-300 border border-amber-400/30">PDF</span>
           </button>
 
           <!-- Séparateur vertical -->
@@ -614,7 +621,7 @@
           </div>
 
           <!-- Badge Profil DG Agrandie -->
-          <button onclick="window.showToast('Profil actif : Direction Générale (Accès Global Consolidé)', 'shield-check')" class="group relative flex items-center gap-2.5 pl-2 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-purple-700/80 to-fuchsia-700/80 hover:from-purple-600 hover:to-fuchsia-600 border border-purple-300/40 shadow-lg transition-all duration-300 hover:scale-105">
+          <button onclick="window.showToast('Profil actif : Direction Générale (Accès Global Consolidé)', 'shield-check')" class="group relative flex items-center gap-2.5 pl-2 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#8E0E14] to-[#73080E] hover:from-[#A8101E] hover:to-[#8E0E14] border border-amber-400/40 shadow-lg transition-all duration-300 hover:scale-105">
             <span class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-[#C8102E] text-white font-black text-xs flex items-center justify-center shadow-inner ring-2 ring-white/30">
               DG
             </span>
@@ -664,7 +671,7 @@
         <span class="exec-kpi-label">Chiffre d'Affaires Fidélité</span>
         <span class="exec-kpi-tag success">+102% MoM</span>
       </div>
-      <div class="exec-kpi-value" id="kpi-ca-val">153 317 TND</div>
+      <div class="exec-kpi-value" id="kpi-ca-val">153 317 DT</div>
       <div class="exec-kpi-footer">
         <span>Scans enregistrés</span>
         <strong id="kpi-scans-summary">13 097 scans</strong>
@@ -676,10 +683,10 @@
         <span class="exec-kpi-label">Panier Moyen (AOV)</span>
         <span class="exec-kpi-tag info" id="kpi-aov-tag">Consolidé</span>
       </div>
-      <div class="exec-kpi-value" id="kpi-aov-val">11,706 TND</div>
+      <div class="exec-kpi-value" id="kpi-aov-val">11.7 DT</div>
       <div class="exec-kpi-footer">
-        <span>Succursales : <strong>37,59 TND</strong></span>
-        <span>Cafétérias : <strong>4,19 TND</strong></span>
+        <span>Succursales : <strong>37.6 DT</strong></span>
+        <span>Cafétérias : <strong>4.2 DT</strong></span>
       </div>
     </div>
 
@@ -691,7 +698,7 @@
       <div class="exec-kpi-value" id="kpi-inscrits-val">759 clients</div>
       <div class="exec-kpi-footer">
         <span>Sur <strong>2 715</strong> inscrits CRM</span>
-        <span id="kpi-freq-val" style="font-weight: 700; color: #6A2B7C;">3,65 visites/mois</span>
+        <span id="kpi-freq-val" style="font-weight: 700; color: #8E0E14;">3,65 visites/mois</span>
       </div>
     </div>
 
@@ -712,7 +719,7 @@
         <span class="exec-kpi-label">Dette Provisionnée (Passif)</span>
         <span class="exec-kpi-tag secure">Couverture 100%</span>
       </div>
-      <div class="exec-kpi-value debt" id="kpi-dette-val">2 870,240 TND</div>
+      <div class="exec-kpi-value debt" id="kpi-dette-val">2 870.2 DT</div>
       <div class="exec-kpi-footer">
         <span>Solde net en circulation</span>
         <strong>287 024 pts</strong>
@@ -955,6 +962,12 @@
         <span>RAPPORT CONFIDENTIEL</span>
       </div>
       
+            <div class="bondin-report-section-header" style="margin: 10px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">2</span>
+        <h2 class="bondin-section-title">Répartition par Point de Vente &amp; Gammes</h2>
+      </div>
+      
       <div class="visuals-grid-3x2">
         
         <!-- CARTE 1 (HAUT-GAUCHE) : DONUT CHART AVEC CALLOUT LABELS -->
@@ -1194,6 +1207,11 @@
         </div>
       </div>
 
+      <div class="bondin-report-section-header" style="margin: 10px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">4</span>
+        <h2 class="bondin-section-title">Top Clients, Grossistes B2B &amp; Flux Caisse</h2>
+      </div>
       <!-- MODULE FLUX DE TRANSACTIONS EN TEMPS RÉEL (DIRECT POSTGRESQL LIVE) -->
       <div class="visual-card" style="margin-bottom: 24px; border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 4px 25px rgba(16, 185, 129, 0.12);">
         <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -1257,6 +1275,11 @@
         </div>
       </div>
 
+      <div class="bondin-report-section-header" style="margin: 14px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">6</span>
+        <h2 class="bondin-section-title">Clients Fidèles &amp; Réseau Ambassadeurs</h2>
+      </div>
       <!-- Module Parrainage & Viralité -->
       <div class="visual-card" style="margin-bottom: 20px;">
         <div class="visual-header">
@@ -1704,6 +1727,44 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL RAPPORT OFFICIEL HEBDOMADAIRE (FORMAT PDF 5 PAGES) -->
+  <!-- ======================================================== -->
+  <div id="modal-official-report" class="modal-overlay" style="display: none;" onclick="if(event.target === this) window.closeOfficialReportModal()">
+    <div class="modal-card official-report-modal-card">
+      <div class="modal-header" style="background: linear-gradient(135deg, #8E0E14 0%, #A8101E 100%); color: #FFFFFF; border-bottom: 2px solid #D97706; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FDE68A" stroke-width="2.2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Rapport Officiel ENA w BONDIN &bull; Format Hebdomadaire (11 au 18 juin 2026)</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button onclick="window.printOfficialReportPage()" class="btn-shine" style="padding: 7px 15px; background: #D97706; color: #FFFFFF; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Imprimer / Enregistrer PDF
+          </button>
+          <button class="modal-close-btn" style="color: #FFFFFF; font-size: 24px; cursor: pointer;" onclick="window.closeOfficialReportModal()">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body" style="background: #140708; padding: 20px; overflow-y: auto; max-height: calc(88vh - 70px);">
+        <!-- Navigation des 5 pages avec miniatures -->
+        <div class="report-nav-strip">
+          <button class="report-page-pill active" onclick="window.showReportPage(1)">Page 1 : Couverture</button>
+          <button class="report-page-pill" onclick="window.showReportPage(2)">Page 2 : Synthèse &amp; PDV</button>
+          <button class="report-page-pill" onclick="window.showReportPage(3)">Page 3 : Catégories &amp; Fidèles</button>
+          <button class="report-page-pill" onclick="window.showReportPage(4)">Page 4 : Suite Fidèles</button>
+          <button class="report-page-pill" onclick="window.showReportPage(5)">Page 5 : Fin &amp; Totaux</button>
+        </div>
+
+        <!-- Visionneuse haute résolution -->
+        <div class="report-viewer-viewport">
+          <img id="report-active-img" src="img/rapport_officiel/page_1.png" alt="Rapport Officiel ENA w BONDIN" class="report-page-display shadow-2xl">
+        </div>
+      </div>
     </div>
   </div>
 

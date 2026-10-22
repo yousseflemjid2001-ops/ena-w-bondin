@@ -22,11 +22,44 @@ if (typeof Chart !== 'undefined' && Chart.defaults) {
   Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(22, 14, 33, 0.94)';
   Chart.defaults.plugins.tooltip.titleColor = '#FFFFFF';
   Chart.defaults.plugins.tooltip.bodyColor = '#E9D5FF';
-  Chart.defaults.plugins.tooltip.borderColor = '#8E4A9E';
+  Chart.defaults.plugins.tooltip.borderColor = '#8E0E14';
+  Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(26, 12, 8, 0.94)';
   Chart.defaults.plugins.tooltip.borderWidth = 1.5;
   Chart.defaults.plugins.tooltip.padding = 10;
   Chart.defaults.plugins.tooltip.cornerRadius = 8;
   Chart.defaults.plugins.tooltip.displayColors = true;
+}
+
+
+// Plugin Officiel Charte BONDIN : Affichage dynamique du volume au centre du Donut
+const bondinDonutCenterPlugin = {
+  id: 'bondinDonutCenterPlugin',
+  afterDraw: (chart) => {
+    if (chart.canvas.id !== 'chart-etablissements-donut') return;
+    const { ctx, chartArea: { top, bottom, left, right, width, height } } = chart;
+    ctx.save();
+    const centerX = (left + right) / 2;
+    const centerY = (top + bottom) / 2;
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    // Valeur dynamique selon filtre actif
+    const scanEl = document.getElementById('scan-counter');
+    const scanText = scanEl ? scanEl.innerText : '13 097';
+    
+    ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = isDark ? '#FFFFFF' : '#111827';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(scanText, centerX, centerY - 10);
+    
+    ctx.font = '700 12px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = '#C31C23';
+    ctx.fillText('achats', centerX, centerY + 14);
+    ctx.restore();
+  }
+};
+if (typeof Chart !== 'undefined' && Chart.register) {
+  try { Chart.register(bondinDonutCenterPlugin); } catch(e) {}
 }
 
 /** Animation de compteur numérique fluide et dynamique (Counter Ticker) */
@@ -458,7 +491,7 @@ function updateLoginScreenMetrics(data) {
     scansEl.innerText = `${Math.round(totalScans).toLocaleString('fr-FR')} scans`;
   }
   if (caEl && totalCa) {
-    caEl.innerText = `${Math.round(totalCa).toLocaleString('fr-FR')} TND`;
+    caEl.innerText = `${Math.round(totalCa).toLocaleString('fr-FR')} DT`;
   }
 }
 
@@ -1396,9 +1429,9 @@ function executeGlobalFilters() {
 
   // a. KPIs Header & Bandeau Exécutif
   const ctxCa = document.getElementById('ctx-total-ca');
-  if (ctxCa) animateCount(ctxCa, baseCA, v => `${Math.round(v).toLocaleString('fr-FR')} TND`);
+  if (ctxCa) animateCount(ctxCa, baseCA, v => `${Math.round(v).toLocaleString('fr-FR')} DT`);
   const kpiCa = document.getElementById('kpi-ca-val');
-  if (kpiCa) animateCount(kpiCa, baseCA, v => `${Math.round(v).toLocaleString('fr-FR')} TND`);
+  if (kpiCa) animateCount(kpiCa, baseCA, v => `${Math.round(v).toLocaleString('fr-FR')} DT`);
 
   const ctxCli = document.getElementById('ctx-active-clients');
   if (ctxCli) animateCount(ctxCli, baseClients, v => Math.round(v).toLocaleString('fr-FR'));
@@ -1411,7 +1444,7 @@ function executeGlobalFilters() {
   if (kpiScn) animateCount(kpiScn, baseScans, v => `${Math.round(v).toLocaleString('fr-FR')} scans`);
 
   const kpiAov = document.getElementById('kpi-aov-val');
-  if (kpiAov) animateCount(kpiAov, aov, v => `${v.toFixed(3)} TND`);
+  if (kpiAov) animateCount(kpiAov, aov, v => `${v.toFixed(3)} DT`);
 
   // b. KPIs Pipeline Funnel
   const kpiTotalCrm = document.getElementById('kpi-total-crm');
@@ -1426,7 +1459,7 @@ function executeGlobalFilters() {
   const kpiCadeaux = document.getElementById('kpi-cadeaux-val');
   if (kpiCadeaux) animateCount(kpiCadeaux, Math.max(1, Math.round(baseBurn * periodScaleFactor)), v => Math.round(v));
   const kpiDette = document.getElementById('kpi-dette-val');
-  if (kpiDette) animateCount(kpiDette, baseDette, v => `${v.toFixed(3)} TND`);
+  if (kpiDette) animateCount(kpiDette, baseDette, v => `${v.toFixed(3)} DT`);
 
   // c. Jauges demi-cercles
   if (charts.gaugeActivation) {
@@ -1448,7 +1481,7 @@ function executeGlobalFilters() {
         charts.donutEtablissement.data.datasets[0].backgroundColor = ['rgba(106, 43, 124, 0.22)', '#38BDF8'];
       }
     } else {
-      charts.donutEtablissement.data.datasets[0].backgroundColor = ['#6A2B7C', '#B768C7'];
+      charts.donutEtablissement.data.datasets[0].backgroundColor = ['#8E0E14', '#D97706'];
     }
     charts.donutEtablissement.update();
   }
@@ -1480,7 +1513,7 @@ function executeGlobalFilters() {
         return isMatch ? '#FBBF24' : 'rgba(106, 43, 124, 0.28)';
       });
     } else {
-      charts.topMagasinsMockup.data.datasets[0].backgroundColor = ['#6A2B7C', '#B768C7', '#6A2B7C', '#6A2B7C', '#6A2B7C'];
+      charts.topMagasinsMockup.data.datasets[0].backgroundColor = ['#8E0E14', '#C31C23', '#8E0E14', '#8E0E14', '#8E0E14'];
     }
     charts.topMagasinsMockup.update();
   }
@@ -1509,7 +1542,7 @@ function executeGlobalFilters() {
         return isMatch ? '#FBBF24' : 'rgba(106, 43, 124, 0.25)';
       });
     } else {
-      charts.segmentsMockup.data.datasets[0].backgroundColor = ['#6A2B7C', '#8E4A9E', '#B768C7', '#CBA3D8'];
+      charts.segmentsMockup.data.datasets[0].backgroundColor = ['#8E0E14', '#C31C23', '#D97706', '#E29B9B'];
     }
     charts.segmentsMockup.update();
   }
@@ -1598,7 +1631,7 @@ function updateDecompositionTree(totalCA) {
       <div class="decomp-root-card">
         <div class="decomp-title-root">PÉRIMÈTRE FILTRÉ</div>
         <div class="decomp-label-root">CA Client Filtré</div>
-        <div class="decomp-value-root">${Math.round(totalCA).toLocaleString('fr-FR')} TND</div>
+        <div class="decomp-value-root">${Math.round(totalCA).toLocaleString('fr-FR')} DT</div>
         <div class="decomp-bar-track">
           <div class="decomp-bar-fill" style="width: 100%;"></div>
         </div>
@@ -1611,7 +1644,7 @@ function updateDecompositionTree(totalCA) {
             <span>1. Champions (VIP)</span>
             <span class="decomp-pct-text">81,4%</span>
           </div>
-          <div class="decomp-node-val">${vChamp.toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-node-val">${vChamp.toLocaleString('fr-FR')} DT</div>
           <div class="decomp-bar-track">
             <div class="decomp-bar-fill" style="width: 81.4%;"></div>
           </div>
@@ -1622,7 +1655,7 @@ function updateDecompositionTree(totalCA) {
             <span>2. Consommateurs Réguliers</span>
             <span class="decomp-pct-text">9,9%</span>
           </div>
-          <div class="decomp-node-val">${vReg.toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-node-val">${vReg.toLocaleString('fr-FR')} DT</div>
           <div class="decomp-bar-track">
             <div class="decomp-bar-fill" style="width: 9.9%;"></div>
           </div>
@@ -1633,7 +1666,7 @@ function updateDecompositionTree(totalCA) {
             <span>3. Occasionnels</span>
             <span class="decomp-pct-text">2,2%</span>
           </div>
-          <div class="decomp-node-val">${vOcc.toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-node-val">${vOcc.toLocaleString('fr-FR')} DT</div>
           <div class="decomp-bar-track">
             <div class="decomp-bar-fill" style="width: 2.2%;"></div>
           </div>
@@ -1647,7 +1680,7 @@ function updateDecompositionTree(totalCA) {
             <span>Cafés Moulus</span>
             <span class="decomp-pct-text blue">45,0%</span>
           </div>
-          <div class="decomp-node-val">${Math.round(totalCA * 0.450).toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-node-val">${Math.round(totalCA * 0.450).toLocaleString('fr-FR')} DT</div>
           <div class="decomp-bar-track">
             <div class="decomp-bar-fill blue" style="width: 45%;"></div>
           </div>
@@ -1658,7 +1691,7 @@ function updateDecompositionTree(totalCA) {
             <span>Cafés en Grains</span>
             <span class="decomp-pct-text blue">28,4%</span>
           </div>
-          <div class="decomp-node-val">${Math.round(totalCA * 0.284).toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-node-val">${Math.round(totalCA * 0.284).toLocaleString('fr-FR')} DT</div>
           <div class="decomp-bar-track">
             <div class="decomp-bar-fill blue" style="width: 28.4%;"></div>
           </div>
@@ -1669,7 +1702,7 @@ function updateDecompositionTree(totalCA) {
             <span>Boissons Salons</span>
             <span class="decomp-pct-text blue">19,0%</span>
           </div>
-          <div class="decomp-node-val">${Math.round(totalCA * 0.190).toLocaleString('fr-FR')} TND</div>
+          <div class="decomp-node-val">${Math.round(totalCA * 0.190).toLocaleString('fr-FR')} DT</div>
           <div class="decomp-bar-track">
             <div class="decomp-bar-fill blue" style="width: 19%;"></div>
           </div>
@@ -1686,7 +1719,7 @@ function updateFilteredTables(reseau, segment, scaleFactor = 1.0) {
   const grossisteTbody = document.querySelector('#table-grossistes tbody');
   if (grossisteTbody) {
     if (reseau === 'particuliers') {
-      grossisteTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #8E4A9E; padding: 16px; font-weight: 600;">Aucun profil grossiste dans le périmètre filtré (100% Consommateurs Détail Cafétérias)</td></tr>`;
+      grossisteTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #8E0E14; padding: 16px; font-weight: 600;">Aucun profil grossiste dans le périmètre filtré (100% Consommateurs Détail Cafétérias)</td></tr>`;
     } else {
       grossisteTbody.innerHTML = DASHBOARD_DATA.top_grossistes_table.map(g => {
         const sVal = g.succ * sf;
@@ -1699,10 +1732,10 @@ function updateFilteredTables(reseau, segment, scaleFactor = 1.0) {
             <div style="font-weight: 700; color: var(--text-primary);">${g.nom || g.id}</div>
             <div style="font-size: 11px; opacity: 0.7; font-family: monospace;">${g.id}</div>
           </td>
-          <td><strong style="color: #6A2B7C">${sVal.toFixed(3)} TND</strong></td>
-          <td>${cVal.toFixed(3)} TND</td>
-          <td><strong>${tVal.toFixed(3)} TND</strong></td>
-          <td>${maxVal.toFixed(2)} TND</td>
+          <td><strong style="color: #8E0E14">${sVal.toFixed(3)} DT</strong></td>
+          <td>${cVal.toFixed(3)} DT</td>
+          <td><strong>${tVal.toFixed(3)} DT</strong></td>
+          <td>${maxVal.toFixed(2)} DT</td>
           <td><span class="tag-badge ${g.freq_sem >= 3 ? 'gold' : 'info'}">${g.freq_sem} / sem</span></td>
           <td><span class="tag-badge ${g.status.includes('Alerte') ? 'alert' : 'gold'}">${g.status}</span></td>
         </tr>`;
@@ -1727,7 +1760,7 @@ function updateFilteredTables(reseau, segment, scaleFactor = 1.0) {
         <td><span class="tag-badge ${p.rang.includes('Top 1') ? 'gold' : 'info'}">${p.rang}</span></td>
         <td><strong>${fil}</strong></td>
         <td><strong>${conv}</strong></td>
-        <td><strong style="color: #6A2B7C">${caGen.toFixed(3)} TND</strong></td>
+        <td><strong style="color: #8E0E14">${caGen.toFixed(3)} DT</strong></td>
         <td><strong style="color: #F59E0B">${pts.toLocaleString('fr-FR')} pts</strong></td>
       </tr>`;
     }).join('');
@@ -1747,7 +1780,7 @@ function updateFilteredTables(reseau, segment, scaleFactor = 1.0) {
           <div style="font-size: 11px; opacity: 0.7; font-family: monospace;">${c.id}</div>
         </td>
         <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
-        <td>${(c.ca * sf).toFixed(3)} TND</td>
+        <td>${(c.ca * sf).toFixed(3)} DT</td>
         <td>${Math.round(c.points * sf)} pts</td>
         <td><span class="tag-badge alert">${c.score_churn}</span></td>
         <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}', '${(c.nom || c.id).replace(/'/g, "\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
@@ -1814,7 +1847,7 @@ function initSparklines() {
         labels: [1, 2, 3, 4, 5, 6, 7],
         datasets: [{
           data: [120, 240, 480, 890, 1420, 1850, 2161],
-          borderColor: '#A84EB7',
+          borderColor: '#8E0E14',
           backgroundColor: 'rgba(168, 78, 183, 0.15)',
           fill: true
         }]
@@ -1922,7 +1955,7 @@ function renderGridCharts() {
         labels: ['Succursales (Gros)', 'Cafétérias (Détail)'],
         datasets: [{
           data: [63.39, 36.61],
-          backgroundColor: ['#6A2B7C', '#B768C7'],
+          backgroundColor: ['#8E0E14', '#D97706'],
           borderColor: '#FFFFFF',
           borderWidth: 3
         }]
@@ -1970,13 +2003,13 @@ function renderGridCharts() {
           {
             label: 'Succursales (Gros)',
             data: [19500, 13200, 1800, 2100, 1103],
-            backgroundColor: '#B768C7',
+            backgroundColor: '#8E0E14',
             borderRadius: 4
           },
           {
             label: 'Cafétérias (Détail)',
             data: [8150, 3140, 9180, 850, 457],
-            backgroundColor: '#6A2B7C',
+            backgroundColor: '#D97706',
             borderRadius: 4
           }
         ]
@@ -2029,7 +2062,7 @@ function renderGridCharts() {
           {
             label: 'CA (TND)',
             data: [6320, 5885, 5636, 5156, 4519],
-            backgroundColor: ['#6A2B7C', '#B768C7', '#6A2B7C', '#6A2B7C', '#6A2B7C'],
+            backgroundColor: ['#8E0E14', '#C31C23', '#8E0E14', '#8E0E14', '#8E0E14'],
             borderRadius: 5
           }
         ]
@@ -2078,13 +2111,13 @@ function renderGridCharts() {
           {
             label: 'Succursales',
             data: [0, 64, 8329, 19476, 37528, 29303, 15545],
-            backgroundColor: '#B768C7',
+            backgroundColor: '#8E0E14',
             borderRadius: 4
           },
           {
             label: 'Cafétérias',
             data: [3.8, 15.2, 6787, 11069, 10245, 8918, 5439],
-            backgroundColor: '#6A2B7C',
+            backgroundColor: '#D97706',
             borderRadius: 4
           }
         ]
@@ -2131,7 +2164,7 @@ function renderGridCharts() {
         datasets: [{
           label: 'CA (TND)',
           data: [46662, 9460, 3123, 234],
-          backgroundColor: ['#6A2B7C', '#8E4A9E', '#B768C7', '#CBA3D8'],
+          backgroundColor: ['#8E0E14', '#C31C23', '#D97706', '#E29B9B'],
           borderRadius: 5
         }]
       },
@@ -2198,7 +2231,7 @@ function renderGridCharts() {
                 const val = ctx.raw;
                 if (Array.isArray(val)) {
                   const pts = val[1] - val[0];
-                  return ' ' + ctx.label + ' : ' + pts.toLocaleString('fr-FR') + ' pts (' + (pts * 0.01).toFixed(3) + ' TND)';
+                  return ' ' + ctx.label + ' : ' + pts.toLocaleString('fr-FR') + ' pts (' + (pts * 0.01).toFixed(3) + ' DT)';
                 }
                 return ' ' + ctx.label + ' : ' + val;
               }
@@ -2226,7 +2259,7 @@ function renderGridCharts() {
         datasets: [{
           label: 'LTV (TND)',
           data: [289.83, 238.96, 51.70, 14.14],
-          backgroundColor: ['#4B2B5E', '#6A2B7C', '#8E4A9E', '#B768C7'],
+          backgroundColor: ['#1A0C08', '#8E0E14', '#C31C23', '#D97706'],
           borderRadius: 5
         }]
       },
@@ -2257,7 +2290,7 @@ function renderGridCharts() {
           tooltip: {
             enabled: true,
             callbacks: {
-              label: (ctx) => ' Valeur LTV : ' + Number(ctx.raw).toFixed(3) + ' TND (Cliquer pour filtrer)'
+              label: (ctx) => ' Valeur LTV : ' + Number(ctx.raw).toFixed(3) + ' DT (Cliquer pour filtrer)'
             }
           }
         },
@@ -2301,11 +2334,11 @@ function initLeafletMap() {
 
   // Villes et volumes de scans réels (DWH)
   const regionsData = [
-    { name: "Grand Tunis", lat: 36.8065, lng: 10.1815, scans: 3143, ca: "29 380 TND", size: "large" },
-    { name: "Le Kef", lat: 36.1742, lng: 8.7049, scans: 995, ca: "6 245 TND", size: "medium" },
-    { name: "Sfax", lat: 34.7406, lng: 10.7603, scans: 105, ca: "2 450 TND", size: "small" },
-    { name: "Gafsa", lat: 34.4250, lng: 8.7842, scans: 1831, ca: "15 380 TND", size: "medium" },
-    { name: "Gabès", lat: 33.8815, lng: 10.0982, scans: 285, ca: "6 020 TND", size: "small" }
+    { name: "Grand Tunis", lat: 36.8065, lng: 10.1815, scans: 3143, ca: "29 380 DT", size: "large" },
+    { name: "Le Kef", lat: 36.1742, lng: 8.7049, scans: 995, ca: "6 245 DT", size: "medium" },
+    { name: "Sfax", lat: 34.7406, lng: 10.7603, scans: 105, ca: "2 450 DT", size: "small" },
+    { name: "Gafsa", lat: 34.4250, lng: 8.7842, scans: 1831, ca: "15 380 DT", size: "medium" },
+    { name: "Gabès", lat: 33.8815, lng: 10.0982, scans: 285, ca: "6 020 DT", size: "small" }
   ];
 
   regionsData.forEach(r => {
@@ -2368,7 +2401,7 @@ function renderDecompositionTree() {
       <div class="decomp-root-card">
         <div class="decomp-title-root">SOURCE GLOBALE</div>
         <div class="decomp-label-root">${tree.label}</div>
-        <div class="decomp-value-root">59 480,655 TND</div>
+        <div class="decomp-value-root">59 480,655 DT</div>
         <div class="decomp-bar-track">
           <div class="decomp-bar-fill" style="width: 100%;"></div>
         </div>
@@ -2382,7 +2415,7 @@ function renderDecompositionTree() {
               <span>${seg.label}</span>
               <span class="decomp-pct-text">${seg.pct}%</span>
             </div>
-            <div class="decomp-node-val">${Number(seg.valeur).toLocaleString('fr-FR')} TND</div>
+            <div class="decomp-node-val">${Number(seg.valeur).toLocaleString('fr-FR')} DT</div>
             <div class="decomp-bar-track">
               <div class="decomp-bar-fill" style="width: ${seg.pct}%;"></div>
             </div>
@@ -2398,7 +2431,7 @@ function renderDecompositionTree() {
               <span>${g.label}</span>
               <span class="decomp-pct-text blue">${g.pct}%</span>
             </div>
-            <div class="decomp-node-val">${Number(g.valeur).toLocaleString('fr-FR')} TND</div>
+            <div class="decomp-node-val">${Number(g.valeur).toLocaleString('fr-FR')} DT</div>
             <div class="decomp-bar-track">
               <div class="decomp-bar-fill blue" style="width: ${g.pct}%;"></div>
             </div>
@@ -2423,7 +2456,7 @@ window.selectDecompSegmentMockup = function(idx) {
           <span>${g.label}</span>
           <span class="decomp-pct-text blue">${g.pct}%</span>
         </div>
-        <div class="decomp-node-val">${Number(g.valeur).toLocaleString('fr-FR')} TND</div>
+        <div class="decomp-node-val">${Number(g.valeur).toLocaleString('fr-FR')} DT</div>
         <div class="decomp-bar-track">
           <div class="decomp-bar-fill blue" style="width: ${g.pct}%;"></div>
         </div>
@@ -2463,7 +2496,7 @@ function renderLiveTransactionsTable(scans) {
         <strong class="text-slate-900 dark:text-slate-100">${s.client || 'Client Fidélité'}</strong>
       </td>
       <td><strong class="text-slate-900 dark:text-slate-100">${s.magasin}</strong></td>
-      <td><strong class="text-emerald-700 dark:text-emerald-400 font-mono text-[13px] font-bold">${Number(s.montant_tnd).toFixed(3)} TND</strong></td>
+      <td><strong class="text-emerald-700 dark:text-emerald-400 font-mono text-[13px] font-bold">${Number(s.montant_tnd).toFixed(3)} DT</strong></td>
       <td><span class="tag-badge gold font-bold">+${Math.round(s.points)} pts</span></td>
       <td><span class="font-mono text-xs font-medium text-slate-700 dark:text-slate-300">${s.date}</span></td>
       <td><span class="tag-badge green flex items-center gap-1 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>✓ Enregistré DWH</span></td>
@@ -2490,10 +2523,10 @@ function renderTables(liveCA) {
             <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${g.nom || g.id}</div>
             <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${g.id}</div>
           </td>
-          <td><strong class="text-accent-succ">${(Number(g.succ) * scale).toFixed(3)} TND</strong></td>
-          <td>${(Number(g.cafe) * scale).toFixed(3)} TND</td>
-          <td><strong>${(Number(g.total) * scale).toFixed(3)} TND</strong></td>
-          <td>${(Number(g.max_succ) * scale).toFixed(2)} TND</td>
+          <td><strong class="text-accent-succ">${(Number(g.succ) * scale).toFixed(3)} DT</strong></td>
+          <td>${(Number(g.cafe) * scale).toFixed(3)} DT</td>
+          <td><strong>${(Number(g.total) * scale).toFixed(3)} DT</strong></td>
+          <td>${(Number(g.max_succ) * scale).toFixed(2)} DT</td>
           <td><span class="tag-badge ${g.freq_sem >= 3 ? 'gold' : 'info'}">${g.freq_sem} / sem</span></td>
           <td><span class="tag-badge ${g.status && g.status.includes('Alerte') ? 'alert' : 'gold'}">${g.status}</span></td>
         </tr>
@@ -2522,7 +2555,7 @@ function renderTables(liveCA) {
           <td><strong>${p.rang}</strong></td>
           <td><strong class="text-accent-succ" style="font-size: 0.95rem;">${p.filleuls}</strong> filleuls</td>
           <td><strong style="color: #10B981;">${p.convertis}</strong> convertis</td>
-          <td><strong>${(Number(p.ca_genere) * scale).toFixed(3)} TND</strong></td>
+          <td><strong>${(Number(p.ca_genere) * scale).toFixed(3)} DT</strong></td>
           <td><span class="tag-badge gold">+${Math.round(p.points_gagnes * scale)} pts</span></td>
         </tr>
       `).join('');
@@ -2540,7 +2573,7 @@ function renderTables(liveCA) {
             <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${c.id}</div>
           </td>
           <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
-          <td>${(Number(c.ca) * scale).toFixed(3)} TND</td>
+          <td>${(Number(c.ca) * scale).toFixed(3)} DT</td>
           <td>${Math.round(c.points * scale)} pts</td>
           <td><span class="tag-badge alert">${c.score_churn}</span></td>
           <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}', '${(c.nom || c.id).replace(/'/g, "\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
@@ -2556,7 +2589,7 @@ function renderTables(liveCA) {
       mbaTbody.innerHTML = DASHBOARD_DATA.market_basket.map(m => `
         <tr>
           <td><strong>${m.produit_a}</strong></td>
-          <td><strong style="color: #6A2B7C;">${m.produit_b}</strong></td>
+          <td><strong style="color: #8E0E14;">${m.produit_b}</strong></td>
           <td>${Number(m.confiance).toFixed(1)} %</td>
           <td><span class="tag-badge green">${Number(m.lift).toFixed(2)}x Lift</span></td>
           <td><span class="tag-badge info">${m.action}</span></td>
@@ -2592,7 +2625,7 @@ window.simulateLiveScan = async function() {
     btn.disabled = true;
     btn.classList.add('opacity-70', 'cursor-wait');
   }
-  showToast('⚡ Envoi d\'un scan caisse mobile en direct (18,500 TND)...', 'info');
+  showToast('⚡ Envoi d\'un scan caisse mobile en direct (18,500 DT)...', 'info');
 
   const simulatedAmount = 18.500;
   const storeName = 'Succursale Tunis Liberté';
@@ -2642,7 +2675,7 @@ window.simulateLiveScan = async function() {
     setTimeout(() => el.classList.remove('kpi-glow-pulse'), 1400);
   });
 
-  showToast(`⚡ Transaction validée en direct : +${simulatedAmount.toFixed(3)} TND (+185 pts) à ${storeName} !`, 'success');
+  showToast(`⚡ Transaction validée en direct : +${simulatedAmount.toFixed(3)} DT (+185 pts) à ${storeName} !`, 'success');
 
   try {
     fetch('/api/simulate-scan', {
@@ -2802,7 +2835,7 @@ async function fetchLiveProductionData(isManual = false) {
     if (isManual) {
       if (label) label.innerText = `✓ Synchro (${latencyMs}ms)`;
       const scanDetail = deltaScans > 0 ? ` (+${deltaScans} nouveaux scans)` : ` (Données consolidées)`;
-      showToast(`✓ DWH Connecté (PostgreSQL 17.7) : ${currentScans.toLocaleString('fr-FR')} scans${scanDetail} • CA : ${currentCa.toLocaleString('fr-FR')} TND • Latence : ${latencyMs}ms`, 'success');
+      showToast(`✓ DWH Connecté (PostgreSQL 17.7) : ${currentScans.toLocaleString('fr-FR')} scans${scanDetail} • CA : ${currentCa.toLocaleString('fr-FR')} DT • Latence : ${latencyMs}ms`, 'success');
     } else if (deltaScans > 0) {
       // Auto-sync a capté une nouvelle transaction en arrière-plan
       const lastStore = data.dernier_magasin || 'BONDIN Magasin';
@@ -3005,9 +3038,9 @@ window.updateWhatIfSimulation = function(factor) {
     pointsDeltaEl.textContent = (diffPts >= 0 ? '+' : '') + diffPts.toLocaleString('fr-FR') + ' pts vs standard';
   }
 
-  if (detteEl) animateCount(detteEl, detteSim, v => `${v.toFixed(3)} TND`, 320);
+  if (detteEl) animateCount(detteEl, detteSim, v => `${v.toFixed(3)} DT`, 320);
   if (detteDeltaEl) {
-    detteDeltaEl.textContent = 'Variation : ' + (deltaDette >= 0 ? '+' : '') + deltaDette.toFixed(3) + ' TND';
+    detteDeltaEl.textContent = 'Variation : ' + (deltaDette >= 0 ? '+' : '') + deltaDette.toFixed(3) + ' DT';
     detteDeltaEl.style.color = deltaDette > 0 ? '#DC2626' : '#10B981';
   }
 
@@ -3104,7 +3137,7 @@ function renderSankeyFlow(liveData) {
             <span class="sankey-node-val text-emerald-400 font-bold">${actifs.toLocaleString('fr-FR')}</span>
           </div>
           <div class="sankey-node-sub">
-            <span>Génèrent ${Math.round(totalCa).toLocaleString('fr-FR')} TND</span>
+            <span>Génèrent ${Math.round(totalCa).toLocaleString('fr-FR')} DT</span>
             <strong style="color: #10B981;">${actRate}%</strong>
           </div>
           <div class="sankey-bar-track">
@@ -3137,7 +3170,7 @@ function renderSankeyFlow(liveData) {
             <span class="sankey-node-val font-bold">${nbVIP}</span>
           </div>
           <div class="sankey-node-sub">
-            <span>CA : ${caVIP.toLocaleString('fr-FR')} TND (78,4%)</span>
+            <span>CA : ${caVIP.toLocaleString('fr-FR')} DT (78,4%)</span>
             <strong>27,8% des actifs</strong>
           </div>
           <div class="sankey-bar-track">
@@ -3151,7 +3184,7 @@ function renderSankeyFlow(liveData) {
             <span class="sankey-node-val font-bold">${nbReg}</span>
           </div>
           <div class="sankey-node-sub">
-            <span>CA : ${caReg.toLocaleString('fr-FR')} TND (15,9%)</span>
+            <span>CA : ${caReg.toLocaleString('fr-FR')} DT (15,9%)</span>
             <strong>31,6% des actifs</strong>
           </div>
           <div class="sankey-bar-track">
@@ -3165,7 +3198,7 @@ function renderSankeyFlow(liveData) {
             <span class="sankey-node-val font-bold">${nbOcc}</span>
           </div>
           <div class="sankey-node-sub">
-            <span>CA : ${caOcc.toLocaleString('fr-FR')} TND (5,2%)</span>
+            <span>CA : ${caOcc.toLocaleString('fr-FR')} DT (5,2%)</span>
             <strong>38,1% des actifs</strong>
           </div>
           <div class="sankey-bar-track">
@@ -3232,7 +3265,7 @@ function renderRewardsCatalog(tier = 'all') {
       </div>
       <div class="reward-card-footer">
         <span class="reward-target-tag">🎯 Cible IA : ${r.profile}</span>
-        <span class="reward-val-tnd">${r.valTnd.toFixed(3)} TND</span>
+        <span class="reward-val-tnd">${r.valTnd.toFixed(3)} DT</span>
       </div>
     </div>
   `).join('');
@@ -3350,9 +3383,9 @@ function renderAdvancedCharts() {
       type: 'radar',
       data: {
         labels: [
-          'Panier Moyen (37,6 TND vs 4,2 TND)',
+          'Panier Moyen (37,6 DT vs 4,2 DT)',
           'Volume Scans (2 933 vs 10 136)',
-          'CA Généré (110 245 TND vs 42 476 TND)',
+          'CA Généré (110 245 DT vs 42 476 DT)',
           'Points Émis (438k pts vs 74k pts)',
           'Fréquence Récurrente (5,5 vs 16,9)',
           'Base Clients (530 vs 598)'
@@ -3407,9 +3440,9 @@ function renderAdvancedCharts() {
                 const isB2B = ctx.datasetIndex === 0;
                 const idx = ctx.dataIndex;
                 const details = [
-                  isB2B ? 'Panier Moyen : 37,588 TND' : 'Panier Moyen : 4,191 TND',
+                  isB2B ? 'Panier Moyen : 37,588 DT' : 'Panier Moyen : 4,191 DT',
                   isB2B ? 'Scans enregistrés : 2 933 (22,4%)' : 'Scans enregistrés : 10 136 (77,6%)',
-                  isB2B ? 'CA Global : 110 244,87 TND (72,2%)' : 'CA Global : 42 475,80 TND (27,8%)',
+                  isB2B ? 'CA Global : 110 244,87 DT (72,2%)' : 'CA Global : 42 475,80 DT (27,8%)',
                   isB2B ? 'Points attribués : 437 556 pts' : 'Points attribués : 74 171 pts',
                   isB2B ? 'Fréquence : 5,5 visites / client' : 'Fréquence : 16,9 visites / client',
                   isB2B ? 'Clients identifiés : 530' : 'Clients identifiés : 598'
@@ -3480,7 +3513,7 @@ function renderAdvancedCharts() {
             callbacks: {
               label: (ctx) => {
                 const raw = ctx.raw;
-                return ` ${raw.name} : ${raw.x.toLocaleString('fr-FR')} scans, ${raw.y.toLocaleString('fr-FR')} TND (Cliquer pour filtrer)`;
+                return ` ${raw.name} : ${raw.x.toLocaleString('fr-FR')} scans, ${raw.y.toLocaleString('fr-FR')} DT (Cliquer pour filtrer)`;
               }
             }
           }
@@ -3559,9 +3592,9 @@ function updateAdvancedCharts(liveData) {
     const cafeScans = Math.round(currentScans * 0.776);
     
     charts.radarBenchmark.data.labels = [
-      `Panier Moyen (${(currentAov * 3.2).toFixed(1)} TND vs ${(currentAov * 0.36).toFixed(1)} TND)`,
+      `Panier Moyen (${(currentAov * 3.2).toFixed(1)} DT vs ${(currentAov * 0.36).toFixed(1)} DT)`,
       `Volume Scans (${succScans.toLocaleString('fr-FR')} vs ${cafeScans.toLocaleString('fr-FR')})`,
-      `CA Généré (${succCa.toLocaleString('fr-FR')} TND vs ${cafeCa.toLocaleString('fr-FR')} TND)`,
+      `CA Généré (${succCa.toLocaleString('fr-FR')} DT vs ${cafeCa.toLocaleString('fr-FR')} DT)`,
       `Points Émis (${Math.round(currentCa * 2.85).toLocaleString('fr-FR')} pts vs ${Math.round(currentCa * 0.48).toLocaleString('fr-FR')} pts)`,
       'Fréquence Récurrente (5,5 vs 16,9)',
       `Base Clients (${Math.round(activeClients * 0.47)} vs ${Math.round(activeClients * 0.53)})`
@@ -3772,24 +3805,24 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
   // 2. Panier Moyen (AOV)
   if (q.includes("panier") || q.includes("aov") || q.includes("ticket moyen") || q.includes("depense moyenne")) {
     return `🛒 **Panier Moyen (AOV - Average Order Value)**\n\n` +
-      `• **Panier Moyen Global Réseau** : **${aov.toFixed(3)} TND** par acte d'achat scanné.\n` +
+      `• **Panier Moyen Global Réseau** : **${aov.toFixed(3)} DT** par acte d'achat scanné.\n` +
       `• **Disparité selon le Type d'Établissement** :\n` +
-      `  - 🏬 **Succursales (Vente en Gros B2B)** : **37,59 TND** (achats par sacs de café en grains et moulu de tradition).\n` +
-      `  - ☕ **Cafétérias (Détail & Salon)** : **4,19 TND** (consommation quotidienne au comptoir : espressos et boissons chaudes).\n` +
-      `• **Panier Moyen des Champions VIP** : **18,450 TND** contre **4,210 TND** pour les occasionnels.`;
+      `  - 🏬 **Succursales (Vente en Gros B2B)** : **37,59 DT** (achats par sacs de café en grains et moulu de tradition).\n` +
+      `  - ☕ **Cafétérias (Détail & Salon)** : **4,19 DT** (consommation quotidienne au comptoir : espressos et boissons chaudes).\n` +
+      `• **Panier Moyen des Champions VIP** : **18,450 DT** contre **4,210 DT** pour les occasionnels.`;
   }
 
   // 3. Différence Succursales vs Cafétérias
   if (q.includes("difference") || (q.includes("succursale") && q.includes("cafeteria")) || q.includes("comparaison")) {
     return `⚖️ **Comparatif Stratégique : Succursales vs Cafétérias BONDIN**\n\n` +
       `• 🏬 **Succursales (Vente en Gros B2B)** :\n` +
-      `  - **Poids dans le CA** : **72,2% du CA global (110 245 TND)** sur 2 933 scans.\n` +
-      `  - **Panier Moyen** : **37,59 TND** (achats par sacs de café en grains et moulu de tradition).\n` +
-      `  - **Top Magasin** : Succursale Le Kef (27 291 TND) & Succursale Gabès Jara (13 426 TND).\n\n` +
+      `  - **Poids dans le CA** : **72,2% du CA global (110 245 DT)** sur 2 933 scans.\n` +
+      `  - **Panier Moyen** : **37,59 DT** (achats par sacs de café en grains et moulu de tradition).\n` +
+      `  - **Top Magasin** : Succursale Le Kef (27 291 DT) & Succursale Gabès Jara (13 426 DT).\n\n` +
       `• ☕ **Cafétérias (Détail & Salon Comptoir)** :\n` +
-      `  - **Poids dans le CA** : **27,8% du CA global (42 476 TND)** sur 10 136 scans.\n` +
-      `  - **Panier Moyen** : **4,19 TND** (fréquence élevée, consommation quotidienne d'espressos).\n` +
-      `  - **Top Magasin** : Cafétéria Gafsa Ville (11 314 TND, 3 109 scans).`;
+      `  - **Poids dans le CA** : **27,8% du CA global (42 476 DT)** sur 10 136 scans.\n` +
+      `  - **Panier Moyen** : **4,19 DT** (fréquence élevée, consommation quotidienne d'espressos).\n` +
+      `  - **Top Magasin** : Cafétéria Gafsa Ville (11 314 DT, 3 109 scans).`;
   }
 
   // 4. Volume de Scans & Transactions
@@ -3815,21 +3848,21 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
 
   // 6. Chiffre d'Affaires Global
   if (q.includes("chiffre") || q.split(' ').includes("ca") || q.includes("ventes") || q.includes("montant total") || q.includes("recette") || q.includes("revenu")) {
-    return `📊 **Chiffre d'Affaires Fidélité Consolidé : ${ca.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} TND**\n\n` +
+    return `📊 **Chiffre d'Affaires Fidélité Consolidé : ${ca.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} DT**\n\n` +
       `• **Transactions Totales** : ${scans.toLocaleString('fr-FR')} scans QR certifiés.\n` +
-      `• **Panier Moyen Global** : ${aov.toFixed(3)} TND par acte d'achat.\n` +
+      `• **Panier Moyen Global** : ${aov.toFixed(3)} DT par acte d'achat.\n` +
       `• **Ventilation Établissements** :\n` +
-      `  - **Succursales (Gros B2B)** : **72,2% du CA (110 245 TND)** · Panier : 37,59 TND\n` +
-      `  - **Cafétérias (Détail)** : **27,8% du CA (42 476 TND)** · Panier : 4,19 TND\n` +
+      `  - **Succursales (Gros B2B)** : **72,2% du CA (110 245 DT)** · Panier : 37,59 DT\n` +
+      `  - **Cafétérias (Détail)** : **27,8% du CA (42 476 DT)** · Panier : 4,19 DT\n` +
       `• **Dynamique de Croissance** : Progression soutenue de **+102,4%** MoM.`;
   }
 
   // 7. Dette Financière Passif & Cagnotte Earn & Burn
   if (q.includes("dette") || q.includes("passif") || q.includes("provision") || q.includes("combien coute") || q.includes("cagnotte") || q.includes("earn") || q.includes("burn") || q.includes("point") || q.includes("solde")) {
     return `💰 **Dette Financière Provisionnée & Équilibre Earn & Burn**\n\n` +
-      `• **Montant de la Dette au Bilan (Passif)** : **2 870,240 TND** provisionnés en réserve.\n` +
+      `• **Montant de la Dette au Bilan (Passif)** : **2 870,240 DT** provisionnés en réserve.\n` +
       `• **Volume de Points en Circulation** : **287 024 points** nets non encore convertis.\n` +
-      `• **Règle de Valorisation CDC** : **1 point = 0,010 TND (10 millimes)** de provision.\n` +
+      `• **Règle de Valorisation CDC** : **1 point = 0,010 DT (10 millimes)** de provision.\n` +
       `• **Statistiques de la Cagnotte** :\n` +
       `  - **Points Distribués (Earn)** : **513 924 pts** crédités lors des achats.\n` +
       `  - **Points Consommés (Burn)** : **226 900 pts** convertis en récompenses (35 cadeaux débloqués).\n` +
@@ -3841,11 +3874,11 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
   if (q.includes("magasin") || q.includes("succursale") || q.includes("cafeteria") || q.includes("boutique") || q.includes("point de vente") || q.includes("gafsa") || q.includes("gabes") || q.includes("tunis") || q.includes("sfax") || q.includes("kef") || q.includes("qui vend") || q.includes("rentable")) {
     return `🏬 **Performance du Réseau de Magasins BONDIN (23 Établissements, 6 Régions)**\n\n` +
       `• **Top 5 des Magasins par Chiffre d'Affaires** :\n` +
-      `  1. 🥇 **Succursale Gafsa** : **6 320,100 TND** (achats de tradition B2B)\n` +
-      `  2. 🥈 **Cafétéria Gafsa Ville** : **5 885,600 TND** (1 635 scans comptoir)\n` +
-      `  3. 🥉 **Succursale Gabès Jara** : **5 636,014 TND**\n` +
-      `  4. **Succursale Tunis Menzah VI** : **5 156,385 TND**\n` +
-      `  5. **Succursale Tunis Liberté** : **4 519,646 TND**\n\n` +
+      `  1. 🥇 **Succursale Gafsa** : **6 320,100 DT** (achats de tradition B2B)\n` +
+      `  2. 🥈 **Cafétéria Gafsa Ville** : **5 885,600 DT** (1 635 scans comptoir)\n` +
+      `  3. 🥉 **Succursale Gabès Jara** : **5 636,014 DT**\n` +
+      `  4. **Succursale Tunis Menzah VI** : **5 156,385 DT**\n` +
+      `  5. **Succursale Tunis Liberté** : **4 519,646 DT**\n\n` +
       `• **Pôles Régionaux Majeurs** : Grand Tunis (46,3% du CA), Le Kef (22,2%), Gafsa (20,5%), Gabès (9,9%).\n` +
       `• **Logistique Cadeaux** : 6 points de vente concentrent 100% des retraits cadeaux (Tunis Liberté en tête).`;
   }
@@ -3854,8 +3887,8 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
   if (q.includes("grossiste") || q.includes("b2b") || q.includes("suspect") || q.includes("revendeur") || q.includes("professionnel")) {
     return `⚡ **Détection des Profils Grossistes B2B & Retours Clients**\n\n` +
       `• **Comptes Détectés** : **375 profils grossistes identifiés** (dont 18 comptes majeurs à très fort volume).\n` +
-      `• **Poids Économique Majeur** : Ils génèrent **118 053 TND, soit 77,3% du CA** de vente en succursale !\n` +
-      `• **Paniers Moyens** : De 150 TND à 1 200 TND par passage (achats de sacs de café en grains et moulu de tradition).\n` +
+      `• **Poids Économique Majeur** : Ils génèrent **118 053 DT, soit 77,3% du CA** de vente en succursale !\n` +
+      `• **Paniers Moyens** : De 150 DT à 1 200 DT par passage (achats de sacs de café en grains et moulu de tradition).\n` +
       `• **Clients Mixtes** : 144 clients effectuent des achats de gros en succursale tout en consommant au comptoir des cafétérias.\n` +
       `• **Dispositif de Sécurité** : Surveillance active dès dépassement de 3 passages hebdomadaires en succursale.`;
   }
@@ -3863,9 +3896,9 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
   // 10. Segmentation RFM & Pareto
   if (q.includes("segment") || q.includes("rfm") || q.includes("pareto") || q.includes("champion") || q.includes("vip") || q.includes("regulier") || q.includes("occasionnel") || q.includes("80 20") || q.includes("20 80")) {
     return `👑 **Segmentation RFM des Clients & Validation de Pareto (80/20)**\n\n` +
-      `• 👑 **Champions VIP (Gros Consommateurs)** : **229 clients (28,0% des actifs)** génèrent **124 242 TND (81,4% du CA total)** ! *La règle de Pareto 80/20 est rigoureusement confirmée.*\n` +
-      `• ☕ **Consommateurs Réguliers** : **170 clients (31,6%)** génèrent 15 064 TND (9,9%).\n` +
-      `• 🎯 **Consommateurs Occasionnels** : **141 clients (38,1%)** génèrent 3 310 TND (2,2%).\n` +
+      `• 👑 **Champions VIP (Gros Consommateurs)** : **229 clients (28,0% des actifs)** génèrent **124 242 DT (81,4% du CA total)** ! *La règle de Pareto 80/20 est rigoureusement confirmée.*\n` +
+      `• ☕ **Consommateurs Réguliers** : **170 clients (31,6%)** génèrent 15 064 DT (9,9%).\n` +
+      `• 🎯 **Consommateurs Occasionnels** : **141 clients (38,1%)** génèrent 3 310 DT (2,2%).\n` +
       `• ⚠️ **Décrochage / Churn** : **13 clients sous alerte prioritaire** (inactifs depuis > 60 jours).`;
   }
 
@@ -3875,8 +3908,8 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
       `• **Invitations Envoyées** : **206 parrainages initiés** par 39 parrains actifs.\n` +
       `• **Filleuls Convertis** : **10 nouveaux membres** ayant réalisé leur premier scan QR.\n` +
       `• **Taux de Conversion** : **4,85%**.\n` +
-      `• **CA Incrémental des Filleuls** : **3 189,521 TND** générés pour BONDIN.\n` +
-      `• **Top 1 Ambassadeur Star** : \`CLI_F848366F47\` avec **128 filleuls parrainés**, 6 convertis, 1 945,200 TND de CA généré et 1 280 points de primes reçus !`;
+      `• **CA Incrémental des Filleuls** : **3 189,521 DT** générés pour BONDIN.\n` +
+      `• **Top 1 Ambassadeur Star** : \`CLI_F848366F47\` avec **128 filleuls parrainés**, 6 convertis, 1 945,200 DT de CA généré et 1 280 points de primes reçus !`;
   }
 
   // 12. Récompenses & Catalogue
@@ -3884,7 +3917,7 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
     return `🎁 **Catalogue Récompenses & Moteur IA de Dotation (\`Dim_Recompense\`)**\n\n` +
       `• **Catalogue Officiel** : 14 articles paramétrés.\n` +
       `• **Ciblage IA par Profil** :\n` +
-      `  - **Exclusif VIP (Champions)** : Machine à café Espresso Barista (20 000 pts / 200 TND), Portefeuille & Porte-chéquier cuir véritable (4 000 pts).\n` +
+      `  - **Exclusif VIP (Champions)** : Machine à café Espresso Barista (20 000 pts / 200 DT), Portefeuille & Porte-chéquier cuir véritable (4 000 pts).\n` +
       `  - **Privilège (Réguliers)** : Service à café 6 tasses (2 500 pts), Bougie senteur torréfaction (2 200 pts), Gourde isotherme (1 550 pts).\n` +
       `  - **Access (Tout Public)** : Sac isotherme (1 300 pts), Casquette brodée (600 pts), Sac TNT (250 pts), Porte-clés grain doré (150 pts).\n` +
       `• **Règle de Marge** : Privilégie les dotations prestigieuses sans éroder la marge par des rabais simples.`;
@@ -3905,11 +3938,11 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
   // 14. Gammes de Café & Produits
   if (q.includes("produit") || q.includes("gamme") || q.includes("moulu") || q.includes("grain") || q.includes("capsule") || q.includes("boisson") || q.includes("arabica") || q.includes("article")) {
     return `☕ **Performance Commerciale par Gamme de Café BONDIN**\n\n` +
-      `• **Cafés Moulus (Prestige, Pur, Tradition)** : **68 650,400 TND (45,0% du CA)** - Référence historique incontournable.\n` +
-      `• **Cafés en Grains (100% Arabica Lavé)** : **43 340,255 TND (28,4% du CA)** - Fortement plébiscité en Succursales B2B.\n` +
-      `• **Boissons & Cafés Comptoir (Salons)** : **28 980,000 TND (19,0% du CA)** - Flux quotidien des Cafétérias.\n` +
-      `• **Capsules & Dosettes Espresso** : **7 650,000 TND (5,0% du CA)** - Segment moderne à forte croissance.\n` +
-      `• **Accessoires, Tasses & Dérivés Barista** : **4 100,000 TND (2,6% du CA)**.`;
+      `• **Cafés Moulus (Prestige, Pur, Tradition)** : **68 650,400 DT (45,0% du CA)** - Référence historique incontournable.\n` +
+      `• **Cafés en Grains (100% Arabica Lavé)** : **43 340,255 DT (28,4% du CA)** - Fortement plébiscité en Succursales B2B.\n` +
+      `• **Boissons & Cafés Comptoir (Salons)** : **28 980,000 DT (19,0% du CA)** - Flux quotidien des Cafétérias.\n` +
+      `• **Capsules & Dosettes Espresso** : **7 650,000 DT (5,0% du CA)** - Segment moderne à forte croissance.\n` +
+      `• **Accessoires, Tasses & Dérivés Barista** : **4 100,000 DT (2,6% du CA)**.`;
   }
 
   // 15. Simulateur What-If
@@ -3917,10 +3950,10 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
     return `⚙️ **Simulateur Dynamique What-If DAX (Onglet 1)**\n\n` +
       `• **Paramètre DAX \`Param_Taux_Points\`** réglable de 0.5x à 3.0x en direct.\n` +
       `• **Impacts Simulés Immédiats** :\n` +
-      `  - À **1.0x (Standard DWH)** : 188 294 pts émis | Dette : 877,940 TND\n` +
-      `  - À **1.5x (Boost Recrutement)** : 282 441 pts émis | Dette : 1 316,910 TND (+50%)\n` +
-      `  - À **2.0x (Offre Double Points)** : 376 588 pts émis | Dette : 1 754,900 TND (+100% - alerte dilution marge)\n` +
-      `  - À **0.7x (Optimisation Trésorerie)** : 131 806 pts émis | Dette : 614,558 TND (-30%).`;
+      `  - À **1.0x (Standard DWH)** : 188 294 pts émis | Dette : 877,940 DT\n` +
+      `  - À **1.5x (Boost Recrutement)** : 282 441 pts émis | Dette : 1 316,910 DT (+50%)\n` +
+      `  - À **2.0x (Offre Double Points)** : 376 588 pts émis | Dette : 1 754,900 DT (+100% - alerte dilution marge)\n` +
+      `  - À **0.7x (Optimisation Trésorerie)** : 131 806 pts émis | Dette : 614,558 DT (-30%).`;
   }
 
   // 16. Identité Maison BONDIN
@@ -3947,10 +3980,10 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
   if (isStrictFallback) {
     return `💡 **Indicateurs Clés ENA W BONDIN × FIDNESS**\n\n` +
       `Pour répondre à votre recherche *« ${rawQuestion} »* :\n` +
-      `• **Chiffre d'Affaires Fidélité** : **${ca.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} TND** sur **${scans.toLocaleString('fr-FR')} scans QR**.\n` +
-      `• **Panier Moyen Global** : **${aov.toFixed(3)} TND** par acte d'achat.\n` +
+      `• **Chiffre d'Affaires Fidélité** : **${ca.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} DT** sur **${scans.toLocaleString('fr-FR')} scans QR**.\n` +
+      `• **Panier Moyen Global** : **${aov.toFixed(3)} DT** par acte d'achat.\n` +
       `• **Clients Actifs** : **${clients.toLocaleString('fr-FR')} membres** (sur 2 715 inscrits CRM).\n` +
-      `• **Dette Financière Provisionnée** : **2 870,240 TND** pour 287 024 points en circulation.\n\n` +
+      `• **Dette Financière Provisionnée** : **2 870,240 DT** pour 287 024 points en circulation.\n\n` +
       `💡 *Astuce : Vous pouvez me poser des questions précises comme : « Quel est le panier moyen ? », « Combien de scans ? », « Qui sont les grossistes ? », « Top magasins ? » ou « Parrainage ? ».*`;
   }
 
@@ -4196,15 +4229,15 @@ function refreshChartsForTheme(theme) {
   if (charts.donutEtablissement && charts.donutEtablissement.data.datasets[0]) {
     charts.donutEtablissement.data.datasets[0].backgroundColor = isDark
       ? ['#C084FC', '#38BDF8']
-      : ['#6A2B7C', '#B768C7'];
+      : ['#8E0E14', '#D97706'];
     charts.donutEtablissement.data.datasets[0].borderColor = isDark ? '#160D22' : '#FFFFFF';
     charts.donutEtablissement.update('none');
   }
 
   // Gammes empilées
   if (charts.gammesStacked && charts.gammesStacked.data.datasets.length >= 2) {
-    charts.gammesStacked.data.datasets[0].backgroundColor = isDark ? '#38BDF8' : '#B768C7';
-    charts.gammesStacked.data.datasets[1].backgroundColor = isDark ? '#C084FC' : '#6A2B7C';
+    charts.gammesStacked.data.datasets[0].backgroundColor = isDark ? '#F59E0B' : '#8E0E14';
+    charts.gammesStacked.data.datasets[1].backgroundColor = isDark ? '#F87171' : '#D97706';
     charts.gammesStacked.update('none');
   }
 
@@ -4212,14 +4245,14 @@ function refreshChartsForTheme(theme) {
   if (charts.topMagasinsMockup && charts.topMagasinsMockup.data.datasets[0]) {
     charts.topMagasinsMockup.data.datasets[0].backgroundColor = isDark
       ? ['#C084FC', '#38BDF8', '#A855F7', '#818CF8', '#C084FC']
-      : ['#6A2B7C', '#B768C7', '#6A2B7C', '#6A2B7C', '#6A2B7C'];
+      : ['#8E0E14', '#C31C23', '#8E0E14', '#8E0E14', '#8E0E14'];
     charts.topMagasinsMockup.update('none');
   }
 
   // Timeline Mensuelle
   if (charts.monthlyMockup && charts.monthlyMockup.data.datasets.length >= 2) {
-    charts.monthlyMockup.data.datasets[0].backgroundColor = isDark ? '#38BDF8' : '#B768C7';
-    charts.monthlyMockup.data.datasets[1].backgroundColor = isDark ? '#C084FC' : '#6A2B7C';
+    charts.monthlyMockup.data.datasets[0].backgroundColor = isDark ? '#F59E0B' : '#8E0E14';
+    charts.monthlyMockup.data.datasets[1].backgroundColor = isDark ? '#F87171' : '#D97706';
     charts.monthlyMockup.update('none');
   }
 
@@ -4227,7 +4260,7 @@ function refreshChartsForTheme(theme) {
   if (charts.segmentsMockup && charts.segmentsMockup.data.datasets[0]) {
     charts.segmentsMockup.data.datasets[0].backgroundColor = isDark
       ? ['#C084FC', '#818CF8', '#38BDF8', '#F87171']
-      : ['#6A2B7C', '#8E4A9E', '#B768C7', '#CBA3D8'];
+      : ['#8E0E14', '#C31C23', '#D97706', '#E29B9B'];
     charts.segmentsMockup.update('none');
   }
 
@@ -4243,7 +4276,7 @@ function refreshChartsForTheme(theme) {
   if (charts.ltvMockup && charts.ltvMockup.data.datasets[0]) {
     charts.ltvMockup.data.datasets[0].backgroundColor = isDark
       ? ['#C084FC', '#FBBF24', '#818CF8', '#38BDF8']
-      : ['#4B2B5E', '#6A2B7C', '#8E4A9E', '#B768C7'];
+      : ['#1A0C08', '#8E0E14', '#C31C23', '#D97706'];
     charts.ltvMockup.update('none');
   }
 
@@ -4268,8 +4301,66 @@ function refreshChartsForTheme(theme) {
 
   // Pyramide des âges
   if (charts.ageDemographics && charts.ageDemographics.data.datasets.length >= 2) {
-    charts.ageDemographics.data.datasets[0].backgroundColor = isDark ? '#C084FC' : '#4B2B5E';
-    charts.ageDemographics.data.datasets[1].backgroundColor = isDark ? '#38BDF8' : '#B768C7';
+    charts.ageDemographics.data.datasets[0].backgroundColor = isDark ? '#F87171' : '#8E0E14';
+    charts.ageDemographics.data.datasets[1].backgroundColor = isDark ? '#FBBF24' : '#D97706';
     charts.ageDemographics.update('none');
   }
 }
+
+
+// ==========================================================================
+// VISIONNEUSE DU RAPPORT OFFICIEL HEBDOMADAIRE BONDIN (PDF 5 PAGES)
+// ==========================================================================
+window.openOfficialReportModal = function() {
+  const modal = document.getElementById('modal-official-report');
+  if (modal) {
+    modal.style.display = 'flex';
+    window.showReportPage(1);
+    if (window.showToast) {
+      window.showToast('Rapport Officiel ENA w BONDIN ouvert (11 au 18 juin 2026)', 'file-text');
+    }
+  }
+};
+
+window.closeOfficialReportModal = function() {
+  const modal = document.getElementById('modal-official-report');
+  if (modal) modal.style.display = 'none';
+};
+
+window.showReportPage = function(pageNum) {
+  const img = document.getElementById('report-active-img');
+  if (img) {
+    img.style.opacity = '0.3';
+    setTimeout(() => {
+      img.src = `img/rapport_officiel/page_${pageNum}.png`;
+      img.style.opacity = '1';
+    }, 80);
+  }
+  document.querySelectorAll('.report-page-pill').forEach((btn, idx) => {
+    btn.classList.toggle('active', idx + 1 === pageNum);
+  });
+};
+
+window.printOfficialReportPage = function() {
+  const activeImg = document.getElementById('report-active-img')?.src;
+  if (!activeImg) return;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Rapport Hebdomadaire ENA w BONDIN (11 au 18 juin 2026)</title>
+      <style>
+        @page { size: A4 portrait; margin: 0; }
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: #fff; }
+        img { width: 100%; height: auto; display: block; }
+      </style>
+    </head>
+    <body>
+      <img src="${activeImg}" onload="window.print();" />
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+};
