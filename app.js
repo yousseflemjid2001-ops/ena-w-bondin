@@ -689,6 +689,9 @@ function initSubbarTabs() {
           if (!charts.radarBenchmark || !charts.bcgProducts || !charts.ageDemographics) {
             try { renderAdvancedCharts(); } catch(e) {}
           }
+          if (typeof executeGlobalFilters === 'function') {
+            try { executeGlobalFilters(); } catch(e) {}
+          }
         } else if (targetId === 'tab-cagnotte') {
           try {
             renderRewardsCatalog();
@@ -1299,15 +1302,28 @@ function executeGlobalFilters() {
   }
 
   // 6. MOTEUR DE GESTION TEMPORELLE PRÉCISE (7J, 30J, Q3, YTD, TOUT & PERSONNALISÉ)
-  const isPreset7d  = (dStart === '2026-10-14' && dEnd === '2026-10-20');
-  const isPreset30d = (dStart === '2026-09-21' && dEnd === '2026-10-20');
-  const isPreset90d = (dStart === '2026-07-01' && dEnd === '2026-09-30');
-  const isPresetYtd = (dStart === '2026-01-01' && dEnd === '2026-10-20');
-  const isPresetAll = (dStart === '2026-04-01' && dEnd === '2026-10-20');
+  const isPreset7d  = (dStart === '2026-10-14' && dEnd === '2026-10-20') || window.currentPeriodPreset === '7d';
+  const isPreset30d = (dStart === '2026-09-21' && dEnd === '2026-10-20') || window.currentPeriodPreset === '30d';
+  const isPreset90d = (dStart === '2026-07-01' && dEnd === '2026-09-30') || window.currentPeriodPreset === '90d';
+  const isPresetYtd = (dStart === '2026-01-01' && dEnd === '2026-10-20') || window.currentPeriodPreset === 'ytd';
+  const isPresetAll = (dStart === '2026-04-01' && dEnd === '2026-10-20') || window.currentPeriodPreset === 'all';
 
-  // Synchronisation dynamique des boutons de presets
+  const activePresetKey = isPreset7d ? '7d' : (isPreset30d ? '30d' : (isPreset90d ? '90d' : (isPresetYtd ? 'ytd' : (isPresetAll ? 'all' : 'custom'))));
+  window.currentPeriodPreset = activePresetKey;
   if (typeof updatePeriodPresetPills === 'function') {
-    updatePeriodPresetPills(isPreset7d ? '7d' : (isPreset30d ? '30d' : (isPreset90d ? '90d' : (isPresetYtd ? 'ytd' : (isPresetAll ? 'all' : 'custom')))));
+    updatePeriodPresetPills(activePresetKey);
+  }
+
+  let currentPeriodLabel = 'Historique Global Consolidé (Avril - Octobre 2026)';
+  if (activePresetKey === '7d') currentPeriodLabel = '7 Derniers Jours (14 au 20 Octobre 2026)';
+  else if (activePresetKey === '30d') currentPeriodLabel = '30 Derniers Jours (Dernier Mois)';
+  else if (activePresetKey === '90d') currentPeriodLabel = '3ème Trimestre Q3 (Juillet - Septembre 2026)';
+  else if (activePresetKey === 'ytd') currentPeriodLabel = 'Année 2026 en Cours (YTD)';
+  else if (activePresetKey === 'all') currentPeriodLabel = 'Historique Global Consolidé (Avril - Octobre 2026)';
+  else {
+    const sFormatted = dStart ? dStart.split('-').reverse().join('/') : '01/04/2026';
+    const eFormatted = dEnd ? dEnd.split('-').reverse().join('/') : '20/10/2026';
+    currentPeriodLabel = `Période Personnalisée (${sFormatted} au ${eFormatted})`;
   }
 
   let periodScaleFactor = 1.0;
@@ -1492,6 +1508,33 @@ function executeGlobalFilters() {
     ltvData = ltvData.map(v => Math.round(v * (0.85 + Math.random() * 0.3) * 10) / 10);
   }
 
+  // Application combinée du filtre Segment RFM avec la période
+  if (segment === 'champions') {
+    baseCA = Math.round(baseCA * 0.812 * 100) / 100;
+    baseScans = Math.max(10, Math.round(baseScans * 0.81));
+    baseClients = Math.max(5, Math.round(baseClients * 0.407));
+    segLabels = ['Champions VIP (100%)'];
+    segData = [Math.round(baseCA)];
+  } else if (segment === 'loyaux') {
+    baseCA = Math.round(baseCA * 0.098 * 100) / 100;
+    baseScans = Math.max(8, Math.round(baseScans * 0.10));
+    baseClients = Math.max(5, Math.round(baseClients * 0.241));
+    segLabels = ['Consommateurs Réguliers (100%)'];
+    segData = [Math.round(baseCA)];
+  } else if (segment === 'risque') {
+    baseCA = Math.round(baseCA * 0.068 * 100) / 100;
+    baseScans = Math.max(5, Math.round(baseScans * 0.07));
+    baseClients = Math.max(3, Math.round(baseClients * 0.155));
+    segLabels = ['Clients en Risque Churn (100%)'];
+    segData = [Math.round(baseCA)];
+  } else if (segment === 'hibernants') {
+    baseCA = Math.round(baseCA * 0.022 * 100) / 100;
+    baseScans = Math.max(3, Math.round(baseScans * 0.02));
+    baseClients = Math.max(3, Math.round(baseClients * 0.197));
+    segLabels = ['Clients Occasionnels (100%)'];
+    segData = [Math.round(baseCA)];
+  }
+
   // -------------------------------------------------------------
   // ACTUALISATION COMPLÈTE DE TOUS LES COMPOSANTS (SYNCHRONISÉS)
   // -------------------------------------------------------------
@@ -1665,7 +1708,9 @@ function executeGlobalFilters() {
       total_ca_tnd: baseCA,
       total_scans: baseScans,
       clients_actifs: baseClients,
-      panier_moyen_tnd: aov
+      panier_moyen_tnd: aov,
+      period_preset: activePresetKey,
+      period_label: currentPeriodLabel
     });
   }
 
@@ -1682,13 +1727,15 @@ function executeGlobalFilters() {
   if (typeof renderCohortMatrix === 'function') {
     renderCohortMatrix({
       total_ca_tnd: baseCA,
-      clients_actifs: baseClients
+      clients_actifs: baseClients,
+      period_preset: activePresetKey,
+      period_label: currentPeriodLabel
     });
   }
 
   // q. Heatmap temporelle d'affluence (Tab 4)
   if (typeof renderHeatmap === 'function') {
-    renderHeatmap(baseScans);
+    renderHeatmap(baseScans, currentPeriodLabel);
   }
 
   // r. Sparklines Funnel (Mini-courbes Tab 1)
@@ -3690,7 +3737,7 @@ function renderCohortMatrix(liveData) {
   const theadRow = document.getElementById('cohort-thead-row');
   if (!tbody) return;
 
-  const currentPreset = window.currentPeriodPreset || 'all';
+  const currentPreset = liveData?.period_preset || window.currentPeriodPreset || 'all';
   let grain = window.currentCohortGranularity;
   if (!window.userExplicitCohortGrain) {
     if (currentPreset === '7d') grain = 'day';
@@ -3816,9 +3863,15 @@ function renderCohortMatrix(liveData) {
       { mois: "Octobre 2026 (En cours Live)", inscrits: activeInOct, m0: 100, m1: null, m2: null, m3: null, m4: null, m5: null, m6: null }
     ];
 
-    if (currentPreset === '90d') {
+    const sInput = document.getElementById('filter-date-start')?.value;
+    const eInput = document.getElementById('filter-date-end')?.value;
+    const isQ3 = currentPreset === '90d' || (sInput === '2026-07-01' && eInput === '2026-09-30');
+
+    if (isQ3) {
       if (titleEl) titleEl.innerText = "Matrice de Rétention par Cohorte - 3ème Trimestre Q3 (Juillet - Septembre 2026)";
       cohorts = cohorts.filter(c => c.mois.includes('Juillet') || c.mois.includes('Août') || c.mois.includes('Septembre'));
+    } else if (liveData?.period_label && currentPreset !== 'all') {
+      if (titleEl) titleEl.innerText = `Matrice de Rétention par Cohorte (${liveData.period_label})`;
     } else {
       if (titleEl) titleEl.innerText = "Matrice de Rétention par Cohorte Mensuelle (Stickiness Client Consolidé)";
     }
@@ -4119,6 +4172,14 @@ function updateAdvancedCharts(liveData) {
         { x: accScans, y: accCa, r: Math.round(8 * rScale), name: 'Accessoires & Dérivés' }
       ];
     }
+    if (charts.bcgProducts.options && charts.bcgProducts.options.scales) {
+      if (charts.bcgProducts.options.scales.x) {
+        charts.bcgProducts.options.scales.x.suggestedMax = Math.round(cashScans * 1.35);
+      }
+      if (charts.bcgProducts.options.scales.y) {
+        charts.bcgProducts.options.scales.y.suggestedMax = Math.round(starsCa * 1.35);
+      }
+    }
     charts.bcgProducts.update();
   }
 
@@ -4216,23 +4277,11 @@ function updateAllVisualsRealTime(data) {
     clock.classList.add('ticket-slide-enter');
   }
 
-  // 3. Recalculer 100% des visuels principaux (Filtres, KPIs, Donut, Gammes, Top Magasins, Timeline, Segments, Waterfall, LTV, Carte Leaflet, Arbre Décomposition)
+  // 3. Recalculer 100% des visuels selon la période et les filtres actifs
   executeGlobalFilters();
 
-  // 4. Mettre à jour les graphiques avancés (Radar, BCG, Pyramide des Âges)
-  updateAdvancedCharts(data);
-
-  // 5. Mettre à jour le diagramme Sankey de cycle de vie
-  renderSankeyFlow(data);
-
-  // 6. Mettre à jour le tableau live des dernières transactions en caisse
+  // 4. Mettre à jour le tableau live des dernières transactions en caisse
   renderLiveTransactionsTable(data.recent_scans);
-
-  // 7. Mettre à jour la matrice de rétention des cohortes
-  renderCohortMatrix(data);
-
-  // 8. Mettre à jour les tables relationnelles avec montants consolidés
-  renderTables(currentCa);
 
   // 9. Jauges et sparklines
   if (typeof initGauges === 'function') initGauges();
