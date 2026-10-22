@@ -1,17 +1,33 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 12:30:29",
+  "timestamp": "2026-10-22 12:41:13",
   "company_name": "BONDIN",
-  "total_scans": 13274,
-  "total_ca_tnd": 155623.7,
-  "panier_moyen_tnd": 11.724,
-  "total_points_emis": 521911,
+  "total_scans": 13276,
+  "total_ca_tnd": 155631.28,
+  "panier_moyen_tnd": 11.723,
+  "total_points_emis": 521938,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 12:19:31",
-  "dernier_ticket": "bondin6162889",
-  "dernier_magasin": "Cafétéria Le Kef",
+  "dernier_scan": "2026-10-22 12:39:04",
+  "dernier_ticket": "bondin6163339",
+  "dernier_magasin": "Cafétéria Tunis La Marsa",
   "recent_scans": [
+    {
+      "id": 13287,
+      "ticket": "bondin6163339",
+      "montant_tnd": 2.0,
+      "points": 3.8,
+      "date": "2026-10-22 12:39:04",
+      "magasin": "Cafétéria Tunis La Marsa"
+    },
+    {
+      "id": 13286,
+      "ticket": "bondin6163249",
+      "montant_tnd": 5.587,
+      "points": 22.348,
+      "date": "2026-10-22 12:35:22",
+      "magasin": "Succursale Tunis Espagne"
+    },
     {
       "id": 13285,
       "ticket": "bondin6162889",
@@ -35,22 +51,6 @@
       "points": 40.108,
       "date": "2026-10-22 12:08:59",
       "magasin": "Succursale Le Kef"
-    },
-    {
-      "id": 13282,
-      "ticket": "bondin6162348",
-      "montant_tnd": 18.5,
-      "points": 74.0,
-      "date": "2026-10-22 11:56:18",
-      "magasin": "Succursale Gabès Jara"
-    },
-    {
-      "id": 13281,
-      "ticket": "bondin6162342",
-      "montant_tnd": 3.4,
-      "points": 3.8,
-      "date": "2026-10-22 11:56:08",
-      "magasin": "Cafétéria Gafsa Ville"
     }
   ]
 }
