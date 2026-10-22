@@ -838,17 +838,23 @@ header {
   width: 100% !important;
   max-height: 275px !important;
   overflow-y: auto !important;
-  overflow-x: auto !important;
+  overflow-x: hidden !important;
   position: relative !important;
   scrollbar-width: thin;
-  scrollbar-color: rgba(142, 14, 20, 0.35) rgba(0, 0, 0, 0.04);
+  scrollbar-color: rgba(142, 14, 20, 0.35) transparent;
   border-radius: 8px;
   box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.02);
 }
 
 .table-responsive::-webkit-scrollbar {
   width: 6px;
-  height: 6px;
+  height: 0px !important;
+}
+
+.table-responsive::-webkit-scrollbar:horizontal {
+  display: none !important;
+  height: 0px !important;
+  width: 0px !important;
 }
 
 .table-responsive::-webkit-scrollbar-track {
@@ -1870,12 +1876,13 @@ header.header-enterprise {
    ========================================================================== */
 /* Heatmap Table */
 .heatmap-container {
-  overflow-x: auto;
+  overflow-x: hidden !important;
   padding: 14px 18px;
 }
 
 .heatmap-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 4px;
   font-size: 0.74rem;
@@ -1935,7 +1942,41 @@ header.header-enterprise {
 
 /* Cohort Table */
 .cohort-table {
-  font-size: 0.76rem;
+  width: 100% !important;
+  table-layout: fixed !important;
+  font-size: 0.73rem !important;
+  border-collapse: collapse !important;
+}
+
+.cohort-table th,
+.cohort-table td {
+  padding: 8px 3px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.cohort-table th:first-child,
+.cohort-table td:first-child {
+  width: 29% !important;
+  text-align: left !important;
+  padding-left: 8px !important;
+  font-weight: 700 !important;
+}
+
+.cohort-table th:nth-child(2),
+.cohort-table td:nth-child(2) {
+  width: 11% !important;
+  text-align: center !important;
+  font-weight: 600 !important;
+}
+
+.cohort-table th:nth-child(n+3),
+.cohort-table td:nth-child(n+3) {
+  width: 8.5% !important;
+  text-align: center !important;
+  font-size: 0.70rem !important;
 }
 
 .cohort-cell {
@@ -6280,4 +6321,39 @@ header.aurora-header,
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: opacity 0.2s ease;
+}
+
+/* ==========================================================================
+   SUPPRESSION COMPLÈTE ET UNIVERSELLE DU SCROLL HORIZONTAL SUR TOUS LES VISUELS
+   ========================================================================== */
+.visual-card,
+.visual-card *,
+.table-responsive,
+.heatmap-container,
+.chart-container-mockup,
+.visuals-grid-2col,
+.dashboard-tab,
+.visual-header,
+.data-table {
+  max-width: 100% !important;
+}
+
+.visual-card,
+.table-responsive,
+.heatmap-container,
+.visuals-grid-2col,
+.dashboard-tab {
+  overflow-x: hidden !important;
+}
+
+/* Élimination de tout scrollbar horizontal natif dans tous les navigateurs */
+*::-webkit-scrollbar:horizontal,
+.table-responsive::-webkit-scrollbar:horizontal,
+.visual-card::-webkit-scrollbar:horizontal,
+.heatmap-container::-webkit-scrollbar:horizontal {
+  display: none !important;
+  height: 0px !important;
+  width: 0px !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
