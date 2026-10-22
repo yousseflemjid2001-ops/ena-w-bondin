@@ -1,56 +1,63 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 15:59:34",
+  "timestamp": "2026-10-22 16:11:19",
   "company_name": "BONDIN",
-  "total_scans": 13294,
-  "total_ca_tnd": 155863.47,
-  "panier_moyen_tnd": 11.724,
-  "total_points_emis": 522814,
+  "total_scans": 13298,
+  "total_ca_tnd": 155944.47,
+  "panier_moyen_tnd": 11.727,
+  "total_points_emis": 523134,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 15:35:53",
-  "dernier_ticket": "bondin6166477",
-  "dernier_magasin": "Succursale Tunis Liberté",
+  "dernier_scan": "2026-10-22 16:06:29",
+  "dernier_ticket": "bondin6167084",
+  "dernier_client": "abir rahali",
+  "dernier_montant": 10.5,
+  "dernier_magasin": "Succursale Le Kef",
   "recent_scans": [
+    {
+      "id": 13309,
+      "ticket": "bondin6167084",
+      "montant_tnd": 10.5,
+      "points": 42.0,
+      "date": "2026-10-22 16:06:29",
+      "magasin": "Succursale Le Kef",
+      "client": "abir rahali"
+    },
+    {
+      "id": 13308,
+      "ticket": "bondin6167040",
+      "montant_tnd": 37.0,
+      "points": 148.0,
+      "date": "2026-10-22 16:03:30",
+      "magasin": "Succursale Gabès Jara",
+      "client": "hersi alaa"
+    },
+    {
+      "id": 13307,
+      "ticket": "bondin6167020",
+      "montant_tnd": 31.5,
+      "points": 126.0,
+      "date": "2026-10-22 16:02:36",
+      "magasin": "Succursale Le Kef",
+      "client": "Najah Klai"
+    },
+    {
+      "id": 13306,
+      "ticket": "bondin6166961",
+      "montant_tnd": 2.0,
+      "points": 3.8,
+      "date": "2026-10-22 15:59:34",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "wassim ncib"
+    },
     {
       "id": 13305,
       "ticket": "bondin6166477",
       "montant_tnd": 6.426,
       "points": 25.704,
       "date": "2026-10-22 15:35:53",
-      "magasin": "Succursale Tunis Liberté"
-    },
-    {
-      "id": 13304,
-      "ticket": "bondin6166429",
-      "montant_tnd": 2.1,
-      "points": 4.2,
-      "date": "2026-10-22 15:33:11",
-      "magasin": "Cafétéria Le Kef"
-    },
-    {
-      "id": 13303,
-      "ticket": "bondin6165535",
-      "montant_tnd": 1.8,
-      "points": 1.8,
-      "date": "2026-10-22 14:40:44",
-      "magasin": "Cafétéria Tunis France"
-    },
-    {
-      "id": 13302,
-      "ticket": "bondin6165503",
-      "montant_tnd": 4.995,
-      "points": 19.98,
-      "date": "2026-10-22 14:38:36",
-      "magasin": "Succursale Tunis France"
-    },
-    {
-      "id": 13301,
-      "ticket": "bondin6165391",
-      "montant_tnd": 37.0,
-      "points": 148.0,
-      "date": "2026-10-22 14:32:48",
-      "magasin": "Succursale Gabès Jara"
+      "magasin": "Succursale Tunis Liberté",
+      "client": "Maroua SLAMA"
     }
   ]
 }

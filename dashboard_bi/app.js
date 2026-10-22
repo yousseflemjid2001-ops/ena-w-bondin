@@ -2648,7 +2648,7 @@ window.updateMapLiveFeed = function(scan) {
   target.scans += 1;
   target.ca = Math.round((target.ca + addedCa) * 1000) / 1000;
   if (scan && scan.ticket) target.lastTicket = scan.ticket;
-  if (scan && scan.client) target.lastClient = scan.client;
+  target.lastClient = resolveScanClientName(scan ? scan.client : null, target.lastTicket, 0);
   target.lastTime = "À l'instant";
 
   const bubbleEl = document.getElementById(`map-bubble-${target.id}`);
@@ -2778,18 +2778,20 @@ window.selectDecompSegmentMockup = function(idx) {
 // 8. RENDU DES TABLES (GROSSISTES, PARRAINAGES, CHURN, BASKET, CAISSES & FLUX LIVE)
 // ==========================================================================
 const AUTHENTIC_CLIENTS_POOL = [
-  "Karim Ben Salem", "Amira Trabelsi", "Mohamed Youssef Chahed", "Sonia Bouazizi",
-  "Kamel Dridi", "Leila Jaziri", "Nizar Gharbi", "Sarra Mansour",
-  "Walid Khemir", "Mariem Chebbi", "Anis Ben Romdhane", "Olfa Ayari",
-  "Tarak Hammami", "Inès Belhadj", "Mehdi Zaïm", "Fatma Laroussi",
-  "Riadh Karray", "Hajer Ben Amor", "Sofiene Marzouki", "Neila Rekik"
+  "Mondher Trabelsi", "Amira Ben Romdhane", "Sonia Bouazizi", "Yassine Dridi",
+  "Leila Jaziri", "Néji Ben Amor (VIP)", "Amine Bouaziz (Ambassadeur)", "Dorra Rihani",
+  "Slim Abid", "Sarra Mansour", "Kamel Dridi", "Mariem Chebbi",
+  "Walid Khemir", "Nizar Gharbi", "Hichem Miled", "Inès Belhadj",
+  "Zied Ferchichi", "Farah Ben Achour", "Tarek Louati", "Bilel Hammami",
+  "Olfa Mahjoub", "Karim Chaabane", "Anis Dakhli", "Sofiene Marzouki",
+  "Mehdi Zaïm", "Fatma Laroussi", "Riadh Karray", "Hajer Ben Amor"
 ];
 
 function resolveScanClientName(client, ticket, index) {
-  if (client && client !== 'Client Fidélité' && client.trim().length > 2 && !client.includes('Client Fidélité')) {
-    return client;
+  if (client && client !== 'Client Fidélité' && client !== 'Karim Ben Salem' && client.trim().length > 2 && !client.includes('Client Fidélité')) {
+    return client.trim();
   }
-  const key = String(ticket || index || 0);
+  const key = String(ticket || index || Date.now());
   let hash = 0;
   for (let i = 0; i < key.length; i++) hash = ((hash << 5) - hash) + key.charCodeAt(i);
   return AUTHENTIC_CLIENTS_POOL[Math.abs(hash) % AUTHENTIC_CLIENTS_POOL.length];
@@ -2907,14 +2909,20 @@ window.simulateLiveScan = async function() {
     'Cafétéria Gabès Port'
   ];
   const availableClients = [
+    'Mondher Trabelsi',
+    'Amira Ben Romdhane',
+    'Sonia Bouazizi',
+    'Yassine Dridi',
+    'Leila Jaziri',
     'Néji Ben Amor (VIP)',
     'Amine Bouaziz (Ambassadeur)',
-    'Sonia Mansour',
-    'Yassine Dridi',
-    'Karim Ben Salem',
-    'Leila Jaziri',
     'Dorra Rihani',
-    'Slim Abid'
+    'Slim Abid',
+    'Sarra Mansour',
+    'Kamel Dridi',
+    'Mariem Chebbi',
+    'Walid Khemir',
+    'Nizar Gharbi'
   ];
 
   const storeName = availableStores[Math.floor(Math.random() * availableStores.length)];
@@ -2925,7 +2933,7 @@ window.simulateLiveScan = async function() {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-  showToast(`⚡ Envoi scan caisse mobile en direct : ${clientName} (${simulatedAmount.toFixed(3)} DT)...`, 'info');
+  showToast(`⚡ Envoi scan caisse mobile en direct : ${clientName} (+${simulatedAmount.toFixed(3)} DT)...`, 'info');
 
   lastKnownScansCount += 1;
   lastKnownCaAmount = Math.round((lastKnownCaAmount + simulatedAmount) * 100) / 100;
@@ -2948,6 +2956,8 @@ window.simulateLiveScan = async function() {
       clients_actifs: 765,
       dernier_ticket: newTicketNum,
       dernier_magasin: storeName,
+      dernier_client: clientName,
+      dernier_montant: simulatedAmount,
       recent_scans: []
     };
   } else {
@@ -2956,6 +2966,8 @@ window.simulateLiveScan = async function() {
     liveSyncData.dernier_ticket = newTicketNum;
     liveSyncData.dernier_magasin = storeName;
     liveSyncData.dernier_scan = dateStr;
+    liveSyncData.dernier_client = clientName;
+    liveSyncData.dernier_montant = simulatedAmount;
   }
   if (!Array.isArray(liveSyncData.recent_scans)) liveSyncData.recent_scans = [];
   liveSyncData.recent_scans.unshift(newScan);
@@ -4174,10 +4186,31 @@ function updateAllVisualsRealTime(data) {
 
   const clock = document.getElementById('hdr-live-clock');
   if (clock) {
-    const lastClient = data.dernier_client || (data.recent_scans && data.recent_scans[0] && data.recent_scans[0].client) || 'Karim Ben Salem';
-    const lastTicket = data.dernier_ticket ? `<span class="text-amber-300 font-bold">#${data.dernier_ticket}</span>` : '<span class="text-amber-300 font-bold">#sync</span>';
+    const rawTicket = data.dernier_ticket || (data.recent_scans && data.recent_scans[0] && data.recent_scans[0].ticket) || ('bondin' + Math.floor(6140000 + Math.random() * 9000));
+    const rawClient = data.dernier_client || (data.recent_scans && data.recent_scans[0] && data.recent_scans[0].client);
+    const lastClient = resolveScanClientName(rawClient, rawTicket, 0);
+
+    // Extraction précise et dynamique du montant du scan
+    const firstScan = data.recent_scans && data.recent_scans[0];
+    let amtNum = 18.500;
+    if (firstScan && firstScan.montant_tnd != null) {
+      amtNum = Number(firstScan.montant_tnd);
+    } else if (firstScan && firstScan.amount != null) {
+      amtNum = Number(firstScan.amount);
+    } else if (data.dernier_montant != null) {
+      amtNum = Number(data.dernier_montant);
+    } else if (data.panier_moyen_tnd != null) {
+      amtNum = Number(data.panier_moyen_tnd);
+    }
+    if (isNaN(amtNum) || amtNum <= 0) amtNum = 18.500;
+    if (amtNum > 100) amtNum = amtNum / 1000.0;
+    const formattedAmt = amtNum.toFixed(3);
+
+    const ticketClean = String(rawTicket).replace(/^#/, '');
+    const lastTicket = `<span class="text-amber-300 font-bold">#${ticketClean}</span>`;
     const lastStore = data.dernier_magasin ? ` <span class="text-amber-200/90 font-sans">(${data.dernier_magasin})</span>` : '';
-    clock.innerHTML = `Client : <strong class="text-white font-bold">${lastClient}</strong> &bull; Ticket ${lastTicket}${lastStore}`;
+
+    clock.innerHTML = `Client : <strong class="text-white font-bold">${lastClient}</strong> &bull; Montant : <strong class="text-emerald-400 font-bold">+${formattedAmt} DT</strong> &bull; Ticket ${lastTicket}${lastStore}`;
     clock.classList.remove('ticket-slide-enter');
     void clock.offsetWidth;
     clock.classList.add('ticket-slide-enter');

@@ -82,15 +82,18 @@ class handler(BaseHTTPRequestHandler):
 
             # Formatage des montants
             _sample_names = [
-                "Karim Ben Salem", "Amira Trabelsi", "Mohamed Youssef Chahed", "Sonia Bouazizi",
-                "Kamel Dridi", "Leila Jaziri", "Nizar Gharbi", "Sarra Mansour",
-                "Walid Khemir", "Mariem Chebbi"
+                "Mondher Trabelsi", "Amira Ben Romdhane", "Sonia Bouazizi", "Yassine Dridi",
+                "Leila Jaziri", "Néji Ben Amor", "Dorra Rihani", "Slim Abid", "Amine Bouaziz",
+                "Mohamed Youssef Chahed", "Sarra Mansour", "Kamel Dridi", "Mariem Chebbi",
+                "Walid Khemir", "Nizar Gharbi", "Hichem Miled", "Inès Belhadj", "Zied Ferchichi",
+                "Farah Ben Achour", "Tarek Louati", "Bilel Hammami", "Olfa Mahjoub"
             ]
             recent_list = []
             for idx, r in enumerate(recent):
                 amt = float(r[2]) / 1000.0 if float(r[2]) > 100 else float(r[2])
                 raw_c = str(r[6]).strip() if len(r) > 6 and r[6] else ""
-                c_name = raw_c if (raw_c and raw_c != "Client Fidélité" and len(raw_c) > 2) else _sample_names[(abs(hash(str(r[1]))) + idx) % len(_sample_names)]
+                fallback_c = _sample_names[(abs(hash(str(r[1]))) + idx) % len(_sample_names)]
+                c_name = raw_c if (raw_c and raw_c not in ("Client Fidélité", "None", "Karim Ben Salem") and len(raw_c) > 2) else fallback_c
                 recent_list.append({
                     "id": r[0],
                     "ticket": str(r[1]),
@@ -128,7 +131,8 @@ class handler(BaseHTTPRequestHandler):
                     "total_points_emis": int(stats[3]),
                     "clients_actifs": int(stats[4]),
                     "dernier_scan": str(stats[5]),
-                    "dernier_client": recent_list[0]["client"] if recent_list else "Karim Ben Salem",
+                    "dernier_client": recent_list[0]["client"] if recent_list else "Mondher Trabelsi",
+                    "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 18.500,
                     "dernier_ticket": recent_list[0]["ticket"] if recent_list else None,
                     "dernier_magasin": recent_list[0]["magasin"] if recent_list else None
                 },
@@ -148,7 +152,8 @@ class handler(BaseHTTPRequestHandler):
                 "total_points_emis": int(stats[3]),
                 "clients_actifs": int(stats[4]),
                 "dernier_scan": str(stats[5]),
-                "dernier_client": recent_list[0]["client"] if recent_list else "Karim Ben Salem",
+                "dernier_client": recent_list[0]["client"] if recent_list else "Mondher Trabelsi",
+                "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 18.500,
                 "dernier_ticket": recent_list[0]["ticket"] if recent_list else None,
                 "dernier_magasin": recent_list[0]["magasin"] if recent_list else None,
                 "recent_scans": recent_list

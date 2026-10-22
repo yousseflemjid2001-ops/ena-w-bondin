@@ -2015,7 +2015,6 @@ header.header-enterprise {
 /* Suppression de la barre de télémétrie DWH et des badges Live selon demande utilisateur */
 .dwh-telemetry-banner,
 #dwh-telemetry-banner,
-#dwh-live-pill,
 .visual-live-tag {
   display: none !important;
 }

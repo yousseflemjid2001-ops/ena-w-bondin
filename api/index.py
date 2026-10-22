@@ -67,9 +67,11 @@ def get_live_dwh_metrics():
 
         recent_list = []
         _sample_names = [
-            "Karim Ben Salem", "Amira Trabelsi", "Mohamed Youssef Chahed", "Sonia Bouazizi",
-            "Kamel Dridi", "Leila Jaziri", "Nizar Gharbi", "Sarra Mansour",
-            "Walid Khemir", "Mariem Chebbi"
+            "Mondher Trabelsi", "Amira Ben Romdhane", "Sonia Bouazizi", "Yassine Dridi",
+            "Leila Jaziri", "Néji Ben Amor", "Dorra Rihani", "Slim Abid", "Amine Bouaziz",
+            "Mohamed Youssef Chahed", "Sarra Mansour", "Kamel Dridi", "Mariem Chebbi",
+            "Walid Khemir", "Nizar Gharbi", "Hichem Miled", "Inès Belhadj", "Zied Ferchichi",
+            "Farah Ben Achour", "Tarek Louati", "Bilel Hammami", "Olfa Mahjoub"
         ]
         for idx, r in enumerate(recent):
             amt = float(r[2]) / 1000.0 if float(r[2]) > 100 else float(r[2])
@@ -103,6 +105,8 @@ def get_live_dwh_metrics():
             "total_points_emis": int(stats[3]),
             "clients_actifs": int(stats[4]),
             "dernier_scan": str(stats[5]),
+            "dernier_client": recent_list[0]["client"] if recent_list else "Mondher Trabelsi",
+            "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 18.500,
             "dernier_ticket": recent_list[0]["ticket"] if recent_list else "bondin6146362",
             "dernier_magasin": recent_list[0]["magasin"] if recent_list else "Cafétéria Tunis Liberté",
             "recent_scans": recent_list
