@@ -248,7 +248,7 @@ function initLoaderParticles() {
       speedX: (Math.random() - 0.5) * 0.4,
       opacity: Math.random() * 0.75 + 0.25,
       swayOffset: Math.random() * Math.PI * 2,
-      color: Math.random() > 0.4 ? '245, 158, 11' : (Math.random() > 0.5 ? '225, 29, 72' : '254, 240, 138')
+      color: Math.random() > 0.4 ? '217, 119, 6' : (Math.random() > 0.5 ? '142, 14, 20' : '254, 240, 138')
     });
   }
 

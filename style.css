@@ -5343,7 +5343,7 @@ header.aurora-header,
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse 90% 85% at 50% 45%, #1C0F0B 0%, #100806 45%, #060302 100%);
+  background: radial-gradient(ellipse 90% 85% at 50% 45%, #A8101E 0%, #8E0E14 40%, #5C070C 75%, #350306 100%);
   overflow: hidden;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -5375,9 +5375,9 @@ header.aurora-header,
   position: absolute;
   top: 30%;
   left: 30%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(200, 16, 46, 0.28) 0%, rgba(200, 16, 46, 0) 70%);
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(195, 28, 35, 0.45) 0%, rgba(142, 14, 20, 0) 70%);
   border-radius: 50%;
   filter: blur(90px);
   pointer-events: none;
@@ -5389,9 +5389,9 @@ header.aurora-header,
   position: absolute;
   bottom: 25%;
   right: 30%;
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0) 70%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.35) 0%, rgba(217, 119, 6, 0) 70%);
   border-radius: 50%;
   filter: blur(90px);
   pointer-events: none;
@@ -5408,9 +5408,9 @@ header.aurora-header,
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(245, 158, 11, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 158, 11, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 80%);
   pointer-events: none;
@@ -5461,8 +5461,8 @@ header.aurora-header,
 .loader-orbit-ring-outer {
   width: 280px;
   height: 280px;
-  border: 1.5px dashed rgba(245, 158, 11, 0.55);
-  box-shadow: 0 0 35px rgba(245, 158, 11, 0.18), inset 0 0 25px rgba(200, 16, 46, 0.15);
+  border: 1.5px dashed rgba(217, 119, 6, 0.65);
+  box-shadow: 0 0 35px rgba(217, 119, 6, 0.25), inset 0 0 25px rgba(142, 14, 20, 0.3);
   animation: orbitCW 14s linear infinite;
 }
 
@@ -5474,7 +5474,7 @@ header.aurora-header,
   height: 12px;
   border-radius: 50%;
   background: #FFFBEB;
-  box-shadow: 0 0 16px 4px #F59E0B, 0 0 30px #E11D48;
+  box-shadow: 0 0 16px 4px #F59E0B, 0 0 30px #8E0E14;
 }
 
 /* Anneau Intermédiaire Rubis Carmin */
@@ -5482,10 +5482,10 @@ header.aurora-header,
   width: 232px;
   height: 232px;
   border: 2px solid transparent;
-  border-top-color: #E11D48;
-  border-bottom-color: #F59E0B;
-  border-left-color: rgba(200, 16, 46, 0.3);
-  box-shadow: 0 0 28px rgba(225, 29, 72, 0.3);
+  border-top-color: #C31C23;
+  border-bottom-color: #D97706;
+  border-left-color: rgba(142, 14, 20, 0.5);
+  box-shadow: 0 0 28px rgba(195, 28, 35, 0.4);
   animation: orbitCCW 9s linear infinite;
 }
 
@@ -5493,9 +5493,9 @@ header.aurora-header,
 .loader-orbit-ring-inner {
   width: 184px;
   height: 184px;
-  border: 1px solid rgba(254, 240, 138, 0.35);
-  background: radial-gradient(circle, rgba(200, 16, 46, 0.15) 0%, rgba(245, 158, 11, 0.05) 50%, transparent 70%);
-  box-shadow: inset 0 0 30px rgba(200, 16, 46, 0.4), 0 0 45px rgba(245, 158, 11, 0.25);
+  border: 1px solid rgba(254, 240, 138, 0.45);
+  background: radial-gradient(circle, rgba(142, 14, 20, 0.35) 0%, rgba(217, 119, 6, 0.15) 50%, transparent 70%);
+  box-shadow: inset 0 0 30px rgba(142, 14, 20, 0.5), 0 0 45px rgba(217, 119, 6, 0.3);
   animation: innerAuraPulse 2.8s ease-in-out infinite alternate;
 }
 
@@ -5530,7 +5530,7 @@ header.aurora-header,
   100% { transform: translateY(-6px) scale(1.02); }
 }
 
-/* Carte Logo BONDIN Rouge & Or */
+/* Carte Logo BONDIN Blanc Signature & Liseré Or */
 .loader-brand-card {
   position: relative;
   border-radius: 20px;
@@ -5544,24 +5544,24 @@ header.aurora-header,
 .loader-brand-bondin {
   width: 86px;
   height: 86px;
-  background: linear-gradient(145deg, #E11D48 0%, #C00E29 50%, #880519 100%);
-  border: 2px solid rgba(254, 240, 138, 0.9);
+  background: #FFFFFF;
+  border: 2.5px solid rgba(217, 119, 6, 0.85);
   padding: 8px;
-  box-shadow: 0 10px 35px rgba(200, 16, 46, 0.8), 0 0 25px rgba(245, 158, 11, 0.45);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45), 0 0 25px rgba(217, 119, 6, 0.45);
 }
 
 .loader-bondin-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.25));
 }
 
 .loader-alliance-cross {
-  color: rgba(254, 240, 138, 0.75);
+  color: rgba(254, 240, 138, 0.85);
   font-size: 26px;
   font-weight: 300;
-  text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+  text-shadow: 0 0 12px rgba(217, 119, 6, 0.7);
 }
 
 /* Carte Logo FIDNESS */
@@ -5571,7 +5571,8 @@ header.aurora-header,
   background: #FFFFFF;
   border-radius: 18px;
   padding: 8px;
-  box-shadow: 0 8px 30px rgba(86, 100, 245, 0.6);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
 }
 
 .loader-fidness-img {
@@ -5622,10 +5623,10 @@ header.aurora-header,
   font-size: 2.35rem;
   font-weight: 900;
   letter-spacing: 0.14em;
-  background: linear-gradient(135deg, #FFFBEB 0%, #F59E0B 50%, #FDE68A 100%);
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF08A 50%, #F59E0B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 24px rgba(245, 158, 11, 0.5));
+  filter: drop-shadow(0 0 24px rgba(217, 119, 6, 0.6));
 }
 
 .loader-badge-1910 {
@@ -5633,12 +5634,12 @@ header.aurora-header,
   font-size: 0.72rem;
   font-weight: 800;
   color: #FDE68A;
-  background: rgba(245, 158, 11, 0.22);
-  border: 1.5px solid rgba(245, 158, 11, 0.75);
+  background: rgba(217, 119, 6, 0.25);
+  border: 1.5px solid rgba(217, 119, 6, 0.75);
   padding: 3px 10px;
   border-radius: 8px;
   letter-spacing: 0.12em;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 16px rgba(217, 119, 6, 0.4);
 }
 
 .loader-cockpit-subtitle {
@@ -5649,7 +5650,7 @@ header.aurora-header,
   color: #FFFFFF;
   text-transform: uppercase;
   margin-top: 4px;
-  text-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
+  text-shadow: 0 0 18px rgba(217, 119, 6, 0.6);
 }
 
 .loader-alliance-sub {
@@ -5657,20 +5658,20 @@ header.aurora-header,
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.16em;
-  color: rgba(216, 180, 254, 0.75);
+  color: rgba(254, 240, 138, 0.85);
   margin-top: 2px;
 }
 
-/* Moteur de Télémétrie */
+/* Moteur de Télémétrie - Carte Blanc Perle & Or */
 .loader-telemetry-container {
   width: 100%;
   max-width: 480px;
   margin-top: 26px;
-  background: rgba(18, 7, 27, 0.88);
-  border: 1px solid rgba(168, 85, 247, 0.38);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(217, 119, 6, 0.45);
   border-radius: 20px;
   padding: 18px 22px;
-  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(217, 119, 6, 0.25);
   backdrop-filter: blur(18px);
 }
 
@@ -5705,9 +5706,9 @@ header.aurora-header,
 
 .loader-status-msg {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: rgba(243, 232, 255, 0.95);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #111827;
   letter-spacing: 0.02em;
 }
 
@@ -5715,33 +5716,33 @@ header.aurora-header,
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.95rem;
   font-weight: 800;
-  color: #FDE68A;
-  background: rgba(245, 158, 11, 0.16);
-  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #8E0E14;
+  background: rgba(142, 14, 20, 0.08);
+  border: 1.5px solid rgba(142, 14, 20, 0.3);
   padding: 2px 10px;
   border-radius: 8px;
   min-width: 52px;
   text-align: center;
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 0 12px rgba(142, 14, 20, 0.15);
 }
 
 .loader-progress-track {
   width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 9px;
+  background: #E5E7EB;
   border-radius: 999px;
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .loader-progress-fill {
   height: 100%;
   width: 0%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #C8102E 0%, #E11D48 35%, #F59E0B 75%, #10B981 100%);
+  background: linear-gradient(90deg, #8E0E14 0%, #C31C23 40%, #D97706 75%, #10B981 100%);
   position: relative;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.85), 0 0 35px rgba(225, 29, 72, 0.65);
+  box-shadow: 0 0 20px rgba(142, 14, 20, 0.8), 0 0 25px rgba(217, 119, 6, 0.6);
   transition: width 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -5753,7 +5754,7 @@ header.aurora-header,
   width: 14px;
   background: #FFFBEB;
   border-radius: 999px;
-  box-shadow: 0 0 16px 4px #FFFFFF, 0 0 26px #F59E0B;
+  box-shadow: 0 0 16px 4px #FFFFFF, 0 0 26px #D97706;
 }
 
 .loader-pills-row {
@@ -5764,7 +5765,7 @@ header.aurora-header,
   gap: 6px;
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid #E5E7EB;
 }
 
 .loader-pill-item {
@@ -5772,13 +5773,13 @@ header.aurora-header,
   align-items: center;
   gap: 5px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.66rem;
-  font-weight: 600;
-  color: rgba(216, 180, 254, 0.85);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 3px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #374151;
+  background: #F3F4F6;
+  padding: 4px 9px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
 }
 
 /* Warp Exit Transition */
