@@ -488,7 +488,7 @@ function initLoginParticles() {
       speedX: (Math.random() - 0.5) * 0.25,
       swayOffset: Math.random() * Math.PI * 2,
       opacity: Math.random() * 0.65 + 0.15,
-      color: Math.random() > 0.45 ? '245, 158, 11' : (Math.random() > 0.5 ? '225, 29, 72' : '192, 38, 211')
+      color: Math.random() > 0.4 ? '245, 158, 11' : (Math.random() > 0.5 ? '217, 119, 6' : '200, 16, 46')
     });
   }
   
@@ -2144,13 +2144,13 @@ function renderLiveTransactionsTable(scans) {
   const list = (Array.isArray(scans) && scans.length > 0) ? scans : (liveSyncData?.recent_scans || defaultScans);
 
   tbody.innerHTML = list.map((s, idx) => `
-    <tr class="${idx === 0 ? 'bg-emerald-500/10 border-l-4 border-emerald-500 font-semibold' : ''}">
-      <td><code class="font-mono font-bold text-amber-300">#${s.ticket}</code></td>
-      <td><strong>${s.magasin}</strong></td>
-      <td><strong class="text-emerald-400 font-mono text-[13px]">${Number(s.montant_tnd).toFixed(3)} TND</strong></td>
-      <td><span class="tag-badge gold">+${Math.round(s.points)} pts</span></td>
-      <td><code class="text-xs text-purple-200">${s.date}</code></td>
-      <td><span class="tag-badge green flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>✓ Enregistré DWH</span></td>
+    <tr class="${idx === 0 ? 'bg-emerald-500/15 border-l-4 border-emerald-500 font-semibold' : ''}">
+      <td><span class="inline-block px-2.5 py-1 rounded-md font-mono font-bold text-xs text-amber-900 dark:text-amber-300 bg-amber-500/15 border border-amber-500/40">#${s.ticket}</span></td>
+      <td><strong class="text-slate-900 dark:text-slate-100">${s.magasin}</strong></td>
+      <td><strong class="text-emerald-700 dark:text-emerald-400 font-mono text-[13px] font-bold">${Number(s.montant_tnd).toFixed(3)} TND</strong></td>
+      <td><span class="tag-badge gold font-bold">+${Math.round(s.points)} pts</span></td>
+      <td><span class="font-mono text-xs font-medium text-slate-700 dark:text-slate-300">${s.date}</span></td>
+      <td><span class="tag-badge green flex items-center gap-1 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>✓ Enregistré DWH</span></td>
     </tr>
   `).join('');
 

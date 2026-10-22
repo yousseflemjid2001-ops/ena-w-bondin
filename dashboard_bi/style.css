@@ -4362,13 +4362,13 @@ header.aurora-header,
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #0A030F;
+  background-color: #0B0706;
   background-image: 
-    radial-gradient(circle at 18% 20%, rgba(184, 29, 109, 0.22) 0%, transparent 45%),
-    radial-gradient(circle at 82% 80%, rgba(147, 51, 234, 0.25) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 60%),
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    radial-gradient(circle at 18% 18%, rgba(200, 16, 46, 0.28) 0%, transparent 45%),
+    radial-gradient(circle at 82% 82%, rgba(245, 158, 11, 0.22) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.08) 0%, transparent 65%),
+    linear-gradient(rgba(245, 158, 11, 0.032) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.032) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 100% 100%, 42px 42px, 42px 42px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -4400,7 +4400,7 @@ header.aurora-header,
   height: 550px;
   top: -150px;
   left: 8%;
-  background: radial-gradient(circle, rgba(200, 16, 46, 0.45) 0%, rgba(245, 158, 11, 0.18) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(200, 16, 46, 0.45) 0%, rgba(245, 158, 11, 0.22) 50%, transparent 70%);
   animation: floatOrb1 16s ease-in-out infinite alternate;
 }
 
@@ -4409,7 +4409,7 @@ header.aurora-header,
   height: 520px;
   bottom: -150px;
   right: 8%;
-  background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, rgba(86, 100, 245, 0.22) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.38) 0%, rgba(180, 83, 9, 0.24) 50%, transparent 70%);
   animation: floatOrb2 18s ease-in-out infinite alternate;
 }
 
@@ -4418,7 +4418,7 @@ header.aurora-header,
   height: 380px;
   top: 45%;
   left: 55%;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.24) 0%, transparent 70%);
   filter: blur(55px);
   animation: floatOrb1 14s ease-in-out infinite alternate;
 }
@@ -4449,13 +4449,14 @@ header.aurora-header,
 .login-portal-frame {
   display: grid;
   grid-template-columns: 1.05fr 1fr;
-  background: rgba(22, 9, 28, 0.92);
-  border: 1.5px solid rgba(255, 215, 0, 0.3);
+  background: rgba(18, 11, 9, 0.94);
+  border: 1.5px solid rgba(245, 158, 11, 0.35);
   border-radius: 28px;
   box-shadow: 
     0 40px 120px -20px rgba(0, 0, 0, 0.95),
-    0 0 60px rgba(200, 16, 46, 0.2),
-    inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    0 0 60px rgba(245, 158, 11, 0.2),
+    0 0 35px rgba(200, 16, 46, 0.2),
+    inset 0 1px 2px rgba(254, 240, 138, 0.25);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   overflow: hidden;
@@ -4468,7 +4469,7 @@ header.aurora-header,
   }
   .login-showcase-panel {
     border-right: none !important;
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1.5px solid rgba(245, 158, 11, 0.2);
   }
 }
 
@@ -4478,7 +4479,7 @@ header.aurora-header,
   left: 0;
   right: 0;
   height: 3.5px;
-  background: linear-gradient(90deg, #C8102E, #F59E0B, #10B981, #C084FC, #C8102E);
+  background: linear-gradient(90deg, #C8102E, #F59E0B, #FEF08A, #D97706, #C8102E);
   background-size: 300% 100%;
   animation: gradientFlow 4s linear infinite;
   z-index: 10;
@@ -4489,8 +4490,8 @@ header.aurora-header,
    ======================================================== */
 .login-showcase-panel {
   padding: 38px 36px;
-  background: linear-gradient(155deg, rgba(48, 12, 32, 0.92) 0%, rgba(22, 7, 28, 0.96) 100%);
-  border-right: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(155deg, rgba(35, 18, 14, 0.94) 0%, rgba(18, 9, 7, 0.97) 100%);
+  border-right: 1.5px solid rgba(245, 158, 11, 0.2);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -4570,23 +4571,23 @@ header.aurora-header,
   letter-spacing: 3px;
   margin: 0;
   line-height: 1;
-  background: linear-gradient(135deg, #FFFFFF 0%, #FDE68A 50%, #E9D5FF 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #FEF08A 50%, #F59E0B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 25px rgba(212, 175, 55, 0.35);
+  text-shadow: 0 4px 25px rgba(245, 158, 11, 0.35);
 }
 
 .login-hero-subtitle {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #E9D5FF;
+  color: #FDE68A;
   margin: 0;
   letter-spacing: 0.3px;
 }
 
 .login-hero-desc {
   font-size: 0.8rem;
-  color: rgba(233, 213, 255, 0.7);
+  color: rgba(254, 243, 199, 0.75);
   line-height: 1.5;
   margin: 0;
 }
@@ -4654,11 +4655,11 @@ header.aurora-header,
 .telemetry-badge-purple {
   font-size: 0.65rem;
   font-weight: 800;
-  color: #C084FC;
-  background: rgba(168, 85, 247, 0.15);
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.15);
   padding: 1px 6px;
   border-radius: 6px;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .telemetry-badge-emerald {
@@ -4673,7 +4674,7 @@ header.aurora-header,
 
 .telemetry-lbl {
   font-size: 0.72rem;
-  color: rgba(233, 213, 255, 0.65);
+  color: rgba(254, 243, 199, 0.7);
   font-weight: 500;
 }
 
@@ -4697,7 +4698,7 @@ header.aurora-header,
   flex-direction: column;
   justify-content: space-between;
   gap: 18px;
-  background: rgba(20, 8, 25, 0.95);
+  background: rgba(18, 11, 9, 0.97);
 }
 
 .login-terminal-header {
@@ -4728,7 +4729,7 @@ header.aurora-header,
 
 .login-terminal-desc {
   font-size: 0.78rem;
-  color: rgba(233, 213, 255, 0.7);
+  color: rgba(254, 243, 199, 0.75);
   margin: 0;
 }
 
@@ -4739,7 +4740,7 @@ header.aurora-header,
   gap: 6px;
   font-size: 0.74rem;
   font-weight: 800;
-  color: #E9D5FF;
+  color: #FEF08A;
   text-transform: uppercase;
   letter-spacing: 0.4px;
   margin-bottom: 7px;
@@ -4773,7 +4774,7 @@ header.aurora-header,
 
 .login-profile-card.active {
   border-color: #F59E0B;
-  background: linear-gradient(135deg, rgba(200, 16, 46, 0.3) 0%, rgba(147, 51, 234, 0.35) 100%);
+  background: linear-gradient(135deg, rgba(200, 16, 46, 0.35) 0%, rgba(217, 119, 6, 0.35) 100%);
   box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
 }
 
@@ -4795,10 +4796,10 @@ header.aurora-header,
   background: linear-gradient(135deg, #F59E0B, #C8102E);
 }
 .profile-card-badge.mkt {
-  background: linear-gradient(135deg, #EC4899, #9333EA);
+  background: linear-gradient(135deg, #D97706, #B45309);
 }
 .profile-card-badge.b2b {
-  background: linear-gradient(135deg, #3B82F6, #6366F1);
+  background: linear-gradient(135deg, #B91C1C, #991B1B);
 }
 .profile-card-badge.tun {
   background: linear-gradient(135deg, #10B981, #0D9488);
@@ -4820,7 +4821,7 @@ header.aurora-header,
 
 .profile-card-sub {
   font-size: 0.65rem;
-  color: rgba(233, 213, 255, 0.65);
+  color: rgba(254, 243, 199, 0.65);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -4859,7 +4860,7 @@ header.aurora-header,
   gap: 6px;
   font-size: 0.76rem;
   font-weight: 700;
-  color: #E9D5FF;
+  color: #FEF08A;
   letter-spacing: 0.2px;
 }
 
@@ -4885,7 +4886,7 @@ header.aurora-header,
   left: 12px;
   width: 16px;
   height: 16px;
-  color: #A855F7;
+  color: #F59E0B;
   pointer-events: none;
   transition: color 0.2s ease;
 }
@@ -4894,8 +4895,8 @@ header.aurora-header,
   width: 100%;
   padding: 10px 12px 10px 38px;
   border-radius: 12px;
-  background: rgba(14, 5, 18, 0.75);
-  border: 1.5px solid rgba(168, 85, 247, 0.25);
+  background: rgba(26, 17, 14, 0.85);
+  border: 1.5px solid rgba(245, 158, 11, 0.3);
   color: #FFFFFF;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.88rem;
@@ -4906,19 +4907,19 @@ header.aurora-header,
 }
 
 .login-input:focus {
-  background: rgba(18, 7, 22, 0.9);
+  background: rgba(35, 22, 18, 0.95);
   border-color: #F59E0B;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), inset 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .login-input-wrap:focus-within .login-input-icon {
-  color: #F59E0B;
+  color: #FEF08A;
 }
 
 .login-select {
   appearance: none;
   cursor: pointer;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C084FC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F59E0B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 14px;
@@ -4926,7 +4927,7 @@ header.aurora-header,
 }
 
 .login-select option {
-  background: #1a0820;
+  background: #180d09;
   color: #FFFFFF;
   padding: 8px;
 }
@@ -4949,8 +4950,8 @@ header.aurora-header,
   margin-top: 4px;
   padding: 12px 20px;
   border-radius: 14px;
-  border: 1.5px solid rgba(253, 230, 138, 0.45);
-  background: linear-gradient(135deg, #C8102E 0%, #A21035 30%, #7E22CE 70%, #9333EA 100%);
+  border: 1.5px solid rgba(253, 230, 138, 0.6);
+  background: linear-gradient(135deg, #C8102E 0%, #B91C1C 35%, #D97706 70%, #F59E0B 100%);
   color: #FFFFFF;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.92rem;
@@ -4959,7 +4960,7 @@ header.aurora-header,
   cursor: pointer;
   box-shadow: 
     0 10px 30px -5px rgba(200, 16, 46, 0.6),
-    0 0 25px rgba(147, 51, 234, 0.45);
+    0 0 25px rgba(245, 158, 11, 0.45);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
@@ -4970,8 +4971,8 @@ header.aurora-header,
   transform: translateY(-2px);
   box-shadow: 
     0 14px 35px -5px rgba(200, 16, 46, 0.75),
-    0 0 35px rgba(192, 38, 211, 0.65);
-  border-color: #FDE68A;
+    0 0 35px rgba(245, 158, 11, 0.65);
+  border-color: #FEF08A;
 }
 
 .login-submit-btn:active {
@@ -5001,7 +5002,7 @@ header.aurora-header,
   justify-content: center;
   gap: 8px;
   font-size: 0.68rem;
-  color: rgba(233, 213, 255, 0.6);
+  color: rgba(254, 243, 199, 0.65);
   margin-top: 2px;
 }
 
@@ -5103,7 +5104,7 @@ header.aurora-header,
 }
 
 .login-portal-card-luxury:hover {
-  box-shadow: 0 0 90px rgba(147, 51, 234, 0.35), 0 0 35px rgba(225, 29, 72, 0.25) !important;
+  box-shadow: 0 0 90px rgba(245, 158, 11, 0.35), 0 0 35px rgba(200, 16, 46, 0.25) !important;
   transform: translateY(-2px);
 }
 
@@ -5113,13 +5114,13 @@ header.aurora-header,
 
 .login-metric-luxury:hover {
   transform: translateY(-3px) scale(1.01);
-  border-color: rgba(192, 38, 211, 0.55) !important;
-  box-shadow: 0 12px 36px rgba(147, 51, 234, 0.28) !important;
+  border-color: rgba(245, 158, 11, 0.55) !important;
+  box-shadow: 0 12px 36px rgba(245, 158, 11, 0.25) !important;
 }
 
 .login-input-luxury:focus {
-  border-color: rgba(217, 70, 239, 0.85) !important;
-  box-shadow: 0 0 25px rgba(192, 38, 211, 0.38), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+  border-color: rgba(245, 158, 11, 0.85) !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.38), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
 }
 
 
@@ -5162,7 +5163,7 @@ header.aurora-header,
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse 90% 85% at 50% 45%, #230621 0%, #120317 45%, #06010a 100%);
+  background: radial-gradient(ellipse 90% 85% at 50% 45%, #1C0F0B 0%, #100806 45%, #060302 100%);
   overflow: hidden;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -5227,8 +5228,8 @@ header.aurora-header,
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(147, 51, 234, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(147, 51, 234, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(245, 158, 11, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 80%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 80%);
