@@ -4455,14 +4455,14 @@ header.aurora-header,
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #0B0706;
+  background-color: #8E0E14;
   background-image: 
-    radial-gradient(circle at 18% 18%, rgba(200, 16, 46, 0.28) 0%, transparent 45%),
-    radial-gradient(circle at 82% 82%, rgba(245, 158, 11, 0.22) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.08) 0%, transparent 65%),
-    linear-gradient(rgba(245, 158, 11, 0.032) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 158, 11, 0.032) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 42px 42px, 42px 42px;
+    radial-gradient(circle at 50% 25%, #A8101E 0%, #8E0E14 45%, #6E080E 80%, #4D0509 100%),
+    radial-gradient(circle at 85% 85%, rgba(217, 119, 6, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 15% 15%, rgba(254, 240, 138, 0.15) 0%, transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
@@ -5194,26 +5194,41 @@ header.aurora-header,
 .login-portal-card-luxury {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
   position: relative;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1.5px solid rgba(217, 119, 6, 0.4) !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45), 0 0 40px rgba(217, 119, 6, 0.25) !important;
+  color: #111827 !important;
 }
 
 .login-portal-card-luxury:hover {
-  box-shadow: 0 0 90px rgba(245, 158, 11, 0.35), 0 0 35px rgba(200, 16, 46, 0.25) !important;
+  box-shadow: 0 30px 85px rgba(0, 0, 0, 0.55), 0 0 50px rgba(217, 119, 6, 0.35) !important;
   transform: translateY(-2px);
 }
 
 .login-metric-luxury {
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+  color: #111827 !important;
 }
 
 .login-metric-luxury:hover {
   transform: translateY(-3px) scale(1.01);
-  border-color: rgba(245, 158, 11, 0.55) !important;
-  box-shadow: 0 12px 36px rgba(245, 158, 11, 0.25) !important;
+  border-color: rgba(217, 119, 6, 0.6) !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+.login-input-luxury {
+  background: #F9FAFB !important;
+  border: 1.5px solid #E5E7EB !important;
+  color: #111827 !important;
 }
 
 .login-input-luxury:focus {
-  border-color: rgba(245, 158, 11, 0.85) !important;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.38), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+  background: #FFFFFF !important;
+  border-color: #8E0E14 !important;
+  box-shadow: 0 0 0 3px rgba(142, 14, 20, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
 
