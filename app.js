@@ -686,22 +686,9 @@ function initSubbarTabs() {
         
         // Rendu immédiat selon l'onglet activé
         if (targetId === 'tab-avancees') {
-          // Détruire les charts existants (créés avec canvas caché = taille 0)
-          try {
-            if (charts.radarBenchmark) { charts.radarBenchmark.destroy(); charts.radarBenchmark = null; }
-            if (charts.bcgProducts)    { charts.bcgProducts.destroy();    charts.bcgProducts = null; }
-            if (charts.ageDemographics){ charts.ageDemographics.destroy(); charts.ageDemographics = null; }
-          } catch(e) {}
-          // Laisser le DOM afficher le tab avant de rendre les charts
-          setTimeout(() => {
-            try {
-              renderHeatmap(window.lastScanCount);
-              renderCohortMatrix(window.lastLiveData || liveSyncData);
-              renderAdvancedCharts();
-            } catch(e) {
-              console.warn('Init tab-avancees visuals:', e);
-            }
-          }, 80);
+          if (!charts.radarBenchmark || !charts.bcgProducts || !charts.ageDemographics) {
+            try { renderAdvancedCharts(); } catch(e) {}
+          }
         } else if (targetId === 'tab-cagnotte') {
           try {
             renderRewardsCatalog();
@@ -709,10 +696,13 @@ function initSubbarTabs() {
           } catch(e) {}
         }
         
-        // Redimensionnement et actualisation automatique de Leaflet et Chart.js
+        // Redimensionnement et actualisation automatique de Leaflet, Chart.js et Filtres
         setTimeout(() => {
           if (mapInstance && typeof mapInstance.invalidateSize === 'function') {
             try { mapInstance.invalidateSize(); } catch(e) {}
+          }
+          if (typeof executeGlobalFilters === 'function') {
+            try { executeGlobalFilters(); } catch(e) {}
           }
           Object.values(charts).forEach(c => {
             if (c) {
@@ -720,11 +710,8 @@ function initSubbarTabs() {
               if (typeof c.update === 'function') try { c.update('none'); } catch(e) {}
             }
           });
-          if (typeof executeGlobalFilters === 'function') {
-            try { executeGlobalFilters(); } catch(e) {}
-          }
           updateNavSlidingIndicator(btn);
-        }, 80);
+        }, 50);
       }
     });
   });
@@ -3595,15 +3582,30 @@ window.filterRewardsTier = function(tier, btn) {
 // 14. NOUVELLES VISUALISATIONS AVANCÉES (TAB 4)
 // Heatmap Temporelle, Cohortes, Radar Benchmark, Matrice BCG & Démographie
 // ==========================================================================
-function renderHeatmap(customScansTotal) {
+function renderHeatmap(customScansTotal, customPeriodLabel) {
   const container = document.getElementById('heatmap-time-container');
   if (!container) return;
 
+  const scans = customScansTotal ? Math.round(customScansTotal) : 13097;
+  const scale = customScansTotal ? Math.max(0.015, customScansTotal / 13097) : 1.0;
+
+  const titleEl = document.getElementById('heatmap-title-text');
+  if (titleEl) {
+    let pLabel = customPeriodLabel;
+    if (!pLabel) {
+      const p = window.currentPeriodPreset || 'all';
+      if (p === '7d') pLabel = '7 Derniers Jours (14 au 20 Octobre 2026)';
+      else if (p === '30d') pLabel = '30 Derniers Jours (Dernier Mois)';
+      else if (p === '90d') pLabel = '3ème Trimestre Q3';
+      else if (p === 'ytd') pLabel = 'Année 2026 en Cours (YTD)';
+      else pLabel = 'Historique Global Consolidé (Avril - Octobre 2026)';
+    }
+    titleEl.innerHTML = `Heatmap Temporelle : Affluence des Scans QR (${scans.toLocaleString('fr-FR')} scans &bull; ${pLabel})`;
+  }
+
   const slots = ["07h - 10h (Matin)", "10h - 12h (Midi)", "12h - 14h (Déjeuner)", "14h - 17h (Après-midi)", "17h - 20h (Sortie Bureau)", "20h - 23h (Soirée)"];
   
-  const scale = customScansTotal ? Math.max(0.02, customScansTotal / 13097) : 1.0;
-
-  // DONNÉES RÉELLES DWH (Fait_Ventes_Fidelite.csv - Exactement 13 069 scans consolidés Live)
+  // DONNÉES RÉELLES DWH (Fait_Ventes_Fidelite.csv)
   const daysData = [
     { day: "Lundi", values: [663, 366, 212, 216, 233, 144].map(v => Math.max(1, Math.round(v * scale))) },
     { day: "Mardi", values: [654, 382, 235, 190, 251, 205].map(v => Math.max(1, Math.round(v * scale))) },
@@ -3649,8 +3651,10 @@ function renderHeatmap(customScansTotal) {
 }
 
 window.currentCohortGranularity = 'month';
+window.userExplicitCohortGrain = false;
 
 window.setCohortGranularity = function(grain) {
+  window.userExplicitCohortGrain = true;
   window.currentCohortGranularity = grain;
   document.querySelectorAll('.btn-cohort-grain').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-grain') === grain);
@@ -3674,11 +3678,23 @@ function renderCohortMatrix(liveData) {
   const theadRow = document.getElementById('cohort-thead-row');
   if (!tbody) return;
 
+  const currentPreset = window.currentPeriodPreset || 'all';
+  let grain = window.currentCohortGranularity;
+  if (!window.userExplicitCohortGrain) {
+    if (currentPreset === '7d') grain = 'day';
+    else if (currentPreset === '30d') grain = 'week';
+    else grain = 'month';
+    window.currentCohortGranularity = grain;
+    document.querySelectorAll('.btn-cohort-grain').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-grain') === grain);
+    });
+  } else {
+    grain = window.currentCohortGranularity || 'month';
+  }
+
   const activeInOct = (liveData || window.lastLiveData)?.clients_actifs 
     ? Math.round((liveData || window.lastLiveData).clients_actifs * 0.14) 
     : 105;
-
-  const grain = window.currentCohortGranularity || 'month';
 
   function getCohortClass(val) {
     if (val === null || val === undefined) return "";
@@ -3689,7 +3705,9 @@ function renderCohortMatrix(liveData) {
     return "cohort-cell cohort-40";
   }
 
+  const titleEl = document.getElementById('cohort-matrix-title');
   if (grain === 'week') {
+    if (titleEl) titleEl.innerText = "Matrice de Rétention Hebdomadaire (Cohortes 4 Semaines • 30 Derniers Jours)";
     if (theadRow) {
       theadRow.innerHTML = `
         <th>Semaine Cohorte</th>
@@ -3725,6 +3743,7 @@ function renderCohortMatrix(liveData) {
       </tr>
     `).join('');
   } else if (grain === 'day') {
+    if (titleEl) titleEl.innerText = "Matrice de Rétention Journalière (Cohortes des 7 Derniers Jours : 14-20 Octobre)";
     if (theadRow) {
       theadRow.innerHTML = `
         <th>Date Inscription</th>
@@ -3739,14 +3758,13 @@ function renderCohortMatrix(liveData) {
       `;
     }
     const dayCohorts = [
+      { label: "14 Octobre 2026", inscrits: 21, m0: 100, m1: 85.7, m2: 81.0, m3: 76.2, m4: 71.4, m5: 66.7, m6: 61.9 },
       { label: "15 Octobre 2026", inscrits: 24, m0: 100, m1: 87.5, m2: 79.2, m3: 75.0, m4: 70.8, m5: 66.7, m6: 62.5 },
       { label: "16 Octobre 2026", inscrits: 28, m0: 100, m1: 89.3, m2: 82.1, m3: 78.6, m4: 71.4, m5: 67.9, m6: null },
       { label: "17 Octobre 2026", inscrits: 31, m0: 100, m1: 90.3, m2: 83.9, m3: 77.4, m4: 74.2, m5: null, m6: null },
       { label: "18 Octobre 2026", inscrits: 26, m0: 100, m1: 88.5, m2: 80.8, m3: 76.9, m4: null, m5: null, m6: null },
       { label: "19 Octobre 2026", inscrits: 29, m0: 100, m1: 93.1, m2: 86.2, m3: null, m4: null, m5: null, m6: null },
-      { label: "20 Octobre 2026", inscrits: 34, m0: 100, m1: 91.2, m2: null, m3: null, m4: null, m5: null, m6: null },
-      { label: "21 Octobre 2026", inscrits: 37, m0: 100, m1: 89.2, m2: null, m3: null, m4: null, m5: null, m6: null },
-      { label: "22 Octobre 2026 (Live)", inscrits: 22, m0: 100, m1: null, m2: null, m3: null, m4: null, m5: null, m6: null }
+      { label: "20 Octobre 2026", inscrits: 34, m0: 100, m1: 91.2, m2: null, m3: null, m4: null, m5: null, m6: null }
     ];
     tbody.innerHTML = dayCohorts.map(c => `
       <tr>
@@ -3762,7 +3780,7 @@ function renderCohortMatrix(liveData) {
       </tr>
     `).join('');
   } else {
-    // Mode Mensuel par défaut
+    // Mode Mensuel
     if (theadRow) {
       theadRow.innerHTML = `
         <th>Cohorte</th>
@@ -3776,7 +3794,7 @@ function renderCohortMatrix(liveData) {
         <th>Mois +6</th>
       `;
     }
-    const cohorts = [
+    let cohorts = [
       { mois: "Avril 2026 (Pilote)", inscrits: 13, m0: 100, m1: 100, m2: 100, m3: 100, m4: 100, m5: 100, m6: 100 },
       { mois: "Mai 2026 (Pilote)", inscrits: 17, m0: 100, m1: 85.7, m2: 71.4, m3: 66.7, m4: 66.7, m5: 100, m6: null },
       { mois: "Juin 2026 (Lancement App)", inscrits: 1456, m0: 100, m1: 86.4, m2: 73.7, m3: 70.9, m4: 58.8, m5: null, m6: null },
@@ -3785,6 +3803,13 @@ function renderCohortMatrix(liveData) {
       { mois: "Septembre 2026", inscrits: 274, m0: 100, m1: 70.2, m2: null, m3: null, m4: null, m5: null, m6: null },
       { mois: "Octobre 2026 (En cours Live)", inscrits: activeInOct, m0: 100, m1: null, m2: null, m3: null, m4: null, m5: null, m6: null }
     ];
+
+    if (currentPreset === '90d') {
+      if (titleEl) titleEl.innerText = "Matrice de Rétention par Cohorte - 3ème Trimestre Q3 (Juillet - Septembre 2026)";
+      cohorts = cohorts.filter(c => c.mois.includes('Juillet') || c.mois.includes('Août') || c.mois.includes('Septembre'));
+    } else {
+      if (titleEl) titleEl.innerText = "Matrice de Rétention par Cohorte Mensuelle (Stickiness Client Consolidé)";
+    }
 
     tbody.innerHTML = cohorts.map(c => `
       <tr>
@@ -4011,57 +4036,100 @@ function updateAdvancedCharts(liveData) {
   const currentAov = Number(liveData?.panier_moyen_tnd || (currentCa / currentScans) || 11.753);
   const activeClients = Number(liveData?.clients_actifs || 765);
 
+  // Instancier si pas encore créés
+  if (!charts.radarBenchmark || !charts.bcgProducts || !charts.ageDemographics) {
+    if (typeof renderAdvancedCharts === 'function') {
+      try { renderAdvancedCharts(); } catch(e) {}
+    }
+  }
+
   // 1. Radar Benchmark (Succursales B2B vs Cafétérias B2C)
   if (charts.radarBenchmark) {
     const succCa = Math.round(currentCa * 0.722);
     const cafeCa = Math.round(currentCa * 0.278);
     const succScans = Math.round(currentScans * 0.224);
     const cafeScans = Math.round(currentScans * 0.776);
-    
+    const succClients = Math.max(8, Math.round(activeClients * 0.47));
+    const cafeClients = Math.max(10, Math.round(activeClients * 0.53));
+
     charts.radarBenchmark.data.labels = [
       `Panier Moyen (${(currentAov * 3.2).toFixed(1)} DT vs ${(currentAov * 0.36).toFixed(1)} DT)`,
       `Volume Scans (${succScans.toLocaleString('fr-FR')} vs ${cafeScans.toLocaleString('fr-FR')})`,
       `CA Généré (${succCa.toLocaleString('fr-FR')} DT vs ${cafeCa.toLocaleString('fr-FR')} DT)`,
       `Points Émis (${Math.round(currentCa * 2.85).toLocaleString('fr-FR')} pts vs ${Math.round(currentCa * 0.48).toLocaleString('fr-FR')} pts)`,
       'Fréquence Récurrente (5,5 vs 16,9)',
-      `Base Clients (${Math.round(activeClients * 0.47)} vs ${Math.round(activeClients * 0.53)})`
+      `Base Clients (${succClients} vs ${cafeClients})`
+    ];
+
+    const maxScans = Math.max(succScans, cafeScans, 1);
+    const maxCa = Math.max(succCa, cafeCa, 1);
+    charts.radarBenchmark.data.datasets[0].data = [
+      100,
+      Math.round((succScans / maxScans) * 100),
+      Math.round((succCa / maxCa) * 100),
+      100,
+      33,
+      Math.round((succClients / (succClients + cafeClients)) * 100)
+    ];
+    charts.radarBenchmark.data.datasets[1].data = [
+      11,
+      Math.round((cafeScans / maxScans) * 100),
+      Math.round((cafeCa / maxCa) * 100),
+      17,
+      100,
+      Math.round((cafeClients / (succClients + cafeClients)) * 100)
     ];
     charts.radarBenchmark.update();
   }
 
   // 2. Matrice BCG Dynamique
   if (charts.bcgProducts) {
-    const starsScans = Math.round(currentScans * 0.088);
-    const starsCa = Math.round(currentCa * 0.245);
-    const cashScans = Math.round(currentScans * 0.395);
-    const cashCa = Math.round(currentCa * 0.141);
+    const starsScans = Math.max(5, Math.round(currentScans * 0.088));
+    const starsCa = Math.max(50, Math.round(currentCa * 0.245));
+    const cashScans = Math.max(15, Math.round(currentScans * 0.395));
+    const cashCa = Math.max(40, Math.round(currentCa * 0.141));
+    const dilemScans = Math.max(8, Math.round(currentScans * 0.071));
+    const dilemCa = Math.max(25, Math.round(currentCa * 0.042));
+    const accScans = Math.max(3, Math.round(currentScans * 0.029));
+    const accCa = Math.max(10, Math.round(currentCa * 0.021));
+
+    const rScale = Math.max(0.6, Math.min(1.4, Math.sqrt(currentCa / 153316)));
 
     charts.bcgProducts.data.datasets[0].data = [
-      { x: starsScans, y: starsCa, r: 18, name: 'Grains & Moulu Torréfié (B2B)' }
+      { x: starsScans, y: starsCa, r: Math.round(18 * rScale), name: 'Grains & Moulu Torréfié (B2B)' }
     ];
     charts.bcgProducts.data.datasets[1].data = [
-      { x: cashScans, y: cashCa, r: 13, name: 'Espresso & Boissons Chaudes (B2C)' }
+      { x: cashScans, y: cashCa, r: Math.round(13 * rScale), name: 'Espresso & Boissons Chaudes (B2C)' }
     ];
+    if (charts.bcgProducts.data.datasets[2]) {
+      charts.bcgProducts.data.datasets[2].data = [
+        { x: dilemScans, y: dilemCa, r: Math.round(9 * rScale), name: 'Confiseries & Pâtisseries' },
+        { x: accScans, y: accCa, r: Math.round(8 * rScale), name: 'Accessoires & Dérivés' }
+      ];
+    }
     charts.bcgProducts.update();
   }
 
   // 3. Pyramide des Âges & Démographie
   if (charts.ageDemographics) {
-    const factor = activeClients / 759;
+    const factor = Math.max(0.06, activeClients / 759);
     charts.ageDemographics.data.datasets[0].data = [
-      Math.round(12 * factor),
-      Math.round(88 * factor),
-      Math.round(140 * factor),
-      Math.round(79 * factor),
-      Math.round(30 * factor)
+      Math.max(1, Math.round(12 * factor)),
+      Math.max(3, Math.round(88 * factor)),
+      Math.max(5, Math.round(140 * factor)),
+      Math.max(3, Math.round(79 * factor)),
+      Math.max(1, Math.round(30 * factor))
     ];
     charts.ageDemographics.data.datasets[1].data = [
-      Math.round(34 * factor),
-      Math.round(112 * factor),
-      Math.round(95 * factor),
-      Math.round(48 * factor),
-      Math.round(22 * factor)
+      Math.max(2, Math.round(34 * factor)),
+      Math.max(4, Math.round(112 * factor)),
+      Math.max(4, Math.round(95 * factor)),
+      Math.max(2, Math.round(48 * factor)),
+      Math.max(1, Math.round(22 * factor))
     ];
+    if (charts.ageDemographics.options?.scales?.x?.title) {
+      charts.ageDemographics.options.scales.x.title.text = `Nombre de clients actifs (Total ${activeClients.toLocaleString('fr-FR')})`;
+    }
     charts.ageDemographics.update();
   }
 }
