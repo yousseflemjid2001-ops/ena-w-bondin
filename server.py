@@ -175,6 +175,7 @@ def api_live():
             "clients_actifs": int(stats[4]),
             "dernier_scan": str(stats[5]),
             "dernier_ticket": recent_list[0]["ticket"] if recent_list else None,
+            "dernier_client": recent_list[0]["client"] if recent_list else "Karim Ben Salem",
             "dernier_magasin": recent_list[0]["magasin"] if recent_list else None,
             "recent_scans": recent_list
         }

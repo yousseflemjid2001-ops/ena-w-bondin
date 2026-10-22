@@ -3678,9 +3678,10 @@ function updateAllVisualsRealTime(data) {
 
   const clock = document.getElementById('hdr-live-clock');
   if (clock) {
-    const lastTicket = data.dernier_ticket ? `<span class="text-amber-300 font-semibold">#${data.dernier_ticket}</span>` : '<span class="text-amber-300 font-semibold">#sync</span>';
-    const lastStore = data.dernier_magasin ? ` <span class="text-purple-300 font-sans">(${data.dernier_magasin})</span>` : '';
-    clock.innerHTML = `Ticket ${lastTicket}${lastStore}`;
+    const lastClient = data.dernier_client || (data.recent_scans && data.recent_scans[0] && data.recent_scans[0].client) || 'Karim Ben Salem';
+    const lastTicket = data.dernier_ticket ? `<span class="text-amber-300 font-bold">#${data.dernier_ticket}</span>` : '<span class="text-amber-300 font-bold">#sync</span>';
+    const lastStore = data.dernier_magasin ? ` <span class="text-amber-200/90 font-sans">(${data.dernier_magasin})</span>` : '';
+    clock.innerHTML = `Client : <strong class="text-white font-bold">${lastClient}</strong> &bull; Ticket ${lastTicket}${lastStore}`;
     clock.classList.remove('ticket-slide-enter');
     void clock.offsetWidth;
     clock.classList.add('ticket-slide-enter');

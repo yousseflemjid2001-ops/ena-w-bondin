@@ -156,14 +156,8 @@
         <h2 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 tracking-tight leading-[1.15] mb-3">
           ENA w BONDIN
         </h2>
-        <div class="text-base sm:text-lg text-rose-100/90 font-medium mb-6">
+        <div class="text-base sm:text-lg text-rose-100/90 font-medium mb-8">
           Programme de fidélité &bull; Direction Générale
-        </div>
-
-        <!-- Capsule Période Officielle (Style Page 1 Rapport) -->
-        <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/40 bg-black/25 text-white text-xs sm:text-sm font-semibold mb-8 backdrop-blur-md shadow-sm self-start">
-          <i data-lucide="calendar" class="w-4 h-4 text-amber-300"></i>
-          <span>11 au 18 juin 2026 &bull; Live Data Warehouse</span>
         </div>
 
         <!-- Métrique 1 : TOTAL ACHATS & CA FIDÉLITÉ (Style Synthèse Page 2 Rapport) -->
@@ -361,10 +355,10 @@
     <!-- PIED DE PAGE LOGIN (STYLE OFFICIEL RAPPORT) -->
     <div class="w-full flex flex-col sm:flex-row items-center justify-between px-6 sm:px-12 py-5 text-xs text-rose-100/80 border-t border-white/10 relative z-20 bg-black/25 backdrop-blur-md">
       <div>
-        <strong class="text-white font-bold">CAFÉS BONDIN</strong> &mdash; Fondé en 1910 en Tunisie &bull; Programme de fidélité
+        <strong class="text-white font-bold">&copy; 2026 Powered by FIDNESS</strong> &mdash; CAFÉS BONDIN &bull; Programme de fidélité
       </div>
       <div class="flex items-center gap-3 font-mono text-[11px] sm:text-xs mt-2 sm:mt-0 text-amber-200/90">
-        <span>ENA w BONDIN &bull; Rapport hebdomadaire &bull; 11 au 18 juin 2026</span>
+        <span>ENA w BONDIN &bull; Plateforme Décisionnelle BI &amp; IA</span>
         <span class="text-white/30">|</span>
         <span>Portail Décisionnel Direction Générale</span>
       </div>
@@ -581,10 +575,10 @@
 
             <span class="text-purple-400/60 font-bold">&bull;</span>
 
-            <!-- Flux de Tickets Dynamique avec transition fluide -->
-            <div class="overflow-hidden h-6 flex items-center min-w-[260px] sm:min-w-[300px]">
-              <div id="hdr-live-clock" class="text-xs sm:text-sm text-purple-200/90 font-mono truncate ticket-slide-enter">
-                Ticket <span class="text-amber-300 font-bold">#bondin6135748</span> <span class="text-purple-300 font-sans">(Cafétéria Tunis La Marsa)</span>
+            <!-- Flux de Tickets Dynamique avec transition fluide et Nom du Client -->
+            <div class="overflow-hidden h-6 flex items-center min-w-[340px] sm:min-w-[440px]">
+              <div id="hdr-live-clock" class="text-xs sm:text-sm text-rose-100 font-mono truncate ticket-slide-enter">
+                Client : <strong class="text-white font-bold">Karim Ben Salem</strong> &bull; Ticket <span class="text-amber-300 font-bold">#bondin6164087</span> <span class="text-amber-200/90 font-sans">(Succursale Tunis Menzah VI)</span>
               </div>
             </div>
 
@@ -628,13 +622,6 @@
           <button id="btn-export-pdf" onclick="window.openExportModal()" class="btn-shine group relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#8E0E14] via-[#B91C1C] to-[#C31C23] hover:from-[#73080E] hover:to-[#991B1B] border border-amber-400/40 shadow-[0_4px_20px_rgba(142,14,20,0.45)] hover:shadow-[0_6px_26px_rgba(195,28,35,0.6)] transition-all duration-300 active:scale-95">
             <i data-lucide="download" class="w-4 h-4 text-amber-200 transition-transform duration-300 group-hover:translate-y-0.5"></i>
             <span>Exporter PDF</span>
-          </button>
-
-          <!-- Bouton Vue Rapport Officiel BONDIN (Format PDF 11-18 Juin) -->
-          <button id="btn-view-official-report" onclick="window.openOfficialReportModal()" class="group relative inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-amber-200 bg-black/45 hover:bg-black/65 border border-amber-400/50 hover:border-amber-300 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.2)] transition-all duration-300 active:scale-95" title="Consulter le rapport officiel hebdomadaire ENA w BONDIN en haute résolution (5 pages)">
-            <i data-lucide="file-text" class="w-4 h-4 text-amber-300"></i>
-            <span class="hidden md:inline">Rapport Hebdo</span>
-            <span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-extrabold bg-amber-500/25 text-amber-300 border border-amber-400/30">PDF</span>
           </button>
 
           <!-- Séparateur vertical -->
@@ -1608,11 +1595,11 @@
   <!-- 5. FOOTER & NOTIFICATIONS TOAST                          -->
   <!-- ======================================================== -->
   <footer>
-    <div>
-      <strong>ENA W BONDIN &times; FIDNESS</strong> &bull; Plateforme Décisionnelle BI & IA Client &bull; Conforme Cahier des Charges 2026
+    <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; letter-spacing: 0.3px;">
+      &copy; 2026 &bull; Powered by FIDNESS &bull; ENA W BONDIN &bull; Plateforme Décisionnelle BI &amp; IA Client
     </div>
-    <div>
-      Dernière synchronisation DWH : <strong id="footer-sync-time">20/10/2026 à 15:30</strong> &bull; Source : <code>data_dwh/</code> (9 tables consolidées &bull; PostgreSQL Live)
+    <div style="opacity: 0.85;">
+      Dernière synchronisation DWH : <strong id="footer-sync-time">22/10/2026 à 13:30</strong> &bull; Source : <code>data_dwh/</code> (9 tables consolidées &bull; PostgreSQL Live)
     </div>
   </footer>
 

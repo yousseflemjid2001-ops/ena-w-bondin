@@ -1,56 +1,56 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 12:41:13",
+  "timestamp": "2026-10-22 13:39:35",
   "company_name": "BONDIN",
-  "total_scans": 13276,
-  "total_ca_tnd": 155631.28,
-  "panier_moyen_tnd": 11.723,
-  "total_points_emis": 521938,
+  "total_scans": 13286,
+  "total_ca_tnd": 155785.46,
+  "panier_moyen_tnd": 11.726,
+  "total_points_emis": 522540,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 12:39:04",
-  "dernier_ticket": "bondin6163339",
-  "dernier_magasin": "Cafétéria Tunis La Marsa",
+  "dernier_scan": "2026-10-22 13:33:19",
+  "dernier_ticket": "bondin6164363",
+  "dernier_magasin": "Succursale Tunis Menzah VI",
   "recent_scans": [
     {
-      "id": 13287,
-      "ticket": "bondin6163339",
-      "montant_tnd": 2.0,
-      "points": 3.8,
-      "date": "2026-10-22 12:39:04",
-      "magasin": "Cafétéria Tunis La Marsa"
+      "id": 13297,
+      "ticket": "bondin6164363",
+      "montant_tnd": 9.99,
+      "points": 39.96,
+      "date": "2026-10-22 13:33:19",
+      "magasin": "Succursale Tunis Menzah VI"
     },
     {
-      "id": 13286,
-      "ticket": "bondin6163249",
-      "montant_tnd": 5.587,
-      "points": 22.348,
-      "date": "2026-10-22 12:35:22",
+      "id": 13296,
+      "ticket": "bondin6164087",
+      "montant_tnd": 7.4,
+      "points": 29.6,
+      "date": "2026-10-22 13:17:39",
+      "magasin": "Succursale Tunis Menzah VI"
+    },
+    {
+      "id": 13295,
+      "ticket": "bondin6163997",
+      "montant_tnd": 15.036,
+      "points": 60.144,
+      "date": "2026-10-22 13:12:33",
       "magasin": "Succursale Tunis Espagne"
     },
     {
-      "id": 13285,
-      "ticket": "bondin6162889",
-      "montant_tnd": 3.8,
-      "points": 4.2,
-      "date": "2026-10-22 12:19:31",
-      "magasin": "Cafétéria Le Kef"
+      "id": 13294,
+      "ticket": "bondin6163903",
+      "montant_tnd": 19.95,
+      "points": 79.8,
+      "date": "2026-10-22 13:07:21",
+      "magasin": "Succursale Tunis Liberté"
     },
     {
-      "id": 13284,
-      "ticket": "bondin6162711",
-      "montant_tnd": 22.2,
-      "points": 88.8,
-      "date": "2026-10-22 12:11:37",
-      "magasin": "Succursale Sfax Chaker"
-    },
-    {
-      "id": 13283,
-      "ticket": "bondin6162653",
-      "montant_tnd": 10.027,
-      "points": 40.108,
-      "date": "2026-10-22 12:08:59",
-      "magasin": "Succursale Le Kef"
+      "id": 13293,
+      "ticket": "bondin6163726",
+      "montant_tnd": 2.0,
+      "points": 4.0,
+      "date": "2026-10-22 12:58:49",
+      "magasin": "Cafétéria Tunis MENZAH VI"
     }
   ]
 }

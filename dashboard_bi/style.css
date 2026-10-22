@@ -2678,45 +2678,45 @@ header.header-enterprise {
 }
 
 [data-theme="dark"] {
-  /* MODE SOMBRE OBSIDIAN & ROYAL VELVET (BOARD-READY) */
-  --bg-app: #0D0814;
-  --bg-card: #160E21;
-  --bg-card-subtle: #1E132D;
-  --bg-header: #100817;
+  /* MODE SOMBRE OFFICIEL CAFÉS BONDIN (ESPRESSO NOBLE, ROUGE CARMIN & OR IMPÉRIAL) */
+  --bg-app: #100604;
+  --bg-card: #1A0A07;
+  --bg-card-subtle: #25100B;
+  --bg-header: #8E0E14;
   
-  --border-light: #2D1A3E;
-  --border-card: #311D44;
-  --border-focus: #C084FC;
+  --border-light: rgba(217, 119, 6, 0.25);
+  --border-card: rgba(217, 119, 6, 0.35);
+  --border-focus: #D97706;
   
-  --text-main: #F4F0FB;
-  --text-muted: #D5C9E8;
-  --text-sub: #A393BA;
+  --text-main: #FFFDFB;
+  --text-muted: #E5D5D0;
+  --text-sub: #FBBF24;
   
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.45);
-  --shadow-card-hover: 0 8px 30px rgba(106, 43, 124, 0.35);
+  --shadow-card: 0 6px 24px rgba(0, 0, 0, 0.65);
+  --shadow-card-hover: 0 10px 32px rgba(142, 14, 20, 0.4);
   
   /* Tabs Dark */
-  --pill-bg: #1B1028;
-  --pill-border: #351F4E;
-  --pill-text-inactive: #D0C3E6;
+  --pill-bg: #1A0A07;
+  --pill-border: rgba(217, 119, 6, 0.35);
+  --pill-text-inactive: #E5D5D0;
   --pill-text-active: #FFFFFF;
-  --pill-active-bg: #351C52;
+  --pill-active-bg: #8E0E14;
   
   /* Filter bar Dark */
-  --filter-bg: #160E21;
-  --filter-border: #351F4E;
-  --filter-label: #D5C9E8;
-  --filter-input-bg: #201330;
+  --filter-bg: #1A0A07;
+  --filter-border: rgba(217, 119, 6, 0.35);
+  --filter-label: #FBBF24;
+  --filter-input-bg: #25100B;
   --filter-input-text: #FFFFFF;
   
   /* Tables Dark */
-  --table-header-bg: #1E132D;
-  --table-border: #2E1B42;
-  --table-stripe: #191026;
+  --table-header-bg: #25100B;
+  --table-border: rgba(217, 119, 6, 0.25);
+  --table-stripe: #150705;
   
   /* Charts Dark */
   --chart-grid-color: rgba(255, 255, 255, 0.08);
-  --chart-text-color: #E6DCF5;
+  --chart-text-color: #FDE68A;
 }
 
 /* Application globale des variables */
@@ -2915,25 +2915,26 @@ body {
   animation: tabEntranceRise 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
-/* THEME SOMBRE : NAVIGATION HAUT DE GAMME VIOLET OBSIDIENNE & NÉON GLOW */
+/* THEME SOMBRE : NAVIGATION HAUT DE GAMME CAFÉS BONDIN (ESPRESSO & ROUGE CARMIN) */
 [data-theme="dark"] .segmented-pills-group {
-  background: rgba(22, 12, 33, 0.85) !important;
-  border: 1px solid rgba(192, 132, 252, 0.25) !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+  background: rgba(26, 10, 7, 0.95) !important;
+  border: 1.5px solid rgba(217, 119, 6, 0.35) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 6px 20px rgba(0, 0, 0, 0.55) !important;
 }
 
 [data-theme="dark"] .nav-sliding-indicator {
-  background: linear-gradient(135deg, #581C6E 0%, #3B124B 100%) !important;
-  border: 1.5px solid #C084FC !important;
-  box-shadow: 0 0 18px rgba(192, 132, 252, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+  background: linear-gradient(135deg, #8E0E14 0%, #C31C23 100%) !important;
+  border: 1.5px solid #D97706 !important;
+  box-shadow: 0 0 18px rgba(142, 14, 20, 0.65), 0 0 10px rgba(217, 119, 6, 0.35) !important;
 }
 
 [data-theme="dark"] .pill-tab-btn {
-  color: #D3C3E8 !important;
+  color: #E5D5D0 !important;
 }
 
 [data-theme="dark"] .pill-tab-btn:hover {
   color: #FFFFFF !important;
+  background: rgba(142, 14, 20, 0.15) !important;
 }
 
 [data-theme="dark"] .pill-tab-btn.active {
@@ -2941,80 +2942,85 @@ body {
 }
 
 [data-theme="dark"] .pill-tab-btn .tab-badge {
-  background: rgba(192, 132, 252, 0.16) !important;
-  color: #E9D5FF !important;
+  background: rgba(217, 119, 6, 0.2) !important;
+  color: #FDE68A !important;
+  border: 1px solid rgba(217, 119, 6, 0.35) !important;
 }
 
 [data-theme="dark"] .pill-tab-btn:hover .tab-badge {
-  background: rgba(192, 132, 252, 0.3) !important;
+  background: rgba(217, 119, 6, 0.35) !important;
   color: #FFFFFF !important;
 }
 
 [data-theme="dark"] .pill-tab-btn.active .tab-badge {
-  background: #D4AF37 !important;
-  color: #1A0D26 !important;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6) !important;
+  background: #D97706 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 12px rgba(217, 119, 6, 0.6) !important;
   font-weight: 900 !important;
 }
 
 [data-theme="dark"] .pill-tab-btn.active .tab-icon {
   stroke: #FFFFFF !important;
-  filter: drop-shadow(0 0 6px rgba(192, 132, 252, 0.8)) !important;
+  filter: drop-shadow(0 0 6px rgba(217, 119, 6, 0.8)) !important;
 }
 
 /* BARRE DE FILTRES - CHARTE OFFICIELLE CAFÉS BONDIN (BLANC ÉPURÉ, ROUGE CARMIN & OR) */
+/* BARRE DE FILTRES - CHARTE OFFICIELLE CAFÉS BONDIN (GRAND FORMAT EXÉCUTIF, HAUTE LISIBILITÉ) */
 .pro-filter-bar {
   background: #FFFFFF !important;
-  border: 1.5px solid rgba(217, 119, 6, 0.3) !important;
-  border-radius: 16px !important;
-  padding: 8px 14px !important;
-  margin-bottom: 18px !important;
+  border: 1.5px solid rgba(217, 119, 6, 0.35) !important;
+  border-radius: 20px !important;
+  padding: 12px 18px !important;
+  margin-bottom: 22px !important;
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 12px !important;
   width: 100% !important;
   box-sizing: border-box !important;
-  box-shadow: 0 6px 24px rgba(142, 14, 20, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 0 8px 30px rgba(142, 14, 20, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   overflow-x: auto !important;
+  min-height: 64px !important;
 }
 
 [data-theme="dark"] .pro-filter-bar {
-  background: #1A0C08 !important;
-  border: 1.5px solid rgba(217, 119, 6, 0.4) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+  background: #1A0A07 !important;
+  border: 1.5px solid rgba(217, 119, 6, 0.45) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65) !important;
 }
 
 [data-theme="light"] .pro-filter-bar {
   background: #FFFFFF !important;
-  border: 1.5px solid rgba(217, 119, 6, 0.3) !important;
-  box-shadow: 0 6px 24px rgba(142, 14, 20, 0.06) !important;
+  border: 1.5px solid rgba(217, 119, 6, 0.35) !important;
+  box-shadow: 0 8px 30px rgba(142, 14, 20, 0.08) !important;
 }
 
 .pro-filter-badge-cluster {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 12px !important;
   flex-shrink: 0 !important;
-  padding: 4px 6px !important;
+  padding: 4px 8px !important;
 }
 
 .pro-filter-icon-box {
-  width: 38px !important;
-  height: 38px !important;
-  border-radius: 12px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px !important;
   background: linear-gradient(135deg, #8E0E14 0%, #C31C23 100%) !important;
   border: 1.5px solid rgba(217, 119, 6, 0.5) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 4px 14px rgba(142, 14, 20, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(142, 14, 20, 0.4) !important;
   flex-shrink: 0 !important;
   color: #FFFFFF !important;
 }
 
 .pro-filter-icon-box svg {
+  width: 20px !important;
+  height: 20px !important;
   color: #FFFFFF !important;
   stroke: #FFFFFF !important;
 }
@@ -3022,14 +3028,14 @@ body {
 .pro-filter-badge-text {
   display: flex !important;
   flex-direction: column !important;
-  gap: 1px !important;
+  gap: 2px !important;
 }
 
 .pro-filter-badge-title {
-  font-size: 0.76rem !important;
+  font-size: 0.86rem !important;
   font-weight: 900 !important;
   color: #8E0E14 !important;
-  letter-spacing: 0.8px !important;
+  letter-spacing: 0.9px !important;
   line-height: 1.1 !important;
 }
 
@@ -3042,25 +3048,25 @@ body {
 }
 
 .pro-filter-badge-count {
-  font-size: 0.68rem !important;
+  font-size: 0.74rem !important;
   font-weight: 800 !important;
   color: #D97706 !important;
-  letter-spacing: 0.6px !important;
+  letter-spacing: 0.7px !important;
   line-height: 1 !important;
   text-transform: uppercase !important;
   font-family: 'JetBrains Mono', monospace !important;
 }
 
 .pro-filter-divider {
-  width: 1px !important;
-  height: 32px !important;
+  width: 1.5px !important;
+  height: 40px !important;
   background: rgba(217, 119, 6, 0.25) !important;
   flex-shrink: 0 !important;
-  margin: 0 2px !important;
+  margin: 0 4px !important;
 }
 
 [data-theme="dark"] .pro-filter-divider {
-  background: rgba(217, 119, 6, 0.3) !important;
+  background: rgba(217, 119, 6, 0.35) !important;
 }
 
 [data-theme="light"] .pro-filter-divider {
@@ -3070,31 +3076,33 @@ body {
 .pro-filter-group {
   display: flex !important;
   flex-direction: column !important;
-  gap: 4px !important;
-  padding: 4px 6px !important;
+  gap: 6px !important;
+  padding: 4px 8px !important;
   flex: 1 1 0 !important;
-  min-width: 150px !important;
+  min-width: 165px !important;
   box-sizing: border-box !important;
 }
 
 .pro-filter-group.period-preset-filter-group {
-  min-width: 330px !important;
-  flex: 1.8 1 0 !important;
+  min-width: 360px !important;
+  flex: 1.9 1 0 !important;
 }
 
 .pro-period-pill-group {
   display: flex !important;
   align-items: center !important;
-  gap: 4px !important;
+  gap: 5px !important;
   background: #F9FAFB !important;
   border: 1.5px solid #E5E7EB !important;
-  border-radius: 12px !important;
-  padding: 3px 4px !important;
+  border-radius: 14px !important;
+  padding: 4px 5px !important;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  height: 42px !important;
+  box-sizing: border-box !important;
 }
 
 [data-theme="dark"] .pro-period-pill-group {
-  background: #2A140E !important;
+  background: #25100B !important;
   border-color: rgba(217, 119, 6, 0.35) !important;
 }
 
@@ -3107,12 +3115,12 @@ body {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 4px !important;
-  padding: 5px 9px !important;
-  border-radius: 8px !important;
+  gap: 5px !important;
+  padding: 6px 12px !important;
+  border-radius: 10px !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  font-size: 0.72rem !important;
-  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
   color: #4B5563 !important;
   background: transparent !important;
   border: 1px solid transparent !important;
@@ -3120,6 +3128,7 @@ body {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   white-space: nowrap !important;
   user-select: none !important;
+  height: 32px !important;
 }
 
 [data-theme="dark"] .preset-period-btn {
@@ -3145,16 +3154,16 @@ body {
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #8E0E14 0%, #C31C23 100%) !important;
   border-color: #8E0E14 !important;
-  box-shadow: 0 2px 10px rgba(142, 14, 20, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 3px 12px rgba(142, 14, 20, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
   transform: translateY(-0.5px) !important;
 }
 
 .preset-period-btn .period-dot {
-  width: 6px !important;
-  height: 6px !important;
+  width: 7px !important;
+  height: 7px !important;
   border-radius: 50% !important;
   background: #10B981 !important;
-  box-shadow: 0 0 6px #10B981 !important;
+  box-shadow: 0 0 8px #10B981 !important;
   display: inline-block !important;
   animation: pulsePeriodDot 2s infinite ease-in-out !important;
 }
@@ -3165,53 +3174,53 @@ body {
 }
 
 .pro-filter-group.date-filter-group {
-  min-width: 235px !important;
-  flex: 1.4 1 0 !important;
+  min-width: 255px !important;
+  flex: 1.5 1 0 !important;
 }
 
 .pro-filter-label {
-  font-size: 0.68rem !important;
+  font-size: 0.78rem !important;
   font-weight: 800 !important;
-  color: #6B7280 !important;
+  color: #4B5563 !important;
   text-transform: uppercase !important;
-  letter-spacing: 0.4px !important;
+  letter-spacing: 0.5px !important;
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 7px !important;
   white-space: nowrap !important;
 }
 
 [data-theme="dark"] .pro-filter-label {
-  color: #D97706 !important;
+  color: #FBBF24 !important;
 }
 
 [data-theme="light"] .pro-filter-label {
-  color: #6B7280 !important;
+  color: #4B5563 !important;
 }
 
 .pro-filter-select {
   width: 100% !important;
   background-color: #F9FAFB !important;
   color: #111827 !important;
-  border: 1.5px solid #E5E7EB !important;
-  border-radius: 10px !important;
-  padding: 6px 28px 6px 10px !important;
-  font-size: 0.78rem !important;
+  border: 1.5px solid #D1D5DB !important;
+  border-radius: 12px !important;
+  padding: 8px 34px 8px 12px !important;
+  font-size: 0.86rem !important;
   font-weight: 700 !important;
   outline: none !important;
   cursor: pointer !important;
-  height: 34px !important;
+  height: 42px !important;
   appearance: none !important;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E0E14' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E0E14' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
   background-repeat: no-repeat !important;
-  background-position: right 8px center !important;
-  background-size: 14px !important;
+  background-position: right 10px center !important;
+  background-size: 16px !important;
   transition: all 0.2s ease !important;
   box-sizing: border-box !important;
 }
 
 [data-theme="dark"] .pro-filter-select {
-  background-color: #2A140E !important;
+  background-color: #25100B !important;
   color: #FFFFFF !important;
   border-color: rgba(217, 119, 6, 0.4) !important;
 }
@@ -3219,7 +3228,7 @@ body {
 [data-theme="light"] .pro-filter-select {
   background-color: #F9FAFB !important;
   color: #111827 !important;
-  border-color: #E5E7EB !important;
+  border-color: #D1D5DB !important;
 }
 
 .pro-filter-select:hover {
@@ -3229,7 +3238,7 @@ body {
 
 .pro-filter-select:focus {
   border-color: #8E0E14 !important;
-  box-shadow: 0 0 0 3px rgba(142, 14, 20, 0.15) !important;
+  box-shadow: 0 0 0 3px rgba(142, 14, 20, 0.18) !important;
   background-color: #FFFFFF !important;
 }
 
@@ -3238,22 +3247,22 @@ body {
   align-items: center !important;
   justify-content: space-between !important;
   background-color: #F9FAFB !important;
-  border: 1.5px solid #E5E7EB !important;
-  border-radius: 10px !important;
-  padding: 2px 8px !important;
-  height: 34px !important;
+  border: 1.5px solid #D1D5DB !important;
+  border-radius: 12px !important;
+  padding: 4px 10px !important;
+  height: 42px !important;
   box-sizing: border-box !important;
   width: 100% !important;
 }
 
 [data-theme="dark"] .pro-date-picker-wrap {
-  background-color: #2A140E !important;
+  background-color: #25100B !important;
   border-color: rgba(217, 119, 6, 0.4) !important;
 }
 
 [data-theme="light"] .pro-date-picker-wrap {
   background-color: #F9FAFB !important;
-  border-color: #E5E7EB !important;
+  border-color: #D1D5DB !important;
 }
 
 .pro-date-picker-wrap:hover {
@@ -3265,10 +3274,10 @@ body {
   border: none !important;
   color: #111827 !important;
   font-family: 'JetBrains Mono', monospace !important;
-  font-size: 0.74rem !important;
-  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
   padding: 0 2px !important;
-  width: 102px !important;
+  width: 112px !important;
   outline: none !important;
   cursor: pointer !important;
 }
@@ -3283,7 +3292,7 @@ body {
 
 .pro-date-field::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  opacity: 0.65;
+  opacity: 0.75;
   filter: none;
   padding: 0;
   margin: 0;
@@ -3294,36 +3303,39 @@ body {
 
 .date-arrow {
   color: #8E0E14 !important;
-  font-size: 0.8rem !important;
-  padding: 0 3px !important;
+  font-size: 0.95rem !important;
+  font-weight: bold !important;
+  padding: 0 4px !important;
 }
 
 .pro-filter-actions {
   display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin-left: 6px !important;
+  align-items: flex-end !important;
+  gap: 10px !important;
+  margin-left: 8px !important;
   flex-shrink: 0 !important;
+  height: 100% !important;
+  padding-bottom: 2px !important;
 }
 
 .pro-filter-btn-reset {
   background: #F3F4F6 !important;
   color: #4B5563 !important;
   border: 1.5px solid #D1D5DB !important;
-  border-radius: 10px !important;
-  padding: 7px 14px !important;
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
+  border-radius: 12px !important;
+  padding: 9px 16px !important;
+  font-size: 0.84rem !important;
+  font-weight: 800 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 7px !important;
   transition: all 0.2s ease !important;
-  height: 34px !important;
+  height: 42px !important;
 }
 
 [data-theme="dark"] .pro-filter-btn-reset {
-  background: #2A140E !important;
+  background: #25100B !important;
   color: #FDE68A !important;
   border-color: rgba(217, 119, 6, 0.4) !important;
 }
@@ -3344,17 +3356,23 @@ body {
   background: linear-gradient(135deg, #8E0E14 0%, #C31C23 50%, #D97706 100%) !important;
   color: #FFFFFF !important;
   border: 1.5px solid rgba(245, 158, 11, 0.4) !important;
-  border-radius: 10px !important;
-  padding: 7px 18px !important;
-  font-size: 0.78rem !important;
-  font-weight: 800 !important;
+  border-radius: 12px !important;
+  padding: 9px 22px !important;
+  font-size: 0.88rem !important;
+  font-weight: 900 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  box-shadow: 0 4px 16px rgba(200, 16, 46, 0.45) !important;
+  gap: 7px !important;
+  box-shadow: 0 4px 16px rgba(142, 14, 20, 0.45) !important;
   transition: all 0.2s ease !important;
-  height: 34px !important;
+  height: 42px !important;
+}
+
+.pro-filter-btn-apply:hover {
+  background: linear-gradient(135deg, #73080E 0%, #A8101E 50%, #B45309 100%) !important;
+  box-shadow: 0 6px 22px rgba(142, 14, 20, 0.6) !important;
+  transform: translateY(-0.5px) !important;
 }
 
 .pro-filter-btn-apply:hover {
