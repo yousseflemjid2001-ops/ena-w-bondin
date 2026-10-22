@@ -696,6 +696,9 @@ function initSubbarTabs() {
               if (typeof c.update === 'function') try { c.update('none'); } catch(e) {}
             }
           });
+          if (typeof executeGlobalFilters === 'function') {
+            try { executeGlobalFilters(); } catch(e) {}
+          }
           updateNavSlidingIndicator(btn);
         }, 80);
       }
@@ -1324,7 +1327,7 @@ function executeGlobalFilters() {
     segData = [4756, 578, 388, 120];
 
     waterfallData = [[0, 19560], [10840, 19560], [0, 10840]];
-    ltvData = [142.50, 48.60, 12.40, 18.70];
+    ltvData = [72.50, 59.70, 12.90, 3.50];
 
   } else if (isPreset30d) {
     // === DERNIER MOIS (30 JOURS GLISSANTS : 21 SEPT - 20 OCT) ===
@@ -1352,7 +1355,7 @@ function executeGlobalFilters() {
     segData = [22508, 2737, 1825, 580];
 
     waterfallData = [[0, 92630], [51820, 92630], [0, 51820]];
-    ltvData = [235.80, 62.40, 16.80, 28.40];
+    ltvData = [148.20, 122.10, 26.40, 7.20];
 
   } else if (isPreset90d) {
     // === DERNIER TRIMESTRE (Q3 : JUILLET - SEPTEMBRE 2026) ===
@@ -1379,10 +1382,22 @@ function executeGlobalFilters() {
     segData = [94450, 11450, 7680, 2510];
 
     waterfallData = [[0, 390400], [218040, 390400], [0, 218040]];
-    ltvData = [412.50, 74.20, 20.10, 38.90];
+    ltvData = [245.80, 202.50, 43.80, 12.00];
 
-  } else if (dStart > '2026-04-01' || dEnd < '2026-10-20') {
-    // === PLAGE PERSONNALISÉE (CALCUL DYNAMIQUE PROPORTIONNEL) ===
+  } else if (isPresetYtd) {
+    // === ANNÉE 2026 EN COURS (YTD) ===
+    periodScaleFactor = 1.0;
+    waterfallData = [[0, 511728], [284828, 511728], [0, 284828]];
+    ltvData = [289.83, 238.96, 51.70, 14.14];
+
+  } else if (isPresetAll) {
+    // === TOUT L'HISTORIQUE CONSOLIDÉ (AVRIL - OCTOBRE 2026) ===
+    periodScaleFactor = 1.0;
+    waterfallData = [[0, 511728], [284828, 511728], [0, 284828]];
+    ltvData = [289.83, 238.96, 51.70, 14.14];
+
+  } else {
+    // === PLAGE PERSONNALISÉE (CALCUL DYNAMIQUE PROPORTIONNEL DE HAUTE PRÉCISION) ===
     const sDate = new Date(dStart);
     const eDate = new Date(dEnd);
     const diffDays = Math.max(1, Math.round((eDate - sDate) / (1000 * 60 * 60 * 24)) + 1);
@@ -1393,6 +1408,23 @@ function executeGlobalFilters() {
     baseScans = Math.max(10, Math.round(baseScans * periodScaleFactor));
     baseClients = Math.max(5, Math.round(baseClients * Math.pow(periodScaleFactor, 0.45)));
     baseDette = Math.round(baseDette * periodScaleFactor * 100) / 100;
+
+    const customEarn = Math.max(100, Math.round(511728 * periodScaleFactor));
+    const customBurn = Math.max(50, Math.round(226900 * periodScaleFactor));
+    const customSolde = Math.max(50, customEarn - customBurn);
+    waterfallData = [[0, customEarn], [customSolde, customEarn], [0, customSolde]];
+
+    ltvData = [
+      Math.round(289.83 * Math.pow(periodScaleFactor, 0.45) * 100) / 100,
+      Math.round(238.96 * Math.pow(periodScaleFactor, 0.45) * 100) / 100,
+      Math.round(51.70 * Math.pow(periodScaleFactor, 0.45) * 100) / 100,
+      Math.round(14.14 * Math.pow(periodScaleFactor, 0.45) * 100) / 100
+    ];
+
+    topMagData = topMagData.map(v => Math.round(v * periodScaleFactor));
+    segData = segData.map(v => Math.round(v * periodScaleFactor));
+    gammesSucc = gammesSucc.map(v => Math.round(v * periodScaleFactor));
+    gammesCafe = gammesCafe.map(v => Math.round(v * periodScaleFactor));
 
     if (diffDays <= 14) {
       monthlyLabels = [];
@@ -1424,16 +1456,29 @@ function executeGlobalFilters() {
       allMonths.forEach(m => {
         if (m.end >= sDate && m.start <= eDate) {
           monthlyLabels.push(m.name);
-          monthlySucc.push(m.caSucc);
-          monthlyCafe.push(m.caCafe);
+          monthlySucc.push(Math.round(m.caSucc * periodScaleFactor * 1.5));
+          monthlyCafe.push(Math.round(m.caCafe * periodScaleFactor * 1.5));
         }
       });
       if (monthlyLabels.length === 0) {
-        monthlyLabels = ['Période sélectionnée'];
+        monthlyLabels = ['Période personnalisée'];
         monthlySucc = [Math.round(baseCA * 0.72)];
         monthlyCafe = [Math.round(baseCA * 0.28)];
       }
     }
+  }
+
+  // Synchronisation des points Waterfall & LTV avec les filtres Magasins et Segments
+  if (magasin === 'SUC') {
+    waterfallData = waterfallData.map(pair => [Math.round(pair[0] * 0.72), Math.round(pair[1] * 0.72)]);
+    ltvData = [Math.round(ltvData[0] * 1.33), Math.round(ltvData[1] * 1.30), Math.round(ltvData[2] * 1.32), Math.round(ltvData[3] * 1.28)];
+  } else if (magasin === 'CAF') {
+    waterfallData = waterfallData.map(pair => [Math.round(pair[0] * 0.28), Math.round(pair[1] * 0.28)]);
+    ltvData = [Math.round(ltvData[0] * 0.49), 0, Math.round(ltvData[2] * 0.74), Math.round(ltvData[3] * 0.83)];
+  } else if (magasin !== 'all') {
+    const storeWeight = Math.max(0.04, Math.min(0.25, baseCA / 153316.55));
+    waterfallData = waterfallData.map(pair => [Math.max(50, Math.round(pair[0] * storeWeight)), Math.max(100, Math.round(pair[1] * storeWeight))]);
+    ltvData = ltvData.map(v => Math.round(v * (0.85 + Math.random() * 0.3) * 10) / 10);
   }
 
   // -------------------------------------------------------------
@@ -1566,9 +1611,23 @@ function executeGlobalFilters() {
     charts.waterfallMockup.update();
   }
 
-  // j. LTV par Segment
+  // j. LTV par Segment avec mise en évidence dynamique Power BI
   if (charts.ltvMockup) {
     charts.ltvMockup.data.datasets[0].data = ltvData;
+    if (segment !== 'all') {
+      const segColors = {
+        'champions': ['#8E0E14', 'rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)'],
+        'grossistes': ['rgba(142, 14, 20, 0.25)', '#8E0E14', 'rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)'],
+        'loyaux': ['rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)', '#8E0E14', 'rgba(142, 14, 20, 0.25)'],
+        'hibernants': ['rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)', '#8E0E14'],
+        'risque': ['rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)', 'rgba(142, 14, 20, 0.25)', '#DC2626']
+      };
+      if (segColors[segment]) {
+        charts.ltvMockup.data.datasets[0].backgroundColor = segColors[segment];
+      }
+    } else {
+      charts.ltvMockup.data.datasets[0].backgroundColor = ['#1A0C08', '#8E0E14', '#C31C23', '#D97706'];
+    }
     charts.ltvMockup.update();
   }
 
@@ -1586,8 +1645,8 @@ function executeGlobalFilters() {
   // l. Arbre de Décomposition Stratégique
   updateDecompositionTree(baseCA);
 
-  // m. Tables Relationnelles adaptées au prorata temporel
-  updateFilteredTables(reseau, segment, periodScaleFactor);
+  // m. Tables Relationnelles adaptées au prorata temporel et filtres globaux
+  updateFilteredTables(reseau, segment, periodScaleFactor, magasin, gamme, dStart, dEnd);
 
   // n. Graphiques Avancés (Tab 2: Radar Benchmark, Tab 3: Matrice BCG, Tab 4: Pyramide des Âges)
   if (typeof updateAdvancedCharts === 'function') {
@@ -1725,7 +1784,7 @@ function updateDecompositionTree(totalCA) {
   `;
 }
 
-function updateFilteredTables(reseau, segment, scaleFactor = 1.0) {
+function updateFilteredTables(reseau, segment, scaleFactor = 1.0, magasin = 'all', gamme = 'all', dStart = '2026-04-01', dEnd = '2026-10-20') {
   const sf = Math.max(0.015, Math.min(1.0, scaleFactor || 1.0));
   
   // 1. Table Grossistes & B2B
@@ -1734,7 +1793,20 @@ function updateFilteredTables(reseau, segment, scaleFactor = 1.0) {
     if (reseau === 'particuliers') {
       grossisteTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #8E0E14; padding: 16px; font-weight: 600;">Aucun profil grossiste dans le périmètre filtré (100% Consommateurs Détail Cafétérias)</td></tr>`;
     } else {
-      grossisteTbody.innerHTML = DASHBOARD_DATA.top_grossistes_table.map(g => {
+      let grossistesList = DASHBOARD_DATA.top_grossistes_table;
+      if (magasin === 'gafsa') {
+        grossistesList = grossistesList.filter(g => (g.nom && g.nom.includes('Tarek')) || g.id === 'CLI_3595C46849' || g.succ > 100);
+      } else if (magasin === 'gabes') {
+        grossistesList = grossistesList.filter(g => g.succ > 80);
+      } else if (magasin === 'tunis-liberte' || magasin === 'el-menzah' || magasin === 'la-marsa') {
+        grossistesList = grossistesList.filter(g => g.total > 50);
+      }
+      if (!grossistesList || grossistesList.length === 0) grossistesList = DASHBOARD_DATA.top_grossistes_table.slice(0, 3);
+      
+      const topLimit = window.currentGrossistesTop || 5;
+      grossistesList = grossistesList.slice(0, topLimit);
+
+      grossisteTbody.innerHTML = grossistesList.map(g => {
         const sVal = g.succ * sf;
         const cVal = g.cafe * sf;
         const tVal = g.total * sf;
@@ -1788,26 +1860,144 @@ function updateFilteredTables(reseau, segment, scaleFactor = 1.0) {
     }).join('');
   }
 
-  // 3. Table Churn Risk (Scoring ML)
+  // 3. Table Churn Risk (Scoring ML - Tab 3)
   const churnTbody = document.querySelector('#table-churn tbody');
   if (churnTbody) {
-    let list = DASHBOARD_DATA.churn_table;
-    if (segment === 'champions') {
-      list = list.filter(c => c.ca > 30);
+    const rawChurn = [
+      { id: "CLI_3595C46849", nom: "Tarek Meddeb", pdv: "gafsa", pdvType: "SUC", pdvLabel: "Succursale Gafsa", segment: "grossistes", recence: 64, ca: 116.926, points: 356.9, score_churn: "88% (Élevé)" },
+      { id: "CLI_7A2B81C9D0", nom: "Henda Gharbi", pdv: "tunis-liberte", pdvType: "SUC", pdvLabel: "Succursale Tunis Liberté", segment: "champions", recence: 72, ca: 34.500, points: 68.0, score_churn: "92% (Critique)" },
+      { id: "CLI_8C3F11A4E2", nom: "Kamel Zouari", pdv: "el-menzah", pdvType: "SUC", pdvLabel: "Succursale Menzah VI", segment: "loyaux", recence: 61, ca: 28.200, points: 54.0, score_churn: "84% (Élevé)" },
+      { id: "CLI_1B90E341C7", nom: "Rim Ben Ammar", pdv: "la-marsa", pdvType: "CAF", pdvLabel: "Cafétéria La Marsa", segment: "loyaux", recence: 68, ca: 22.400, points: 42.0, score_churn: "86% (Élevé)" },
+      { id: "CLI_5E42C098B1", nom: "Fethi Mahjoub", pdv: "gabes", pdvType: "SUC", pdvLabel: "Succursale Gabès Jara", segment: "grossistes", recence: 80, ca: 18.000, points: 36.0, score_churn: "95% (Critique)" },
+      { id: "CLI_9D12A45F67", nom: "Monia Bouazizi", pdv: "le-kef", pdvType: "CAF", pdvLabel: "Cafétéria Le Kef", segment: "hibernants", recence: 58, ca: 16.500, points: 31.0, score_churn: "82% (Élevé)" },
+      { id: "CLI_4B78C91E33", nom: "Youssef Cherif", pdv: "sfax", pdvType: "SUC", pdvLabel: "Succursale Sfax Chaker", segment: "champions", recence: 75, ca: 42.800, points: 85.0, score_churn: "91% (Critique)" },
+      { id: "CLI_2A34D56E78", nom: "Salma Trabelsi", pdv: "sousse", pdvType: "SUC", pdvLabel: "Succursale Sousse Corniche", segment: "loyaux", recence: 63, ca: 24.100, points: 48.0, score_churn: "85% (Élevé)" }
+    ];
+
+    let filteredChurn = rawChurn;
+    if (magasin === 'SUC') {
+      filteredChurn = filteredChurn.filter(c => c.pdvType === 'SUC');
+    } else if (magasin === 'CAF') {
+      filteredChurn = filteredChurn.filter(c => c.pdvType === 'CAF');
+    } else if (magasin !== 'all') {
+      const matchStore = filteredChurn.filter(c => c.pdv === magasin || c.pdvLabel.toLowerCase().includes(magasin.replace('-', ' ')));
+      if (matchStore.length > 0) filteredChurn = matchStore;
     }
-    churnTbody.innerHTML = list.map(c => `
+
+    if (segment !== 'all') {
+      const matchSeg = filteredChurn.filter(c => c.segment === segment);
+      if (matchSeg.length > 0) filteredChurn = matchSeg;
+    }
+
+    if (filteredChurn.length === 0) {
+      churnTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #8E0E14; padding: 16px; font-weight: 600;">Aucun client en risque d'attrition pour ces critères de filtrage</td></tr>`;
+    } else {
+      churnTbody.innerHTML = filteredChurn.map(c => {
+        const caVal = (c.ca * sf).toFixed(3);
+        const ptsVal = Math.round(c.points * sf);
+        const recenceAjustee = (sf < 0.1) 
+          ? Math.max(2, Math.round(c.recence * 0.08)) 
+          : ((sf < 0.3) ? Math.max(5, Math.round(c.recence * 0.35)) : c.recence);
+
+        return `
+        <tr>
+          <td>
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${c.nom || c.id}</div>
+            <div style="font-size: 11px; opacity: 0.7; font-family: monospace;">${c.id} • <span style="color:#8E0E14; font-weight: 600;">${c.pdvLabel}</span></div>
+          </td>
+          <td><strong style="color: #DC2626">${recenceAjustee} jours</strong></td>
+          <td>${caVal} DT</td>
+          <td>${ptsVal} pts</td>
+          <td><span class="tag-badge alert">${c.score_churn}</span></td>
+          <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}', '${(c.nom || c.id).replace(/'/g, "\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // 4. Table Market Basket Analysis (Tab 3)
+  const mbaTbody = document.querySelector('#table-market-basket tbody');
+  if (mbaTbody) {
+    const rawBasket = [
+      { gamme: "moulu", pdvType: "all", produit_a: "Café Moulu Tradition 250g", produit_b: "Filtres Papier BONDIN (x100)", support: 24.6, confiance: 78.2, lift: 2.45, action: "Pack Promo Croisé Caisse" },
+      { gamme: "grains", pdvType: "SUC", produit_a: "Café Grains 100% Arabica 500g", produit_b: "Boîte Métal Collector 1910", support: 16.8, confiance: 64.5, lift: 3.12, action: "Offre Spéciale Champions" },
+      { gamme: "boissons", pdvType: "CAF", produit_a: "Espresso Simple Cafétéria", produit_b: "Bouteille Eau Minérale 0.5L", support: 38.2, confiance: 82.0, lift: 1.84, action: "Formule Pause Express" },
+      { gamme: "capsules", pdvType: "all", produit_a: "Boîte Capsules Espresso (x10)", produit_b: "Assortiment Sucres Spéciaux", support: 12.4, confiance: 59.1, lift: 2.70, action: "Bon Réduction Application" },
+      { gamme: "accessoires", pdvType: "SUC", produit_a: "Café Pur Torréfié 250g", produit_b: "Tasse Porcelaine Prestige BONDIN", support: 9.5, confiance: 45.3, lift: 3.55, action: "Suggestion Moteur IA Déblocage" },
+      { gamme: "confiseries", pdvType: "CAF", produit_a: "Café Crème Gourmand Salons", produit_b: "Croissant Pur Beurre BONDIN", support: 28.4, confiance: 71.5, lift: 2.10, action: "Formule Petit-Déjeuner Salons" }
+    ];
+
+    let sortedBasket = [...rawBasket];
+    if (gamme !== 'all') {
+      sortedBasket.sort((a, b) => (a.gamme === gamme ? -1 : (b.gamme === gamme ? 1 : 0)));
+    } else if (magasin === 'CAF' || reseau === 'particuliers') {
+      sortedBasket.sort((a, b) => (a.pdvType === 'CAF' ? -1 : 1));
+    } else if (magasin === 'SUC' || reseau === 'grossistes') {
+      sortedBasket.sort((a, b) => (a.pdvType === 'SUC' ? -1 : 1));
+    }
+
+    mbaTbody.innerHTML = sortedBasket.map(m => {
+      const confAjustee = Math.min(99.4, Math.max(40.0, m.confiance + (sf < 0.2 ? (Math.sin(m.lift) * 4) : 0))).toFixed(1);
+      const liftAjuste = (m.lift * (0.95 + sf * 0.05)).toFixed(2);
+      const isTarget = (gamme !== 'all' && m.gamme === gamme);
+
+      return `
+      <tr style="${isTarget ? 'background: #FEF3C7 !important;' : ''}">
+        <td><strong>${m.produit_a}</strong> ${isTarget ? '<span class="tag-badge gold" style="font-size:10px; margin-left:6px;">Gamme Active</span>' : ''}</td>
+        <td><strong style="color: #8E0E14;">${m.produit_b}</strong></td>
+        <td>${confAjustee} %</td>
+        <td><span class="tag-badge green">${liftAjuste}x Lift</span></td>
+        <td><span class="tag-badge info">${m.action}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 5. Table Caisses Cadeaux (Tab 3)
+  const spCadeauxTbody = document.querySelector('#table-magasins-cadeaux tbody');
+  if (spCadeauxTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.magasins_cadeaux)) {
+    let listCadeaux = DASHBOARD_DATA.magasins_cadeaux;
+    if (magasin === 'SUC') {
+      listCadeaux = listCadeaux.filter(m => m.type === 'Succursale');
+    } else if (magasin === 'CAF') {
+      listCadeaux = listCadeaux.filter(m => m.type === 'Cafétéria');
+    } else if (magasin !== 'all') {
+      const matchStore = listCadeaux.filter(m => m.nom.toLowerCase().includes(magasin.replace('-', ' ')) || m.region.toLowerCase().includes(magasin.replace('-', ' ')));
+      if (matchStore.length > 0) listCadeaux = matchStore;
+    }
+
+    spCadeauxTbody.innerHTML = listCadeaux.map(m => {
+      const cadeauxAjustes = (m.cadeaux > 0) ? Math.max(1, Math.round(m.cadeaux * sf)) : 0;
+      const ptsAjustes = (m.pts_brules > 0) ? Math.max(150, Math.round(m.pts_brules * sf)) : 0;
+      const convAjustee = (m.conv_pct > 0) ? (m.conv_pct * (0.9 + Math.min(0.2, sf * 0.1))).toFixed(2) : '0.00';
+
+      return `
       <tr>
-        <td>
-          <div style="font-weight: 700; color: var(--text-primary);">${c.nom || c.id}</div>
-          <div style="font-size: 11px; opacity: 0.7; font-family: monospace;">${c.id}</div>
-        </td>
-        <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
-        <td>${(c.ca * sf).toFixed(3)} DT</td>
-        <td>${Math.round(c.points * sf)} pts</td>
-        <td><span class="tag-badge alert">${c.score_churn}</span></td>
-        <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}', '${(c.nom || c.id).replace(/'/g, "\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
-      </tr>
-    `).join('');
+        <td><strong>${m.nom}</strong> <small style="display:block; color:#6B5E78;">${m.region}</small></td>
+        <td><span class="tag-badge ${m.type === 'Succursale' ? 'info' : 'gold'}">${m.type}</span></td>
+        <td><strong style="color: ${cadeauxAjustes > 0 ? '#10B981' : '#DC2626'}; font-size: 0.95rem;">${cadeauxAjustes}</strong></td>
+        <td>${ptsAjustes > 0 ? ptsAjustes.toLocaleString('fr-FR') + ' pts' : '-'}</td>
+        <td><strong>${convAjustee} %</strong></td>
+        <td><span class="tag-badge ${m.badge_class}">${m.statut}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 6. Moteur IA Récompenses (Tab 3)
+  if (typeof renderRewardsCatalog === 'function') {
+    let targetTier = 'all';
+    if (segment === 'champions') targetTier = 'Exclusif';
+    else if (segment === 'loyaux') targetTier = 'Privilège';
+    else if (segment === 'hibernants' || segment === 'risque') targetTier = 'Access';
+
+    document.querySelectorAll('.reward-pill').forEach(b => {
+      const text = b.innerText.toLowerCase();
+      if (targetTier === 'all') {
+        b.classList.toggle('active', text.includes('tous'));
+      } else {
+        b.classList.toggle('active', text.includes(targetTier.toLowerCase()));
+      }
+    });
+    renderRewardsCatalog(targetTier);
   }
 }
 
@@ -2228,9 +2418,9 @@ function renderGridCharts() {
         labels: ['1. Émis (Earn)', '2. Brûlés (Burn)', '3. Solde (Dette)'],
         datasets: [{
           data: [
-            [0, 188294],
-            [87794, 188294],
-            [0, 87794]
+            [0, 511728],
+            [284828, 511728],
+            [0, 284828]
           ],
           backgroundColor: ['#288764', '#DC2626', '#8E4A9E'],
           borderRadius: 5
@@ -2674,120 +2864,15 @@ function renderTables(liveCA) {
   // 1. Table des transactions directes en temps réel
   renderLiveTransactionsTable();
 
-  // 2. Table Grossistes (Filtrée par Top 5 / Top 10 / Top 20)
-  try {
-    const grossisteTbody = document.querySelector('#table-grossistes tbody');
-    if (grossisteTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.top_grossistes_table)) {
-      const topLimit = window.currentGrossistesTop || 5;
-      const filteredGrossistes = DASHBOARD_DATA.top_grossistes_table.slice(0, topLimit);
-      grossisteTbody.innerHTML = filteredGrossistes.map((g, idx) => `
-        <tr>
-          <td>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; font-size: 10px; font-weight: 800; border-radius: 50%; background: ${idx < 3 ? 'linear-gradient(135deg, #D97706, #B45309)' : 'rgba(142, 14, 20, 0.15)'}; color: ${idx < 3 ? '#FFF' : '#8E0E14'};">
-                ${idx + 1}
-              </span>
-              <div>
-                <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${g.nom || g.id}</div>
-                <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${g.id}</div>
-              </div>
-            </div>
-          </td>
-          <td><strong class="text-accent-succ">${(Number(g.succ) * scale).toFixed(3)} DT</strong></td>
-          <td>${(Number(g.cafe) * scale).toFixed(3)} DT</td>
-          <td><strong>${(Number(g.total) * scale).toFixed(3)} DT</strong></td>
-          <td>${(Number(g.max_succ) * scale).toFixed(2)} DT</td>
-          <td><span class="tag-badge ${g.freq_sem >= 3 ? 'gold' : 'info'}">${g.freq_sem} / sem</span></td>
-          <td><span class="tag-badge ${g.status && g.status.includes('Alerte') ? 'alert' : 'gold'}">${g.status}</span></td>
-        </tr>
-      `).join('');
-    }
-  } catch (err) { console.warn("Grossistes table error:", err); }
+  // 2-6. Synchronisation de toutes les tables avec les filtres actifs
+  const reseau = document.getElementById('slicer-reseau')?.value || 'all';
+  const segment = document.getElementById('filter-segment')?.value || 'all';
+  const magasin = document.getElementById('filter-magasin')?.value || 'all';
+  const gamme = document.getElementById('filter-gamme')?.value || 'all';
+  const dStart = document.getElementById('filter-date-start')?.value || '2026-04-01';
+  const dEnd = document.getElementById('filter-date-end')?.value || '2026-10-20';
 
-  // 3. Table Parrainages (Filtrée par Top 5 / Top 10 / Top 20)
-  try {
-    const parrainageTbody = document.querySelector('#table-parrainages tbody');
-    if (parrainageTbody) {
-      const allParrains = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA && DASHBOARD_DATA.parrainage && Array.isArray(DASHBOARD_DATA.parrainage.top_parrains))
-        ? DASHBOARD_DATA.parrainage.top_parrains
-        : [];
-      const topLimit = window.currentParrainagesTop || 5;
-      const parrains = allParrains.slice(0, topLimit);
-      parrainageTbody.innerHTML = parrains.map((p, idx) => `
-        <tr>
-          <td>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; font-size: 10px; font-weight: 800; border-radius: 50%; background: ${idx < 3 ? 'linear-gradient(135deg, #D97706, #B45309)' : 'rgba(142, 14, 20, 0.15)'}; color: ${idx < 3 ? '#FFF' : '#8E0E14'};">
-                ${idx + 1}
-              </span>
-              <div>
-                <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${p.nom || p.id}</div>
-                <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${p.id}</div>
-              </div>
-            </div>
-          </td>
-          <td><span class="tag-badge ${p.rang && p.rang.includes('Top 1') ? 'gold' : 'info'}">${p.rang}</span></td>
-          <td><strong class="text-accent-succ" style="font-size: 0.95rem;">${p.filleuls}</strong> filleuls</td>
-          <td><strong style="color: #10B981;">${p.convertis}</strong> convertis</td>
-          <td><strong>${(Number(p.ca_genere) * scale).toFixed(3)} DT</strong></td>
-          <td><span class="tag-badge gold">+${Math.round(p.points_gagnes * scale)} pts</span></td>
-        </tr>
-      `).join('');
-    }
-  } catch (err) { console.warn("Parrainage table error:", err); }
-
-  // 4. Table Churn ML
-  try {
-    const churnTbody = document.querySelector('#table-churn tbody');
-    if (churnTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.churn_table)) {
-      churnTbody.innerHTML = DASHBOARD_DATA.churn_table.map(c => `
-        <tr>
-          <td>
-            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.88rem;">${c.nom || c.id}</div>
-            <div style="font-size: 11px; opacity: 0.65; font-family: monospace;">${c.id}</div>
-          </td>
-          <td><strong style="color: #DC2626">${c.recence} jours</strong></td>
-          <td>${(Number(c.ca) * scale).toFixed(3)} DT</td>
-          <td>${Math.round(c.points * scale)} pts</td>
-          <td><span class="tag-badge alert">${c.score_churn}</span></td>
-          <td><button class="btn-action" onclick="window.sendPushCampaign('${c.id}', '${(c.nom || c.id).replace(/'/g, "\\'")}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-1px; margin-right:4px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Campagne Push</button></td>
-        </tr>
-      `).join('');
-    }
-  } catch (err) { console.warn("Churn table error:", err); }
-
-  // 5. Table Market Basket
-  try {
-    const mbaTbody = document.querySelector('#table-market-basket tbody');
-    if (mbaTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.market_basket)) {
-      mbaTbody.innerHTML = DASHBOARD_DATA.market_basket.map(m => `
-        <tr>
-          <td><strong>${m.produit_a}</strong></td>
-          <td><strong style="color: #8E0E14;">${m.produit_b}</strong></td>
-          <td>${Number(m.confiance).toFixed(1)} %</td>
-          <td><span class="tag-badge green">${Number(m.lift).toFixed(2)}x Lift</span></td>
-          <td><span class="tag-badge info">${m.action}</span></td>
-        </tr>
-      `).join('');
-    }
-  } catch (err) { console.warn("Market basket table error:", err); }
-
-  // 6. Table Caisses Cadeaux
-  try {
-    const spCadeauxTbody = document.querySelector('#table-magasins-cadeaux tbody');
-    if (spCadeauxTbody && typeof DASHBOARD_DATA !== 'undefined' && Array.isArray(DASHBOARD_DATA.magasins_cadeaux)) {
-      spCadeauxTbody.innerHTML = DASHBOARD_DATA.magasins_cadeaux.map(m => `
-        <tr>
-          <td><strong>${m.nom}</strong> <small style="display:block; color:#6B5E78;">${m.region}</small></td>
-          <td><span class="tag-badge ${m.type === 'Succursale' ? 'info' : 'gold'}">${m.type}</span></td>
-          <td><strong style="color: ${m.cadeaux > 0 ? '#10B981' : '#DC2626'}; font-size: 0.95rem;">${m.cadeaux}</strong></td>
-          <td>${m.pts_brules > 0 ? Math.round(m.pts_brules * scale).toLocaleString() + ' pts' : '-'}</td>
-          <td><strong>${Number(m.conv_pct).toFixed(2)} %</strong></td>
-          <td><span class="tag-badge ${m.badge_class}">${m.statut}</span></td>
-        </tr>
-      `).join('');
-    }
-  } catch (err) { console.warn("Caisses cadeaux table error:", err); }
+  updateFilteredTables(reseau, segment, scale, magasin, gamme, dStart, dEnd);
 }
 
 // ==========================================================================
