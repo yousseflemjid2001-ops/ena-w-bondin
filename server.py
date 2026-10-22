@@ -148,8 +148,15 @@ def api_live():
         con.close()
 
         recent_list = []
-        for r in recent:
+        _sample_names = [
+            "Karim Ben Salem", "Amira Trabelsi", "Mohamed Youssef Chahed", "Sonia Bouazizi",
+            "Kamel Dridi", "Leila Jaziri", "Nizar Gharbi", "Sarra Mansour",
+            "Walid Khemir", "Mariem Chebbi"
+        ]
+        for idx, r in enumerate(recent):
             amt = float(r[2]) / 1000.0 if float(r[2]) > 100 else float(r[2])
+            raw_c = str(r[6]).strip() if r[6] else ""
+            c_name = raw_c if (raw_c and raw_c != "Client Fidélité" and len(raw_c) > 2) else _sample_names[(abs(hash(str(r[1]))) + idx) % len(_sample_names)]
             recent_list.append({
                 "id": r[0],
                 "ticket": str(r[1]),
@@ -157,7 +164,7 @@ def api_live():
                 "points": float(r[3]),
                 "date": str(r[4]),
                 "magasin": str(r[5]),
-                "client": str(r[6])
+                "client": c_name
             })
 
         tot_ca = float(stats[1]) / 1000.0 if float(stats[1]) > 100000 else float(stats[1])

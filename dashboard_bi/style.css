@@ -1845,13 +1845,24 @@ header.header-enterprise {
   z-index: 2;
 }
 
-.heatmap-day-label {
-  font-weight: 800;
-  color: var(--text-main);
-  background: #FAF8FD !important;
+.heatmap-day-label,
+.heatmap-table td:first-child {
+  font-weight: 800 !important;
+  color: #111827 !important;
+  background: #F3F4F6 !important;
   text-align: left !important;
-  padding-left: 12px !important;
-  width: 100px;
+  padding-left: 14px !important;
+  width: 110px !important;
+  font-size: 0.86rem !important;
+  letter-spacing: 0.2px !important;
+  border-right: 2px solid #E5E7EB !important;
+}
+
+[data-theme="dark"] .heatmap-day-label,
+[data-theme="dark"] .heatmap-table td:first-child {
+  color: #FDE68A !important;
+  background: #25100B !important;
+  border-right: 2px solid rgba(217, 119, 6, 0.4) !important;
 }
 
 /* Intensités Heatmap */
@@ -1878,6 +1889,67 @@ header.header-enterprise {
 .cohort-60  { background: rgba(16, 185, 129, 0.12); color: #059669; }
 .cohort-50  { background: rgba(245, 158, 11, 0.14); color: #B45309; }
 .cohort-40  { background: rgba(239, 68, 68, 0.12); color: #B91C1C; }
+
+/* Filtres Interactifs Grossistes Top 5/10/20 & Cohortes Granularité */
+.grossistes-top-filter-group,
+.cohort-granularity-group {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  background: #F3F4F6 !important;
+  border: 1.5px solid #E5E7EB !important;
+  border-radius: 10px !important;
+  padding: 2px 3px !important;
+}
+
+[data-theme="dark"] .grossistes-top-filter-group,
+[data-theme="dark"] .cohort-granularity-group {
+  background: #25100B !important;
+  border-color: rgba(217, 119, 6, 0.35) !important;
+}
+
+.btn-grossiste-top,
+.btn-cohort-grain {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4px 10px !important;
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 7px !important;
+  color: #4B5563 !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  user-select: none !important;
+  white-space: nowrap !important;
+}
+
+[data-theme="dark"] .btn-grossiste-top,
+[data-theme="dark"] .btn-cohort-grain {
+  color: #FDE68A !important;
+}
+
+.btn-grossiste-top:hover,
+.btn-cohort-grain:hover {
+  color: #8E0E14 !important;
+  background: rgba(142, 14, 20, 0.08) !important;
+}
+
+[data-theme="dark"] .btn-grossiste-top:hover,
+[data-theme="dark"] .btn-cohort-grain:hover {
+  color: #FFFFFF !important;
+  background: rgba(217, 119, 6, 0.2) !important;
+}
+
+.btn-grossiste-top.active,
+.btn-cohort-grain.active {
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #8E0E14 0%, #C31C23 100%) !important;
+  box-shadow: 0 2px 8px rgba(142, 14, 20, 0.35) !important;
+}
 
 /* ==========================================================================
    13. THÈME EXÉCUTIF PRESTIGE & MINIMALISTE (ANTI-SURCHARGE)
@@ -3084,21 +3156,24 @@ body {
 }
 
 .pro-filter-group.period-preset-filter-group {
-  min-width: 360px !important;
-  flex: 1.9 1 0 !important;
+  min-width: 470px !important;
+  flex: 2.5 0 auto !important;
+  max-width: none !important;
 }
 
 .pro-period-pill-group {
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
-  gap: 5px !important;
+  gap: 3px !important;
   background: #F9FAFB !important;
   border: 1.5px solid #E5E7EB !important;
-  border-radius: 14px !important;
-  padding: 4px 5px !important;
+  border-radius: 12px !important;
+  padding: 3px 4px !important;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
-  height: 42px !important;
+  height: 38px !important;
   box-sizing: border-box !important;
+  width: max-content !important;
+  max-width: 100% !important;
 }
 
 [data-theme="dark"] .pro-period-pill-group {
@@ -3115,11 +3190,11 @@ body {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 5px !important;
-  padding: 6px 12px !important;
-  border-radius: 10px !important;
+  gap: 4px !important;
+  padding: 4px 8px !important;
+  border-radius: 8px !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  font-size: 0.82rem !important;
+  font-size: 0.77rem !important;
   font-weight: 800 !important;
   color: #4B5563 !important;
   background: transparent !important;
@@ -3128,7 +3203,7 @@ body {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   white-space: nowrap !important;
   user-select: none !important;
-  height: 32px !important;
+  height: 30px !important;
 }
 
 [data-theme="dark"] .preset-period-btn {

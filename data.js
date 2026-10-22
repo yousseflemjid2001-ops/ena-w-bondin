@@ -94,16 +94,28 @@ const DASHBOARD_DATA = {
     { profil: "Particulier (Succursale)", clients: 40, ca_total: 590.350, ltv: 14.759, flag: "Particulier" }
   ],
 
-  // 7. Table des Profils Grossistes sous Surveillance
+  // 7. Table des Profils Grossistes sous Surveillance (Top 5, Top 10, Top 20)
   top_grossistes_table: [
     { id: "CLI_0580F7CD5E", nom: "Sté Distribution Ben Salem (Mohamed)", succ: 354.330, cafe: 4.200, total: 358.530, max_succ: 223.60, freq_sem: 5.5, status: "Alerte Grossiste B2B" },
     { id: "CLI_91A2DBA24D", nom: "Café & Comptoir El Andalous (Karim T.)", succ: 284.100, cafe: 14.800, total: 298.900, max_succ: 145.00, freq_sem: 4.2, status: "Alerte Grossiste B2B" },
     { id: "CLI_6694456D51", nom: "Établissements Khelifi & Frères (Sami)", succ: 257.188, cafe: 8.600, total: 265.788, max_succ: 195.00, freq_sem: 3.8, status: "Alerte Grossiste B2B" },
+    { id: "CLI_3595C46849", nom: "Cafétéria Prestige & Dérivés (Tarek M.)", succ: 102.326, cafe: 14.600, total: 116.926, max_succ: 85.00, freq_sem: 5.5, status: "Alerte Churn & Gros" },
     { id: "CLI_06C9F42F20", nom: "Hôtel & Salon Le Diplomate (Belgacem)", succ: 102.500, cafe: 2.400, total: 104.900, max_succ: 51.25, freq_sem: 2.1, status: "Grossiste Suspect" },
     { id: "CLI_050C1C5789", nom: "Comptoir Central Bourguiba (Hassen)", succ: 79.019, cafe: 6.900, total: 85.919, max_succ: 45.00, freq_sem: 3.2, status: "Grossiste Suspect" },
     { id: "CLI_011A5AE03B", nom: "Superette Moderne La Marsa (Moncef)", succ: 75.744, cafe: 5.200, total: 80.944, max_succ: 38.00, freq_sem: 3.0, status: "Grossiste Suspect" },
     { id: "CLI_0B823FE6C6", nom: "Salon de Thé & Torréfaction Gafsa (Tahar)", succ: 63.000, cafe: 6.600, total: 69.600, max_succ: 42.00, freq_sem: 2.4, status: "Grossiste Suspect" },
-    { id: "CLI_3595C46849", nom: "Cafétéria Prestige & Dérivés (Tarek M.)", succ: 102.326, cafe: 14.600, total: 116.926, max_succ: 85.00, freq_sem: 5.5, status: "Alerte Churn & Gros" }
+    { id: "CLI_7A28F10D12", nom: "Comptoir Torréfaction Nabeul (Zied B.)", succ: 59.800, cafe: 4.450, total: 64.250, max_succ: 32.50, freq_sem: 2.8, status: "Grossiste Suspect" },
+    { id: "CLI_4C991E334F", nom: "Ets Ben Abdallah & Cie (Mounir)", succ: 54.200, cafe: 4.500, total: 58.700, max_succ: 29.00, freq_sem: 2.5, status: "Grossiste Régulier" },
+    { id: "CLI_8E31AA0288", nom: "Café Lounge Les Berges (Mehdi)", succ: 48.100, cafe: 4.240, total: 52.340, max_succ: 26.50, freq_sem: 2.2, status: "Grossiste Régulier" },
+    { id: "CLI_12F009BA57", nom: "Distribution Boissons Sousse (Anouar)", succ: 46.300, cafe: 3.500, total: 49.800, max_succ: 25.00, freq_sem: 2.0, status: "Grossiste Régulier" },
+    { id: "CLI_99E10C7A14", nom: "Hôtel Rosa Rivage B2B (Foued M.)", succ: 43.500, cafe: 2.620, total: 46.120, max_succ: 24.00, freq_sem: 1.8, status: "Compte Pro Validé" },
+    { id: "CLI_54B200DD83", nom: "Alimentation Générale Bizerte (Béchir)", succ: 39.800, cafe: 2.800, total: 42.600, max_succ: 22.00, freq_sem: 2.1, status: "Compte Pro Validé" },
+    { id: "CLI_31A882EF19", nom: "Torréfaction Artisanale Kairouan (Lotfi)", succ: 36.900, cafe: 2.550, total: 39.450, max_succ: 20.50, freq_sem: 1.9, status: "Compte Pro Validé" },
+    { id: "CLI_62C553AA71", nom: "Café des Délices Sidi Bou (Hichem)", succ: 34.200, cafe: 2.600, total: 36.800, max_succ: 19.00, freq_sem: 2.3, status: "Grossiste Suspect" },
+    { id: "CLI_88D919FC02", nom: "Comptoir El Manar Restauration (Walid)", succ: 31.800, cafe: 2.400, total: 34.200, max_succ: 18.50, freq_sem: 1.7, status: "Compte Pro Validé" },
+    { id: "CLI_77E0411B93", nom: "Espace Pause Café Lac 2 (Farid)", succ: 29.700, cafe: 2.200, total: 31.900, max_succ: 17.00, freq_sem: 1.6, status: "Compte Pro Validé" },
+    { id: "CLI_44B7629C50", nom: "Grossiste Sud Épicerie (Chokri)", succ: 27.500, cafe: 2.000, total: 29.500, max_succ: 16.00, freq_sem: 1.5, status: "Compte Pro Validé" },
+    { id: "CLI_22A3098E64", nom: "Relais Autoroute Grombalia (Kamel B.)", succ: 25.900, cafe: 1.900, total: 27.800, max_succ: 15.50, freq_sem: 1.4, status: "Compte Pro Validé" }
   ],
 
   // 8. Pilotage du Parrainage & Viralité (Fait_Parrainages - Exigence explicite CDC)

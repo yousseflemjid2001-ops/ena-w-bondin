@@ -1275,9 +1275,17 @@
 
       <!-- Table des Grossistes sous surveillance -->
       <div class="visual-card" style="margin-bottom: 20px;">
-        <div class="visual-header">
-          <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Détection des Profils Grossistes &amp; Volumes B2B Suspects</div>
-          <span class="visual-info-icon" title="Détection automatique des comptes professionnels selon le ticket en succursale">?</span>
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div class="visual-title-center" style="text-align: left; margin: 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Détection des Profils Grossistes &amp; Volumes B2B Suspects</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-secondary, #6B7280); text-transform: uppercase; letter-spacing: 0.4px;">Affichage :</span>
+            <div class="grossistes-top-filter-group" role="group" aria-label="Filtrer top grossistes">
+              <button type="button" class="btn-grossiste-top active" data-top="5" onclick="window.filterTopGrossistes(5)" title="Afficher le Top 5 des plus grands grossistes">Top 5</button>
+              <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10 des plus grands grossistes">Top 10</button>
+              <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20 des plus grands grossistes">Top 20</button>
+            </div>
+            <span class="visual-info-icon" title="Détection automatique des comptes professionnels selon le ticket en succursale">?</span>
+          </div>
         </div>
         <div class="table-responsive">
           <table class="data-table" id="table-grossistes">
@@ -1496,17 +1504,24 @@
         
         <!-- VISUEL 2 : MATRICE DE RÉTENTION PAR COHORTE -->
         <div class="visual-card">
-          <div class="visual-header">
-            <div class="visual-title-center" style="text-align: left;">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div class="visual-title-center" style="text-align: left; margin: 0;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Matrice de Rétention par Cohorte Mensuelle (Stickiness Client)
+              <span id="cohort-matrix-title">Matrice de Rétention par Cohorte (Stickiness Client)</span>
             </div>
-            <span class="visual-info-icon" title="Pourcentage d'utilisateurs actifs scannant leur QR code au fil des mois après leur inscription initiale">?</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="cohort-granularity-group" role="group" aria-label="Granularité des cohortes de rétention">
+                <button type="button" class="btn-cohort-grain active" data-grain="month" onclick="window.setCohortGranularity('month')" title="Analyser les cohortes par mois d'inscription">Par Mois</button>
+                <button type="button" class="btn-cohort-grain" data-grain="week" onclick="window.setCohortGranularity('week')" title="Analyser les cohortes par semaine">Par Semaine</button>
+                <button type="button" class="btn-cohort-grain" data-grain="day" onclick="window.setCohortGranularity('day')" title="Analyser les cohortes journalières (30 derniers jours)">Par Jour</button>
+              </div>
+              <span class="visual-info-icon" title="Pourcentage d'utilisateurs actifs scannant leur QR code au fil du temps après leur date d'adhésion">?</span>
+            </div>
           </div>
           <div class="table-responsive">
             <table class="data-table cohort-table" id="table-cohort-retention">
               <thead>
-                <tr>
+                <tr id="cohort-thead-row">
                   <th>Cohorte</th>
                   <th>Inscrits</th>
                   <th>Mois 0</th>

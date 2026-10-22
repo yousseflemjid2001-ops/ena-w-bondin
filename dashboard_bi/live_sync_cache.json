@@ -1,17 +1,41 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 13:46:38",
+  "timestamp": "2026-10-22 14:17:50",
   "company_name": "BONDIN",
-  "total_scans": 13286,
-  "total_ca_tnd": 155785.46,
-  "panier_moyen_tnd": 11.726,
-  "total_points_emis": 522540,
+  "total_scans": 13289,
+  "total_ca_tnd": 155811.15,
+  "panier_moyen_tnd": 11.725,
+  "total_points_emis": 522614,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 13:33:19",
-  "dernier_ticket": "bondin6164363",
-  "dernier_magasin": "Succursale Tunis Menzah VI",
+  "dernier_scan": "2026-10-22 14:13:59",
+  "dernier_ticket": "bondin6165069",
+  "dernier_magasin": "Cafétéria Tunis La Marsa",
   "recent_scans": [
+    {
+      "id": 13300,
+      "ticket": "bondin6165069",
+      "montant_tnd": 18.1,
+      "points": 48.2,
+      "date": "2026-10-22 14:13:59",
+      "magasin": "Cafétéria Tunis La Marsa"
+    },
+    {
+      "id": 13299,
+      "ticket": "bondin6164676",
+      "montant_tnd": 5.587,
+      "points": 22.348,
+      "date": "2026-10-22 13:50:43",
+      "magasin": "Succursale Tunis Liberté"
+    },
+    {
+      "id": 13298,
+      "ticket": "bondin6164670",
+      "montant_tnd": 2.0,
+      "points": 3.8,
+      "date": "2026-10-22 13:50:26",
+      "magasin": "Cafétéria Gafsa Ville"
+    },
     {
       "id": 13297,
       "ticket": "bondin6164363",
@@ -27,30 +51,6 @@
       "points": 29.6,
       "date": "2026-10-22 13:17:39",
       "magasin": "Succursale Tunis Menzah VI"
-    },
-    {
-      "id": 13295,
-      "ticket": "bondin6163997",
-      "montant_tnd": 15.036,
-      "points": 60.144,
-      "date": "2026-10-22 13:12:33",
-      "magasin": "Succursale Tunis Espagne"
-    },
-    {
-      "id": 13294,
-      "ticket": "bondin6163903",
-      "montant_tnd": 19.95,
-      "points": 79.8,
-      "date": "2026-10-22 13:07:21",
-      "magasin": "Succursale Tunis Liberté"
-    },
-    {
-      "id": 13293,
-      "ticket": "bondin6163726",
-      "montant_tnd": 2.0,
-      "points": 4.0,
-      "date": "2026-10-22 12:58:49",
-      "magasin": "Cafétéria Tunis MENZAH VI"
     }
   ]
 }
