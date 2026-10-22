@@ -2708,45 +2708,45 @@ header.header-enterprise {
    ========================================================================== */
 
 :root {
-  /* MODE CLAIR ULTRA-LISIBLE (EXECUTIVE LUXURY) */
-  --bg-app: #F5F4F9;
+  /* MODE CLAIR ULTRA-LISIBLE & HAUT CONFORT VISUEL (SANS FATIGUE OCULAIRE) */
+  --bg-app: #F8F9FA;
   --bg-card: #FFFFFF;
-  --bg-card-subtle: #FAF8FD;
-  --bg-header: #181120;
+  --bg-card-subtle: #F9FAFB;
+  --bg-header: #8E0E14;
   
-  --border-light: #E0DCED;
-  --border-card: #E4E0EC;
+  --border-light: #E5E7EB;
+  --border-card: #E5E7EB;
   --border-focus: #8E0E14;
   
-  --text-main: #1C1224;
-  --text-muted: #4B3A5E;
-  --text-sub: #756787;
+  --text-main: #111827;
+  --text-muted: #374151;
+  --text-sub: #6B7280;
   
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(45, 20, 60, 0.04);
-  --shadow-card-hover: 0 6px 20px rgba(45, 20, 60, 0.1);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 6px 20px rgba(142, 14, 20, 0.08);
   
   /* Tabs */
-  --pill-bg: #EAE5F3;
-  --pill-border: #DDD6E8;
-  --pill-text-inactive: #3B284C;
+  --pill-bg: #F3F4F6;
+  --pill-border: #E5E7EB;
+  --pill-text-inactive: #4B5563;
   --pill-text-active: #8E0E14;
   --pill-active-bg: #FFFFFF;
   
   /* Filter bar */
   --filter-bg: #FFFFFF;
-  --filter-border: #DCD6E8;
-  --filter-label: #4B3A5E;
-  --filter-input-bg: #F8F6FD;
-  --filter-input-text: #1C1224;
+  --filter-border: #E5E7EB;
+  --filter-label: #374151;
+  --filter-input-bg: #F9FAFB;
+  --filter-input-text: #111827;
   
   /* Tables */
-  --table-header-bg: #FAF8FD;
-  --table-border: #E8E4F0;
-  --table-stripe: #FDFCFF;
+  --table-header-bg: #F3F4F6;
+  --table-border: #E5E7EB;
+  --table-stripe: #F9FAFB;
   
   /* Charts */
-  --chart-grid-color: rgba(0, 0, 0, 0.05);
-  --chart-text-color: #2D1A3D;
+  --chart-grid-color: rgba(0, 0, 0, 0.06);
+  --chart-text-color: #111827;
 }
 
 [data-theme="dark"] {

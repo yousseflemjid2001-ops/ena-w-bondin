@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <script>
-    /* ZÉRO LATENCE & ANTI-CLIGNOTEMENT SESSION DÉCISIONNELLE */
+    /* ZÉRO LATENCE & THÈME CLAIR EXÉCUTIF IMMÉDIAT (CONFORT VISUEL ABSOLU SANS FATIGUE OCULAIRE) */
     (function() {
       try {
+        localStorage.setItem('bondin_theme', 'light');
+        document.documentElement.removeAttribute('data-theme');
+        document.documentElement.classList.remove('dark');
         var isAuth = localStorage.getItem('bondin_authenticated') === 'true' || 
                      sessionStorage.getItem('bondin_authenticated') === 'true';
         var params = new URLSearchParams(window.location.search);
@@ -599,11 +602,11 @@
         <!-- GAUCHE : BOUTONS D'ACTION & CO-BRANDING FIDNESS AGRANDIS -->
         <div class="flex flex-wrap items-center gap-3">
           
-          <!-- Bouton Mode Sombre / Clair Agrandie -->
-          <button id="theme-toggle-btn" onclick="window.toggleDarkMode()" class="group relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-purple-100 bg-white/[0.08] hover:bg-white/[0.16] border border-white/20 hover:border-purple-300/50 backdrop-blur-md transition-all duration-300 active:scale-95 shadow-sm">
-            <i id="theme-icon" data-lucide="moon" class="w-4 h-4 text-amber-300 transition-transform duration-500 group-hover:-rotate-12"></i>
-            <span id="theme-label">Mode Sombre</span>
-          </button>
+          <!-- Badge Mode Exécutif Pro (Clair & Confort Visuel) -->
+          <div class="group relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-amber-200 bg-white/[0.08] border border-amber-400/30 backdrop-blur-md shadow-sm" title="Mode Clair Exécutif actif (Confort de lecture optimal & charte officielle)">
+            <i id="theme-icon" data-lucide="sun" class="w-4 h-4 text-amber-300"></i>
+            <span id="theme-label">Mode Exécutif Pro</span>
+          </div>
 
           <!-- Bouton Actualiser Intelligent DWH Pro -->
           <button id="refresh-btn" onclick="window.refreshLiveDashboard()" class="group relative inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-purple-100 bg-white/[0.08] hover:bg-white/[0.16] border border-white/20 hover:border-emerald-400/50 backdrop-blur-md transition-all duration-300 active:scale-95 shadow-sm" title="Synchroniser intelligemment avec le Data Warehouse PostgreSQL en direct (9 tables)">

@@ -4294,27 +4294,25 @@ window.sendRagMessage = async function() {
 // 16. GESTION DU THÈME SOMBRE & CLAIR (EXECUTIVE DARK MODE)
 // ==========================================================================
 window.initThemeSystem = function() {
-  const savedTheme = localStorage.getItem('bondin_theme') || 'light';
-  applyTheme(savedTheme, true);
+  localStorage.setItem('bondin_theme', 'light');
+  applyTheme('light', true);
 };
 
 window.toggleDarkMode = function() {
-  const currentTheme = document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  applyTheme(newTheme, true);
+  // Le mode clair exécutif haute lisibilité est garanti par défaut pour un confort visuel optimal
+  applyTheme('light', true);
+  if (typeof showToast === 'function') {
+    showToast('Mode Clair Exécutif actif (Confort de lecture optimal & charte officielle)', 'sun');
+  }
 };
 
 function applyTheme(theme, updateCharts) {
-  if (theme === 'dark') {
-    document.body.setAttribute('data-theme', 'dark');
-    document.documentElement.setAttribute('data-theme', 'dark');
-    document.documentElement.classList.add('dark');
-  } else {
-    document.body.removeAttribute('data-theme');
-    document.documentElement.removeAttribute('data-theme');
-    document.documentElement.classList.remove('dark');
-  }
-  localStorage.setItem('bondin_theme', theme);
+  // Révocation de tout attribut de mode sombre
+  document.body.removeAttribute('data-theme');
+  document.documentElement.removeAttribute('data-theme');
+  document.documentElement.classList.remove('dark');
+  document.body.classList.remove('dark');
+  localStorage.setItem('bondin_theme', 'light');
 
   // Mise à jour de l'étiquette et de l'icône du bouton
   const label = document.getElementById('theme-label') || document.getElementById('theme-btn-label');
@@ -4322,26 +4320,22 @@ function applyTheme(theme, updateCharts) {
   const iconSlot = document.getElementById('theme-icon-slot');
 
   if (label) {
-    label.innerText = theme === 'dark' ? 'Mode Clair' : 'Mode Sombre';
+    label.innerText = 'Mode Exécutif Pro';
   }
 
   if (icon) {
-    icon.setAttribute('data-lucide', theme === 'dark' ? 'sun' : 'moon');
+    icon.setAttribute('data-lucide', 'sun');
     if (window.lucide) {
       try { lucide.createIcons(); } catch(e) {}
     }
   } else if (iconSlot) {
-    if (theme === 'dark') {
-      iconSlot.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
-    } else {
-      iconSlot.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
-    }
+    iconSlot.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
   }
 
-  // Mise à jour des cartes Leaflet et Chart.js
-  updateLeafletTiles(theme);
+  // Mise à jour des cartes Leaflet et Chart.js en mode clair
+  updateLeafletTiles('light');
   if (updateCharts) {
-    refreshChartsForTheme(theme);
+    refreshChartsForTheme('light');
   }
   if (typeof updateNavSlidingIndicator === 'function') {
     setTimeout(updateNavSlidingIndicator, 50);

@@ -1,7 +1,7 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 14:17:50",
+  "timestamp": "2026-10-22 14:23:35",
   "company_name": "BONDIN",
   "total_scans": 13289,
   "total_ca_tnd": 155811.15,
