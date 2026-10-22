@@ -1945,11 +1945,236 @@ header.header-enterprise {
 }
 
 .btn-grossiste-top.active,
-.btn-cohort-grain.active {
+.btn-cohort-grain.active,
+.btn-parrainage-top.active {
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #8E0E14 0%, #C31C23 100%) !important;
   box-shadow: 0 2px 8px rgba(142, 14, 20, 0.35) !important;
 }
+
+/* Badge de Certification DWH PostgreSQL Live sur chaque visuel */
+.visual-live-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 2.5px 8px !important;
+  border-radius: 6px !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  color: #065F46 !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  letter-spacing: 0.2px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  user-select: none !important;
+  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.06) !important;
+}
+
+.visual-live-tag:hover {
+  background: rgba(16, 185, 129, 0.16) !important;
+  border-color: #10B981 !important;
+  transform: translateY(-0.5px) !important;
+}
+
+.visual-live-tag .live-dot-pulse {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: #10B981 !important;
+  box-shadow: 0 0 6px #10B981 !important;
+  display: inline-block !important;
+  animation: livePingDot 1.8s infinite ease-in-out !important;
+}
+
+@keyframes livePingDot {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.35); }
+}
+
+/* Pulsation dynamique de la carte lors des transactions en direct */
+.map-scan-bubble.live-ping {
+  animation: mapPulseBeacon 1.2s infinite ease-out !important;
+}
+
+@keyframes mapPulseBeacon {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); transform: scale(1); }
+  70% { box-shadow: 0 0 0 16px rgba(16, 185, 129, 0); transform: scale(1.08); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); transform: scale(1); }
+}
+
+/* Télémétrie DWH & Certification Live */
+.dwh-telemetry-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 0.98) 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.28) !important;
+  border-radius: 12px !important;
+  padding: 10px 18px !important;
+  margin-bottom: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.06) !important;
+}
+
+.dwh-telemetry-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  flex-wrap: wrap !important;
+}
+
+.dwh-pulse-indicator {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  border-radius: 20px !important;
+  padding: 4px 10px !important;
+}
+
+.dwh-pulse-status {
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  color: #065F46 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.dwh-telemetry-meta {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-size: 0.76rem !important;
+  color: #374151 !important;
+  flex-wrap: wrap !important;
+}
+
+.dwh-meta-item strong {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+.dwh-meta-sub {
+  font-size: 0.70rem !important;
+  color: #6B7280 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  margin-left: 4px !important;
+}
+
+.dwh-meta-sep {
+  color: #D1D5DB !important;
+  font-size: 0.8rem !important;
+}
+
+.dwh-badge-latency {
+  display: inline-block !important;
+  background: #ECFDF5 !important;
+  color: #047857 !important;
+  font-weight: 800 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.7rem !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.dwh-telemetry-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.btn-dwh-audit {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #D1D5DB !important;
+  color: #1F2937 !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+.btn-dwh-audit:hover {
+  background: #F9FAFB !important;
+  border-color: #8E0E14 !important;
+  color: #8E0E14 !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-dwh-ping {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+}
+
+.btn-dwh-ping:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Modal SQL Audit */
+.sql-audit-code-box {
+  background: #0F172A !important;
+  color: #E2E8F0 !important;
+  border-radius: 8px !important;
+  padding: 14px !important;
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
+  font-size: 0.78rem !important;
+  line-height: 1.55 !important;
+  overflow-x: auto !important;
+  border: 1px solid #334155 !important;
+  margin: 10px 0 !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4) !important;
+}
+
+.sql-audit-meta-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 10px !important;
+  margin-bottom: 12px !important;
+}
+
+.sql-audit-meta-card {
+  background: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 8px !important;
+  padding: 10px 12px !important;
+}
+
+.sql-audit-meta-card .label {
+  font-size: 0.68rem !important;
+  text-transform: uppercase !important;
+  color: #64748B !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.sql-audit-meta-card .val {
+  font-size: 0.88rem !important;
+  color: #0F172A !important;
+  font-weight: 800 !important;
+  margin-top: 3px !important;
+}
+
 
 /* ==========================================================================
    13. THÈME EXÉCUTIF PRESTIGE & MINIMALISTE (ANTI-SURCHARGE)

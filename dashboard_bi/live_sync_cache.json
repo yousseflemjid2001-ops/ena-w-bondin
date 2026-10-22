@@ -1,17 +1,41 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 14:23:35",
+  "timestamp": "2026-10-22 14:49:55",
   "company_name": "BONDIN",
-  "total_scans": 13289,
-  "total_ca_tnd": 155811.15,
+  "total_scans": 13292,
+  "total_ca_tnd": 155854.94,
   "panier_moyen_tnd": 11.725,
-  "total_points_emis": 522614,
+  "total_points_emis": 522784,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 14:13:59",
-  "dernier_ticket": "bondin6165069",
-  "dernier_magasin": "Cafétéria Tunis La Marsa",
+  "dernier_scan": "2026-10-22 14:40:44",
+  "dernier_ticket": "bondin6165535",
+  "dernier_magasin": "Cafétéria Tunis France",
   "recent_scans": [
+    {
+      "id": 13303,
+      "ticket": "bondin6165535",
+      "montant_tnd": 1.8,
+      "points": 1.8,
+      "date": "2026-10-22 14:40:44",
+      "magasin": "Cafétéria Tunis France"
+    },
+    {
+      "id": 13302,
+      "ticket": "bondin6165503",
+      "montant_tnd": 4.995,
+      "points": 19.98,
+      "date": "2026-10-22 14:38:36",
+      "magasin": "Succursale Tunis France"
+    },
+    {
+      "id": 13301,
+      "ticket": "bondin6165391",
+      "montant_tnd": 37.0,
+      "points": 148.0,
+      "date": "2026-10-22 14:32:48",
+      "magasin": "Succursale Gabès Jara"
+    },
     {
       "id": 13300,
       "ticket": "bondin6165069",
@@ -27,30 +51,6 @@
       "points": 22.348,
       "date": "2026-10-22 13:50:43",
       "magasin": "Succursale Tunis Liberté"
-    },
-    {
-      "id": 13298,
-      "ticket": "bondin6164670",
-      "montant_tnd": 2.0,
-      "points": 3.8,
-      "date": "2026-10-22 13:50:26",
-      "magasin": "Cafétéria Gafsa Ville"
-    },
-    {
-      "id": 13297,
-      "ticket": "bondin6164363",
-      "montant_tnd": 9.99,
-      "points": 39.96,
-      "date": "2026-10-22 13:33:19",
-      "magasin": "Succursale Tunis Menzah VI"
-    },
-    {
-      "id": 13296,
-      "ticket": "bondin6164087",
-      "montant_tnd": 7.4,
-      "points": 29.6,
-      "date": "2026-10-22 13:17:39",
-      "magasin": "Succursale Tunis Menzah VI"
     }
   ]
 }
