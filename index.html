@@ -842,8 +842,8 @@
         <button type="button" class="preset-period-btn" data-period="90d" onclick="window.selectPeriodPreset('90d')" title="Filtrer sur le 3ème Trimestre Q3 (Juillet à Septembre)">
           <span>Trimestre Q3</span>
         </button>
-        <button type="button" class="preset-period-btn" data-period="ytd" onclick="window.selectPeriodPreset('ytd')" title="Filtrer sur l'Ann&eacute;e 2026 en cours (YTD)">
-          <span>Ann&eacute;e 2026</span>
+        <button type="button" class="preset-period-btn" data-period="ytd" onclick="window.selectPeriodPreset('ytd')" title="Filtrer sur l'Année 2026 en cours (YTD)">
+          <span>Année 2026</span>
         </button>
       </div>
     </div>
@@ -1427,7 +1427,7 @@
       <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">2.C</span>
-        <h2 class="bondin-section-title">Dynamique Temporelle &amp; Croissance Comparative N vs N-1 (CA &amp; Fr&eacute;quentation Scans)</h2>
+        <h2 class="bondin-section-title">Dynamique Temporelle &amp; Croissance Comparative N vs N-1 (CA &amp; Fr?quentation Scans)</h2>
       </div>
 
       <div class="visual-card" style="margin-bottom: 24px; padding: 22px 24px;">
@@ -1438,10 +1438,10 @@
                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                 <polyline points="17 6 23 6 23 12"></polyline>
               </svg>
-              <span>Courbes de Comparaison Ann&eacute;e N vs N-1 &amp; Mesure de la Croissance</span>
+              <span>Courbes de Comparaison Ann?e N vs N-1 &amp; Mesure de la Croissance</span>
             </div>
             <div style="font-size: 0.78rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
-              Performance mensuelle certifi&eacute;e DWH (2026 vs 2025) &bull; &Eacute;volution du chiffre d'affaires et de la fr?quentation caisse
+              Performance mensuelle certifi?e DWH (2026 vs 2025) ? ?volution du chiffre d'affaires et de la fr?quentation caisse
             </div>
           </div>
 
@@ -1453,13 +1453,13 @@
               </button>
               <button type="button" class="btn-yoy-metric" id="btn-yoy-scans" onclick="window.switchYoYMetric('scans')"
                 style="border: none; background: transparent; padding: 6px 14px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
-                Volume de Scans (Fr&eacute;quentation)
+                Volume de Scans (Fr?quentation)
               </button>
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.03); padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06);">
               <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.74rem; font-weight: 700; color: #8E0E14;">
-                <span style="width: 14px; height: 3px; background: #8E0E14; display: inline-block; border-radius: 2px;"></span> Ann&eacute;e N (2026)
+                <span style="width: 14px; height: 3px; background: #8E0E14; display: inline-block; border-radius: 2px;"></span> Ann?e N (2026)
               </span>
               <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.74rem; font-weight: 700; color: #9CA3AF;">
                 <span style="width: 14px; height: 2px; border-top: 2px dashed #9CA3AF; display: inline-block;"></span> Ann&eacute;e N-1 (2025)
@@ -1491,7 +1491,9 @@
           </div>
         </div>
 
-        <div style="position: relative; width: 100%; height: 360px; min-height: 360px;"><canvas id="chart-comparatif-yoy" style="width:100%; height:100%;"></canvas></div>
+        <div style="position: relative; width: 100%; height: 350px;">
+          <canvas id="chart-comparatif-yoy"></canvas>
+        </div>
       </div>
 
       <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
@@ -1594,7 +1596,14 @@
           </div>
         </div>
         <div id="decomp-tree-container" style="overflow-x: hidden; padding: 6px 0;">
-          <!-- Injecté par app.js?v=20261023_live_v35_perfect_render"bondin-report-section-header" style="margin: 22px 0 16px 0;">
+          <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+        </div>
+      </div>
+
+                <!-- ======================================================== -->
+      <!-- SECTION 5 : SIMULATEUR WHAT-IF & SENSIBILITÉ DU BARÈME    -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">5</span>
         <h2 class="bondin-section-title">Simulateur Dynamique What-If : Sensibilité Barème &amp; Dette DAX</h2>
@@ -1848,7 +1857,18 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js?v=20261023_live_v35_perfect_render"tab-cagnotte" class="dashboard-tab">
+              <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 3 : CAGNOTTE, LTV & IA CLIENT                    -->
+    <!-- ======================================================== -->
+    <section id="tab-cagnotte" class="dashboard-tab">
       <div class="print-page-header">
         <span>SECTION 3 : CAGNOTTE EARN &amp; BURN, LTV &amp; MOTEUR PRÉDICTIF CHURN</span>
         <span>RAPPORT CONFIDENTIEL</span>
@@ -1909,7 +1929,14 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Injecté par app.js?v=20261023_live_v35_perfect_render"visual-card">
+                <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Market Basket Analysis -->
+        <div class="visual-card">
           <div class="visual-header">
             <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Analyse des Associations de Produits (Market Basket &amp; Cross-Selling)</div>
             <span class="visual-info-icon" title="Panier de la ménagère : Articles fréquemment achetés ensemble et actions de cross-selling">?</span>
@@ -1926,7 +1953,16 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Injecté par app.js?v=20261023_live_v35_perfect_render"visual-card">
+                <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Distribution Cadeaux par Magasin -->
+      <div class="visual-card">
         <div class="visual-header">
           <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Distribution des Cadeaux &amp; Taux de Conversion par Point de Vente</div>
           <span class="visual-info-icon" title="Alerte logistique : 6 magasins concentrent 100% des cadeaux réclamés (Tunis Liberté 35)">?</span>
@@ -1944,7 +1980,14 @@
               </tr>
             </thead>
             <tbody>
-              <!-- Injecté par app.js?v=20261023_live_v35_perfect_render"visual-card" style="margin-top: 20px;">
+              <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+          <!-- MOTEUR IA RÉCOMPENSES SUR-MESURE & PALMARÈS DU CATALOGUE (EXIGENCE CDC PAGE 2 & 3) -->
+      <div class="visual-card" style="margin-top: 20px;">
         <div class="visual-header">
           <div class="visual-title-center" style="text-align: left;">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
@@ -2119,7 +2162,7 @@
   <div id="toast-container" class="toast-container"></div>
 
   <script src="data.js?v=20261023_live_v29"></script>
-  <script src="app.js?v=20261023_live_v35_perfect_render"></script>
+  <script src="app.js?v=20261023_live_v36_clean_fixed"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->
