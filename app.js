@@ -5872,6 +5872,165 @@ window.exportInscritsPDF = function() {
   printWindow.document.close();
 };
 
+// EXPORTATION PDF DE LA TABLE GROSSISTES B2B
+window.exportGrossistesPDF = function() {
+  const sf = (window.currentLiveCA) ? (Number(window.currentLiveCA) / 153316.55) : 1;
+  let grossistesList = Array.isArray(DASHBOARD_DATA.top_grossistes_table) ? DASHBOARD_DATA.top_grossistes_table.flat() : [];
+  
+  const prof = window.currentGrossistesProfile || 'all';
+  let profileLabel = 'Tous les profils (Grossistes & Mixtes)';
+  if (prof === 'b2b') {
+    grossistesList = grossistesList.filter(g => g && ((g.succ / (g.total || 1)) >= 0.85 || g.succ >= 1000));
+    profileLabel = 'Grossistes B2B Pur (Commandes Succursales)';
+  } else if (prof === 'client') {
+    grossistesList = grossistesList.filter(g => g && (g.cafe > 20 || (g.succ / (g.total || 1)) < 0.85));
+    profileLabel = 'Clients Mixtes / Particuliers (Succursales + Cafétérias)';
+  }
+
+  const topLimit = window.currentGrossistesTop || 50;
+  grossistesList = grossistesList.slice(0, topLimit);
+
+  const nowStr = new Date().toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const totalCA = grossistesList.reduce((acc, g) => acc + (Number(g.total) || 0) * sf, 0);
+  const totalSucc = grossistesList.reduce((acc, g) => acc + (Number(g.succ) || 0) * sf, 0);
+  const totalPoints = grossistesList.reduce((acc, g) => acc + Math.round((Number(g.points) || Math.round(Number(g.total || 0) * 10)) * sf), 0);
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert("Veuillez autoriser l'ouverture des fenêtres pop-up pour extraire le PDF.");
+    return;
+  }
+
+  const rowsHtml = grossistesList.map((g, i) => {
+    const sVal = (Number(g.succ) || 0) * sf;
+    const cVal = (Number(g.cafe) || 0) * sf;
+    const tVal = (Number(g.total) || (sVal + cVal)) * sf;
+    const maxVal = (Number(g.max_succ) || 0) * Math.min(1.0, sf * 1.5);
+    const ptsVal = Math.round((Number(g.points) || Math.round(tVal * 10)) * sf);
+    const freqVal = (g.freq_sem != null) ? g.freq_sem : 3.5;
+    return `
+      <tr>
+        <td style="text-align:center; font-weight:bold; color:#666;">${i + 1}</td>
+        <td><strong>${g.nom || g.id}</strong><br><small style="color:#666; font-family:monospace;">${g.id}</small></td>
+        <td>${g.tel || '+216 98 412 850'}</td>
+        <td style="color:#1E3A8A; font-weight:600;">${g.email || 'contact@client.tn'}</td>
+        <td style="text-align:right; font-weight:bold; color:#111;">${tVal.toFixed(3)} DT</td>
+        <td style="text-align:center; font-weight:bold; color:#B45309;">${ptsVal.toLocaleString('fr-FR')} pts</td>
+        <td style="text-align:right; font-weight:bold; color:#8E0E14;">${sVal.toFixed(3)} DT</td>
+        <td style="text-align:right; color:#4B5563;">${cVal.toFixed(3)} DT</td>
+        <td style="text-align:right; font-weight:600;">${maxVal.toFixed(2)} DT</td>
+        <td style="text-align:center;">${freqVal}/sem</td>
+        <td style="text-align:center;"><span style="display:inline-block; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:bold; background:#FEE2E2; color:#991B1B;">Alerte B2B</span></td>
+      </tr>
+    `;
+  }).join('');
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <title>BONDIN - Rapport Surveillance Grossistes B2B (Top ${topLimit})</title>
+      <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; color: #111827; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #8E0E14; padding-bottom: 12px; margin-bottom: 16px; }
+        .title { font-size: 18px; font-weight: bold; color: #8E0E14; text-transform: uppercase; }
+        .subtitle { font-size: 11px; color: #6B7280; margin-top: 3px; font-weight: 600; }
+        .meta-box { font-size: 10px; color: #4B5563; text-align: right; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; padding: 10px; text-align: center; }
+        .stat-val { font-size: 16px; font-weight: bold; color: #8E0E14; }
+        .stat-lbl { font-size: 10px; color: #6B7280; font-weight: bold; text-transform: uppercase; margin-top: 2px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+        th { background: #8E0E14; color: #FFF; padding: 6px 8px; text-align: left; font-size: 10px; text-transform: uppercase; }
+        td { padding: 6px 8px; border-bottom: 1px solid #E5E7EB; }
+        tr:nth-child(even) { background: #F9FAFB; }
+        .footer { margin-top: 20px; padding-top: 10px; border-top: 1px solid #E5E7EB; font-size: 9px; color: #9CA3AF; display: flex; justify-content: space-between; }
+        @media print {
+          @page { size: landscape; margin: 12mm; }
+          body { margin: 0; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div>
+          <div class="title">MAISON BONDIN 1910 × FIDNESS · RAPPORT SURVEILLANCE GROSSISTES B2B</div>
+          <div class="subtitle">Surveillance des Grands Volumes & Risque de Détournement B2B en Succursales</div>
+        </div>
+        <div class="meta-box">
+          <div><strong>Filtre Profil :</strong> ${profileLabel}</div>
+          <div><strong>Sélection :</strong> Top ${grossistesList.length} Comptes Audités</div>
+          <div><strong>Date d'extraction :</strong> ${nowStr}</div>
+          <div><strong>Source :</strong> PostgreSQL Live DWH (Dim_Client & Fait_Ventes)</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val">${grossistesList.length}</div>
+          <div class="stat-lbl">Profils B2B Audités</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">${totalCA.toFixed(3)} DT</div>
+          <div class="stat-lbl">CA Dépensé Cumulé</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">${totalSucc.toFixed(3)} DT</div>
+          <div class="stat-lbl">Volume Succursales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">${totalPoints.toLocaleString('fr-FR')}</div>
+          <div class="stat-lbl">Points Attribués</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25px; text-align:center;">#</th>
+            <th>Client / Raison Sociale</th>
+            <th>Numéro</th>
+            <th>Email</th>
+            <th style="text-align:right;">Total CA</th>
+            <th style="text-align:center;">Points</th>
+            <th style="text-align:right;">Succursale</th>
+            <th style="text-align:right;">Cafétéria</th>
+            <th style="text-align:right;">Max Ticket</th>
+            <th style="text-align:center;">Fréq.</th>
+            <th style="text-align:center;">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+
+      <div class="footer">
+        <div>CONFIDENTIEL - Document Interne Direction Commerciale BONDIN SA © 2026.</div>
+        <div>Plateforme Décisionnelle BI & IA ENA W BONDIN x FIDNESS (Audit Anti-Détournement B2B)</div>
+      </div>
+
+      <script>
+        window.onload = function() {
+          setTimeout(function() {
+            window.print();
+          }, 400);
+        };
+      </script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+};
+
 
 // ==========================================================================
 // 15. MOTEUR UNIFIÉ DE SYNCHRONISATION TEMPS RÉEL DWH (POSTGRESQL 17.7 LIVE)
