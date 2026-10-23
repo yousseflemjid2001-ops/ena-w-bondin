@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 r"""
 Backend API & Serveur Web Temps Réel « ENA W BONDIN x FIDNESS »
 Framework : Python Flask + CORS + Pandas
@@ -144,6 +144,8 @@ def api_live():
             LEFT JOIN public.user u ON p.user_id = u.id
             WHERE p.company_id = 2
             ORDER BY p.created_at DESC
+            LIMIT 5
+        """)
         total_inscrits = 2726
         recent_inscrits = []
         try:

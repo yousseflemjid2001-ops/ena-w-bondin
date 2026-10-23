@@ -3342,24 +3342,24 @@ async function fetchLiveProductionData(isManual = false) {
 
   try {
     let data = null;
-    try {
-      const controller = new AbortController();
-      const tId = setTimeout(() => controller.abort(), 2500);
-      const res = await fetch('/api/live', { cache: 'no-store', signal: controller.signal });
-      clearTimeout(tId);
-      if (res.ok) data = await res.json();
-    } catch (e) {}
+    const liveEndpoints = [
+      '/api/live',
+      'https://bondin-fidness-bi.vercel.app/api/live',
+      'live_sync_cache.json?t=' + Date.now()
+    ];
 
-    // Fallback gracieux sur live_sync_cache.json si le backend serverless met du temps
-    if (!data || !data.total_scans) {
+    for (const ep of liveEndpoints) {
       try {
-        const res = await fetch('live_sync_cache.json?t=' + Date.now());
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 3500);
+        const res = await fetch(ep, { cache: 'no-store', signal: controller.signal });
+        clearTimeout(tId);
         if (res.ok) {
-          const cData = await res.json();
-          if (cData.metrics && !cData.total_scans) {
-            Object.assign(cData, cData.metrics);
+          const json = await res.json();
+          if (json && (json.total_scans || (json.metrics && json.metrics.total_scans))) {
+            data = json;
+            break;
           }
-          data = cData;
         }
       } catch (e) {}
     }
