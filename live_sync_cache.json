@@ -1,63 +1,108 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-22 18:04:31",
+  "timestamp": "2026-10-23 14:14:45",
   "company_name": "BONDIN",
-  "total_scans": 13308,
-  "total_ca_tnd": 156018.36,
-  "panier_moyen_tnd": 11.724,
-  "total_points_emis": 523351,
+  "total_scans": 13385,
+  "total_ca_tnd": 156738.89,
+  "panier_moyen_tnd": 11.71,
+  "total_points_emis": 525677,
   "clients_actifs": 765,
-  "dernier_scan": "2026-10-22 17:38:27",
-  "dernier_ticket": "bondin6168796",
-  "dernier_client": "Mohamed Ben Moallem",
-  "dernier_montant": 7.1,
-  "dernier_magasin": "Cafétéria Tunis Ariana",
+  "dernier_scan": "2026-10-23 13:57:04",
+  "dernier_ticket": "bondin6182885",
+  "dernier_client": "elbessaoudi Amine",
+  "dernier_montant": 2.8,
+  "dernier_magasin": "Cafétéria Tunis Libertééé",
   "recent_scans": [
     {
-      "id": 13319,
-      "ticket": "bondin6168796",
-      "montant_tnd": 7.1,
-      "points": 17.2,
-      "date": "2026-10-22 17:38:27",
-      "magasin": "Cafétéria Tunis Ariana",
-      "client": "Mohamed Ben Moallem"
+      "id": 13396,
+      "ticket": "bondin6182885",
+      "montant_tnd": 2.8,
+      "points": 0.0,
+      "date": "2026-10-23 13:57:04",
+      "magasin": "Cafétéria Tunis Libertééé",
+      "client": "elbessaoudi Amine"
     },
     {
-      "id": 13318,
-      "ticket": "bondin6168720",
-      "montant_tnd": 3.996,
-      "points": 15.984,
-      "date": "2026-10-22 17:34:20",
-      "magasin": "Succursale Tunis Ariana",
-      "client": "REKIk Ahmed"
+      "id": 13395,
+      "ticket": "bondin6182724",
+      "montant_tnd": 5.3,
+      "points": 7.6,
+      "date": "2026-10-23 13:50:15",
+      "magasin": "Cafétéria Tunis Libertééé",
+      "client": "elbessaoudi Amine"
     },
     {
-      "id": 13317,
-      "ticket": "bondin6168354",
-      "montant_tnd": 9.996,
-      "points": 39.984,
-      "date": "2026-10-22 17:14:47",
-      "magasin": "Succursale Tunis Espagne",
-      "client": "zahra weslati"
+      "id": 13394,
+      "ticket": "bondin6182686",
+      "montant_tnd": 1.9,
+      "points": 3.8,
+      "date": "2026-10-23 13:47:46",
+      "magasin": "Cafétéria Tunis France",
+      "client": "Hichem Rahmani"
     },
     {
-      "id": 13316,
-      "ticket": "bondin6168310",
-      "montant_tnd": 7.1,
-      "points": 11.4,
-      "date": "2026-10-22 17:12:40",
+      "id": 13393,
+      "ticket": "bondin6182656",
+      "montant_tnd": 19.992,
+      "points": 80.0,
+      "date": "2026-10-23 13:46:25",
+      "magasin": "Succursale Tunis France",
+      "client": "Elhem Nouicer"
+    },
+    {
+      "id": 13392,
+      "ticket": "bondin6182462",
+      "montant_tnd": 4.8,
+      "points": 9.0,
+      "date": "2026-10-23 13:37:29",
       "magasin": "Cafétéria Tunis La Marsa",
       "client": "Olivier Domagala"
     },
     {
-      "id": 13315,
-      "ticket": "bondin6167930",
-      "montant_tnd": 7.0,
-      "points": 18.9,
-      "date": "2026-10-22 16:52:44",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Baaguig Bechir"
+      "id": 13391,
+      "ticket": "bondin6182193",
+      "montant_tnd": 0.8,
+      "points": 1.6,
+      "date": "2026-10-23 13:23:09",
+      "magasin": "Cafétéria Le Kef",
+      "client": "Safe Slimi"
+    },
+    {
+      "id": 13390,
+      "ticket": "bondin6182167",
+      "montant_tnd": 7.2,
+      "points": 18.0,
+      "date": "2026-10-23 13:21:59",
+      "magasin": "Cafétéria Tunis France",
+      "client": "Tarek Souissi"
+    },
+    {
+      "id": 13389,
+      "ticket": "bondin6181677",
+      "montant_tnd": 37.0,
+      "points": 148.0,
+      "date": "2026-10-23 12:58:15",
+      "magasin": "Succursale Gabès Jara",
+      "client": "Dali Dali"
+    },
+    {
+      "id": 13388,
+      "ticket": "bondin6181469",
+      "montant_tnd": 16.0,
+      "points": 0.0,
+      "date": "2026-10-23 12:47:20",
+      "magasin": "Succursale Tunis Espagne",
+      "client": "Emna Kooli"
+    },
+    {
+      "id": 13387,
+      "ticket": "bondin6181434",
+      "montant_tnd": 2.4,
+      "points": 4.4,
+      "date": "2026-10-23 12:45:31",
+      "magasin": "Cafétéria Tunis Ariana",
+      "client": "Samia Zeouga"
     }
   ]
 }

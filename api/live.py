@@ -53,6 +53,13 @@ class handler(BaseHTTPRequestHandler):
                 ORDER BY p.created_at DESC
                 LIMIT 5
             """)
+            total_inscrits = 2726
+            try:
+                ti_res = con.run("SELECT count(*) FROM public.user WHERE app_name = 'bondin'")
+                if ti_res and ti_res[0]:
+                    total_inscrits = int(ti_res[0][0])
+            except Exception:
+                pass
             con.close()
 
             _sample_names = [
@@ -92,6 +99,8 @@ class handler(BaseHTTPRequestHandler):
                 "panier_moyen_tnd": round(avg_b, 3),
                 "total_points_emis": int(stats[3]),
                 "clients_actifs": int(stats[4]),
+                "total_inscrits": total_inscrits,
+                "clients_inscrits": total_inscrits,
                 "dernier_scan": str(stats[5]),
                 "dernier_client": recent_list[0]["client"] if recent_list else "Mondher Trabelsi",
                 "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 18.500,

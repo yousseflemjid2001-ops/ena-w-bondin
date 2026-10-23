@@ -26,7 +26,13 @@
       opacity: 0 !important;
       pointer-events: none !important;
     }
-  </style>
+  
+    @media (max-width: 1150px) {
+      .section1-inscriptions-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
   <link rel="stylesheet" href="style.css?v=20261022_espresso_gold_v22">
@@ -91,7 +97,7 @@
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 font-mono text-xs sm:text-sm font-bold shadow-[0_0_18px_rgba(16,185,129,0.3)]">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Live DWH : <strong id="login-live-scans" class="text-white font-extrabold tracking-wide">13 097 scans</strong></span>
+          <span>Live DWH : <strong id="login-live-scans" class="text-white font-extrabold tracking-wide">13 317 scans</strong></span>
         </div>
         <span class="text-amber-400/40 text-sm hidden sm:inline">•</span>
         <div class="hidden sm:flex items-center gap-2 text-xs sm:text-sm font-mono text-amber-300">
@@ -171,7 +177,7 @@
             </div>
             <div>
               <div class="text-[11px] sm:text-xs font-mono tracking-wider text-slate-500 uppercase font-bold">CHIFFRE D'AFFAIRES FIDÉLITÉ</div>
-              <div id="login-live-ca" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">153 317 DT</div>
+              <div id="login-live-ca" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">156 159 DT</div>
               <div class="text-[11px] text-slate-500 font-medium mt-0.5">Montant total consolidé du réseau</div>
             </div>
           </div>
@@ -572,7 +578,7 @@
             <!-- Compteur DWH Dynamique -->
             <div class="flex items-center gap-2 text-sm sm:text-base font-semibold whitespace-nowrap">
               <span class="text-emerald-400 font-bold tracking-wide">Live DWH :</span>
-              <span id="scan-counter" class="font-mono font-extrabold text-white text-base sm:text-lg tracking-tight inline-block">13 294</span>
+              <span id="scan-counter" class="font-mono font-extrabold text-white text-base sm:text-lg tracking-tight inline-block">13 317</span>
               <span class="text-emerald-400 font-bold">scans</span>
             </div>
 
@@ -581,7 +587,7 @@
             <!-- Flux de Tickets Dynamique avec Nom du Client, Montant du Scan et Ticket -->
             <div class="overflow-hidden h-6 flex items-center min-w-[340px] sm:min-w-[480px]">
               <div id="hdr-live-clock" class="text-xs sm:text-sm text-rose-100 font-mono truncate ticket-slide-enter">
-                Client : <strong class="text-white font-bold">Mondher Trabelsi</strong> &bull; Montant : <strong class="text-emerald-400 font-bold">+18.500 DT</strong> &bull; Ticket <span class="text-amber-300 font-bold">#bondin6166477</span> <span class="text-amber-200/90 font-sans">(Succursale Tunis Liberté)</span>
+                Dernier scan : <strong class="text-white font-bold">Salim Ammar</strong> &bull; Montant : <strong class="text-emerald-400 font-bold">+2.100 DT</strong> &bull; Ticket <span class="text-amber-300 font-bold">#bondin6170303</span> <span class="text-amber-200/90 font-sans">(Cafétéria Le Kef)</span>
               </div>
             </div>
 
@@ -615,10 +621,18 @@
             <span id="refresh-label">Actualiser</span>
           </button>
 
-          <!-- Bouton Test & Simulation Scan Caisse Live -->
-          <button id="btn-simulate-scan" onclick="window.simulateLiveScan()" class="group relative inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-amber-200 bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 hover:border-amber-400/60 backdrop-blur-md transition-all duration-300 active:scale-95 shadow-sm" title="Simuler un ticket de caisse en direct (+18,500 TND) et observer la propagation instantanée">
+          <!-- Badge & Contrôle Flux DWH Continu en Temps Réel -->
+          <button id="btn-toggle-live-stream" onclick="window.toggleLiveStreaming()" 
+            class="group relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-400/50 hover:bg-emerald-500/25 transition-all duration-300 active:scale-95 shadow-[0_0_15px_rgba(16,185,129,0.25)]" 
+            title="Activer ou mettre en pause la rotation en direct des transactions certifiées PostgreSQL">
+            <span class="live-dot-pulse" style="width: 8px; height: 8px; background: #10B981;"></span>
+            <span id="label-live-stream">DWH Live : ACTIF</span>
+          </button>
+
+          <!-- Bouton Scan Manuel Express -->
+          <button id="btn-simulate-scan" onclick="window.simulateLiveScan()" class="group relative inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-amber-200 bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 hover:border-amber-400/60 backdrop-blur-md transition-all duration-300 active:scale-95 shadow-sm" title="Injecter un ticket de caisse immédiat">
             <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-300 fill-amber-300/20"></i>
-            <span class="hidden xl:inline font-bold">Simuler Scan</span>
+            <span class="hidden xl:inline font-bold">+1 Scan Direct</span>
           </button>
 
           <!-- Bouton Exporter PDF Officiel BONDIN -->
@@ -836,13 +850,13 @@
 
     <div class="pro-filter-divider"></div>
 
-    <!-- Calendrier : Plage de dates personnalisées -->
-    <div class="pro-filter-group date-filter-group" id="group-filter-date">
+    <!-- Calendrier : Plage de dates personnalisées (Format Conforme sans Débordement) -->
+    <div class="pro-filter-group date-filter-group" id="group-filter-date" style="min-width: 310px; flex: 2 0 auto; box-sizing: border-box;">
       <label class="pro-filter-label" for="filter-date-start">
         <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#8E0E14]"></i>
         <span>Plage Personnalisée</span>
       </label>
-      <div class="pro-date-picker-wrap">
+      <div class="pro-date-picker-wrap" style="width: 100%; box-sizing: border-box;">
         <input type="date" id="filter-date-start" class="pro-date-field" value="2026-04-01" min="2026-01-01" max="2026-12-31" title="Date début" onchange="window.handleManualDateChange()">
         <span class="date-arrow">&rarr;</span>
         <input type="date" id="filter-date-end" class="pro-date-field" value="2026-10-20" min="2026-01-01" max="2026-12-31" title="Date fin" onchange="window.handleManualDateChange()">
@@ -974,444 +988,523 @@
         <span>RAPPORT CONFIDENTIEL</span>
       </div>
       
-            <!-- BANNIÈRE OFFICIELLE DU RAPPORT ENA w BONDIN (STYLE RAPPORT PAGE 1 & 2) -->
-      <div class="visual-card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(142, 14, 20, 0.05) 0%, rgba(217, 119, 6, 0.06) 100%); border: 1px solid rgba(142, 14, 20, 0.25);">
-        <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px;">
-          <div style="width: 100%; display: flex; flex-direction: column; md:flex-row; justify-content: space-between; align-items: flex-start; gap: 10px;">
-            <div>
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <span class="bondin-section-bar" style="height: 18px; width: 4px; background: #8E0E14; border-radius: 2px;"></span>
-                <span style="font-size: 0.72rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #8E0E14;">RAPPORT D'ANALYSE HEBDOMADAIRE &amp; DÉCISIONNEL</span>
-                <span class="tag-badge gold" style="font-size: 0.65rem;">Page 1 &bull; Conforme Document Officiel</span>
-              </div>
-              <h1 style="font-size: 1.45rem; font-weight: 900; color: #111827; margin: 0; line-height: 1.2;">
-                Analyse de Performance de l'Application <span style="color: #8E0E14;">ENA w BONDIN</span>
-              </h1>
-              <div style="font-size: 0.82rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
-                Programme de fidélité &bull; Direction Générale &bull; Synthèse Conforme au Rapport Officiel &amp; Live DWH
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span class="tag-badge" style="background: rgba(16,185,129,0.12); color: #059669; border: 1px solid rgba(16,185,129,0.25); font-weight: 800; padding: 5px 12px; border-radius: 8px; font-size: 0.78rem; display: flex; align-items: center; gap: 6px;">
-                <span class="live-dot-pulse" style="width: 6px; height: 6px; background: #10B981;"></span>
-                <span id="banner-scan-count-badge">13 306 Scans Consolidés</span>
-              </span>
-              <span class="tag-badge info" style="font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; font-weight: 700;">16 / 20 PDV Actifs</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
+                        <!-- SECTION 1 : DYNAMIQUE DES INSCRIPTIONS & RÉPERTOIRE CRM (PLACÉ EN PREMIER) -->
       <!-- ======================================================== -->
-      <!-- SECTION 1 : SYNTHÈSE GÉNÉRALE (PAGE 2 RAPPORT)          -->
-      <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
+      <div class="bondin-report-section-header" style="margin: 18px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">1</span>
-        <h2 class="bondin-section-title">Synthèse générale</h2>
-        
-        <div class="report-mode-toggle" id="report-mode-toggle">
-          <button type="button" class="btn-report-mode active" id="btn-mode-snapshot" onclick="window.setReportViewMode('snapshot')" title="Afficher les chiffres certifiés exacts du Rapport PDF (11-18 Juin 2026)">
-            <span>Mode Rapport PDF (11-18 Juin)</span>
-          </button>
-          <button type="button" class="btn-report-mode" id="btn-mode-live" onclick="window.setReportViewMode('live')" title="Afficher les données DWH Temps Réel Consolidées (Avril - Octobre 2026)">
-            <span class="live-dot-pulse" style="width:5px; height:5px; background:#10B981;"></span>
-            <span>Mode DWH Live (13 306 scans)</span>
-          </button>
-        </div>
+        <h2 class="bondin-section-title">Dynamique d'Acquisition &amp; Répertoire des Clients Inscrits (2 715 Membres DWH)</h2>
       </div>
 
-      <div class="report-kpi-grid">
-        <!-- 1. TOTAL ACHATS -->
-        <div class="report-kpi-card">
-          <div class="report-kpi-label">TOTAL ACHATS</div>
-          <div class="report-kpi-val" id="report-total-achats">527</div>
-          <div class="report-kpi-sub" id="report-sub-achats">transactions</div>
+      <!-- GRILLE 2 COLONNES SUR LA MÊME LIGNE : RYTHME D'INSCRIPTION & RÉPERTOIRE CRM -->
+      <div class="visuals-grid-2x2 section1-inscriptions-grid" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-bottom: 28px; align-items: stretch;">
+
+        <!-- COLONNE 1 (GAUCHE) : VISUALISATION GRAPHIQUE DU NOMBRE D'INSCRITS (JOUR / MOIS / TRIMESTRE) -->
+        <div class="visual-card" style="display: flex; flex-direction: column; padding: 26px 28px; min-height: 620px;">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 18px;">
+            <div>
+              <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1.1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>Évolution du Rythme d'Inscription des Adhérents ENA w BONDIN</span>
+              </div>
+              <div style="font-size: 0.82rem; color: #6B7280; font-weight: 500; margin-top: 4px;">
+                Adhésions CRM certifiées PostgreSQL · Sélecteur d'échelle temporelle dynamique
+              </div>
+            </div>
+
+            <!-- SÉLECTEUR DE GRANULARITÉ : JOUR / MOIS / TRIMESTRE -->
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <div class="inscriptions-granularity-group" style="display: inline-flex; background: #F3F4F6; padding: 3px; border-radius: 9px; border: 1px solid #D1D5DB; gap: 3px;">
+                <button type="button" class="btn-inscri-gran" id="btn-inscri-jour" onclick="window.setInscriptionsGranularity('jour')" 
+                  style="border: none; background: transparent; padding: 7px 16px; border-radius: 7px; font-size: 0.82rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
+                  Jour (Oct.)
+                </button>
+                <button type="button" class="btn-inscri-gran active" id="btn-inscri-mois" onclick="window.setInscriptionsGranularity('mois')" 
+                  style="border: none; background: #8E0E14; color: #FFFFFF; padding: 7px 16px; border-radius: 7px; font-size: 0.82rem; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(142,14,20,0.3); transition: all 0.2s;">
+                  Mois (2026)
+                </button>
+                <button type="button" class="btn-inscri-gran" id="btn-inscri-trimestre" onclick="window.setInscriptionsGranularity('trimestre')" 
+                  style="border: none; background: transparent; padding: 7px 16px; border-radius: 7px; font-size: 0.82rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
+                  Trimestre
+                </button>
+              </div>
+
+              <span class="tag-badge gold" id="inscriptions-chart-badge" style="font-size: 0.82rem; font-weight: 800; padding: 6px 14px;">
+                2 715 Inscrits · Base CRM
+              </span>
+            </div>
+          </div>
+
+          <!-- 3 BADGES STATS RÉCAPITULATIFS -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px;">
+            <div style="background: rgba(142,14,20,0.04); border: 1px solid rgba(142,14,20,0.12); border-radius: 10px; padding: 12px 14px; text-align: center;">
+              <div style="font-size: 0.76rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Total Base CRM</div>
+              <div id="badge-total-crm-count" style="font-size: 1.35rem; font-weight: 900; color: #8E0E14; margin-top: 4px;">2 715 membres</div>
+            </div>
+            <div style="background: rgba(217,119,6,0.06); border: 1px solid rgba(217,119,6,0.18); border-radius: 10px; padding: 12px 14px; text-align: center;">
+              <div style="font-size: 0.76rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Pic Campagne Lancement</div>
+              <div style="font-size: 1.35rem; font-weight: 900; color: #D97706; margin-top: 4px;">1 456 (Juin 2026)</div>
+            </div>
+            <div style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.18); border-radius: 10px; padding: 12px 14px; text-align: center;">
+              <div style="font-size: 0.76rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Moy. Journalière Active</div>
+              <div id="badge-moy-inscri-count" style="font-size: 1.35rem; font-weight: 900; color: #059669; margin-top: 4px;">5.25 inscrits / j</div>
+            </div>
+          </div>
+
+          <!-- ZONE DU GRAPHIQUE -->
+          <div style="position: relative; flex: 1; width: 100%; min-height: 340px;">
+            <canvas id="chart-inscriptions-evolution"></canvas>
+          </div>
         </div>
 
-        <!-- 2. CHIFFRE D'AFFAIRES -->
-        <div class="report-kpi-card">
-          <div class="report-kpi-label">CHIFFRE D'AFFAIRES</div>
-          <div class="report-kpi-val" id="report-ca-total">3 736.4 DT</div>
-          <div class="report-kpi-sub" id="report-sub-ca">montant total</div>
+        <!-- COLONNE 2 (DROITE) : RÉPERTOIRE OFFICIEL DES ADHÉRENTS & INSCRITS CRM -->
+        <div class="visual-card" style="display: flex; flex-direction: column; padding: 26px 28px; min-height: 620px;">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 18px;">
+            <div>
+              <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>Répertoire Officiel des Adhérents &amp; Inscrits CRM (2 715 Membres DWH)</span>
+              </div>
+              <div style="font-size: 0.82rem; color: #6B7280; font-weight: 500; margin-top: 4px;">
+                Base certifiée PostgreSQL · Filtre dynamique &amp; Exportation PDF
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span class="tag-badge" id="inscrits-count-badge" style="background: rgba(142,14,20,0.1); color: #8E0E14; border: 1px solid rgba(142,14,20,0.25); font-weight: 800; padding: 6px 14px; font-size: 0.82rem;">
+                Chargement...
+              </span>
+              <button type="button" class="btn-action" onclick="window.exportInscritsPDF()" style="background: #8E0E14; color: #FFFFFF; font-weight: 700; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(142,14,20,0.3); font-size: 0.82rem; transition: all 0.2s;" title="Générer et télécharger la liste filtrée en document PDF officiel">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <span>Extraire PDF</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- BARRE DE FILTRAGE PAR JOUR, SEMAINE, MOIS, TOUT + RECHERCHE -->
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; padding: 10px 14px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+              <span style="font-size: 0.80rem; font-weight: 800; color: #4B5563; text-transform: uppercase; margin-right: 4px;">Période :</span>
+              <div class="inscrits-period-btn-group" style="display: inline-flex; background: #FFFFFF; padding: 3px; border-radius: 8px; border: 1px solid #D1D5DB; gap: 3px;">
+                <button type="button" class="btn-period-inscrits" id="btn-period-jour" onclick="window.filterInscritsByPeriod('jour')" style="border: none; background: transparent; padding: 6px 13px; border-radius: 6px; font-size: 0.80rem; font-weight: 700; color: #4B5563; cursor: pointer;">
+                  Aujourd'hui
+                </button>
+                <button type="button" class="btn-period-inscrits active" id="btn-period-semaine" onclick="window.filterInscritsByPeriod('semaine')" style="border: none; background: #8E0E14; color: #FFFFFF; padding: 6px 13px; border-radius: 6px; font-size: 0.80rem; font-weight: 700; cursor: pointer; box-shadow: 0 1px 4px rgba(142,14,20,0.3);">
+                  Semaine (7j)
+                </button>
+                <button type="button" class="btn-period-inscrits" id="btn-period-mois" onclick="window.filterInscritsByPeriod('mois')" style="border: none; background: transparent; padding: 6px 13px; border-radius: 6px; font-size: 0.80rem; font-weight: 700; color: #4B5563; cursor: pointer;">
+                  Mois (30j)
+                </button>
+                <button type="button" class="btn-period-inscrits" id="btn-period-all" onclick="window.filterInscritsByPeriod('all')" style="border: none; background: transparent; padding: 6px 13px; border-radius: 6px; font-size: 0.80rem; font-weight: 700; color: #4B5563; cursor: pointer;">
+                  Tous
+                </button>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 6px; flex: 1; max-width: 320px; min-width: 200px;">
+              <input type="text" id="inscrits-search-input" placeholder="🔍 Rechercher par nom, tél, email, magasin..." oninput="window.filterInscritsTable()"
+                style="width: 100%; padding: 7px 12px; border-radius: 8px; border: 1px solid #D1D5DB; font-size: 0.82rem; outline: none; background: #FFFFFF; transition: border-color 0.2s;">
+            </div>
+          </div>
+
+          <!-- TABLEAU DES INSCRITS SANS AUCUNE BARRE DE SCROLL HORIZONTAL -->
+          <div class="table-responsive no-horizontal-scroll" style="flex: 1; max-height: 380px; overflow-y: auto; overflow-x: hidden;">
+            <table class="data-table fixed-table" id="table-inscrits-list" style="width: 100%; table-layout: fixed;">
+              <thead>
+                <tr>
+                  <th style="width: 3.5%; text-align: center;">#</th>
+                  <th style="width: 9.5%;">Date</th>
+                  <th style="width: 17%;">Client</th>
+                  <th style="width: 13%;">Téléphone</th>
+                  <th style="width: 25%;">Email</th>
+                  <th style="width: 14%;">Magasin</th>
+                  <th style="width: 5%; text-align: center;">Ach.</th>
+                  <th style="width: 6.5%; text-align: center;">Pts</th>
+                  <th style="width: 6.5%; text-align: center;">Statut</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-inscrits-list">
+                <!-- Rendu dynamique par app.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PIED DE TABLE AVEC STATS ET PAGINATION -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid #E5E7EB; font-size: 0.80rem; color: #6B7280; flex-wrap: wrap; gap: 8px;">
+            <div id="inscrits-summary-stat">
+              Affichage des inscrits
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" class="btn-pagination" id="btn-inscrits-prev" onclick="window.prevInscritsPage()" style="padding: 5px 12px; border-radius: 6px; border: 1px solid #D1D5DB; background: #FFF; font-weight: 700; cursor: pointer; font-size: 0.80rem;">&larr; Précédent</button>
+              <span id="inscrits-page-info" style="font-weight: 700; color: #111827; padding: 0 6px; font-size: 0.82rem;">Page 1 / 1</span>
+              <button type="button" class="btn-pagination" id="btn-inscrits-next" onclick="window.nextInscritsPage()" style="padding: 5px 12px; border-radius: 6px; border: 1px solid #D1D5DB; background: #FFF; font-weight: 700; cursor: pointer; font-size: 0.80rem;">Suivant &rarr;</button>
+            </div>
+          </div>
         </div>
 
-        <!-- 3. PANIER MOYEN -->
-        <div class="report-kpi-card">
-          <div class="report-kpi-label">PANIER MOYEN</div>
-          <div class="report-kpi-val" id="report-panier-moyen">7.1 DT</div>
-          <div class="report-kpi-sub">par transaction</div>
-        </div>
-
-        <!-- 4. ACHETEURS UNIQUES -->
-        <div class="report-kpi-card">
-          <div class="report-kpi-label">ACHETEURS UNIQUES</div>
-          <div class="report-kpi-val" id="report-acheteurs-uniques">171</div>
-          <div class="report-kpi-sub" id="report-sub-acheteurs">clients actifs</div>
-        </div>
-
-        <!-- 5. NOUVEAUX INSCRITS -->
-        <div class="report-kpi-card">
-          <div class="report-kpi-label">NOUVEAUX INSCRITS</div>
-          <div class="report-kpi-val" id="report-nouveaux-inscrits">728</div>
-          <div class="report-kpi-sub" id="report-sub-inscrits">sur 742 au total (cumulé)</div>
-        </div>
-
-        <!-- 6. POINTS DE VENTE ACTIFS -->
-        <div class="report-kpi-card">
-          <div class="report-kpi-label">POINTS DE VENTE ACTIFS</div>
-          <div class="report-kpi-val" id="report-pdv-actifs">16 / 20</div>
-          <div class="report-kpi-sub">réseau engagé</div>
-        </div>
       </div>
 
+
       <!-- ======================================================== -->
-      <!-- SECTION 2 : RÉPARTITION PAR POINT DE VENTE (PAGE 2)     -->
-      <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
+      
+      <!-- SECTION 2 : RÉPARTITION, CLASSEMENT ET CARTOGRAPHIE DES POINTS DE VENTE (GRILLE 2x2 ÉQUILIBRÉE) -->
+      <div class="bondin-report-section-header" style="margin: 14px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">2</span>
-        <h2 class="bondin-section-title">Répartition par point de vente</h2>
+        <h2 class="bondin-section-title">Répartition, Classement &amp; Cartographie des Points de Vente (Réseau ENA w BONDIN)</h2>
       </div>
-
-      <div class="visual-card" style="margin-bottom: 24px; padding: 22px 28px;">
-        <div class="visual-title-center" style="text-align: left; margin-bottom: 16px; font-size: 0.82rem; font-weight: 800; color: #8E0E14; letter-spacing: 0.08em; text-transform: uppercase;" id="donut-section-title">
-          RÉPARTITION DES ACHATS DE LA SEMAINE
+      
+      <!-- GRILLE 2x2 ÉQUILIBRÉE : VISUALISATIONS LISIBLES ET GRANDES, CARTO EN CADRE À CÔTÉ -->
+      <div class="visuals-grid-2x2" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 24px;">
+        
+        <!-- CARTE 1 (HAUT-GAUCHE) : RÉPARTITION PAR POINT DE VENTE (DONUT GRAND & LISIBLE) -->
+        <div class="visual-card" style="display: flex; flex-direction: column; min-height: 440px; padding: 22px 24px;">
+          <div class="visual-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-10z"/></svg>
+              <span>Répartition par Point de Vente</span>
+            </div>
+            <span class="tag-badge gold" style="font-size: 0.74rem; padding: 4px 10px;">527 achats · Semaine</span>
+          </div>
+          
+          <div class="report-donut-wrapper" style="padding: 12px 0; display: flex; align-items: center; justify-content: space-around; gap: 24px; flex: 1;">
+            <div class="report-donut-chart-box" style="position: relative; width: 220px; height: 220px; flex-shrink: 0;">
+              <canvas id="chart-etablissements-donut"></canvas>
+              <div class="report-donut-center-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                <div class="report-donut-center-num" id="donut-center-num" style="font-size: 1.65rem; font-weight: 900; color: #111827; line-height: 1;">527</div>
+                <div class="report-donut-center-sub" id="donut-center-sub" style="font-size: 0.75rem; font-weight: 800; color: #8E0E14; text-transform: uppercase; margin-top: 4px;">achats</div>
+              </div>
+            </div>
+            
+            <div class="report-donut-legend" id="donut-report-legend" style="flex: 1; display: flex; flex-direction: column; gap: 7px; font-size: 0.85rem; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; border-radius: 6px; background: rgba(142,14,20,0.05);">
+                <span style="display:flex; align-items:center; gap: 8px; font-weight: 700; color: #1F2937;"><span class="report-donut-legend-dot" style="width: 10px; height: 10px; border-radius: 3px; background:#8E0E14; flex-shrink: 0;"></span>Cafétéria Le Kef</span>
+                <strong style="color: #8E0E14; font-size: 0.95rem;">27%</strong>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; border-radius: 6px;">
+                <span style="display:flex; align-items:center; gap: 8px; font-weight: 700; color: #1F2937;"><span class="report-donut-legend-dot" style="width: 10px; height: 10px; border-radius: 3px; background:#C00E29; flex-shrink: 0;"></span>Tunis Liberté</span>
+                <strong style="color: #C00E29; font-size: 0.95rem;">17%</strong>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; border-radius: 6px;">
+                <span style="display:flex; align-items:center; gap: 8px; font-weight: 700; color: #1F2937;"><span class="report-donut-legend-dot" style="width: 10px; height: 10px; border-radius: 3px; background:#D97706; flex-shrink: 0;"></span>La Marsa</span>
+                <strong style="color: #D97706; font-size: 0.95rem;">16%</strong>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; border-radius: 6px;">
+                <span style="display:flex; align-items:center; gap: 8px; font-weight: 700; color: #1F2937;"><span class="report-donut-legend-dot" style="width: 10px; height: 10px; border-radius: 3px; background:#B45309; flex-shrink: 0;"></span>Menzah VI</span>
+                <strong style="color: #B45309; font-size: 0.95rem;">13%</strong>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; border-radius: 6px;">
+                <span style="display:flex; align-items:center; gap: 8px; font-weight: 700; color: #1F2937;"><span class="report-donut-legend-dot" style="width: 10px; height: 10px; border-radius: 3px; background:#7C3AED; flex-shrink: 0;"></span>Succ. Menzah</span>
+                <strong style="color: #7C3AED; font-size: 0.95rem;">5%</strong>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; border-radius: 6px;">
+                <span style="display:flex; align-items:center; gap: 8px; font-weight: 700; color: #1F2937;"><span class="report-donut-legend-dot" style="width: 10px; height: 10px; border-radius: 3px; background:#10B981; flex-shrink: 0;"></span>Cafétéria France</span>
+                <strong style="color: #10B981; font-size: 0.95rem;">5%</strong>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; border-radius: 6px;">
+                <span style="display:flex; align-items:center; gap: 8px; font-weight: 600; color: #6B7280;"><span class="report-donut-legend-dot" style="width: 10px; height: 10px; border-radius: 3px; background:#9CA3AF; flex-shrink: 0;"></span>Autres Magasins</span>
+                <strong style="color: #6B7280; font-size: 0.95rem;">17%</strong>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 10px; font-size: 0.76rem; color: #6B7280; text-align: center; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 8px;">
+            💡 Cliquer sur un magasin pour filtrer l'ensemble du tableau de bord
+          </div>
         </div>
-        <div class="report-donut-wrapper">
-          <div class="report-donut-chart-box">
-            <canvas id="chart-etablissements-donut"></canvas>
-            <div class="report-donut-center-text">
-              <div class="report-donut-center-num" id="donut-center-num">527</div>
-              <div class="report-donut-center-sub" id="donut-center-sub">achats</div>
+
+        <!-- CARTE 2 (HAUT-DROITE) : CARTOGRAPHIE PAR RÉGION & MAGASINS (TUNISIE) - EN CADRE À CÔTÉ -->
+        <div class="visual-card" style="display: flex; flex-direction: column; min-height: 440px; padding: 22px 24px;">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <div class="visual-title-center" style="margin: 0; text-align: left; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                <span>Cartographie par Région &amp; Magasins (Tunisie)</span>
+              </div>
+              <div id="map-live-ticker" style="font-size: 0.76rem; color: #059669; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+                <span class="live-dot-pulse" style="width: 6px; height: 6px;"></span>
+                <span>Flux Caisse Direct : Dernier scan à Tunis Liberté</span>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button type="button" class="btn-dwh-ping" style="padding: 5px 12px; font-size: 0.75rem; font-weight: 700;" onclick="window.simulateLiveScan()" title="Simuler un scan caisse magasin et voir la bulle pulser">
+                <span class="live-dot-pulse" style="width: 6px; height: 6px;"></span>
+                <span>Tester Scan</span>
+              </button>
+              <span class="tag-badge info" style="font-size: 0.72rem; padding: 4px 8px;">Réseau National</span>
             </div>
           </div>
-          <div class="report-donut-legend" id="donut-report-legend">
-            <div class="report-donut-legend-item">
-              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#8E0E14;"></span>Cafétéria Le Kef</span>
-              <strong id="donut-pct-kef">27%</strong>
-            </div>
-            <div class="report-donut-legend-item">
-              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#C00E29;"></span>Cafétéria Tunis Liberté</span>
-              <strong id="donut-pct-liberte">17%</strong>
-            </div>
-            <div class="report-donut-legend-item">
-              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#C68A36;"></span>Cafétéria Tunis La Marsa</span>
-              <strong id="donut-pct-marsa">16%</strong>
-            </div>
-            <div class="report-donut-legend-item">
-              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#E06D75;"></span>Cafétéria Tunis MENZAH VI</span>
-              <strong id="donut-pct-menzah">13%</strong>
-            </div>
-            <div class="report-donut-legend-item">
-              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#F8B4B4;"></span>Succursale Tunis Menzah VI</span>
-              <strong id="donut-pct-succ-menzah">5%</strong>
-            </div>
-            <div class="report-donut-legend-item">
-              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#D1D5DB;"></span>Autres</span>
-              <strong id="donut-pct-autres">22%</strong>
-            </div>
-          </div>
+          
+          <div id="map-tunisie-container" style="height: 335px; width: 100%; border-radius: 8px; overflow: hidden; flex: 1;"></div>
         </div>
-      </div>
 
-      <!-- ======================================================== -->
-      <!-- SECTION 3 : CLASSEMENT DES POINTS DE VENTE (PAGE 2)     -->
-      <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">3</span>
-        <h2 class="bondin-section-title">Classement des points de vente</h2>
-      </div>
-
-      <div class="visuals-grid-2col" style="margin-bottom: 24px;">
-        <!-- Left: TOP POINTS DE VENTE, NOMBRE D'ACHATS -->
-        <div class="visual-card" style="padding: 20px 24px;">
-          <div class="visual-title-center" style="text-align: left; margin-bottom: 12px; font-size: 0.80rem; font-weight: 800; color: #8E0E14; letter-spacing: 0.08em; text-transform: uppercase;">
-            TOP POINTS DE VENTE, NOMBRE D'ACHATS
+        <!-- CARTE 3 (BAS-GAUCHE) : CLASSEMENT DES POINTS DE VENTE — NOMBRE D'ACHATS -->
+        <div class="visual-card" style="display: flex; flex-direction: column; min-height: 440px; padding: 22px 24px;">
+          <div class="visual-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span>Classement PDV · Nombre d'Achats</span>
+            </div>
+            <span class="tag-badge info" style="font-size: 0.74rem; padding: 4px 10px;">Top 8 Magasins</span>
           </div>
-          <div style="height: 290px; position: relative;">
+          
+          <div style="position: relative; flex: 1; height: 335px;">
             <canvas id="chart-top-pdv-achats"></canvas>
           </div>
-          <div style="text-align: center; font-size: 0.72rem; color: #6B7280; margin-top: 6px; font-weight: 600;">
-            Nombre d'achats
+          
+          <div style="margin-top: 8px; font-size: 0.76rem; color: #6B7280; text-align: right; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 6px;">
+            Volume des achats enregistrés en caisse (Données vérifiées)
           </div>
         </div>
 
-        <!-- Right: TOP POINTS DE VENTE, CA (DT) -->
-        <div class="visual-card" style="padding: 20px 24px;">
-          <div class="visual-title-center" style="text-align: left; margin-bottom: 12px; font-size: 0.80rem; font-weight: 800; color: #8E0E14; letter-spacing: 0.08em; text-transform: uppercase;">
-            TOP POINTS DE VENTE, CA (DT)
+        <!-- CARTE 4 (BAS-DROITE) : CLASSEMENT DES POINTS DE VENTE — CHIFFRE D'AFFAIRES (DT) -->
+        <div class="visual-card" style="display: flex; flex-direction: column; min-height: 440px; padding: 22px 24px;">
+          <div class="visual-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Classement PDV · Chiffre d'Affaires</span>
+            </div>
+            <span class="tag-badge gold" style="font-size: 0.74rem; padding: 4px 10px;">Montant (DT)</span>
           </div>
-          <div style="height: 290px; position: relative;">
+          
+          <div style="position: relative; flex: 1; height: 335px;">
             <canvas id="chart-top-magasins-mockup"></canvas>
           </div>
-          <div style="text-align: center; font-size: 0.72rem; color: #6B7280; margin-top: 6px; font-weight: 600;">
-            Chiffre d'affaires (DT)
+          
+          <div style="margin-top: 8px; font-size: 0.76rem; color: #6B7280; text-align: right; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 6px;">
+            Montant total du CA scanné (Dinars Tunisiens)
           </div>
         </div>
+
       </div>
 
       <!-- ======================================================== -->
-      <!-- SECTION 4 : TOP 5 CLIENTS (PAGE 2 DU RAPPORT)           -->
+      <!-- SECTION 2.BIS : VISUALISATION TOP CATÉGORIES & GAMMES DE PRODUITS BONDIN -->
       <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
+      <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
         <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">4</span>
-        <h2 class="bondin-section-title">Top 5 clients</h2>
+        <span class="bondin-section-badge">2.B</span>
+        <h2 class="bondin-section-title">Performance &amp; Répartition par Catégorie de Produits (Catalogue BONDIN 1910)</h2>
       </div>
 
-      <div class="visual-card" style="margin-bottom: 24px; padding: 0; overflow: hidden;">
-        <div class="table-responsive" style="margin: 0;">
-          <table class="report-table-top5" id="table-top5-rapport">
-            <thead>
-              <tr>
-                <th style="width: 45px; text-align: center;">#</th>
-                <th>CLIENT</th>
-                <th style="text-align: center;">ACHATS</th>
-                <th style="text-align: right;">DÉPENSE (DT)</th>
-                <th style="text-align: center;">PDV VISITÉS</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr onclick="window.filterByClientName('Bellakhdar Manel')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
-                <td class="rank-cell" style="text-align: center;">1</td>
-                <td><strong>Bellakhdar Manel</strong></td>
-                <td style="text-align: center; font-weight: 600;">29</td>
-                <td style="text-align: right; font-weight: 700;">308.1</td>
-                <td style="text-align: center;">2</td>
-              </tr>
-              <tr onclick="window.filterByClientName('Abdallah Ghedifi')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
-                <td class="rank-cell" style="text-align: center;">2</td>
-                <td><strong>Abdallah Ghedifi</strong></td>
-                <td style="text-align: center; font-weight: 600;">6</td>
-                <td style="text-align: right; font-weight: 700;">123.7</td>
-                <td style="text-align: center;">2</td>
-              </tr>
-              <tr onclick="window.filterByClientName('Dridi Ahmed Aziz')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
-                <td class="rank-cell" style="text-align: center;">3</td>
-                <td><strong>Dridi Ahmed Aziz</strong></td>
-                <td style="text-align: center; font-weight: 600;">3</td>
-                <td style="text-align: right; font-weight: 700;">104.6</td>
-                <td style="text-align: center;">1</td>
-              </tr>
-              <tr onclick="window.filterByClientName('Ghazi Karray')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
-                <td class="rank-cell" style="text-align: center;">4</td>
-                <td><strong>Ghazi Karray</strong></td>
-                <td style="text-align: center; font-weight: 600;">7</td>
-                <td style="text-align: right; font-weight: 700;">89.6</td>
-                <td style="text-align: center;">2</td>
-              </tr>
-              <tr onclick="window.filterByClientName('Derouiche Ahmed')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
-                <td class="rank-cell" style="text-align: center;">5</td>
-                <td><strong>Derouiche Ahmed</strong></td>
-                <td style="text-align: center; font-weight: 600;">3</td>
-                <td style="text-align: right; font-weight: 700;">87.8</td>
-                <td style="text-align: center;">2</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div style="padding: 8px 16px; background: rgba(0,0,0,0.02); font-size: 0.75rem; color: #6B7280; display: flex; justify-content: space-between; align-items: center;">
-          <span>⚡ 55 clients ont réalisé au moins 3 achats durant la semaine (sur 171 acheteurs)</span>
-          <a href="javascript:void(0)" onclick="window.switchToTab('tab-segmentation')" style="color: #8E0E14; font-weight: 700; text-decoration: underline;">Voir la liste complète des 55 clients (Pages 3, 4, 5) &rarr;</a>
-        </div>
-      </div>
-
-      <!-- ======================================================== -->
-      <!-- SECTION 5 : CARTOGRAPHIE PAR RÉGION & MAGASINS (TUNISIE) -->
-      <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">5</span>
-        <h2 class="bondin-section-title">Cartographie par Région &amp; Magasins (Tunisie)</h2>
-      </div>
-
-      <div class="visual-card" style="margin-bottom: 24px;">
-        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <div style="display: flex; flex-direction: column; gap: 2px;">
-            <div id="map-live-ticker" style="font-size: 0.74rem; color: #059669; font-weight: 700; display: flex; align-items: center; gap: 4px;">
-              <span class="live-dot-pulse" style="width: 5px; height: 5px;"></span>
-              <span>Flux Caisse Direct : Dernier scan à Tunis Liberté</span>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <button type="button" class="btn-dwh-ping" style="padding: 4px 10px; font-size: 0.72rem;" onclick="window.simulateLiveScan()" title="Simuler un scan caisse magasin et voir la bulle pulser">
-              <span class="live-dot-pulse" style="width: 5px; height: 5px;"></span>
-              <span>Tester Scan Magasin</span>
-            </button>
-            <span class="tag-badge info" style="font-size: 0.7rem;">20 Points de Vente &bull; Réseau National</span>
-          </div>
-        </div>
-        <div id="map-tunisie-container"></div>
-      </div>
-
-      <!-- ======================================================== -->
-      <!-- SECTION 6 : HEATMAP TEMPORELLE AFFLUENCE DES SCANS QR    -->
-      <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">6</span>
-        <h2 class="bondin-section-title" id="heatmap-title-text">Heatmap Temporelle : Affluence des Scans QR (13 306 scans &bull; Historique Global Consolidé (Avril - Octobre 2026))</h2>
-      </div>
-
-      <div class="visual-card" style="margin-bottom: 24px;">
-        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 0.85rem; font-weight: 700; color: #6B7280;">
-            Répartition horaire (8h &agrave; 22h) par jour de la semaine
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <span class="tag-badge info" style="font-size: 0.7rem;">Heures de Pointe Caisse</span>
-          </div>
-        </div>
-        <div class="heatmap-container" id="heatmap-time-container">
-          <!-- Injecté dynamiquement par JavaScript -->
-        </div>
-      </div>
-
-      <!-- ======================================================== -->
-      <!-- SECTION 7 : MATRICE DE RÉTENTION PAR COHORTE MENSUELLE   -->
-      <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">7</span>
-        <h2 class="bondin-section-title" id="cohort-matrix-title">Matrice de Rétention par Cohorte Mensuelle (Stickiness Client Consolidé)</h2>
-      </div>
-
-      <div class="visual-card" style="margin-bottom: 24px;">
-        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 0.85rem; font-weight: 700; color: #6B7280;">
-            Taux de réachat des clients cohortés depuis leur premier mois d'inscription
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <div class="cohort-granularity-group" role="group" aria-label="Granularité des cohortes de rétention">
-              <button type="button" class="btn-cohort-grain active" data-grain="month" onclick="window.setCohortGranularity('month')" title="Analyser les cohortes par mois d'inscription">Par Mois</button>
-              <button type="button" class="btn-cohort-grain" data-grain="week" onclick="window.setCohortGranularity('week')" title="Analyser les cohortes par semaine">Par Semaine</button>
-              <button type="button" class="btn-cohort-grain" data-grain="day" onclick="window.setCohortGranularity('day')" title="Analyser les cohortes journalières (30 derniers jours)">Par Jour</button>
-            </div>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <table class="data-table cohort-table" id="table-cohort-retention">
-            <thead>
-              <tr id="cohort-thead-row">
-                <th>Cohorte</th>
-                <th>Inscrits</th>
-                <th>Mois 0</th>
-                <th>Mois +1</th>
-                <th>Mois +2</th>
-                <th>Mois +3</th>
-                <th>Mois +4</th>
-                <th>Mois +5</th>
-                <th>Mois +6</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Injecté dynamiquement par JavaScript -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ======================================================== -->
-      <!-- SECTION 8 : TOP CATÉGORIES & DÉCOMPOSITION (PAGE 3)     -->
-      <!-- ======================================================== -->
-      <div class="bondin-report-section-header">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">8</span>
-        <h2 class="bondin-section-title">Top Catégories &amp; Analyses Complémentaires (Rapport Page 3)</h2>
-      </div>
-
-      <div class="visuals-grid-2col" style="margin-bottom: 24px;">
-        <!-- TOP CATÉGORIES (PAGE 3 DU RAPPORT) -->
-        <div class="visual-card">
-          <div class="visual-header">
-            <div class="visual-title-center">Top Catégories de Produits (Rapport Page 3)</div>
-            <span class="tag-badge gold" style="font-size: 0.65rem;">Page 3 Rapport</span>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 9px; padding-top: 6px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(142,14,20,0.06); border-radius: 8px; border-left: 3px solid #8E0E14;">
-              <div>
-                <strong style="font-size: 0.84rem; color: #111827;">Cafés &amp; boissons chaudes</strong>
-                <div style="font-size: 0.70rem; color: #6B7280;">Cafétérias &bull; Espresso, Direct &bull; Volume majeur</div>
+      <!-- GRILLE 2 COLONNES TOP CATÉGORIES -->
+      <div class="visuals-grid-2x2" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 24px;">
+        
+        <!-- CARTE GAUCHE : BARRES EMPILÉES PAR GAMME (SUCCURSALES GROS VS CAFÉTÉRIAS DÉTAIL) -->
+        <div class="visual-card" style="display: flex; flex-direction: column; min-height: 440px; padding: 22px 24px;">
+          <div class="visual-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <span>Top Catégories · Ventes par Canal (Gros vs Détail)</span>
               </div>
-              <span style="font-weight: 800; font-size: 0.84rem; color: #8E0E14;">10 136 scans</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(142,14,20,0.06); border-radius: 8px; border-left: 3px solid #8E0E14;">
-              <div>
-                <strong style="font-size: 0.84rem; color: #111827;">CAFE TORREFIE / Café 100% Arabica Lavé</strong>
-                <div style="font-size: 0.70rem; color: #6B7280;">Café Torréfié en Grains &amp; Moulu Premium</div>
+              <div style="font-size: 0.74rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
+                Chiffre d'affaires comparé : Succursales (B2B/Gros) vs Cafétérias (Comptoir)
               </div>
-              <span style="font-weight: 800; font-size: 0.84rem; color: #8E0E14;">48 500 DT</span>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(217,119,6,0.06); border-radius: 8px; border-left: 3px solid #D97706;">
-              <div>
-                <strong style="font-size: 0.84rem; color: #111827;">CAFE TORREFIE / Café de Qualité Supérieure</strong>
-                <div style="font-size: 0.70rem; color: #6B7280;">Mélange Signature Tradition BONDIN</div>
-              </div>
-              <span style="font-weight: 800; font-size: 0.84rem; color: #D97706;">33 200 DT</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(16,185,129,0.06); border-radius: 8px; border-left: 3px solid #10B981;">
-              <div>
-                <strong style="font-size: 0.84rem; color: #111827;">Gâteaux Prémium</strong>
-                <div style="font-size: 0.70rem; color: #6B7280;">Compléments de panier &bull; Cafétérias</div>
-              </div>
-              <span style="font-weight: 800; font-size: 0.84rem; color: #10B981;">18 400 DT</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.03); border-radius: 8px; border-left: 3px solid #6B7280;">
-              <div>
-                <strong style="font-size: 0.84rem; color: #111827;">Viennoiserie &amp; Croissants</strong>
-                <div style="font-size: 0.70rem; color: #6B7280;">Ventes matinales (8h-11h)</div>
-              </div>
-              <span style="font-weight: 800; font-size: 0.84rem; color: #4B5563;">7 650 DT</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; color: #8E0E14;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #8E0E14;"></span> Succursales</span>
+              <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 700; color: #D97706;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #D97706;"></span> Cafétérias</span>
             </div>
           </div>
-        </div>
 
-        <!-- GAMMES DE CAFÉ & SUCCURSALES VS CAFÉTÉRIAS -->
-        <div class="visual-card">
-          <div class="visual-header">
-            <div class="visual-title-center">CA par Gamme de Café &amp; Type d'Établissement</div>
-            <div class="chart-custom-legend">
-              <span><span class="legend-dot purple-light"></span> Succursales (Gros)</span>
-              <span><span class="legend-dot purple-dark"></span> Cafétérias (Détail)</span>
+          <!-- MINI BADGES STATS TOP CATÉGORIES -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
+            <div style="background: rgba(142,14,20,0.04); border: 1px solid rgba(142,14,20,0.12); border-radius: 8px; padding: 8px 10px; text-align: center;">
+              <div style="font-size: 0.68rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Leader Volume</div>
+              <div style="font-size: 1.05rem; font-weight: 900; color: #8E0E14; margin-top: 2px;">Café Moulu</div>
+              <div style="font-size: 0.70rem; color: #059669; font-weight: 700;">27 650 TND (53%)</div>
+            </div>
+            <div style="background: rgba(217,119,6,0.06); border: 1px solid rgba(217,119,6,0.18); border-radius: 8px; padding: 8px 10px; text-align: center;">
+              <div style="font-size: 0.68rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Prestige Grains</div>
+              <div style="font-size: 1.05rem; font-weight: 900; color: #D97706; margin-top: 2px;">Café Grains</div>
+              <div style="font-size: 0.70rem; color: #D97706; font-weight: 700;">16 340 TND (31%)</div>
+            </div>
+            <div style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.18); border-radius: 8px; padding: 8px 10px; text-align: center;">
+              <div style="font-size: 0.68rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Flux Salons</div>
+              <div style="font-size: 1.05rem; font-weight: 900; color: #059669; margin-top: 2px;">Boissons</div>
+              <div style="font-size: 0.70rem; color: #059669; font-weight: 700;">10 980 TND (Comptoir)</div>
             </div>
           </div>
-          <div class="chart-container-mockup" style="height: 250px;">
+
+          <div style="position: relative; flex: 1; height: 260px;">
             <canvas id="chart-gammes-stacked"></canvas>
           </div>
+
+          <div style="margin-top: 8px; font-size: 0.76rem; color: #6B7280; text-align: right; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 6px;">
+            💡 Cliquer sur une catégorie pour appliquer le filtre croisé sur le dashboard
+          </div>
+        </div>
+
+        <!-- CARTE DROITE : TOP PRODUITS PHARES & RÉPARTITION DU MIX PRODUIT -->
+        <div class="visual-card" style="display: flex; flex-direction: column; min-height: 440px; padding: 22px 24px;">
+          <div class="visual-header" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                <span>Mix Catégories &amp; Produits Phares BONDIN</span>
+              </div>
+              <div style="font-size: 0.74rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
+                Poids dans le panier de consommation et articles les plus scannés
+              </div>
+            </div>
+            <span class="tag-badge gold" style="font-size: 0.74rem; padding: 4px 10px;">5 Gammes Clés</span>
+          </div>
+
+          <!-- LISTE DES TOP PRODUITS AVEC PROGRESS BAR -->
+          <div style="display: flex; flex-direction: column; gap: 11px; flex: 1; justify-content: center; padding: 6px 0;">
+            <!-- Produit 1 -->
+            <div style="background: rgba(142,14,20,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(142,14,20,0.08);">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem; margin-bottom: 4px;">
+                <span style="font-weight: 800; color: #1F2937;">☕ Café Moulu Tradition (500g &amp; 250g)</span>
+                <strong style="color: #8E0E14; font-size: 0.90rem;">27 650 TND · 53.2%</strong>
+              </div>
+              <div style="width: 100%; height: 8px; background: #E5E7EB; border-radius: 999px; overflow: hidden;">
+                <div style="width: 53.2%; height: 100%; background: linear-gradient(90deg, #8E0E14, #B91C1C); border-radius: 999px;"></div>
+              </div>
+            </div>
+
+            <!-- Produit 2 -->
+            <div style="background: rgba(217,119,6,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(217,119,6,0.08);">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem; margin-bottom: 4px;">
+                <span style="font-weight: 800; color: #1F2937;">🫘 Café en Grains Prestige Espresso</span>
+                <strong style="color: #D97706; font-size: 0.90rem;">16 340 TND · 31.4%</strong>
+              </div>
+              <div style="width: 100%; height: 8px; background: #E5E7EB; border-radius: 999px; overflow: hidden;">
+                <div style="width: 31.4%; height: 100%; background: linear-gradient(90deg, #D97706, #F59E0B); border-radius: 999px;"></div>
+              </div>
+            </div>
+
+            <!-- Produit 3 -->
+            <div style="background: rgba(16,185,129,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(16,185,129,0.08);">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem; margin-bottom: 4px;">
+                <span style="font-weight: 800; color: #1F2937;">🥤 Boissons Chaudes &amp; Salons Comptoir</span>
+                <strong style="color: #059669; font-size: 0.90rem;">10 980 TND · 21.1%</strong>
+              </div>
+              <div style="width: 100%; height: 8px; background: #E5E7EB; border-radius: 999px; overflow: hidden;">
+                <div style="width: 21.1%; height: 100%; background: linear-gradient(90deg, #059669, #10B981); border-radius: 999px;"></div>
+              </div>
+            </div>
+
+            <!-- Produit 4 -->
+            <div style="background: rgba(124,58,237,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(124,58,237,0.08);">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem; margin-bottom: 4px;">
+                <span style="font-weight: 800; color: #1F2937;">📦 Capsules &amp; Dosettes Compatibles</span>
+                <strong style="color: #7C3AED; font-size: 0.90rem;">2 950 TND · 5.7%</strong>
+              </div>
+              <div style="width: 100%; height: 8px; background: #E5E7EB; border-radius: 999px; overflow: hidden;">
+                <div style="width: 5.7%; height: 100%; background: linear-gradient(90deg, #7C3AED, #8B5CF6); border-radius: 999px;"></div>
+              </div>
+            </div>
+
+            <!-- Produit 5 -->
+            <div style="background: rgba(75,85,99,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(75,85,99,0.08);">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem; margin-bottom: 4px;">
+                <span style="font-weight: 800; color: #1F2937;">⚙️ Accessoires, Tasses &amp; Cafetières</span>
+                <strong style="color: #4B5563; font-size: 0.90rem;">1 560 TND · 3.0%</strong>
+              </div>
+              <div style="width: 100%; height: 8px; background: #E5E7EB; border-radius: 999px; overflow: hidden;">
+                <div style="width: 3.0%; height: 100%; background: linear-gradient(90deg, #4B5563, #6B7280); border-radius: 999px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 8px; font-size: 0.76rem; color: #6B7280; text-align: center; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 6px;">
+            Données certifiées DWH · Catalogue officiel Maison BONDIN 1910
+          </div>
+        </div>
+
+      </div>
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">3</span>
+        <h2 class="bondin-section-title">Détection des Profils Grossistes &amp; Volumes B2B Suspects (Réseau Succursales)</h2>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 24px; padding: 22px 24px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Surveillance des Gros Volumes d'Achats &amp; Risque Détournement B2B</span>
+            </div>
+            <div style="font-size: 0.76rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
+              Comptes professionnels achetant en succursale (panier moyen &gt; 35 DT, fréquence &gt; 2/semaine) · Contrôle des volumes
+            </div>
+          </div>
+          
+          <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <!-- FILTRE PAR TYPE DE PROFIL : TOUS / GROSSISTES B2B / CLIENTS PARTICULIERS -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.74rem; font-weight: 800; color: #4B5563; text-transform: uppercase;">Profil :</span>
+              <div class="grossistes-profile-filter-group" style="display: inline-flex; background: #F3F4F6; padding: 2px; border-radius: 8px; border: 1px solid #D1D5DB; gap: 2px;">
+                <button type="button" class="btn-grossiste-profile active" id="btn-gprof-all" onclick="window.filterGrossistesProfile('all')"
+                  style="border: none; background: #8E0E14; color: #FFFFFF; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+                  Tous (Consolidé)
+                </button>
+                <button type="button" class="btn-grossiste-profile" id="btn-gprof-b2b" onclick="window.filterGrossistesProfile('b2b')"
+                  style="border: none; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
+                  Grossistes B2B Pur
+                </button>
+                <button type="button" class="btn-grossiste-profile" id="btn-gprof-client" onclick="window.filterGrossistesProfile('client')"
+                  style="border: none; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
+                  Clients Mixtes / Particuliers
+                </button>
+              </div>
+            </div>
+
+            <!-- FILTRE NOMBRE DE LIGNES : TOP 5 / 10 / 20 / 50 -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.74rem; font-weight: 800; color: #4B5563; text-transform: uppercase;">Volume :</span>
+              <div class="grossistes-top-filter-group" role="group" aria-label="Filtrer top grossistes">
+                <button type="button" class="btn-grossiste-top active" data-top="5" onclick="window.filterTopGrossistes(5)" title="Afficher le Top 5">Top 5</button>
+                <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10">Top 10</button>
+                <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20">Top 20</button>
+                <button type="button" class="btn-grossiste-top" data-top="50" onclick="window.filterTopGrossistes(50)" title="Afficher le Top 50 DWH">Top 50</button>
+              </div>
+            </div>
+
+            <span class="tag-badge alert" id="badge-grossistes-surveillance" style="font-size: 0.72rem; font-weight: 800; padding: 4px 10px;">⚡ 375 Comptes B2B Identifiés</span>
+          </div>
+        </div>
+
+        <div class="table-responsive no-horizontal-scroll" style="overflow-x: hidden;">
+          <table class="data-table fixed-table table-grossistes-sync" id="table-grossistes-cockpit" style="width: 100%; table-layout: fixed;">
+            <thead>
+              <tr>
+                <th style="width: 16%;">Client / Raison Sociale</th>
+                <th style="width: 12%;">Numéro</th>
+                <th style="width: 21%;">Email Professionnel</th>
+                <th style="width: 8.5%; text-align: right;">Total CA</th>
+                <th style="width: 7%; text-align: center;">Points</th>
+                <th style="width: 8.5%; text-align: right;">Succursale</th>
+                <th style="width: 7%; text-align: right;">Cafétéria</th>
+                <th style="width: 7%; text-align: right;">Max Ticket</th>
+                <th style="width: 6%; text-align: center;">Fréq.</th>
+                <th style="width: 7%; text-align: center;">Alerte</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté et synchronisé par app.js -->
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- TIMELINE MENSUELLE & SEGMENTS PARETO -->
-      <div class="visuals-grid-2col" style="margin-bottom: 24px;">
-        <div class="visual-card">
-          <div class="visual-header">
-            <div class="visual-title-center">Évolution Mensuelle du Chiffre d'Affaires &amp; Panier Moyen</div>
-          </div>
-          <div class="chart-custom-legend">
-            <span><span class="legend-dot purple-light"></span> Succursales</span>
-            <span><span class="legend-dot purple-dark"></span> Cafétérias</span>
-          </div>
-          <div class="chart-container-mockup" style="height: 240px;">
-            <canvas id="chart-monthly-mockup"></canvas>
-          </div>
-        </div>
-
-        <div class="visual-card">
-          <div class="visual-header">
-            <div class="visual-title-center">Chiffre d'Affaires par Segment Consommateur (Pareto)</div>
-          </div>
-          <div class="chart-custom-legend">
-            <span><span class="legend-dot purple-light"></span> CA Cumulé (TND)</span>
-            <span><span class="legend-dot purple-dark"></span> Clients</span>
-          </div>
-          <div class="chart-container-mockup" style="height: 240px;">
-            <canvas id="chart-segments-mockup"></canvas>
-          </div>
-        </div>
+      
+      <!-- ======================================================== -->
+      <!-- SECTION 4 : ARBRE DE DÉCOMPOSITION STRATÉGIQUE DU CA      -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">4</span>
+        <h2 class="bondin-section-title">Arbre de Décomposition Stratégique du CA Client</h2>
       </div>
-
 
       <!-- Module IA CDC : Arbre de Décomposition IA -->
       <div class="visual-card" style="margin-bottom: 20px;">
@@ -1422,12 +1515,20 @@
             <span class="visual-info-icon" title="Exploration guidée IA : Décomposition du CA Global -> Segments -> Gammes -> Magasins">?</span>
           </div>
         </div>
-        <div id="decomp-tree-container" style="overflow-x: auto; padding: 6px 0;">
+        <div id="decomp-tree-container" style="overflow-x: hidden; padding: 6px 0;">
           <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
         </div>
       </div>
 
-          <!-- MODULE WHAT-IF SIMULATOR DAX (EXIGENCE EXPLICITE CAHIER DES CHARGES PAGE 3) -->
+                <!-- ======================================================== -->
+      <!-- SECTION 5 : SIMULATEUR WHAT-IF & SENSIBILITÉ DU BARÈME    -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">5</span>
+        <h2 class="bondin-section-title">Simulateur Dynamique What-If : Sensibilité Barème &amp; Dette DAX</h2>
+      </div>
+      <!-- MODULE WHAT-IF SIMULATOR DAX (EXIGENCE EXPLICITE CAHIER DES CHARGES PAGE 3) -->
       <div class="visual-card whatif-container" style="margin-bottom: 20px;">
         <div class="visual-header">
           <div class="visual-title-center" style="text-align: left;">
@@ -1509,10 +1610,10 @@
             <span class="exec-kpi-label">Fréquence d'Achat Moyenne</span>
             <span class="exec-kpi-tag success">Cible Atteinte</span>
           </div>
-          <div class="exec-kpi-value" id="kpi-tab2-freq" style="font-size: 1.25rem;">3,8 visites / mois</div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">3,8 visites / mois</div>
           <div class="exec-kpi-footer">
             <span>Cible CDC : 3 à 4 visites</span>
-            <strong id="kpi-tab2-actifs">Actifs : 765 clients</strong>
+            <strong>Actifs : 580 clients</strong>
           </div>
         </div>
 
@@ -1521,7 +1622,7 @@
             <span class="exec-kpi-label">Intervalle Moyen de Réachat</span>
             <span class="exec-kpi-tag info">Rythme Client</span>
           </div>
-          <div class="exec-kpi-value" id="kpi-tab2-interval" style="font-size: 1.25rem;">7,8 jours</div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">7,8 jours</div>
           <div class="exec-kpi-footer">
             <span>Champions : 3,2 j</span>
             <strong>Occasionnels : 24,5 j</strong>
@@ -1533,10 +1634,10 @@
             <span class="exec-kpi-label">Clients Ultra-Fréquents</span>
             <span class="exec-kpi-tag purple">&ge; 3 scans / sem.</span>
           </div>
-          <div class="exec-kpi-value" id="kpi-tab2-ultrafreq" style="font-size: 1.25rem;">147 clients</div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">147 clients</div>
           <div class="exec-kpi-footer">
             <span>Part de la base active</span>
-            <strong id="kpi-tab2-ultrafreq-pct">25,3 % des scans</strong>
+            <strong>25,3 % des scans</strong>
           </div>
         </div>
 
@@ -1545,10 +1646,10 @@
             <span class="exec-kpi-label">Taux de Rédemption Cagnotte</span>
             <span class="exec-kpi-tag gold">Burn Actif</span>
           </div>
-          <div class="exec-kpi-value" id="kpi-tab2-redemption" style="font-size: 1.25rem;">6,03 %</div>
+          <div class="exec-kpi-value" style="font-size: 1.25rem;">6,03 %</div>
           <div class="exec-kpi-footer">
-            <span id="kpi-tab2-convertis">35 clients convertis</span>
-            <strong id="kpi-tab2-burn">16 746 pts brûlés</strong>
+            <span>35 clients convertis</span>
+            <strong>16 746 pts brûlés</strong>
           </div>
         </div>
       </div>
@@ -1619,6 +1720,7 @@
               <button type="button" class="btn-grossiste-top active" data-top="5" onclick="window.filterTopGrossistes(5)" title="Afficher le Top 5 des plus grands grossistes">Top 5</button>
               <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10 des plus grands grossistes">Top 10</button>
               <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20 des plus grands grossistes">Top 20</button>
+              <button type="button" class="btn-grossiste-top" data-top="50" onclick="window.filterTopGrossistes(50)" title="Afficher l'intégralité du Top 50 des grossistes DWH">Top 50</button>
             </div>
             
             <span class="visual-info-icon" title="Détection automatique des comptes professionnels selon le ticket en succursale">?</span>
@@ -1629,12 +1731,15 @@
             <thead>
               <tr>
                 <th>Client (Grossiste / B2B)</th>
-                <th>Achats Succursale</th>
-                <th>Achats Cafétéria</th>
-                <th>Total CA Dépensé</th>
-                <th>Max Ticket Succursale</th>
-                <th>Fréquence Hebdo</th>
-                <th>Statut d'Alerte</th>
+                <th>Numéro</th>
+                <th>Email</th>
+                <th style="text-align: right;">Total CA Dépensé</th>
+                <th style="text-align: center;">Total Points</th>
+                <th style="text-align: right;">Achats Succursale</th>
+                <th style="text-align: right;">Achats Cafétéria</th>
+                <th style="text-align: right;">Max Ticket</th>
+                <th style="text-align: center;">Fréquence</th>
+                <th style="text-align: center;">Statut d'Alerte</th>
               </tr>
             </thead>
             <tbody>
@@ -1644,13 +1749,8 @@
         </div>
       </div>
 
-      <div class="bondin-report-section-header" style="margin: 14px 0 16px 0;">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">6</span>
-        <h2 class="bondin-section-title">Clients Fidèles &amp; Réseau Ambassadeurs</h2>
-      </div>
-      <!-- Module Parrainage & Viralité -->
-      <div class="visual-card" style="margin-bottom: 20px;">
+
+<div class="visual-card" style="margin-bottom: 20px;">
         <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div class="visual-title-center" style="text-align: left; margin: 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Pilotage du Programme Parrainage &amp; Réseau Viral</div>
           <div style="display: flex; align-items: center; gap: 8px;">
@@ -1836,34 +1936,64 @@
         <span>RAPPORT CONFIDENTIEL</span>
       </div>
 
-      <div class="bondin-report-section-header" style="margin: 10px 0 16px 0;">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge">4</span>
-        <h2 class="bondin-section-title">Analyses Multidimensionnelles, Benchmarks &amp; Démographie</h2>
-      </div>
-
-      <!-- BANNIÈRE D'INFORMATION COCKPIT ACCUEIL -->
-      <div class="visual-card" style="margin-bottom: 20px; background: linear-gradient(135deg, rgba(142,14,20,0.05), rgba(217,119,6,0.06)); border: 1px solid rgba(217,119,6,0.25);">
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 12px; padding: 4px 6px;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(142,14,20,0.12); display: flex; align-items: center; justify-content: center; color: #8E0E14; flex-shrink: 0;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            </div>
-            <div>
-              <strong style="color: #8E0E14; font-size: 0.92rem;">Vue Stratégique Premier Plan :</strong>
-              <div style="color: #4B5563; font-size: 0.8rem; margin-top: 1px;">
-                La Cartographie Tunisie, la Heatmap Temporelle (13 306 scans) et la Matrice de Rétention par Cohorte sont intégrées en temps réel sur la page d'accueil (Cockpit Direction).
-              </div>
-            </div>
+      <!-- VISUEL 1 : HEATMAP TEMPORELLE D'AFFLUENCE -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div class="visual-title-center" style="text-align: left; margin: 0;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="heatmap-title-text">Heatmap Temporelle : Affluence des Scans QR par Jour de Semaine &amp; Créneau Horaire (13 097 Transactions)</span>
           </div>
-          <button type="button" class="btn-dwh-ping" onclick="window.switchToTab('tab-cockpit')" style="padding: 6px 14px; font-size: 0.76rem; border-radius: 8px;">
-            <span>&larr; Revenir au Cockpit Accueil</span>
-          </button>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            
+            <span class="tag-badge info">Comportement &amp; Heures de Pointe</span>
+          </div>
+        </div>
+        <div class="heatmap-container" id="heatmap-time-container">
+          <!-- Injecté dynamiquement par JavaScript -->
         </div>
       </div>
 
-      <!-- GRILLE 2 COLONNES : BENCHMARKS & MATRICES -->
+      <!-- GRILLE 2 COLONNES : COHORTES & RADAR -->
       <div class="visuals-grid-2col" style="margin-bottom: 20px;">
+        
+        <!-- VISUEL 2 : MATRICE DE RÉTENTION PAR COHORTE -->
+        <div class="visual-card">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div class="visual-title-center" style="text-align: left; margin: 0;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              <span id="cohort-matrix-title">Matrice de Rétention par Cohorte (Stickiness Client)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="cohort-granularity-group" role="group" aria-label="Granularité des cohortes de rétention">
+                <button type="button" class="btn-cohort-grain active" data-grain="month" onclick="window.setCohortGranularity('month')" title="Analyser les cohortes par mois d'inscription">Par Mois</button>
+                <button type="button" class="btn-cohort-grain" data-grain="week" onclick="window.setCohortGranularity('week')" title="Analyser les cohortes par semaine">Par Semaine</button>
+                <button type="button" class="btn-cohort-grain" data-grain="day" onclick="window.setCohortGranularity('day')" title="Analyser les cohortes journalières (30 derniers jours)">Par Jour</button>
+              </div>
+              
+              <span class="visual-info-icon" title="Pourcentage d'utilisateurs actifs scannant leur QR code au fil du temps après leur date d'adhésion">?</span>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table cohort-table" id="table-cohort-retention">
+              <thead>
+                <tr id="cohort-thead-row">
+                  <th>Cohorte</th>
+                  <th>Inscrits</th>
+                  <th>Mois 0</th>
+                  <th>Mois +1</th>
+                  <th>Mois +2</th>
+                  <th>Mois +3</th>
+                  <th>Mois +4</th>
+                  <th>Mois +5</th>
+                  <th>Mois +6</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Injecté dynamiquement -->
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <!-- VISUEL 3 : RADAR BENCHMARK SUCCURSALES VS CAFÉTÉRIAS -->
         <div class="visual-card">
@@ -1951,8 +2081,8 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="data.js?v=20261022_espresso_gold_v22"></script>
-  <script src="app.js?v=20261022_espresso_gold_v22"></script>
+  <script src="data.js?v=20261022_grid_v26"></script>
+  <script src="app.js?v=20261022_grid_v26"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->

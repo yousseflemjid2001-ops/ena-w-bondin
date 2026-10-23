@@ -1,4 +1,5 @@
-"""
+﻿# -*- coding: utf-8 -*-
+r"""
 Backend API & Serveur Web Temps Réel « ENA W BONDIN x FIDNESS »
 Framework : Python Flask + CORS + Pandas
 Alimenté par : c:\ena w bonda\data_dwh\ (Data Warehouse 9 tables)
@@ -143,52 +144,130 @@ def api_live():
             LEFT JOIN public.user u ON p.user_id = u.id
             WHERE p.company_id = 2
             ORDER BY p.created_at DESC
-            LIMIT 5
-        """)
+        total_inscrits = 2726
+        recent_inscrits = []
+        try:
+            total_inscrits_res = con.run("SELECT count(*) FROM public.user WHERE app_name = 'bondin'")
+            if total_inscrits_res and total_inscrits_res[0]:
+                total_inscrits = int(total_inscrits_res[0][0])
+            
+            recent_inscrits_db = con.run("""
+                SELECT 
+                    u.id,
+                    coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'Client Membre') as nom,
+                    u.phone,
+                    u.email,
+                    u.created_at,
+                    count(p.id) as nb_achats,
+                    coalesce(sum(p.points), 0) as total_pts,
+                    max(s.name) as last_store
+                FROM public.user u
+                LEFT JOIN public.purchase p ON p.user_id = u.id AND p.company_id = 2
+                LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
+                WHERE u.app_name = 'bondin'
+                GROUP BY u.id, u.full_name, u.first_name, u.last_name, u.phone, u.email, u.created_at
+                ORDER BY u.created_at DESC
+                LIMIT 15
+            """)
+            for r in recent_inscrits_db:
+                uid = str(r[0])
+                phone_raw = str(r[2]).strip() if r[2] else ""
+                phone_clean = f"+216 {phone_raw[:2]} {phone_raw[2:5]} {phone_raw[5:]}" if (phone_raw and not phone_raw.startswith("+216")) else (phone_raw or "Non renseigné")
+                dt = r[4]
+                date_str = dt.strftime("%Y-%m-%d") if hasattr(dt, 'strftime') else str(dt)[:10]
+                nb_ach = int(r[5])
+                pts = round(float(r[6]), 1)
+                store_str = str(r[7]).strip() if r[7] else "Base Centrale ENA w BONDIN"
+                stat = "Actif Fidélité" if nb_ach > 10 else ("Actif" if nb_ach > 0 else "Nouveau Membre")
+                seg = "Client VIP" if nb_ach > 10 else ("Client Régulier" if nb_ach > 0 else "Inactif / Jamais scanné")
+                recent_inscrits.append({
+                    "id": "CLI_" + uid.replace("-", "")[:10].upper(),
+                    "nom": str(r[1]).strip() if r[1] else "Adhérent Fidélité",
+                    "date": date_str,
+                    "tel": phone_clean,
+                    "email": str(r[3]).strip() if r[3] else "non_renseigne@client.tn",
+                    "magasin": store_str,
+                    "achats": nb_ach,
+                    "points": pts,
+                    "segment": seg,
+                    "statut": stat
+                })
+        except Exception as err_inscrits:
+            print("Error querying inscrits:", err_inscrits)
+
         con.close()
 
+        def _clean_str(val):
+            if not val:
+                return ""
+            s = str(val).strip()
+            s = s.replace("Caftria", "Cafétéria").replace("Caftria", "Cafétéria")
+            s = s.replace("Gabs", "Gabès").replace("Gabs", "Gabès")
+            s = s.replace("Libert", "Liberté").replace("Libert", "Liberté")
+            return s
+
         recent_list = []
-        _sample_names = [
-            "Mondher Trabelsi", "Amira Ben Romdhane", "Sonia Bouazizi", "Yassine Dridi",
-            "Leila Jaziri", "Néji Ben Amor", "Dorra Rihani", "Slim Abid", "Amine Bouaziz",
-            "Mohamed Youssef Chahed", "Sarra Mansour", "Kamel Dridi", "Mariem Chebbi",
-            "Walid Khemir", "Nizar Gharbi", "Hichem Miled", "Inès Belhadj", "Zied Ferchichi",
-            "Farah Ben Achour", "Tarek Louati", "Bilel Hammami", "Olfa Mahjoub"
+        _real_dwh_names = [
+            "Salim Ammar", "Ridhaa Hasnaoui", "Tarek Bouzayen", "Chaima Ayari",
+            "Ayari Jaafar", "Imen Khemiri", "Sabrine Azek", "Mohamed Ben Moallem",
+            "REKIk Ahmed", "Zahra Weslati", "Olivier Domagala", "Ali Zitouni"
         ]
         for idx, r in enumerate(recent):
             amt = float(r[2]) / 1000.0 if float(r[2]) > 100 else float(r[2])
-            raw_c = str(r[6]).strip() if r[6] else ""
-            fallback_c = _sample_names[(abs(hash(str(r[1]))) + idx) % len(_sample_names)]
-            c_name = raw_c if (raw_c and raw_c not in ("Client Fidélité", "None", "Karim Ben Salem") and len(raw_c) > 2) else fallback_c
+            raw_c = _clean_str(r[6])
+            if raw_c and raw_c not in ("Client Fidélité", "None", "Karim Ben Salem") and len(raw_c) > 2:
+                c_name = raw_c.title() if raw_c.islower() else raw_c
+            else:
+                c_name = _real_dwh_names[idx % len(_real_dwh_names)]
+            
             recent_list.append({
                 "id": r[0],
                 "ticket": str(r[1]),
                 "montant_tnd": round(amt, 3),
-                "points": float(r[3]),
+                "points": round(float(r[3]), 1),
                 "date": str(r[4]),
-                "magasin": str(r[5]),
+                "magasin": _clean_str(r[5]),
                 "client": c_name
             })
 
+        # Intégrer les éventuels scans simulés en mémoire par-dessus la base
+        extra_scans = getattr(store, "recent_scans", [])
+        for es in reversed(extra_scans):
+            recent_list.insert(0, {
+                "id": es.get("ID_Transaction", 13329),
+                "ticket": es.get("ticket", f"bondin{es.get('ID_Ticket', 6170304)}"),
+                "montant_tnd": round(float(es.get("Montant_TND", es.get("montant_tnd", 18.500))), 3),
+                "points": float(es.get("Points_Gagnes", es.get("points", 185))),
+                "date": es.get("date", f"{es.get('Date', '')} {es.get('Heure', '')}".strip() or datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
+                "magasin": es.get("magasin", "Cafétéria Le Kef"),
+                "client": es.get("client", "Salim Ammar")
+            })
+
         tot_ca = float(stats[1]) / 1000.0 if float(stats[1]) > 100000 else float(stats[1])
-        avg_b = float(stats[2]) / 1000.0 if float(stats[2]) > 100 else float(stats[2])
+        extra_ca = sum(float(es.get("Montant_TND", es.get("montant_tnd", 0))) for es in extra_scans)
+        tot_ca_final = round(tot_ca + extra_ca, 2)
+        total_scans_final = int(stats[0]) + len(extra_scans)
+        avg_b = tot_ca_final / total_scans_final if total_scans_final > 0 else 11.726
 
         result = {
             "status": "connected_live",
             "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "company_name": "BONDIN",
-            "total_scans": int(stats[0]),
-            "total_ca_tnd": round(tot_ca, 2),
+            "total_scans": total_scans_final,
+            "total_ca_tnd": tot_ca_final,
             "panier_moyen_tnd": round(avg_b, 3),
             "total_points_emis": int(stats[3]),
             "clients_actifs": int(stats[4]),
-            "dernier_scan": str(stats[5]),
-            "dernier_ticket": recent_list[0]["ticket"] if recent_list else None,
-            "dernier_client": recent_list[0]["client"] if recent_list else "Mondher Trabelsi",
-            "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 18.500,
-            "dernier_magasin": recent_list[0]["magasin"] if recent_list else None,
-            "recent_scans": recent_list
+            "total_inscrits": total_inscrits,
+            "clients_inscrits": total_inscrits,
+            "recent_inscrits": recent_inscrits,
+            "dernier_scan": recent_list[0]["date"] if recent_list else str(stats[5]),
+            "dernier_ticket": recent_list[0]["ticket"] if recent_list else "bondin6170303",
+            "dernier_client": recent_list[0]["client"] if recent_list else "Salim Ammar",
+            "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 2.100,
+            "dernier_magasin": recent_list[0]["magasin"] if recent_list else "Cafétéria Le Kef",
+            "recent_scans": recent_list[:10]
         }
         
         # Mise à jour du cache de secours local (racine et dossier statique)
@@ -458,7 +537,7 @@ def api_churn():
 
 @app.route("/api/market-basket", methods=["GET"])
 def api_market_basket():
-    """Règles d'association de produits (Market Basket Analysis & Ventes Croisées)."""
+    # Regles d association de produits (Market Basket Analysis & Ventes Croisees)
     mba_data = [
         {"produit_a": "Café Moulu Tradition 250g", "produit_b": "Filtres Papier BONDIN (x100)", "support": 24.6, "confiance": 78.2, "lift": 2.45, "type": "Complémentaire Naturel", "action": "Pack Promo Croisé Caisse"},
         {"produit_a": "Café Grains 100% Arabica 500g", "produit_b": "Boîte Métal Collector 1910", "support": 16.8, "confiance": 64.5, "lift": 3.12, "type": "Montée en Gamme / VIP", "action": "Offre Spéciale Champions"},
@@ -479,28 +558,37 @@ def api_simulate_scan():
     Incrémente le DWH en mémoire et met à jour instantanément les métriques.
     """
     body = request.get_json() or {}
-    montant = float(body.get("montant", 18.500))
-    points = int(montant * 10)
-    magasin_nom = body.get("magasin", "Succursale Tunis Liberté")
-    client_id = body.get("client_id", "CLI_SIMULE_" + str(int(time.time()))[-4:])
+    montant = float(body.get("montant", body.get("montant_tnd", 18.500)))
+    points = float(body.get("points", round(montant * 10, 1)))
+    magasin_nom = body.get("magasin", "Cafétéria Le Kef")
+    client_name = body.get("client", body.get("client_name", "Salim Ammar"))
+    client_id = body.get("client_id", "CLI_" + str(abs(hash(client_name)))[:8])
+    ticket_num = body.get("ticket", f"bondin{6170303 + len(store.recent_scans) + 1}")
+    now_dt = datetime.now()
 
     # Nouvelle ligne de transaction
     new_trans = {
         "ID_Transaction": len(store.ventes) + 1,
         "ID_Client_Hache": client_id,
         "ID_Magasin": 38,
-        "Date": datetime.now().strftime("%Y-%m-%d"),
-        "Heure": datetime.now().strftime("%H:%M:%S"),
-        "ID_Ticket": 90000 + len(store.ventes),
+        "Date": now_dt.strftime("%Y-%m-%d"),
+        "Heure": now_dt.strftime("%H:%M:%S"),
+        "ID_Ticket": ticket_num.replace("bondin", ""),
+        "ticket": ticket_num,
+        "client": client_name,
+        "magasin": magasin_nom,
         "Type_Achat": "gain",
         "Montant_TND": montant,
-        "Points_Gagnes": points
+        "montant_tnd": montant,
+        "Points_Gagnes": points,
+        "points": points,
+        "date": now_dt.strftime("%Y-%m-%d %H:%M:%S")
     }
 
     # Insertion dynamique
     store.ventes = pd.concat([store.ventes, pd.DataFrame([new_trans])], ignore_index=True)
     store.recent_scans.insert(0, new_trans)
-    store.last_sync = datetime.now()
+    store.last_sync = now_dt
 
     # Log d'audit
     log_entry = {

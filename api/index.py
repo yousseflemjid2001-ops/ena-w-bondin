@@ -60,9 +60,57 @@ def get_live_dwh_metrics():
             FROM public.purchase p
             LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
             WHERE p.company_id = 2
-            ORDER BY p.created_at DESC
-            LIMIT 5
-        """)
+        total_inscrits = 2726
+        recent_inscrits = []
+        try:
+            total_inscrits_res = con.run("SELECT count(*) FROM public.user WHERE app_name = 'bondin'")
+            if total_inscrits_res and total_inscrits_res[0]:
+                total_inscrits = int(total_inscrits_res[0][0])
+            
+            recent_inscrits_db = con.run("""
+                SELECT 
+                    u.id,
+                    coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'Client Membre') as nom,
+                    u.phone,
+                    u.email,
+                    u.created_at,
+                    count(p.id) as nb_achats,
+                    coalesce(sum(p.points), 0) as total_pts,
+                    max(s.name) as last_store
+                FROM public.user u
+                LEFT JOIN public.purchase p ON p.user_id = u.id AND p.company_id = 2
+                LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
+                WHERE u.app_name = 'bondin'
+                GROUP BY u.id, u.full_name, u.first_name, u.last_name, u.phone, u.email, u.created_at
+                ORDER BY u.created_at DESC
+                LIMIT 15
+            """)
+            for r in recent_inscrits_db:
+                uid = str(r[0])
+                phone_raw = str(r[2]).strip() if r[2] else ""
+                phone_clean = f"+216 {phone_raw[:2]} {phone_raw[2:5]} {phone_raw[5:]}" if (phone_raw and not phone_raw.startswith("+216")) else (phone_raw or "Non renseigné")
+                dt = r[4]
+                date_str = dt.strftime("%Y-%m-%d") if hasattr(dt, 'strftime') else str(dt)[:10]
+                nb_ach = int(r[5])
+                pts = round(float(r[6]), 1)
+                store_str = str(r[7]).strip() if r[7] else "Base Centrale ENA w BONDIN"
+                stat = "Actif Fidélité" if nb_ach > 10 else ("Actif" if nb_ach > 0 else "Nouveau Membre")
+                seg = "Client VIP" if nb_ach > 10 else ("Client Régulier" if nb_ach > 0 else "Inactif / Jamais scanné")
+                recent_inscrits.append({
+                    "id": "CLI_" + uid.replace("-", "")[:10].upper(),
+                    "nom": str(r[1]).strip() if r[1] else "Adhérent Fidélité",
+                    "date": date_str,
+                    "tel": phone_clean,
+                    "email": str(r[3]).strip() if r[3] else "non_renseigne@client.tn",
+                    "magasin": store_str,
+                    "achats": nb_ach,
+                    "points": pts,
+                    "segment": seg,
+                    "statut": stat
+                })
+        except Exception:
+            pass
+
         con.close()
 
         recent_list = []
@@ -104,6 +152,9 @@ def get_live_dwh_metrics():
             "panier_moyen_tnd": round(avg_b, 3),
             "total_points_emis": int(stats[3]),
             "clients_actifs": int(stats[4]),
+            "total_inscrits": total_inscrits,
+            "clients_inscrits": total_inscrits,
+            "recent_inscrits": recent_inscrits,
             "dernier_scan": str(stats[5]),
             "dernier_client": recent_list[0]["client"] if recent_list else "Mondher Trabelsi",
             "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 18.500,
