@@ -60,6 +60,10 @@ def get_live_dwh_metrics():
             FROM public.purchase p
             LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
             WHERE p.company_id = 2
+            ORDER BY p.created_at DESC
+            LIMIT 5
+        """)
+
         total_inscrits = 2726
         recent_inscrits = []
         try:
