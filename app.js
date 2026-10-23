@@ -1685,13 +1685,17 @@ function executeGlobalFilters() {
   }
 
   // k. Carte Leaflet Interactive
-  if (mapInstance) {
-    if (magasin === 'sfax') {
-      mapInstance.flyTo([34.7406, 10.7603], 10, { duration: 1 });
-    } else if (magasin === 'tunis-liberte' || magasin === 'la-marsa' || magasin === 'el-menzah' || role === 'reg_tunis') {
-      mapInstance.flyTo([36.8065, 10.1815], 10, { duration: 1 });
-    } else {
-      mapInstance.flyTo([35.2, 9.8], 5.8, { duration: 1 });
+  if (mapInstance && typeof mapInstance.flyTo === 'function') {
+    try {
+      if (magasin === 'sfax') {
+        mapInstance.flyTo([34.7406, 10.7603], 10, { duration: 1 });
+      } else if (magasin === 'tunis-liberte' || magasin === 'la-marsa' || magasin === 'el-menzah' || role === 'reg_tunis') {
+        mapInstance.flyTo([36.8065, 10.1815], 10, { duration: 1 });
+      } else {
+        mapInstance.flyTo([35.2, 9.8], 5.8, { duration: 1 });
+      }
+    } catch(err) {
+      console.warn("Leaflet flyTo safe handled:", err);
     }
   }
 
@@ -2845,8 +2849,9 @@ function initLeafletMap() {
 
 // Mise à jour dynamique de la cartographie en temps réel lors de chaque scan de caisse
 window.updateMapLiveFeed = function(scan) {
-  if (!window.liveMapRegions || !Array.isArray(window.liveMapRegions)) return;
-  const regions = window.liveMapRegions;
+  try {
+    if (!window.liveMapRegions || !Array.isArray(window.liveMapRegions)) return;
+    const regions = window.liveMapRegions;
   
   let target = null;
   if (scan && scan.magasin) {
@@ -2898,6 +2903,9 @@ window.updateMapLiveFeed = function(scan) {
   if (ticker) {
     ticker.innerHTML = `<span class="live-dot-pulse" style="width: 5px; height: 5px;"></span><span>Scan caisse à l'instant : <strong>${target.name}</strong> (${target.lastClient} &bull; +${addedCa.toFixed(3)} DT) &bull; #${target.lastTicket}</span>`;
   }
+} catch (e) {
+  console.warn("updateMapLiveFeed safe handled:", e);
+}
 };
 
 // ==========================================================================
