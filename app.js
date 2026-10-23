@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTables();
   if (typeof window.renderInscritsTable === 'function') window.renderInscritsTable();
   if (typeof window.initInscriptionsChart === 'function') window.initInscriptionsChart();
+  if (typeof window.initYoYChart === 'function') window.initYoYChart();
+  if (typeof window.initTopCadeauxVisual === 'function') window.initTopCadeauxVisual();
   if (typeof window.startLiveStreamLoop === 'function') window.startLiveStreamLoop();
   renderDecompositionTree();
   updateSyncTimestamps();
@@ -6289,3 +6291,299 @@ window.setInscriptionsGranularity = function(granularity) {
   }
 };
 
+
+
+// ==========================================================================
+// SECTION 2.C : COURBE COMPARATIVE N VS N-1 (CROISSANCE CA & SCANS)
+// ==========================================================================
+window.currentYoYMetric = 'ca';
+
+const YOY_DATA = {
+  ca: {
+    unit: "Chiffre d'Affaires (TND)",
+    labels: ['Avril', 'Mai', 'Juin', 'Juillet', 'Ao?t', 'Septembre', 'Octobre'],
+    n: [3.800, 79.497, 15115.811, 30544.845, 47772.968, 38220.713, 20983.032],
+    n_1: [3.100, 65.000, 12450.000, 24800.000, 39120.000, 31500.000, 17250.000],
+    growth: '+22.0%',
+    growthBadge: '152.7k DT vs 125.2k DT'
+  },
+  scans: {
+    unit: 'Volume de Scans (Fr?quentation)',
+    labels: ['Avril', 'Mai', 'Juin', 'Juillet', 'Ao?t', 'Septembre', 'Octobre'],
+    n: [2, 11, 1937, 3209, 3224, 2868, 1818],
+    n_1: [2, 9, 1620, 2690, 2750, 2410, 1530],
+    growth: '+18.9%',
+    growthBadge: '13 097 vs 11 011 scans'
+  }
+};
+
+window.initYoYChart = function() {
+  const canvas = document.getElementById('chart-comparatif-yoy');
+  if (!canvas) return;
+
+  const metric = window.currentYoYMetric || 'ca';
+  const data = YOY_DATA[metric];
+  if (!data) return;
+
+  if (charts.comparatifYoY) {
+    try { charts.comparatifYoY.destroy(); } catch(e) {}
+  }
+
+  const ctx = canvas.getContext('2d');
+  const gradientN = ctx.createLinearGradient(0, 0, 0, 300);
+  gradientN.addColorStop(0, 'rgba(142, 14, 20, 0.32)');
+  gradientN.addColorStop(0.7, 'rgba(142, 14, 20, 0.08)');
+  gradientN.addColorStop(1, 'rgba(142, 14, 20, 0.00)');
+
+  charts.comparatifYoY = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [
+        {
+          label: 'Ann?e N (2026)',
+          data: data.n,
+          borderColor: '#8E0E14',
+          borderWidth: 3.2,
+          backgroundColor: gradientN,
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#8E0E14',
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 2,
+          pointRadius: 4.5,
+          pointHoverRadius: 7,
+          pointHoverBackgroundColor: '#B91C1C'
+        },
+        {
+          label: 'Ann?e N-1 (2025 - R?f?rence)',
+          data: data.n_1,
+          borderColor: '#9CA3AF',
+          borderWidth: 2.2,
+          borderDash: [6, 6],
+          backgroundColor: 'transparent',
+          fill: false,
+          tension: 0.35,
+          pointBackgroundColor: '#9CA3AF',
+          pointBorderColor: '#FFFFFF',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'end',
+          labels: {
+            usePointStyle: true,
+            boxWidth: 10,
+            font: { size: 11, weight: '700' },
+            color: '#4B5563'
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(26, 12, 8, 0.95)',
+          titleFont: { size: 12, weight: 'bold' },
+          bodyFont: { size: 12, weight: '600' },
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              const val = context.parsed.y;
+              const formatted = metric === 'ca'
+                ? val.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' TND'
+                : Math.round(val).toLocaleString('fr-FR') + ' scans';
+              return ' ' + context.dataset.label + ' : ' + formatted;
+            },
+            afterBody: function(contexts) {
+              if (contexts.length >= 2) {
+                const valN = contexts[0].parsed.y;
+                const valN1 = contexts[1].parsed.y;
+                if (valN1 > 0) {
+                  const pct = ((valN - valN1) / valN1 * 100).toFixed(1);
+                  const sign = pct >= 0 ? '+' : '';
+                  return ['\nCroissance YoY : ' + sign + pct + '%'];
+                }
+              }
+              return [];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(0, 0, 0, 0.04)' },
+          ticks: { font: { size: 11, weight: '600' }, color: '#4B5563' }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 0, 0, 0.05)' },
+          ticks: {
+            font: { size: 11, weight: '600' },
+            color: '#4B5563',
+            callback: function(v) {
+              return metric === 'ca'
+                ? (v >= 1000 ? (v / 1000).toFixed(0) + 'k DT' : v + ' DT')
+                : (v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v);
+            }
+          }
+        }
+      }
+    }
+  });
+};
+
+window.switchYoYMetric = function(metric) {
+  window.currentYoYMetric = metric;
+  const btnCA = document.getElementById('btn-yoy-ca');
+  const btnScans = document.getElementById('btn-yoy-scans');
+
+  if (metric === 'ca') {
+    if (btnCA) {
+      btnCA.style.background = '#8E0E14';
+      btnCA.style.color = '#FFFFFF';
+      btnCA.style.boxShadow = '0 2px 6px rgba(142,14,20,0.25)';
+      btnCA.classList.add('active');
+    }
+    if (btnScans) {
+      btnScans.style.background = 'transparent';
+      btnScans.style.color = '#4B5563';
+      btnScans.style.boxShadow = 'none';
+      btnScans.classList.remove('active');
+    }
+  } else {
+    if (btnScans) {
+      btnScans.style.background = '#8E0E14';
+      btnScans.style.color = '#FFFFFF';
+      btnScans.style.boxShadow = '0 2px 6px rgba(142,14,20,0.25)';
+      btnScans.classList.add('active');
+    }
+    if (btnCA) {
+      btnCA.style.background = 'transparent';
+      btnCA.style.color = '#4B5563';
+      btnCA.style.boxShadow = 'none';
+      btnCA.classList.remove('active');
+    }
+  }
+
+  window.initYoYChart();
+};
+
+// ==========================================================================
+// SECTION 3.B : TOP 10 CADEAUX R?CLAM?S & PILOTAGE DES STOCKS
+// ==========================================================================
+const TOP_10_CADEAUX_DATA = [
+  { rang: 1, nom: "Sac TNT BO PFID", tier: "Access", delivres: 28, coutPts: 250, valTnd: 2.500, stock: 472, statut: "En stock", badgeClass: "green" },
+  { rang: 2, nom: "Porte cl?s BO PFID", tier: "Access", delivres: 22, coutPts: 150, valTnd: 1.500, stock: 328, statut: "En stock", badgeClass: "green" },
+  { rang: 3, nom: "Mug BO PFID", tier: "Access", delivres: 15, coutPts: 600, valTnd: 6.000, stock: 85, statut: "Tension", badgeClass: "info" },
+  { rang: 4, nom: "Casquette BO PFID", tier: "Access", delivres: 11, coutPts: 600, valTnd: 6.000, stock: 64, statut: "Tension", badgeClass: "info" },
+  { rang: 5, nom: "Mug Isotherme BO PFID", tier: "Privil?ge", delivres: 6, coutPts: 1550, valTnd: 15.500, stock: 44, statut: "En stock", badgeClass: "green" },
+  { rang: 6, nom: "Sac Isotherme BO PFID", tier: "Access", delivres: 4, coutPts: 1300, valTnd: 13.000, stock: 36, statut: "En stock", badgeClass: "green" },
+  { rang: 7, nom: "Porte carte en cuir BO PFID", tier: "Privil?ge", delivres: 3, coutPts: 2000, valTnd: 20.000, stock: 17, statut: "Tension", badgeClass: "gold" },
+  { rang: 8, nom: "Bougie FTC BO PFID", tier: "Privil?ge", delivres: 3, coutPts: 2200, valTnd: 22.000, stock: 12, statut: "R?appro", badgeClass: "alert" },
+  { rang: 9, nom: "Service ? caf? BO PFID", tier: "Privil?ge", delivres: 2, coutPts: 2500, valTnd: 25.000, stock: 8, statut: "R?appro", badgeClass: "alert" },
+  { rang: 10, nom: "Portefeuille en cuir BO PFID", tier: "Exclusif", delivres: 1, coutPts: 4000, valTnd: 40.000, stock: 5, statut: "S?curis? VIP", badgeClass: "gold" }
+];
+
+window.initTopCadeauxVisual = function() {
+  const canvas = document.getElementById('chart-top-cadeaux-bar');
+  const tbody = document.getElementById('tbody-stocks-cadeaux');
+
+  if (tbody) {
+    tbody.innerHTML = TOP_10_CADEAUX_DATA.map(item => 
+      <tr style="border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.15s;">
+        <td style="padding: 9px 10px; font-weight: 800; color: #8E0E14;">#</td>
+        <td style="padding: 9px 10px; font-weight: 700; color: #1F2937;">
+          
+          <div style="font-size: 0.70rem; color: #6B7280; font-weight: 500;"> pts / unit?</div>
+        </td>
+        <td style="padding: 9px 10px; text-align: center;">
+          <span style="font-size: 0.70rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: rgba(0,0,0,0.05); color: #4B5563;">
+            
+          </span>
+        </td>
+        <td style="padding: 9px 10px; text-align: right; font-weight: 800; color: #8E0E14;"></td>
+        <td style="padding: 9px 10px; text-align: right; font-weight: 700; color: #111827;"> ex.</td>
+        <td style="padding: 9px 10px; text-align: center;">
+          <span class="tag-badge " style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px;">
+            
+          </span>
+        </td>
+      </tr>
+    ).join('');
+  }
+
+  if (canvas) {
+    if (charts.topCadeauxBar) {
+      try { charts.topCadeauxBar.destroy(); } catch(e) {}
+    }
+
+    const labels = TOP_10_CADEAUX_DATA.map(d => d.nom.replace(' BO PFID', ''));
+    const dataDelivres = TOP_10_CADEAUX_DATA.map(d => d.delivres);
+
+    charts.topCadeauxBar = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Cadeaux D?livr?s',
+          data: dataDelivres,
+          backgroundColor: [
+            '#8E0E14', '#9B111E', '#AB1624', '#BC1B2A', '#CD2030',
+            '#D97706', '#E58A15', '#EA9928', '#F0A93B', '#B45309'
+          ],
+          borderRadius: 6,
+          barThickness: 16
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(26, 12, 8, 0.95)',
+            titleFont: { size: 12, weight: 'bold' },
+            bodyFont: { size: 12, weight: '600' },
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                const item = TOP_10_CADEAUX_DATA[context.dataIndex];
+                const totalPts = (item.delivres * item.coutPts).toLocaleString('fr-FR');
+                const totalTnd = (item.delivres * item.valTnd).toFixed(3);
+                return [
+                   D?livr?s :  unit?s,
+                   Co?t :  pts / ex. (Total :  pts),
+                   ?quivalent :  TND
+                ];
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+            ticks: { font: { size: 10, weight: '600' }, color: '#4B5563' }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { font: { size: 11, weight: '700' }, color: '#1F2937' }
+          }
+        }
+      }
+    });
+  }
+};

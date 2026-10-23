@@ -1420,6 +1420,82 @@
 
       </div>
       <!-- ======================================================== -->
+      
+      <!-- ======================================================== -->
+      <!-- SECTION 2.C : ANALYSE COMPARATIVE N VS N-1 (CA & SCANS)   -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">2.C</span>
+        <h2 class="bondin-section-title">Dynamique Temporelle &amp; Croissance Comparative N vs N-1 (CA &amp; Fr?quentation Scans)</h2>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 24px; padding: 22px 24px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 16px;">
+          <div>
+            <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1.05rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              <span>Courbes de Comparaison Ann?e N vs N-1 &amp; Mesure de la Croissance</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
+              Performance mensuelle certifi?e DWH (2026 vs 2025) ? ?volution du chiffre d'affaires et de la fr?quentation caisse
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="yoy-metric-toggle-group" style="display: inline-flex; background: #F3F4F6; padding: 3px; border-radius: 9px; border: 1px solid #D1D5DB; gap: 3px;">
+              <button type="button" class="btn-yoy-metric active" id="btn-yoy-ca" onclick="window.switchYoYMetric('ca')"
+                style="border: none; background: #8E0E14; color: #FFFFFF; padding: 6px 14px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(142,14,20,0.25);">
+                Chiffre d'Affaires (TND)
+              </button>
+              <button type="button" class="btn-yoy-metric" id="btn-yoy-scans" onclick="window.switchYoYMetric('scans')"
+                style="border: none; background: transparent; padding: 6px 14px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
+                Volume de Scans (Fr?quentation)
+              </button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.03); padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06);">
+              <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.74rem; font-weight: 700; color: #8E0E14;">
+                <span style="width: 14px; height: 3px; background: #8E0E14; display: inline-block; border-radius: 2px;"></span> Ann?e N (2026)
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.74rem; font-weight: 700; color: #9CA3AF;">
+                <span style="width: 14px; height: 2px; border-top: 2px dashed #9CA3AF; display: inline-block;"></span> Ann?e N-1 (2025)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px;">
+          <div style="background: rgba(142,14,20,0.04); border: 1px solid rgba(142,14,20,0.12); border-radius: 10px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Croissance Globale CA</div>
+            <div id="yoy-kpi-growth-ca" style="font-size: 1.25rem; font-weight: 900; color: #8E0E14; margin-top: 2px;">+22.0% YoY</div>
+            <div style="font-size: 0.70rem; color: #059669; font-weight: 600;">152.7k DT vs 125.2k DT</div>
+          </div>
+          <div style="background: rgba(217,119,6,0.06); border: 1px solid rgba(217,119,6,0.18); border-radius: 10px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Gain Fr?quentation Scans</div>
+            <div id="yoy-kpi-growth-scans" style="font-size: 1.25rem; font-weight: 900; color: #D97706; margin-top: 2px;">+18.9% YoY</div>
+            <div style="font-size: 0.70rem; color: #059669; font-weight: 600;">13 097 vs 11 011 scans</div>
+          </div>
+          <div style="background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.18); border-radius: 10px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Panier Moyen Adh?rent</div>
+            <div style="font-size: 1.25rem; font-weight: 900; color: #059669; margin-top: 2px;">11.661 TND</div>
+            <div style="font-size: 0.70rem; color: #059669; font-weight: 600;">+3.2% vs 11.300 TND</div>
+          </div>
+          <div style="background: rgba(30,58,138,0.05); border: 1px solid rgba(30,58,138,0.15); border-radius: 10px; padding: 10px 14px;">
+            <div style="font-size: 0.72rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Taux P?n?tration Fid?lit?</div>
+            <div style="font-size: 1.25rem; font-weight: 900; color: #1E3A8A; margin-top: 2px;">38.4%</div>
+            <div style="font-size: 0.70rem; color: #059669; font-weight: 600;">+9.3 pts d'ancrage client</div>
+          </div>
+        </div>
+
+        <div style="position: relative; width: 100%; height: 350px;">
+          <canvas id="chart-comparatif-yoy"></canvas>
+        </div>
+      </div>
+
       <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">3</span>
@@ -2086,7 +2162,7 @@
   <div id="toast-container" class="toast-container"></div>
 
   <script src="data.js?v=20261023_live_v29"></script>
-  <script src="app.js?v=20261023_live_v29"></script>
+  <script src="app.js?v=20261023_live_v30_yoy_cadeaux"></script>
   <!-- ======================================================== -->
   <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
   <!-- ======================================================== -->
