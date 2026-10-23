@@ -1701,6 +1701,8 @@ function executeGlobalFilters() {
 
   // l. Arbre de Décomposition Stratégique
   updateDecompositionTree(baseCA);
+  try { initYoYChart(); } catch(e) {} // Global filter YoY update
+  if (typeof initYoYChart === 'function') initYoYChart();
 
   // m. Tables Relationnelles adaptées au prorata temporel et filtres globaux
   updateFilteredTables(reseau, segment, periodScaleFactor, magasin, gamme, dStart, dEnd);
@@ -2246,6 +2248,10 @@ function initGauges() {
 // 5. GRILLE 2x3 DES GRAPHIQUES (EXACT DESIGN DU MOCKUP FOURNI)
 // ==========================================================================
 function renderGridCharts() {
+  try { initYoYChart(); } catch(e) {}
+  // YoY Trigger
+  setTimeout(() => { if (typeof initYoYChart === 'function') initYoYChart(); }, 50);
+  // YoY render
   Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
   Chart.defaults.color = '#6B5E78';
 
@@ -6325,7 +6331,8 @@ const YOY_DATA = {
   }
 };
 
-window.initYoYChart = function() {
+function initYoYChart() {
+window.initYoYChart = initYoYChart;
   const canvas = document.getElementById('chart-comparatif-yoy');
   if (!canvas) return;
 
@@ -6503,7 +6510,8 @@ const TOP_10_CADEAUX_DATA = [
   { rang: 10, nom: "Portefeuille en cuir BO PFID", tier: "Exclusif", delivres: 1, coutPts: 4000, valTnd: 40.000, stock: 5, statut: "S?curis? VIP", badgeClass: "gold" }
 ];
 
-window.initTopCadeauxVisual = function() {
+function initTopCadeauxVisual() {
+window.initTopCadeauxVisual = initTopCadeauxVisual;
   const canvas = document.getElementById('chart-top-cadeaux-bar');
   const tbody = document.getElementById('tbody-stocks-cadeaux');
 
