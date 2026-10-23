@@ -6,6 +6,8 @@
 
 let charts = {};
 let mapInstance = null;
+window.initYoYChart = initYoYChart;
+window.initTopCadeauxVisual = initTopCadeauxVisual;
 
 // Configuration globale de l'affichage des infobulles (Tooltips) et animations Chart.js
 if (typeof Chart !== 'undefined' && Chart.defaults) {
@@ -102,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTables();
   if (typeof window.renderInscritsTable === 'function') window.renderInscritsTable();
   if (typeof window.initInscriptionsChart === 'function') window.initInscriptionsChart();
-  if (typeof window.initYoYChart === 'function') window.initYoYChart();
-  if (typeof window.initTopCadeauxVisual === 'function') window.initTopCadeauxVisual();
+  try { initYoYChart(); } catch(e) { console.error('initYoYChart error:', e); }
+  try { initTopCadeauxVisual(); } catch(e) { console.error('initTopCadeauxVisual error:', e); }
   if (typeof window.startLiveStreamLoop === 'function') window.startLiveStreamLoop();
   renderDecompositionTree();
   updateSyncTimestamps();
@@ -6315,15 +6317,15 @@ window.currentYoYMetric = 'ca';
 const YOY_DATA = {
   ca: {
     unit: "Chiffre d'Affaires (TND)",
-    labels: ['Avril', 'Mai', 'Juin', 'Juillet', 'Ao?t', 'Septembre', 'Octobre'],
+    labels: ['Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre'],
     n: [3.800, 79.497, 15115.811, 30544.845, 47772.968, 38220.713, 20983.032],
     n_1: [3.100, 65.000, 12450.000, 24800.000, 39120.000, 31500.000, 17250.000],
     growth: '+22.0%',
     growthBadge: '152.7k DT vs 125.2k DT'
   },
   scans: {
-    unit: 'Volume de Scans (Fr?quentation)',
-    labels: ['Avril', 'Mai', 'Juin', 'Juillet', 'Ao?t', 'Septembre', 'Octobre'],
+    unit: 'Volume de Scans (Fr\u00e9quentation)',
+    labels: ['Avril', 'Mai', 'Juin', 'Juillet', 'Ao\u00fbt', 'Septembre', 'Octobre'],
     n: [2, 11, 1937, 3209, 3224, 2868, 1818],
     n_1: [2, 9, 1620, 2690, 2750, 2410, 1530],
     growth: '+18.9%',
@@ -6356,7 +6358,7 @@ window.initYoYChart = initYoYChart;
       labels: data.labels,
       datasets: [
         {
-          label: 'Ann?e N (2026)',
+          label: 'Ann\u00e9e N (2026)',
           data: data.n,
           borderColor: '#8E0E14',
           borderWidth: 3.2,
@@ -6371,7 +6373,7 @@ window.initYoYChart = initYoYChart;
           pointHoverBackgroundColor: '#B91C1C'
         },
         {
-          label: 'Ann?e N-1 (2025 - R?f?rence)',
+          label: 'Ann\u00e9e N-1 (2025 - R\u00e9f\u00e9rence)',
           data: data.n_1,
           borderColor: '#9CA3AF',
           borderWidth: 2.2,
@@ -6499,15 +6501,15 @@ window.switchYoYMetric = function(metric) {
 // ==========================================================================
 const TOP_10_CADEAUX_DATA = [
   { rang: 1, nom: "Sac TNT BO PFID", tier: "Access", delivres: 28, coutPts: 250, valTnd: 2.500, stock: 472, statut: "En stock", badgeClass: "green" },
-  { rang: 2, nom: "Porte cl?s BO PFID", tier: "Access", delivres: 22, coutPts: 150, valTnd: 1.500, stock: 328, statut: "En stock", badgeClass: "green" },
+  { rang: 2, nom: "Porte cl\u00e9s BO PFID", tier: "Access", delivres: 22, coutPts: 150, valTnd: 1.500, stock: 328, statut: "En stock", badgeClass: "green" },
   { rang: 3, nom: "Mug BO PFID", tier: "Access", delivres: 15, coutPts: 600, valTnd: 6.000, stock: 85, statut: "Tension", badgeClass: "info" },
   { rang: 4, nom: "Casquette BO PFID", tier: "Access", delivres: 11, coutPts: 600, valTnd: 6.000, stock: 64, statut: "Tension", badgeClass: "info" },
-  { rang: 5, nom: "Mug Isotherme BO PFID", tier: "Privil?ge", delivres: 6, coutPts: 1550, valTnd: 15.500, stock: 44, statut: "En stock", badgeClass: "green" },
+  { rang: 5, nom: "Mug Isotherme BO PFID", tier: "Privil\u00e8ge", delivres: 6, coutPts: 1550, valTnd: 15.500, stock: 44, statut: "En stock", badgeClass: "green" },
   { rang: 6, nom: "Sac Isotherme BO PFID", tier: "Access", delivres: 4, coutPts: 1300, valTnd: 13.000, stock: 36, statut: "En stock", badgeClass: "green" },
-  { rang: 7, nom: "Porte carte en cuir BO PFID", tier: "Privil?ge", delivres: 3, coutPts: 2000, valTnd: 20.000, stock: 17, statut: "Tension", badgeClass: "gold" },
-  { rang: 8, nom: "Bougie FTC BO PFID", tier: "Privil?ge", delivres: 3, coutPts: 2200, valTnd: 22.000, stock: 12, statut: "R?appro", badgeClass: "alert" },
-  { rang: 9, nom: "Service ? caf? BO PFID", tier: "Privil?ge", delivres: 2, coutPts: 2500, valTnd: 25.000, stock: 8, statut: "R?appro", badgeClass: "alert" },
-  { rang: 10, nom: "Portefeuille en cuir BO PFID", tier: "Exclusif", delivres: 1, coutPts: 4000, valTnd: 40.000, stock: 5, statut: "S?curis? VIP", badgeClass: "gold" }
+  { rang: 7, nom: "Porte carte en cuir BO PFID", tier: "Privil\u00e8ge", delivres: 3, coutPts: 2000, valTnd: 20.000, stock: 17, statut: "Tension", badgeClass: "gold" },
+  { rang: 8, nom: "Bougie FTC BO PFID", tier: "Privil\u00e8ge", delivres: 3, coutPts: 2200, valTnd: 22.000, stock: 12, statut: "R\u00e9appro", badgeClass: "alert" },
+  { rang: 9, nom: "Service \u00e0 caf\u00e9 BO PFID", tier: "Privil\u00e8ge", delivres: 2, coutPts: 2500, valTnd: 25.000, stock: 8, statut: "R\u00e9appro", badgeClass: "alert" },
+  { rang: 10, nom: "Portefeuille en cuir BO PFID", tier: "Exclusif", delivres: 1, coutPts: 4000, valTnd: 40.000, stock: 5, statut: "S\u00e9curis\u00e9 VIP", badgeClass: "gold" }
 ];
 
 function initTopCadeauxVisual() {
