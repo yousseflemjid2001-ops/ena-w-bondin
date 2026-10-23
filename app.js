@@ -6513,32 +6513,32 @@ const TOP_10_CADEAUX_DATA = [
 ];
 
 function initTopCadeauxVisual() {
-window.initTopCadeauxVisual = initTopCadeauxVisual;
+  window.initTopCadeauxVisual = initTopCadeauxVisual;
   const canvas = document.getElementById('chart-top-cadeaux-bar');
   const tbody = document.getElementById('tbody-stocks-cadeaux');
 
   if (tbody) {
-    tbody.innerHTML = TOP_10_CADEAUX_DATA.map(item => 
-      <tr style="border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.15s;">
-        <td style="padding: 9px 10px; font-weight: 800; color: #8E0E14;">#</td>
-        <td style="padding: 9px 10px; font-weight: 700; color: #1F2937;">
-          
-          <div style="font-size: 0.70rem; color: #6B7280; font-weight: 500;"> pts / unit?</div>
-        </td>
-        <td style="padding: 9px 10px; text-align: center;">
-          <span style="font-size: 0.70rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: rgba(0,0,0,0.05); color: #4B5563;">
-            
-          </span>
-        </td>
-        <td style="padding: 9px 10px; text-align: right; font-weight: 800; color: #8E0E14;"></td>
-        <td style="padding: 9px 10px; text-align: right; font-weight: 700; color: #111827;"> ex.</td>
-        <td style="padding: 9px 10px; text-align: center;">
-          <span class="tag-badge " style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px;">
-            
-          </span>
-        </td>
-      </tr>
-    ).join('');
+    tbody.innerHTML = TOP_10_CADEAUX_DATA.map(function(item) {
+      return '<tr style="border-bottom: 1px solid rgba(0,0,0,0.05); transition: background 0.15s;">' +
+        '<td style="padding: 9px 10px; font-weight: 800; color: #8E0E14;">#' + item.rang + '</td>' +
+        '<td style="padding: 9px 10px; font-weight: 700; color: #1F2937;">' +
+          item.nom +
+          '<div style="font-size: 0.70rem; color: #6B7280; font-weight: 500;">' + item.coutPts.toLocaleString() + ' pts / unit\u00e9</div>' +
+        '</td>' +
+        '<td style="padding: 9px 10px; text-align: center;">' +
+          '<span style="font-size: 0.70rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; background: rgba(0,0,0,0.05); color: #4B5563;">' +
+            item.tier +
+          '</span>' +
+        '</td>' +
+        '<td style="padding: 9px 10px; text-align: right; font-weight: 800; color: #8E0E14;">' + item.delivres + '</td>' +
+        '<td style="padding: 9px 10px; text-align: right; font-weight: 700; color: #111827;">' + item.stock + ' ex.</td>' +
+        '<td style="padding: 9px 10px; text-align: center;">' +
+          '<span class="tag-badge ' + item.badgeClass + '" style="font-size: 0.68rem; font-weight: 800; padding: 3px 8px;">' +
+            item.statut +
+          '</span>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
   }
 
   if (canvas) {
@@ -6546,15 +6546,15 @@ window.initTopCadeauxVisual = initTopCadeauxVisual;
       try { charts.topCadeauxBar.destroy(); } catch(e) {}
     }
 
-    const labels = TOP_10_CADEAUX_DATA.map(d => d.nom.replace(' BO PFID', ''));
-    const dataDelivres = TOP_10_CADEAUX_DATA.map(d => d.delivres);
+    const labels = TOP_10_CADEAUX_DATA.map(function(d) { return d.nom.replace(' BO PFID', ''); });
+    const dataDelivres = TOP_10_CADEAUX_DATA.map(function(d) { return d.delivres; });
 
     charts.topCadeauxBar = new Chart(canvas, {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Cadeaux D?livr?s',
+          label: 'Cadeaux D\u00e9livr\u00e9s',
           data: dataDelivres,
           backgroundColor: [
             '#8E0E14', '#9B111E', '#AB1624', '#BC1B2A', '#CD2030',
@@ -6582,9 +6582,9 @@ window.initTopCadeauxVisual = initTopCadeauxVisual;
                 const totalPts = (item.delivres * item.coutPts).toLocaleString('fr-FR');
                 const totalTnd = (item.delivres * item.valTnd).toFixed(3);
                 return [
-                   D?livr?s :  unit?s,
-                   Co?t :  pts / ex. (Total :  pts),
-                   ?quivalent :  TND
+                  ' D\u00e9livr\u00e9s : ' + item.delivres + ' unit\u00e9s',
+                  ' Co\u00fbt : ' + item.coutPts + ' pts / ex. (Total : ' + totalPts + ' pts)',
+                  ' \u00c9quivalent : ' + totalTnd + ' TND'
                 ];
               }
             }
@@ -6604,4 +6604,4 @@ window.initTopCadeauxVisual = initTopCadeauxVisual;
       }
     });
   }
-};
+}
