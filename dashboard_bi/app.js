@@ -407,6 +407,8 @@ function triggerExecutiveCinematicLoading(selectedRole) {
       document.documentElement.style.overflow = '';
       document.body.style.overflowY = 'auto';
       document.documentElement.style.overflowY = 'auto';
+      const pwdInput = document.getElementById('login-password');
+      if (pwdInput) pwdInput.value = '';
     }
 
     // Après l'animation d'expansion Warp (420ms)
@@ -451,6 +453,8 @@ function finalizeDirectLogin(selectedRole) {
     document.documentElement.style.overflow = '';
     document.body.style.overflowY = 'auto';
     document.documentElement.style.overflowY = 'auto';
+    const pwdInput = document.getElementById('login-password');
+    if (pwdInput) pwdInput.value = '';
   }
 
   const profile = DEMO_PROFILES[selectedRole] || DEMO_PROFILES.dir_gen;
@@ -607,6 +611,11 @@ window.logoutToLoginScreen = function() {
   sessionStorage.removeItem('bondin_auth_role');
   document.documentElement.classList.remove('is-authenticated');
 
+  const emailInput = document.getElementById('login-email');
+  const pwdInput = document.getElementById('login-password');
+  if (emailInput) emailInput.value = '';
+  if (pwdInput) pwdInput.value = '';
+
   const loaderScreen = document.getElementById('executive-loader-screen');
   if (loaderScreen) {
     loaderScreen.style.display = 'none';
@@ -641,16 +650,23 @@ function initAuthGate() {
   
   if (!loginOverlay) return;
 
+  const emailInput = document.getElementById('login-email');
+  const pwdInput = document.getElementById('login-password');
+
   if (forceLogout) {
     localStorage.removeItem('bondin_authenticated');
     sessionStorage.removeItem('bondin_authenticated');
     document.documentElement.classList.remove('is-authenticated');
+    if (emailInput) emailInput.value = '';
+    if (pwdInput) pwdInput.value = '';
     loginOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     initLoginParticles();
     updateLoginScreenMetrics(liveSyncData);
   } else if (forceLogin || !isAuth) {
     document.documentElement.classList.remove('is-authenticated');
+    if (emailInput) emailInput.value = '';
+    if (pwdInput) pwdInput.value = '';
     loginOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     initLoginParticles();
