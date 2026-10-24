@@ -2,45 +2,45 @@
 // Version Exhaustive Conforme au Cahier des Charges & Cadrage Métier 2026 (Live PostgreSQL)
 const DASHBOARD_DATA = {
   kpis: {
-    ca_total: 156158.84,
-    nb_scans: 13317,
-    panier_moyen: 11.726,
-    panier_moyen_succursale: 37.588,
-    panier_moyen_cafeteria: 4.191,
-    clients_inscrits: 2715,
-    clients_actifs: 765,
-    taux_activation: 28.18, // 765 / 2715
-    frequence_mois: 3.65, // Cible CDC: 3 à 4 visites / mois
+    ca_total: 158649.72,
+    nb_scans: 13496,
+    panier_moyen: 11.755,
+    panier_moyen_succursale: 37.625,
+    panier_moyen_cafeteria: 4.195,
+    clients_inscrits: 2729,
+    clients_actifs: 767,
+    taux_activation: 28.11, // 767 / 2729 en direct PostgreSQL
+    frequence_mois: 3.65,
     intervalle_moyen_jours: 8.2,
     retention_30j: 64.2,
     retention_60j: 48.7,
     retention_90j: 37.1,
-    points_earn: 523870,
-    points_burn: 226900,
-    points_solde: 296970,
-    dette_tnd: 2969.700,
-    ratio_earn_burn: 43.31,
-    nb_grossistes: 375,
-    ca_grossistes: 118053.12,
+    points_earn: 532645,
+    points_burn: 264900,
+    points_solde: 267745,
+    dette_tnd: 2677.450,
+    ratio_earn_burn: 49.73,
+    nb_grossistes: 17,
+    ca_grossistes: 45985.677,
     part_ca_grossistes: 77.3,
     nb_ultra_frequents: 165,
     part_ultra_frequents: 25.3,
     ca_avant_cadeau: 60.627,
-    nb_clients_brule: 35,
-    taux_redemption: 4.62,
+    nb_clients_brule: 83,
+    taux_redemption: 5.12,
     clients_churn_risque: 13,
-    taux_churn: 1.72
+    taux_churn: 1.70
   },
 
   // 1. Évolution Mensuelle (Time Intelligence) - Live DWH 7 Mois
-  monthly: [
+    monthly: [
     { mois: "Avril 2026", ca: 3.800, scans: 2, aov: 1.900, croissance_mom: null },
     { mois: "Mai 2026", ca: 79.497, scans: 11, aov: 7.227, croissance_mom: 1992.0 },
     { mois: "Juin 2026", ca: 15115.811, scans: 1937, aov: 7.804, croissance_mom: 18914.3 },
     { mois: "Juillet 2026", ca: 30544.845, scans: 3209, aov: 9.518, croissance_mom: 102.1 },
     { mois: "Août 2026", ca: 47772.968, scans: 3224, aov: 14.818, croissance_mom: 56.4 },
     { mois: "Septembre 2026", ca: 38220.713, scans: 2868, aov: 13.327, croissance_mom: -20.0 },
-    { mois: "Octobre 2026", ca: 20983.032, scans: 1818, aov: 11.542, croissance_mom: -45.1 }
+    { mois: "Octobre 2026", ca: 26912.083, scans: 2245, aov: 11.988, croissance_mom: -29.6 }
   ],
 
   // 2. Ventilation par Gamme de Café (Exigence explicite du Cahier des Charges)
