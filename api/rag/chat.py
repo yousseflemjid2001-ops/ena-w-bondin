@@ -38,12 +38,12 @@ def normalize_rag_query(q):
     return " ".join(q.split())
 
 def build_grounding_context(live_info=None):
-    scans = int(live_info.get("total_scans", 13168)) if live_info else 13168
-    ca = float(live_info.get("total_ca_tnd", 154530.0)) if live_info else 154530.0
+    scans = int(live_info.get("total_scans", 13496)) if live_info else 13496
+    ca = float(live_info.get("total_ca_tnd", 158649.72)) if live_info else 158649.72
     dernier_ticket = live_info.get("dernier_ticket", "bondin6146362") if live_info else "bondin6146362"
     dernier_magasin = live_info.get("dernier_magasin", "Cafétéria Tunis Liberté") if live_info else "Cafétéria Tunis Liberté"
     dernier_scan = live_info.get("dernier_scan", "2026-10-21 12:15:00") if live_info else "2026-10-21 12:15:00"
-    clients_actifs = int(live_info.get("clients_actifs", 761)) if live_info else 761
+    clients_actifs = int(live_info.get("clients_actifs", 767)) if live_info else 767
     aov = ca / scans if scans > 0 else 11.735
 
     return f"""
@@ -55,7 +55,7 @@ def build_grounding_context(live_info=None):
   * Volume Total de Transactions : {scans:,} scans certifiés enregistrés.
   * Panier Moyen Global (AOV) : {aov:.3f} TND.
   * Membres Actifs (au moins 1 scan) : {clients_actifs:,} clients actifs en production.
-  * Total Inscrits Application Mobile : 2 715 comptes créés.
+  * Total Inscrits Application Mobile : 2 729 comptes créés.
   * Dernière Transaction Réelle Enregistrée : Ticket #{dernier_ticket} à la "{dernier_magasin}" le {dernier_scan}.
 - Typologie du Réseau (23 Points de Vente, 6 Régions) :
   * Succursales (Vente en Gros B2B, sacs de café en grains et moulu de tradition) : 72,2% du CA (110 245 TND, 2 933 scans), panier moyen élevé de 37,59 TND. Principaux établissements : Succursale Le Kef (27 291 TND), Succursale Gabès Jara (13 426 TND), Succursale Tunis Menzah VI (12 854 TND), Succursale Gafsa (12 365 TND), Succursale Tunis Liberté (10 237 TND).
@@ -70,10 +70,10 @@ def build_grounding_context(live_info=None):
   * Profils Grossistes B2B : 375 clients identifiés (118 053 TND, soit 77,3% du CA en succursale).
   * Risque Churn : 13 clients sous alerte prioritaire (inactifs > 60 jours). Top 3 à réactiver : CLI_5E42C098B1 (80j, score 95%), CLI_7A2B81C9D0 (72j, score 92%), CLI_3595C46849 (64j, score 88%). Action corrective : code promo REVIENS_BONDIN1910.
 - Cagnotte, Points (Earn & Burn) & Passif Financier :
-  * Total points émis (Earn) : 513 924 points.
-  * Points consommés en cadeaux (Burn) : 226 900 points (35 cadeaux débloqués).
-  * Ratio Earn & Burn : 44,1% (cible CDC 40-60%).
-  * Dette provisionnée au passif du bilan : 2 870,240 TND (287 024 points nets en circulation à 0,010 TND/pt). Couverture de trésorerie : 100%.
+  * Total points émis (Earn) : 532 645 points.
+  * Points consommés en cadeaux (Burn) : 264 900 points (35 cadeaux débloqués).
+  * Ratio Earn & Burn : 49,7% (cible CDC 40-60%).
+  * Dette provisionnée au passif du bilan : 2 677,450 TND (267 745 points nets en circulation à 0,010 TND/pt). Couverture de trésorerie : 100%.
 - Parrainage & Viralité :
   * 206 parrainages initiés par 39 parrains actifs, 10 filleuls convertis (4,85%), 3 189,521 TND de CA incrémental.
   * Top 1 Ambassadeur Star : CLI_F848366F47 avec 128 filleuls parrainés, 6 convertis, 1 945,200 TND de CA généré et 1 280 points de primes reçus.
@@ -128,7 +128,7 @@ CONTEXTE CERTIFIÉ DU TABLEAU DE BORD :
 
     # Modèles cibles vérifiés 2026 : gemini-3.5-flash (actif & quota dispo), puis flash-lite et alternatives
     # Timeout = 8s (Vercel max 10s)
-    for model_name in ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest', 'gemini-3.1-flash-lite', 'gemini-3.7-flash', 'gemini-3.8-flash']:
+    for model_name in ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.0-flash-lite', 'gemini-3.5-flash', 'gemini-flash-latest']:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         req = urllib.request.Request(
             url,
@@ -159,10 +159,10 @@ def fallback_deterministic_rag(raw_question, live_info=None):
     Garantit une réponse instantanée (< 20ms) 100% conforme au CDC 2026 et aux données live.
     """
     q = normalize_rag_query(raw_question)
-    scans = int(live_info.get("total_scans", 13168)) if live_info else 13168
-    ca = float(live_info.get("total_ca_tnd", 154530.0)) if live_info else 154530.0
+    scans = int(live_info.get("total_scans", 13496)) if live_info else 13496
+    ca = float(live_info.get("total_ca_tnd", 158649.72)) if live_info else 158649.72
     aov = float(live_info.get("panier_moyen_tnd", ca / scans if scans > 0 else 11.735)) if live_info else (ca / scans if scans > 0 else 11.735)
-    clients_actifs = int(live_info.get("clients_actifs", 761)) if live_info else 761
+    clients_actifs = int(live_info.get("clients_actifs", 767)) if live_info else 767
     dernier_ticket = live_info.get("dernier_ticket", "bondin6146362") if live_info else "bondin6146362"
     dernier_magasin = live_info.get("dernier_magasin", "Cafétéria Tunis Liberté") if live_info else "Cafétéria Tunis Liberté"
     dernier_scan = live_info.get("dernier_scan", "2026-10-21 12:15:00") if live_info else "2026-10-21 12:15:00"
@@ -227,7 +227,7 @@ def fallback_deterministic_rag(raw_question, live_info=None):
     elif "inscri" in q or ("combien" in q and "client" in q) or "base client" in q or "activation" in q or "utilisat" in q:
         return (
             f"👥 **Base Clients CRM & Taux d'Activation Mobile**\n\n"
-            f"• **Total Inscrits Application Mobile** : **2 715 comptes créés** dans la base CRM.\n"
+            f"• **Total Inscrits Application Mobile** : **2 729 comptes créés** dans la base CRM.\n"
             f"• **Clients Actifs (≥ 1 scan)** : **{clients_actifs:,} clients** qui génèrent le CA fidélité.\n"
             f"• **Taux d'Activation Global** : **28,0%** de conversion au premier scan en caisse.\n"
             f"• **Inactifs Immédiats (0 scan)** : **1 954 membres (72,0%)** ayant téléchargé l'application sans encore franchir le premier achat (cible prioritaire des campagnes push)."
@@ -249,13 +249,13 @@ def fallback_deterministic_rag(raw_question, live_info=None):
     elif "dette" in q or "passif" in q or "provision" in q or "combien coute" in q or "cagnotte" in q or "earn" in q or "burn" in q or "point" in q or "solde" in q:
         return (
             "💰 **Dette Financière Provisionnée & Équilibre Earn & Burn**\n\n"
-            "• **Montant de la Dette au Bilan (Passif)** : **2 870,240 TND** provisionnés en réserve.\n"
-            "• **Volume de Points en Circulation** : **287 024 points** nets non encore convertis.\n"
+            "• **Montant de la Dette au Bilan (Passif)** : **2 677,450 TND** provisionnés en réserve.\n"
+            "• **Volume de Points en Circulation** : **267 745 points** nets non encore convertis.\n"
             "• **Règle de Valorisation CDC** : **1 point = 0,010 TND (10 millimes)** de provision.\n"
             "• **Statistiques de la Cagnotte** :\n"
-            "  - **Points Distribués (Earn)** : **513 924 pts** crédités lors des achats.\n"
-            "  - **Points Consommés (Burn)** : **226 900 pts** convertis en récompenses (35 cadeaux débloqués).\n"
-            "  - **Ratio Earn & Burn** : **44,1%** (parfaitement dans la fourchette cible idéale de 40% à 60%).\n"
+            "  - **Points Distribués (Earn)** : **532 645 pts** crédités lors des achats.\n"
+            "  - **Points Consommés (Burn)** : **264 900 pts** convertis en récompenses (35 cadeaux débloqués).\n"
+            "  - **Ratio Earn & Burn** : **49,7%** (parfaitement dans la fourchette cible idéale de 40% à 60%).\n"
             "• **Couverture de Trésorerie** : **100% sécurisée**."
         )
 
@@ -264,9 +264,9 @@ def fallback_deterministic_rag(raw_question, live_info=None):
         return (
             "🏬 **Performance du Réseau de Magasins BONDIN (23 Établissements, 6 Régions)**\n\n"
             "• **Top 5 des Magasins par Chiffre d'Affaires** :\n"
-            "  1. 🥇 **Succursale Gafsa** : **6 320,100 TND** (achats de tradition B2B)\n"
-            "  2. 🥈 **Cafétéria Gafsa Ville** : **5 885,600 TND** (1 635 scans comptoir)\n"
-            "  3. 🥉 **Succursale Gabès Jara** : **5 636,014 TND**\n"
+            "  1. 🥇 **Succursale Le Kef** : **27 924,12 TND** (achats de tradition B2B)\n"
+            "  2. 🥈 **Succursale Gabès Jara** : **15 318,36 TND** (1 635 scans comptoir)\n"
+            "  3. 🥉 **Cafétéria Gafsa Ville** : **12 058,40 TND**\n"
             "  4. **Succursale Tunis Menzah VI** : **5 156,385 TND**\n"
             "  5. **Succursale Tunis Liberté** : **4 519,646 TND**\n\n"
             "• **Pôles Régionaux Majeurs** : Grand Tunis (46,3% du CA), Le Kef (22,2%), Gafsa (20,5%), Gabès (9,9%).\n"
@@ -383,8 +383,8 @@ def fallback_deterministic_rag(raw_question, live_info=None):
             f"Pour répondre à votre recherche *« {raw_question} »* :\n"
             f"• **Chiffre d'Affaires Fidélité** : **{ca:,.2f} TND** sur **{scans:,} scans QR**.\n"
             f"• **Panier Moyen Global** : **{aov:.3f} TND** par acte d'achat.\n"
-            f"• **Clients Actifs** : **{clients_actifs:,} membres** (sur 2 715 inscrits CRM).\n"
-            f"• **Dette Financière Provisionnée** : **2 870,240 TND** pour 287 024 points en circulation.\n\n"
+            f"• **Clients Actifs** : **{clients_actifs:,} membres** (sur 2 729 inscrits CRM).\n"
+            f"• **Dette Financière Provisionnée** : **2 677,450 TND** pour 267 745 points en circulation.\n\n"
             "💡 *Astuce : Vous pouvez me poser des questions précises comme : « Quel est le panier moyen ? », « Combien de scans ? », « Qui sont les grossistes ? », « Top magasins ? » ou « Parrainage ? ».*"
         )
 

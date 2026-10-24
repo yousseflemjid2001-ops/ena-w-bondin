@@ -1,12 +1,12 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-24 15:06:10",
+  "timestamp": "2026-10-24 16:10:44",
   "company_name": "BONDIN",
-  "total_scans": 13495,
-  "total_ca_tnd": 158631.03,
+  "total_scans": 13499,
+  "total_ca_tnd": 158680.42,
   "panier_moyen_tnd": 11.755,
-  "total_points_emis": 532571,
+  "total_points_emis": 532755,
   "clients_actifs": 767,
   "total_inscrits": 2729,
   "clients_inscrits": 2729,
@@ -192,12 +192,48 @@
       "statut": "Nouveau Membre"
     }
   ],
-  "dernier_scan": "2026-10-24 15:02:55",
-  "dernier_ticket": "bondin6202794",
-  "dernier_client": "Abidi Kamis",
-  "dernier_montant": 2.9,
-  "dernier_magasin": "Cafétéria Tunis MENZAH VI",
+  "dernier_scan": "2026-10-24 15:38:51",
+  "dernier_ticket": "bondin6203451",
+  "dernier_client": "Lies Henchiri",
+  "dernier_montant": 1.9,
+  "dernier_magasin": "Cafétéria Tunis La Marsa",
   "recent_scans": [
+    {
+      "id": 13510,
+      "ticket": "bondin6203451",
+      "montant_tnd": 1.9,
+      "points": 3.8,
+      "date": "2026-10-24 15:38:51",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Lies Henchiri"
+    },
+    {
+      "id": 13509,
+      "ticket": "bondin6203366",
+      "montant_tnd": 21.0,
+      "points": 84.0,
+      "date": "2026-10-24 15:34:14",
+      "magasin": "Succursale Tunis Espagne",
+      "client": "Touti Marwa"
+    },
+    {
+      "id": 13508,
+      "ticket": "bondin6203319",
+      "montant_tnd": 7.8,
+      "points": 21.3,
+      "date": "2026-10-24 15:32:10",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Baaguig Bechir"
+    },
+    {
+      "id": 13507,
+      "ticket": "bondin6202886",
+      "montant_tnd": 18.685,
+      "points": 74.7,
+      "date": "2026-10-24 15:08:46",
+      "magasin": "Succursale Tunis Espagne",
+      "client": "Gheribi Sara"
+    },
     {
       "id": 13506,
       "ticket": "bondin6202794",
@@ -242,6 +278,15 @@
       "date": "2026-10-24 13:44:12",
       "magasin": "Cafétéria Gafsa Ville",
       "client": "Wassim Ncib"
+    },
+    {
+      "id": 13501,
+      "ticket": "bondin6201408",
+      "montant_tnd": 48.3,
+      "points": 193.2,
+      "date": "2026-10-24 13:40:13",
+      "magasin": "Succursale Tunis Libertéé",
+      "client": "Mohamed jraidia"
     }
   ]
 }
