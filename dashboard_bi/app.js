@@ -64,36 +64,59 @@ if (typeof Chart !== 'undefined' && Chart.register) {
   try { Chart.register(bondinDonutCenterPlugin); } catch(e) {}
 }
 
-/** Animation de compteur numérique fluide et dynamique (Counter Ticker) */
-function animateCount(el, targetNum, formatFn, duration = 600) {
+/** Animation de compteur numérique fluide, rapide et dynamique (Ticker Temps Réel) */
+window._forceCounterFromZero = true;
+
+function animateCount(el, targetNum, formatFn, duration = 460, forceFromZero = false) {
   if (!el) return;
-  const rawCurrent = parseFloat(el.getAttribute('data-raw-val'));
-  const start = isNaN(rawCurrent) ? 0 : rawCurrent;
-  el.setAttribute('data-raw-val', targetNum);
+  targetNum = Number(targetNum) || 0;
   
-  if (start === targetNum) {
-    el.innerText = formatFn ? formatFn(targetNum) : targetNum;
-    return;
+  if (el._animId) {
+    cancelAnimationFrame(el._animId);
+    el._animId = null;
   }
-  
+
+  const rawCurrent = parseFloat(el.getAttribute('data-raw-val'));
+  let start = (forceFromZero || window._forceCounterFromZero || isNaN(rawCurrent)) ? 0 : rawCurrent;
+  el.setAttribute('data-raw-val', targetNum);
+
   const startTime = performance.now();
   function updateNumber(now) {
     const elapsed = now - startTime;
     const progress = Math.min(1, elapsed / duration);
-    // Décélération cubique ultra-douce
-    const ease = 1 - Math.pow(1 - progress, 3);
+    // Décélération Quartic ultra-rapide (décollage vif à 0 puis calage précis)
+    const ease = 1 - Math.pow(1 - progress, 4);
     const current = start + (targetNum - start) * ease;
-    el.innerText = formatFn ? formatFn(current) : Math.round(current);
+    el.innerText = formatFn ? formatFn(current) : (Number.isInteger(targetNum) ? Math.round(current).toLocaleString('fr-FR') : current.toFixed(2));
     if (progress < 1) {
-      requestAnimationFrame(updateNumber);
+      el._animId = requestAnimationFrame(updateNumber);
     } else {
       el.innerText = formatFn ? formatFn(targetNum) : (Number.isInteger(targetNum) ? targetNum.toLocaleString('fr-FR') : targetNum.toFixed(3));
+      el._animId = null;
     }
   }
-  requestAnimationFrame(updateNumber);
+  el._animId = requestAnimationFrame(updateNumber);
 }
+window.animateCount = animateCount;
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Réinitialiser immédiatement tous les compteurs à 0 pour l'effet de montée rapide
+  window._forceCounterFromZero = true;
+  const counterInitIds = [
+    'scan-counter', 'ctx-total-ca', 'ctx-scans', 'ctx-active-clients',
+    'kpi-ca-val', 'kpi-scans-summary', 'kpi-aov-val', 'kpi-inscrits-val',
+    'kpi-activation-val', 'kpi-ratio-val', 'kpi-freq-val', 'kpi-cadeaux-val',
+    'kpi-dette-val', 'kpi-total-crm', 'badge-total-crm-count', 'badge-moy-inscri-count',
+    'yoy-kpi-growth-ca', 'yoy-kpi-growth-scans', 'dwh-banner-scans'
+  ];
+  counterInitIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.setAttribute('data-raw-val', '0');
+      el.innerText = '0';
+    }
+  });
+
   initAuthGate();
   initSubbarTabs();
   initSlicers();
@@ -112,8 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initLiveClock();
   renderSankeyFlow();
   renderRewardsCatalog();
-  // renderHeatmap / renderCohortMatrix / renderAdvancedCharts sont appelés
-  // à la demande quand l'onglet tab-avancees est activé (canvas caché = taille 0 sinon)
   window.initThemeSystem();
   initLiveProductionSync();
   updateGeminiBadgeStatus();
@@ -122,9 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try { lucide.createIcons(); } catch(e) {}
   }
   
-  // Animation initiale de réveil des compteurs de KPIs
+  // Animation initiale de réveil des compteurs de KPIs depuis 0
   setTimeout(() => {
     executeGlobalFilters();
+    setTimeout(() => { window._forceCounterFromZero = false; }, 600);
     if (window.lucide) {
       try { lucide.createIcons(); } catch(e) {}
     }
@@ -708,12 +730,14 @@ function initSubbarTabs() {
         
         // Redimensionnement et actualisation automatique de Leaflet, Chart.js et Filtres
         setTimeout(() => {
+          window._forceCounterFromZero = true;
           if (mapInstance && typeof mapInstance.invalidateSize === 'function') {
             try { mapInstance.invalidateSize(); } catch(e) {}
           }
           if (typeof executeGlobalFilters === 'function') {
             try { executeGlobalFilters(); } catch(e) {}
           }
+          setTimeout(() => { window._forceCounterFromZero = false; }, 600);
           Object.values(charts).forEach(c => {
             if (c) {
               if (typeof c.resize === 'function') try { c.resize(); } catch(e) {}
@@ -1574,11 +1598,29 @@ function executeGlobalFilters() {
   const kpiRatio = document.getElementById('kpi-ratio-val');
   if (kpiRatio) animateCount(kpiRatio, ratioEarnBurn, v => `${v.toFixed(1)}%`);
   const kpiFreq = document.getElementById('kpi-freq-val');
-  if (kpiFreq) animateCount(kpiFreq, (aov > 15 ? 4.85 : 3.65), v => v.toFixed(2));
+  if (kpiFreq) animateCount(kpiFreq, (aov > 15 ? 4.85 : 3.65), v => `${v.toFixed(2)} visites/mois`);
   const kpiCadeaux = document.getElementById('kpi-cadeaux-val');
-  if (kpiCadeaux) animateCount(kpiCadeaux, Math.max(1, Math.round(baseBurn * periodScaleFactor)), v => Math.round(v));
+  if (kpiCadeaux) animateCount(kpiCadeaux, Math.max(1, Math.round(baseBurn * periodScaleFactor)), v => `${Math.round(v)} cadeaux`);
   const kpiDette = document.getElementById('kpi-dette-val');
   if (kpiDette) animateCount(kpiDette, baseDette, v => `${v.toFixed(3)} DT`);
+
+  // c. Section 1 Adhérents CRM
+  const elCrm = document.getElementById('badge-total-crm-count');
+  if (elCrm) animateCount(elCrm, baseInscrits, v => `${Math.round(v).toLocaleString('fr-FR')} membres`);
+  const elMoyInscri = document.getElementById('badge-moy-inscri-count');
+  if (elMoyInscri) animateCount(elMoyInscri, 5.25, v => `${v.toFixed(2)} inscrits / j`);
+
+  // d. Section 2.C YoY Tickers
+  const yoyCa = document.getElementById('yoy-kpi-growth-ca');
+  if (yoyCa) animateCount(yoyCa, 22.0, v => `+${v.toFixed(1)}% YoY`);
+  const yoyScn = document.getElementById('yoy-kpi-growth-scans');
+  if (yoyScn) animateCount(yoyScn, 18.9, v => `+${v.toFixed(1)}% YoY`);
+
+  // e. Top Nav Scan Counter & Bannière DWH
+  const topScanCounter = document.getElementById('scan-counter');
+  if (topScanCounter) animateCount(topScanCounter, baseScans, v => Math.round(v).toLocaleString('fr-FR'));
+  const bScans = document.getElementById('dwh-banner-scans');
+  if (bScans) animateCount(bScans, baseScans, v => `${Math.round(v).toLocaleString('fr-FR')} scans certifiés`);
 
   // c. Jauges demi-cercles
   if (charts.gaugeActivation) {
@@ -3450,7 +3492,9 @@ async function fetchLiveProductionData(isManual = false) {
 }
 
 window.refreshLiveDashboard = function() {
+  window._forceCounterFromZero = true;
   fetchLiveProductionData(true);
+  setTimeout(() => { window._forceCounterFromZero = false; }, 800);
 };
 
 function initLiveProductionSync() {
