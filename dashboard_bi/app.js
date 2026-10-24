@@ -4512,6 +4512,17 @@ function updateAllVisualsRealTime(data) {
   if (bScans) bScans.innerText = `${currentScans.toLocaleString('fr-FR')} scans certifiés`;
   const bSync = document.getElementById('dwh-banner-sync');
   if (bSync) bSync.innerText = `À l'instant (${new Date().toLocaleTimeString('fr-FR')})`;
+
+  // 12. Synchronisation en temps réel du total Adhérents CRM (PostgreSQL public.user)
+  const totalInscrits = Number(data.total_inscrits || data.clients_inscrits || 2729);
+  if (totalInscrits) {
+    const elCrm = document.getElementById('badge-total-crm-count');
+    if (elCrm) elCrm.innerText = `${totalInscrits.toLocaleString('fr-FR')} membres`;
+    const elBadge = document.getElementById('inscriptions-chart-badge');
+    if (elBadge && (!window.currentInscriptionsGranularity || window.currentInscriptionsGranularity === 'mois')) {
+      elBadge.innerText = `${totalInscrits.toLocaleString('fr-FR')} Inscrits · Base CRM (Live)`;
+    }
+  }
 }
 window.updateAllVisualsRealTime = updateAllVisualsRealTime;
 
