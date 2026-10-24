@@ -1,16 +1,52 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-23 16:36:40",
+  "timestamp": "2026-10-24 15:06:10",
   "company_name": "BONDIN",
-  "total_scans": 13398,
-  "total_ca_tnd": 156883.63,
-  "panier_moyen_tnd": 11.709,
-  "total_points_emis": 526221,
-  "clients_actifs": 766,
-  "total_inscrits": 2726,
-  "clients_inscrits": 2726,
+  "total_scans": 13495,
+  "total_ca_tnd": 158631.03,
+  "panier_moyen_tnd": 11.755,
+  "total_points_emis": 532571,
+  "clients_actifs": 767,
+  "total_inscrits": 2729,
+  "clients_inscrits": 2729,
   "recent_inscrits": [
+    {
+      "id": "CLI_01A16DD157",
+      "nom": "Zohra cherif",
+      "date": "2026-10-24",
+      "tel": "Non renseigné",
+      "email": "zohra_cherif@yahoo.fr",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A16D5240",
+      "nom": "chema lazzem",
+      "date": "2026-10-24",
+      "tel": "+216 51 395 952",
+      "email": "lazzemchema1@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A1699A75",
+      "nom": "Sawsen Marzougui",
+      "date": "2026-10-23",
+      "tel": "+216 98 680 372",
+      "email": "sawsenmarzougui10@gmail.com",
+      "magasin": "Succursale Tunis Liberté",
+      "achats": 2,
+      "points": 208.0,
+      "segment": "Client Régulier",
+      "statut": "Actif"
+    },
     {
       "id": "CLI_01A167EBCC",
       "nom": "Gadri Atfa",
@@ -154,94 +190,58 @@
       "points": 0.0,
       "segment": "Inactif / Jamais scanné",
       "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1593398",
-      "nom": "krimi walid",
-      "date": "2026-10-20",
-      "tel": "+216 29 033 255",
-      "email": "walidkrimii1920@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A157FC8D",
-      "nom": "Samuel Sahli",
-      "date": "2026-10-20",
-      "tel": "Non renseigné",
-      "email": "samuelito77@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A155F0FB",
-      "nom": "Akkari Hanen",
-      "date": "2026-10-19",
-      "tel": "+216 55 062 170",
-      "email": "akkari.h12@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
-      "statut": "Nouveau Membre"
     }
   ],
-  "dernier_scan": "2026-10-23 16:32:38",
-  "dernier_ticket": "bondin6185819",
-  "dernier_client": "Imen Massoud",
-  "dernier_montant": 22.2,
-  "dernier_magasin": "Succursale Gafsa Ville",
+  "dernier_scan": "2026-10-24 15:02:55",
+  "dernier_ticket": "bondin6202794",
+  "dernier_client": "Abidi Kamis",
+  "dernier_montant": 2.9,
+  "dernier_magasin": "Cafétéria Tunis MENZAH VI",
   "recent_scans": [
     {
-      "id": 13409,
-      "ticket": "bondin6185819",
-      "montant_tnd": 22.2,
-      "points": 88.8,
-      "date": "2026-10-23 16:32:38",
-      "magasin": "Succursale Gafsa Ville",
-      "client": "Imen Massoud"
+      "id": 13506,
+      "ticket": "bondin6202794",
+      "montant_tnd": 2.9,
+      "points": 4.8,
+      "date": "2026-10-24 15:02:55",
+      "magasin": "Cafétéria Tunis MENZAH VI",
+      "client": "Abidi Kamis"
     },
     {
-      "id": 13408,
-      "ticket": "bondin6185506",
+      "id": 13505,
+      "ticket": "bondin6202319",
+      "montant_tnd": 3.4,
+      "points": 3.8,
+      "date": "2026-10-24 14:34:42",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Bell Khdhiri"
+    },
+    {
+      "id": 13504,
+      "ticket": "bondin6201879",
+      "montant_tnd": 2.4,
+      "points": 2.4,
+      "date": "2026-10-24 14:08:06",
+      "magasin": "Cafétéria Tunis Ariana",
+      "client": "Ines Hamed"
+    },
+    {
+      "id": 13503,
+      "ticket": "bondin6201722",
       "montant_tnd": 37.0,
       "points": 148.0,
-      "date": "2026-10-23 16:16:47",
-      "magasin": "Succursale Le Kef",
-      "client": "Bensaid Soumaya"
-    },
-    {
-      "id": 13407,
-      "ticket": "bondin6185218",
-      "montant_tnd": 2.3,
-      "points": 4.2,
-      "date": "2026-10-23 16:03:08",
-      "magasin": "Cafétéria Le Kef",
-      "client": "Bensaid Soumaya"
-    },
-    {
-      "id": 13406,
-      "ticket": "bondin6185128",
-      "montant_tnd": 10.5,
-      "points": 42.0,
-      "date": "2026-10-23 15:57:57",
+      "date": "2026-10-24 13:59:41",
       "magasin": "Succursale Gabès Jara",
-      "client": "Anis BAGDADI Abdellatif"
+      "client": "Lazghab Mohamed Ali"
     },
     {
-      "id": 13405,
-      "ticket": "bondin6184885",
-      "montant_tnd": 9.99,
-      "points": 40.0,
-      "date": "2026-10-23 15:45:47",
-      "magasin": "Succursale Tunis Menzah VI",
-      "client": "Amira ben Gazela"
+      "id": 13502,
+      "ticket": "bondin6201470",
+      "montant_tnd": 2.0,
+      "points": 3.8,
+      "date": "2026-10-24 13:44:12",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Wassim Ncib"
     }
   ]
 }
