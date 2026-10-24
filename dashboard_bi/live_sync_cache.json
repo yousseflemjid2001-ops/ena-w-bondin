@@ -1,12 +1,12 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-10-24 16:10:44",
+  "timestamp": "2026-10-24 16:38:43",
   "company_name": "BONDIN",
-  "total_scans": 13499,
-  "total_ca_tnd": 158680.42,
-  "panier_moyen_tnd": 11.755,
-  "total_points_emis": 532755,
+  "total_scans": 13501,
+  "total_ca_tnd": 158689.61,
+  "panier_moyen_tnd": 11.754,
+  "total_points_emis": 532791,
   "clients_actifs": 767,
   "total_inscrits": 2729,
   "clients_inscrits": 2729,
@@ -192,12 +192,30 @@
       "statut": "Nouveau Membre"
     }
   ],
-  "dernier_scan": "2026-10-24 15:38:51",
-  "dernier_ticket": "bondin6203451",
-  "dernier_client": "Lies Henchiri",
-  "dernier_montant": 1.9,
-  "dernier_magasin": "Cafétéria Tunis La Marsa",
+  "dernier_scan": "2026-10-24 16:38:24",
+  "dernier_ticket": "bondin6204560",
+  "dernier_client": "Chokribouzaine6@Gmail.Com",
+  "dernier_montant": 4.995,
+  "dernier_magasin": "Succursale Gafsa Ville",
   "recent_scans": [
+    {
+      "id": 13512,
+      "ticket": "bondin6204560",
+      "montant_tnd": 4.995,
+      "points": 20.0,
+      "date": "2026-10-24 16:38:24",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Chokribouzaine6@Gmail.Com"
+    },
+    {
+      "id": 13511,
+      "ticket": "bondin6204419",
+      "montant_tnd": 4.2,
+      "points": 16.8,
+      "date": "2026-10-24 16:30:08",
+      "magasin": "Succursale Tunis Menzah VI",
+      "client": "REKIk Ahmed"
+    },
     {
       "id": 13510,
       "ticket": "bondin6203451",
@@ -269,24 +287,6 @@
       "date": "2026-10-24 13:59:41",
       "magasin": "Succursale Gabès Jara",
       "client": "Lazghab Mohamed Ali"
-    },
-    {
-      "id": 13502,
-      "ticket": "bondin6201470",
-      "montant_tnd": 2.0,
-      "points": 3.8,
-      "date": "2026-10-24 13:44:12",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Wassim Ncib"
-    },
-    {
-      "id": 13501,
-      "ticket": "bondin6201408",
-      "montant_tnd": 48.3,
-      "points": 193.2,
-      "date": "2026-10-24 13:40:13",
-      "magasin": "Succursale Tunis Libertéé",
-      "client": "Mohamed jraidia"
     }
   ]
 }
