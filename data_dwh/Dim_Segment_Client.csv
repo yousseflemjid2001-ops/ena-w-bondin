@@ -1,6 +1,0 @@
-﻿ID_Segment,Nom_Segment,Cible_Marketing,Seuil_Dépense
-1,Gros Consommateur (Champion),Clients VIP à fidéliser par cadeaux exclusifs (Top 20% CA),>= 80e percentile
-2,Consommateur Régulier,Clients réguliers à stimuler pour augmenter le panier moyen,50e à 80e percentile
-3,Consommateur Occasionnel,Clients ponctuels à convertir en habitués,< 50e percentile
-4,En Risque d'Attrition (Churn),Clients en baisse d'activité sous 30-60 jours (Campagnes Push),Récence > 60 jours
-5,Inactif / Jamais scanné,Nouveaux inscrits à activer avec offre de premier scan,0 scan
