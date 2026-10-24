@@ -5369,7 +5369,7 @@ window.sendRagMessage = async function() {
       liveContext: liveSyncData || {}
     };
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
     const response = await fetch('/api/rag/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
