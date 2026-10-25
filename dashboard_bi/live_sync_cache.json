@@ -1,0 +1,292 @@
+{
+  "status": "connected_live",
+  "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
+  "timestamp": "2026-10-25 18:52:26",
+  "company_name": "BONDIN",
+  "total_scans": 13579,
+  "total_ca_tnd": 159620.7,
+  "panier_moyen_tnd": 11.755,
+  "total_points_emis": 535831,
+  "clients_actifs": 768,
+  "total_inscrits": 2741,
+  "clients_inscrits": 2741,
+  "recent_inscrits": [
+    {
+      "id": "CLI_01A1737E75",
+      "nom": "aouadi sahbi",
+      "date": "2026-10-25",
+      "tel": "+216 96 701 654",
+      "email": "helmiiayarii@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A172F594",
+      "nom": "Mohamed Karim lazhari",
+      "date": "2026-10-25",
+      "tel": "Non renseigné",
+      "email": "lazhariyoussef721@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A172F196",
+      "nom": "Yosser Bourogaa",
+      "date": "2026-10-25",
+      "tel": "+216 29 191 778",
+      "email": "bourogaayosser@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A172E9D9",
+      "nom": "Mohamed Karim lazhari",
+      "date": "2026-10-25",
+      "tel": "Non renseigné",
+      "email": "karim.lazhari@bhbank.tn",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A172D1C8",
+      "nom": "anouar kubain",
+      "date": "2026-10-25",
+      "tel": "Non renseigné",
+      "email": "anouarkubain@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A172B31D",
+      "nom": "HATEM BEN HAJ",
+      "date": "2026-10-25",
+      "tel": "Non renseigné",
+      "email": "belhadj.hatem@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A172B024",
+      "nom": "aouadi sahbi",
+      "date": "2026-10-25",
+      "tel": "Non renseigné",
+      "email": "helmiiayarii@gmail.fr",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A17245E5",
+      "nom": "Sabrina GHATTAS",
+      "date": "2026-10-25",
+      "tel": "+216 98 680 976",
+      "email": "sabrina.nadine.ghattas@gmail.com",
+      "magasin": "Succursale Tunis Menzah VI",
+      "achats": 2,
+      "points": 176.4,
+      "segment": "Client Régulier",
+      "statut": "Actif"
+    },
+    {
+      "id": "CLI_01A17219C8",
+      "nom": "Mtc Ste",
+      "date": "2026-10-25",
+      "tel": "Non renseigné",
+      "email": "ste.mtc@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A172055A",
+      "nom": "Lucille Carlson",
+      "date": "2026-10-25",
+      "tel": "Non renseigné",
+      "email": "lucillecarlson.36178@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A1720405",
+      "nom": "Khouloud Fattoum",
+      "date": "2026-10-25",
+      "tel": "+216 25 562 698",
+      "email": "khouloudfattoum0@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A16F48C0",
+      "nom": "eleni daniilidou",
+      "date": "2026-10-24",
+      "tel": "Non renseigné",
+      "email": "eleni.el.daniilidou@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A16DD157",
+      "nom": "Zohra cherif",
+      "date": "2026-10-24",
+      "tel": "Non renseigné",
+      "email": "zohra_cherif@yahoo.fr",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A16D5240",
+      "nom": "chema lazzem",
+      "date": "2026-10-24",
+      "tel": "+216 51 395 952",
+      "email": "lazzemchema1@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A1699A75",
+      "nom": "Sawsen Marzougui",
+      "date": "2026-10-23",
+      "tel": "+216 98 680 372",
+      "email": "sawsenmarzougui10@gmail.com",
+      "magasin": "Succursale Tunis Liberté",
+      "achats": 2,
+      "points": 208.0,
+      "segment": "Client Régulier",
+      "statut": "Actif"
+    }
+  ],
+  "dernier_scan": "2026-10-25 17:59:00",
+  "dernier_ticket": "bondin6219262",
+  "dernier_client": "Ayari Jaafar",
+  "dernier_montant": 9.0,
+  "dernier_magasin": "Cafétéria Tunis La Marsa",
+  "recent_scans": [
+    {
+      "id": 13590,
+      "ticket": "bondin6219262",
+      "montant_tnd": 9.0,
+      "points": 22.6,
+      "date": "2026-10-25 17:59:00",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Ayari Jaafar"
+    },
+    {
+      "id": 13589,
+      "ticket": "bondin6218909",
+      "montant_tnd": 1.9,
+      "points": 3.8,
+      "date": "2026-10-25 17:24:25",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Montasser belhoula"
+    },
+    {
+      "id": 13588,
+      "ticket": "bondin6218075",
+      "montant_tnd": 9.99,
+      "points": 40.0,
+      "date": "2026-10-25 16:04:53",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Slimen Abdallah"
+    },
+    {
+      "id": 13587,
+      "ticket": "bondin6217970",
+      "montant_tnd": 4.0,
+      "points": 8.0,
+      "date": "2026-10-25 15:52:30",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Mohamed Amine Nabli"
+    },
+    {
+      "id": 13586,
+      "ticket": "bondin6217830",
+      "montant_tnd": 1.9,
+      "points": 3.8,
+      "date": "2026-10-25 15:36:12",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Lies Henchiri"
+    },
+    {
+      "id": 13585,
+      "ticket": "bondin6217634",
+      "montant_tnd": 4.4,
+      "points": 8.8,
+      "date": "2026-10-25 15:16:40",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Hatem Garram"
+    },
+    {
+      "id": 13584,
+      "ticket": "bondin6217394",
+      "montant_tnd": 5.0,
+      "points": 7.2,
+      "date": "2026-10-25 14:48:15",
+      "magasin": "Cafétéria Tunis MENZAH VI",
+      "client": "Nour El Houda Ben Fatma"
+    },
+    {
+      "id": 13583,
+      "ticket": "bondin6216516",
+      "montant_tnd": 9.2,
+      "points": 23.0,
+      "date": "2026-10-25 13:24:10",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Nabil Ibrahim"
+    },
+    {
+      "id": 13582,
+      "ticket": "bondin6216429",
+      "montant_tnd": 7.1,
+      "points": 11.4,
+      "date": "2026-10-25 13:19:15",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Olivier Domagala"
+    },
+    {
+      "id": 13581,
+      "ticket": "bondin6216390",
+      "montant_tnd": 2.0,
+      "points": 4.0,
+      "date": "2026-10-25 13:16:25",
+      "magasin": "Cafétéria Tunis MENZAH VI",
+      "client": "Trigui Skander"
+    }
+  ]
+}
