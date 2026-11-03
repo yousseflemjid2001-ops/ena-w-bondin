@@ -1,3 +1,124 @@
+// Remplissage automatique rapide des identifiants démo (1-Clic)
+window.fillDemoLoginCredentials = function() {
+  const emailInput = document.getElementById('login-email');
+  const pwdInput = document.getElementById('login-password');
+  if (emailInput) {
+    emailInput.value = 'enawbondin';
+    emailInput.classList.add('login-input-glow');
+    setTimeout(() => emailInput.classList.remove('login-input-glow'), 800);
+  }
+  if (pwdInput) {
+    pwdInput.value = 'ena.w.bondin';
+    pwdInput.classList.add('login-input-glow');
+    setTimeout(() => pwdInput.classList.remove('login-input-glow'), 800);
+  }
+  if (typeof showToast === 'function') {
+    showToast('Identifiants Direction Ena w Bondin renseignés (enawbondin)', 'check-circle-2');
+  }
+};
+
+// Carrousel interactif 3D des captures officielles Google Play Store « ENA W BONDIN »
+const BONDIN_PLAYSTORE_SCREENS = {
+  offres: {
+    mainImg: 'bondin_app_offres.png',
+    mainCaption: '☕ Catalogue & Offres Spéciales',
+    leftKey: 'cagnotte',
+    leftImg: 'bondin_app_cagnotte.png',
+    leftCaption: '🎁 Cagnotte & Scans',
+    rightKey: 'parrainage',
+    rightImg: 'bondin_app_parrainage.png',
+    rightCaption: '🤝 Mes Parrainages'
+  },
+  cagnotte: {
+    mainImg: 'bondin_app_cagnotte.png',
+    mainCaption: '🎁 Cagnotte (50/200) & Scans Caisse',
+    leftKey: 'accueil',
+    leftImg: 'bondin_app_accueil.png',
+    leftCaption: '🏆 Récompenses Bondin',
+    rightKey: 'offres',
+    rightImg: 'bondin_app_offres.png',
+    rightCaption: '☕ Offres & Cafés'
+  },
+  parrainage: {
+    mainImg: 'bondin_app_parrainage.png',
+    mainCaption: '🤝 Parrainez vos Amis & Gagnez Plus',
+    leftKey: 'offres',
+    leftImg: 'bondin_app_offres.png',
+    leftCaption: '☕ Offres & Cafés',
+    rightKey: 'accueil',
+    rightImg: 'bondin_app_accueil.png',
+    rightCaption: '🏆 Récompenses Bondin'
+  },
+  accueil: {
+    mainImg: 'bondin_app_accueil.png',
+    mainCaption: '🏆 Votre Café Préféré, Récompensé !',
+    leftKey: 'parrainage',
+    leftImg: 'bondin_app_parrainage.png',
+    leftCaption: '🤝 Mes Parrainages',
+    rightKey: 'cagnotte',
+    rightImg: 'bondin_app_cagnotte.png',
+    rightCaption: '🎁 Cagnotte & Scans'
+  }
+};
+
+window.switchBondinAppScreen = function(screenKey) {
+  const cfg = BONDIN_PLAYSTORE_SCREENS[screenKey];
+  if (!cfg) return;
+
+  const mainImg = document.getElementById('login-phone-img-main');
+  const mainCap = document.getElementById('login-phone-main-caption');
+  const leftImg = document.getElementById('login-phone-img-left');
+  const leftCap = document.getElementById('login-phone-left-caption');
+  const rightImg = document.getElementById('login-phone-img-right');
+  const rightCap = document.getElementById('login-phone-right-caption');
+  const leftPhone = document.querySelector('.login-phone-left');
+  const rightPhone = document.querySelector('.login-phone-right');
+
+  if (mainImg) {
+    mainImg.classList.remove('login-phone-switch-anim');
+    void mainImg.offsetWidth;
+    mainImg.src = cfg.mainImg;
+    mainImg.classList.add('login-phone-switch-anim');
+  }
+  if (mainCap) mainCap.textContent = cfg.mainCaption;
+
+  if (leftImg) leftImg.src = cfg.leftImg;
+  if (leftCap) leftCap.textContent = cfg.leftCaption;
+  if (leftPhone) leftPhone.setAttribute('onclick', "window.switchBondinAppScreen('" + cfg.leftKey + "')");
+
+  if (rightImg) rightImg.src = cfg.rightImg;
+  if (rightCap) rightCap.textContent = cfg.rightCaption;
+  if (rightPhone) rightPhone.setAttribute('onclick', "window.switchBondinAppScreen('" + cfg.rightKey + "')");
+
+  ['offres', 'cagnotte', 'parrainage', 'accueil'].forEach(k => {
+    const btn = document.getElementById('bondin-tab-' + k);
+    if (btn) btn.classList.toggle('active', k === screenKey);
+  });
+};
+
+// Rotation douce automatique des 4 écrans officiels Play Store sur la page de login
+(function initBondinPlaystoreCarousel() {
+  const keys = ['offres', 'cagnotte', 'parrainage', 'accueil'];
+  let idx = 0;
+  let paused = false;
+  document.addEventListener('DOMContentLoaded', () => {
+    const stage = document.getElementById('login-mobile-stage');
+    if (stage) {
+      stage.addEventListener('mouseenter', () => { paused = true; });
+      stage.addEventListener('mouseleave', () => { paused = false; });
+    }
+  });
+  setInterval(() => {
+    if (paused || document.documentElement.classList.contains('is-authenticated')) return;
+    const loginEl = document.getElementById('login-screen');
+    if (!loginEl || loginEl.style.display === 'none') return;
+    idx = (idx + 1) % keys.length;
+    if (typeof window.switchBondinAppScreen === 'function') {
+      window.switchBondinAppScreen(keys[idx]);
+    }
+  }, 4800);
+})();
+
 // ==========================================================================
 // PLATEFORME DÉCISIONNELLE BI & IA « ENA W BONDIN x FIDNESS »
 // Logique Applicative & Moteur Visuel : Layout Exécutif Tech Support BI
@@ -737,6 +858,12 @@ function initSubbarTabs() {
           if (typeof executeGlobalFilters === 'function') {
             try { executeGlobalFilters(); } catch(e) {}
           }
+        } else if (targetId === 'tab-agent-fidness') {
+          try {
+            if (typeof window.renderAgentFidnessChurnTable === 'function') {
+              window.renderAgentFidnessChurnTable();
+            }
+          } catch(e) {}
         } else if (targetId === 'tab-cagnotte') {
           try {
             renderRewardsCatalog();
@@ -5013,7 +5140,7 @@ window.clearRagMessages = function() {
       <div class="rag-msg-avatar">✨</div>
       <div class="rag-msg-bubble">
         <div class="rag-msg-author">
-          <span class="rag-author-name">Copilot Décisionnel BONDIN</span>
+          <span class="rag-author-name">Chatbot Pro BONDIN</span>
           <span class="rag-author-pill">Session Réinitialisée</span>
         </div>
         <p class="rag-welcome-lead">
@@ -5349,7 +5476,7 @@ window.sendRagMessage = async function() {
       </div>
       <div class="rag-msg-bubble">
         <div class="rag-msg-author">
-          <span class="rag-author-name">Copilot Décisionnel BONDIN</span>
+          <span class="rag-author-name">Chatbot Pro BONDIN</span>
           <span class="rag-author-pill">${sourceTitle || 'PostgreSQL 17.7 Production Live'}</span>
         </div>
         <div class="rag-content-body">${formattedAnswer}</div>
@@ -5358,6 +5485,7 @@ window.sendRagMessage = async function() {
     `;
     messagesArea.appendChild(assistantRow);
     messagesArea.scrollTop = messagesArea.scrollHeight;
+    if (window.bcpOnAnswer) window.bcpOnAnswer(answerText);
   }
 
   // 4. Interrogation directe du serveur RAG PostgreSQL
@@ -6568,7 +6696,7 @@ window.switchYoYMetric = function(metric) {
 };
 
 // ==========================================================================
-// SECTION 3.B : TOP 10 CADEAUX R?CLAM?S & PILOTAGE DES STOCKS
+// SECTION 3.B : TOP 10 CADEAUX RÉCLAMÉS & PILOTAGE DES STOCKS
 // ==========================================================================
 const TOP_10_CADEAUX_DATA = [
   { rang: 1, nom: "Sac TNT BO PFID", tier: "Access", delivres: 28, coutPts: 250, valTnd: 2.500, stock: 472, statut: "En stock", badgeClass: "green" },
@@ -6676,3 +6804,1358 @@ function initTopCadeauxVisual() {
     });
   }
 }
+
+
+// ==========================================================================
+// MODULE AGENT IA FIDNESS — DÉTECTION DU CHURN & NOTIFICATIONS PUSH CIBLÉES
+// ==========================================================================
+
+window.FIDNESS_CHURN_CLIENTES = [
+  {
+    id: "019f277c-4d4", nom: "Wièm Dkhaïlia", telephone: "54 27 81 54",
+    pdv: "Cafétéria Gafsa Ville", pdv_type: "CAF", region: "Gafsa",
+    recence: 60, visites: 87, ca: 560.850, points: 1431,
+    score_pct: 94, niveau: "critique", statut_label: "94% • Ne reviendra plus",
+    affinite_badge: "☕ Arabica Lavé & Espresso Matin (08h-09h)",
+    habitude_achat: "87 visites comptoir régulières (cycle 2j) • Panier 6,4 TND",
+    diagnostic: "Rupture brutale après 87 visites régulières (cycle habituel 2j)",
+    reco_titre: "Offre VIP Réactivation +150 pts ☕",
+    reco_push: "Bonjour Wièm ☕ Vous nous manquez chez Bondin Gafsa ! Vos 1 431 pts fidélité vous attendent. Revenez cette semaine savourer votre espresso et recevez +150 pts bonus offerts !",
+    code_promo: "FIDNESS_VIP150", horaire_optimal: "Mardi 08h30",
+    variante_a: {
+      titre: "Offre VIP Réactivation +150 pts ☕",
+      push: "Bonjour Wièm ☕ Vous nous manquez chez Bondin Gafsa ! Vos 1 431 pts fidélité vous attendent. Revenez cette semaine savourer votre espresso et recevez +150 pts bonus offerts !",
+      code: "FIDNESS_VIP150",
+      taux_ouvert: 78
+    },
+    variante_b: {
+      titre: "Déblocage Immédiat Cagnotte + 200 pts 🎁",
+      push: "Wièm, débloquez vos 1 431 points fidélité ! Présentez ce push en caisse à Gafsa pour recevoir un bon de réduction immédiat + 200 pts bonus.",
+      code: "POINTS_BOOST200",
+      taux_ouvert: 64
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "01a0048c-d33", nom: "Amira Baaziz", telephone: "21 11 41 60",
+    pdv: "Cafétéria Gafsa Ville", pdv_type: "CAF", region: "Gafsa",
+    recence: 50, visites: 56, ca: 804.297, points: 2933,
+    score_pct: 89, niveau: "critique", statut_label: "89% • Ne reviendra plus",
+    affinite_badge: "👑 VIP Salons & Coffrets Torréfaction Spéciale",
+    habitude_achat: "56 visites • Panier élevé 14,4 TND • 2 933 pts dormants",
+    diagnostic: "Arrêt soudain d'une cliente Championne (2 933 pts dormants)",
+    reco_titre: "Déblocage Cadeau Prestige + Café Offert ☕",
+    reco_push: "Chère Amira 👑 L'arôme de notre sélection spéciale vous attend chez Bondin Gafsa ! Votre fidélité vous donne droit à un Coffret Prestige gratuit à retirer sous 7 jours.",
+    code_promo: "COFFRET_AMIRA", horaire_optimal: "Jeudi 09h00",
+    variante_a: {
+      titre: "Déblocage Cadeau Prestige + Café Offert ☕",
+      push: "Chère Amira 👑 L'arôme de notre sélection spéciale vous attend chez Bondin Gafsa ! Votre fidélité vous donne droit à un Coffret Prestige gratuit à retirer sous 7 jours.",
+      code: "COFFRET_AMIRA",
+      taux_ouvert: 82
+    },
+    variante_b: {
+      titre: "Bon d'Achat 30 TND contre 2 500 pts 🎁",
+      push: "Amira, convertissez vos 2 933 points dormants ! Obtenez 30 TND de remise immédiate sur tous les produits Maison Bondin à Gafsa.",
+      code: "VOUCHER_AMIRA30",
+      taux_ouvert: 68
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019ef834-f4a", nom: "Sarra Ben Saad", telephone: "29 03 13 44",
+    pdv: "Cafétéria Tunis Menzah VI", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 64, visites: 7, ca: 348.200, points: 1362,
+    score_pct: 92, niveau: "critique", statut_label: "92% • Ne reviendra plus",
+    affinite_badge: "✨ 100% Arabica Dégustation Salons (Panier 50 TND)",
+    habitude_achat: "7 visites VIP • Panier très élevé 49,7 TND • 1 362 pts",
+    diagnostic: "Inactivité > 60 jours sur panier moyen très élevé (49,7 TND)",
+    reco_titre: "Bonus 100 pts + Dégustation Arabica ☕",
+    reco_push: "Bonjour Sarra ✨ Votre pause café à Menzah VI nous manque ! Profitez de +100 pts bonus et d'une dégustation 100% Arabica offerte dès votre prochain passage.",
+    code_promo: "MENZAH_100PTS", horaire_optimal: "Mercredi 10h00",
+    variante_a: {
+      titre: "Bonus 100 pts + Dégustation Arabica ☕",
+      push: "Bonjour Sarra ✨ Votre pause café à Menzah VI nous manque ! Profitez de +100 pts bonus et d'une dégustation 100% Arabica offerte dès votre prochain passage.",
+      code: "MENZAH_100PTS",
+      taux_ouvert: 75
+    },
+    variante_b: {
+      titre: "Cashback Fidélité +150 pts sur Panier 🎁",
+      push: "Sarra, profitez d'un cashback exclusif de +150 points crédités sur votre compte Fidness pour tout achat supérieur à 30 TND à Menzah VI.",
+      code: "CASHBACK_SARRA",
+      taux_ouvert: 65
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019e8972-d09", nom: "Mouna Lakhoua", telephone: "22 84 19 03",
+    pdv: "Cafétéria Tunis La Marsa", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 100, visites: 35, ca: 213.900, points: 393,
+    score_pct: 97, niveau: "critique", statut_label: "97% • Ne reviendra plus",
+    affinite_badge: "🥐 Espresso Comptoir & Viennoiseries Quotidiennes",
+    habitude_achat: "35 visites matinales • Pause café La Marsa",
+    diagnostic: "Décrochage prolongé (100j sans scan après 35 passages)",
+    reco_titre: "Offre Retour Gagnant : Café + Croissant ☕",
+    reco_push: "Bonjour Mouna ☕ Cela fait longtemps ! Pour fêter votre retour chez Bondin La Marsa, votre prochain Espresso + 100 pts fidélité vous sont offerts cette semaine.",
+    code_promo: "RETOUR_MARSA", horaire_optimal: "Vendredi 08h45",
+    variante_a: {
+      titre: "Offre Retour Gagnant : Café + Croissant ☕",
+      push: "Bonjour Mouna ☕ Cela fait longtemps ! Pour fêter votre retour chez Bondin La Marsa, votre prochain Espresso + 100 pts fidélité vous sont offerts cette semaine.",
+      code: "RETOUR_MARSA",
+      taux_ouvert: 80
+    },
+    variante_b: {
+      titre: "Pack Réveil Gagnant : Points x3 🎁",
+      push: "Mouna, vos 393 points vous attendent ! Triplez vos points (x3) dès demain matin lors de votre commande chez Bondin La Marsa.",
+      code: "MARSA_X3POINTS",
+      taux_ouvert: 60
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019f27a9-6d0", nom: "Manel Alaya", telephone: "27 64 81 41",
+    pdv: "Cafétéria Gafsa Ville", pdv_type: "CAF", region: "Gafsa",
+    recence: 71, visites: 29, ca: 186.700, points: 395,
+    score_pct: 93, niveau: "critique", statut_label: "93% • Ne reviendra plus",
+    affinite_badge: "⚡ Espresso Serré Matinal Comptoir Gafsa (08h-09h)",
+    habitude_achat: "29 visites matinales rapides • Panier 6,4 TND",
+    diagnostic: "Perte d'habitude matinale (71j d'absence vs 29 visites)",
+    reco_titre: "Rituel Matinal Offert + 80 pts ☕",
+    reco_push: "Bonjour Manel ☕ Retrouvez le plaisir de votre espresso matinal chez Bondin Gafsa ! Un café vous est offert cette semaine avec +80 pts bonus.",
+    code_promo: "BOOST_MANEL80", horaire_optimal: "Mardi 08h30",
+    variante_a: {
+      titre: "Rituel Matinal Offert + 80 pts ☕",
+      push: "Bonjour Manel ☕ Retrouvez le plaisir de votre espresso matinal chez Bondin Gafsa ! Un café vous est offert cette semaine avec +80 pts bonus.",
+      code: "BOOST_MANEL80",
+      taux_ouvert: 77
+    },
+    variante_b: {
+      titre: "Doublement des Points (x2) Immédiat 🎁",
+      push: "Manel, doublez vos points de fidélité chez Bondin Gafsa dès votre premier passage de la semaine.",
+      code: "DOUBLE_MANEL",
+      taux_ouvert: 63
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019ebd99-dca", nom: "Oumaima Ferjani", telephone: "92 47 62 40",
+    pdv: "Cafétéria Tunis Menzah VI", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 66, visites: 40, ca: 152.290, points: 457,
+    score_pct: 91, niveau: "critique", statut_label: "91% • Ne reviendra plus",
+    affinite_badge: "☕ Pause Après-midi & Boissons Chaudes Spéciales",
+    habitude_achat: "40 visites régulières • Inactive depuis 66j",
+    diagnostic: "Cliente ultra-fidèle (40 scans) inactive depuis plus de 2 mois",
+    reco_titre: "Pause Café Gourmande à Menzah VI ☕",
+    reco_push: "Chère Oumaima ☕ Votre table vous attend chez Bondin Menzah VI ! Présentez votre app Fidness d'ici dimanche : 1 Boisson Chaude offerte + 100 pts bonus.",
+    code_promo: "OUMAIMA_VIP", horaire_optimal: "Jeudi 16h00",
+    variante_a: {
+      titre: "Pause Café Gourmande à Menzah VI ☕",
+      push: "Chère Oumaima ☕ Votre table vous attend chez Bondin Menzah VI ! Présentez votre app Fidness d'ici dimanche : 1 Boisson Chaude offerte + 100 pts bonus.",
+      code: "OUMAIMA_VIP",
+      taux_ouvert: 79
+    },
+    variante_b: {
+      titre: "Chèque Cadeau Fidness 10 TND 🎁",
+      push: "Oumaima, vos 457 points vous donnent droit à un bon d'achat immédiat de 10 TND à Menzah VI.",
+      code: "OUMAIMA_CHEQUE10",
+      taux_ouvert: 66
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019eb797-1b3", nom: "Farah Yezza", telephone: "52 66 17 73",
+    pdv: "Cafétéria Tunis La Marsa", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 97, visites: 37, ca: 138.695, points: 216,
+    score_pct: 96, niveau: "critique", statut_label: "96% • Ne reviendra plus",
+    affinite_badge: "🎁 Cappuccino Onctueux & Douceurs La Marsa",
+    habitude_achat: "37 visites régulières • Inactive depuis 97j",
+    diagnostic: "Attrition critique détectée (97j sans passage après 37 visites)",
+    reco_titre: "Retrouvez les Saveurs de La Marsa ☕",
+    reco_push: "Bonjour Farah ☕ L'ambiance chaleureuse de Bondin La Marsa vous attend ! Venez savourer votre cappuccino avec +120 pts bonus offerts.",
+    code_promo: "FARAH_120PTS", horaire_optimal: "Samedi 10h00",
+    variante_a: {
+      titre: "Retrouvez les Saveurs de La Marsa ☕",
+      push: "Bonjour Farah ☕ L'ambiance chaleureuse de Bondin La Marsa vous attend ! Venez savourer votre cappuccino avec +120 pts bonus offerts.",
+      code: "FARAH_120PTS",
+      taux_ouvert: 76
+    },
+    variante_b: {
+      titre: "Relance VIP +150 Points Fidness 🎁",
+      push: "Farah, ne perdez pas votre statut fidélité ! Récupérez +150 points gratuits sur simple scan de votre QR code en caisse.",
+      code: "FARAH_BOOST150",
+      taux_ouvert: 61
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019ec195-579", nom: "Donia Ben Mrad", telephone: "90 72 05 17",
+    pdv: "Cafétéria Tunis Menzah VI", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 128, visites: 17, ca: 108.691, points: 298,
+    score_pct: 98, niveau: "critique", statut_label: "98% • Ne reviendra plus",
+    affinite_badge: "📦 Consommatrice Café Moulu Familial 250g",
+    habitude_achat: "17 visites • Inactive 128j (Urgence maximale)",
+    diagnostic: "Abandon quasi-définitif (128j d'inactivité) — Urgence maximale",
+    reco_titre: "Grand Retour chez Bondin : Café Offert ☕",
+    reco_push: "Bonjour Donia ☕ Vous nous manquez chez Bondin Menzah VI ! Profitez d'un sachet dégustation offert et d'un accueil chaleureux pour votre grand retour.",
+    code_promo: "SAVE_DONIA150", horaire_optimal: "Mardi 09h00",
+    variante_a: {
+      titre: "Grand Retour chez Bondin : Café Offert ☕",
+      push: "Bonjour Donia ☕ Vous nous manquez chez Bondin Menzah VI ! Profitez d'un sachet dégustation offert et d'un accueil chaleureux pour votre grand retour.",
+      code: "SAVE_DONIA150",
+      taux_ouvert: 74
+    },
+    variante_b: {
+      titre: "Remise Immédiate -50% sur 2ème Paquet 🎁",
+      push: "Donia, profitez de -50% sur votre 2ème paquet de café moulu Bondin 250g + 100 pts fidélité crédités immédiatement.",
+      code: "DONIA_REMISE50",
+      taux_ouvert: 69
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019eba77-c2f", nom: "Rihab Chaabouni", telephone: "25 91 27 09",
+    pdv: "Cafétéria Le Kef", pdv_type: "CAF", region: "Le Kef",
+    recence: 66, visites: 28, ca: 113.000, points: 188,
+    score_pct: 90, niveau: "critique", statut_label: "90% • Ne reviendra plus",
+    affinite_badge: "☕ Espresso Doux & Rituel Hebdo Le Kef",
+    habitude_achat: "28 visites • Cycle hebdomadaire interrompu (66j)",
+    diagnostic: "Rupture de cycle hebdomadaire (28 visites puis arrêt depuis 66j)",
+    reco_titre: "Votre Pause Café au Kef vous attend ☕",
+    reco_push: "Bonjour Rihab ✨ Votre café préféré vous attend à la Cafétéria Bondin Le Kef ! Revenez savourer votre pause avec +80 pts offerts.",
+    code_promo: "KEF_RIHAB80", horaire_optimal: "Mercredi 08h30",
+    variante_a: {
+      titre: "Votre Pause Café au Kef vous attend ☕",
+      push: "Bonjour Rihab ✨ Votre café préféré vous attend à la Cafétéria Bondin Le Kef ! Revenez savourer votre pause avec +80 pts offerts.",
+      code: "KEF_RIHAB80",
+      taux_ouvert: 75
+    },
+    variante_b: {
+      titre: "Points x2 sur Toute la Cafétéria 🎁",
+      push: "Rihab, passez chez Bondin Le Kef cette semaine et doublez tous vos points sur boissons et douceurs.",
+      code: "KEF_X2POINTS",
+      taux_ouvert: 62
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019f0e5d-c3e", nom: "Maryem Benredjam", telephone: "53 11 65 90",
+    pdv: "Cafétéria Tunis Espagne", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 63, visites: 12, ca: 108.500, points: 204,
+    score_pct: 88, niveau: "critique", statut_label: "88% • Ne reviendra plus",
+    affinite_badge: "⚡ Express Rapide Comptoir Rue d'Espagne (Centre-ville)",
+    habitude_achat: "12 visites rapides comptoir • 63j d'absence",
+    diagnostic: "Inactivité supérieure à 2 mois au centre-ville (Rue d'Espagne)",
+    reco_titre: "Pause Express au Centre-Ville ☕",
+    reco_push: "Bonjour Maryem ☕ De passage au centre-ville ? Arrêtez-vous chez Bondin Rue d'Espagne : votre café matinal vous attend avec +75 pts bonus !",
+    code_promo: "ESPAGNE_75PTS", horaire_optimal: "Jeudi 08h30",
+    variante_a: {
+      titre: "Pause Express au Centre-Ville ☕",
+      push: "Bonjour Maryem ☕ De passage au centre-ville ? Arrêtez-vous chez Bondin Rue d'Espagne : votre café matinal vous attend avec +75 pts bonus !",
+      code: "ESPAGNE_75PTS",
+      taux_ouvert: 73
+    },
+    variante_b: {
+      titre: "Ticket Café Malin +100 Points 🎁",
+      push: "Maryem, gagnez 100 points fidélité supplémentaires dès aujourd'hui chez Bondin Rue d'Espagne.",
+      code: "TICKET_ESPAGNE",
+      taux_ouvert: 60
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019f5c5d-e43", nom: "Farah Bouchoucha", telephone: "28 99 58 06",
+    pdv: "Succursale Tunis Ariana", pdv_type: "SUC", region: "Grand Tunis",
+    recence: 73, visites: 5, ca: 104.564, points: 418,
+    score_pct: 91, niveau: "critique", statut_label: "91% • Ne reviendra plus",
+    affinite_badge: "🌿 Grains Torréfiés Frais & Gros Panier Succursale",
+    habitude_achat: "Panier moyen 20,9 TND • 418 pts dormants",
+    diagnostic: "Cliente gros panier en Succursale Ariana absente depuis 73j",
+    reco_titre: "Nouvelle Torréfaction Fraîche à Ariana ☕",
+    reco_push: "Chère Farah 🌟 Notre nouvelle fournée de Café Torréfié vient d'arriver à Bondin Ariana ! Dégustation offerte + 100 pts bonus.",
+    code_promo: "ARIANA_100PTS", horaire_optimal: "Vendredi 11h00",
+    variante_a: {
+      titre: "Nouvelle Torréfaction Fraîche à Ariana ☕",
+      push: "Chère Farah 🌟 Notre nouvelle fournée de Café Torréfié vient d'arriver à Bondin Ariana ! Dégustation offerte + 100 pts bonus.",
+      code: "ARIANA_100PTS",
+      taux_ouvert: 77
+    },
+    variante_b: {
+      titre: "Offre Stock Maison : 3 Achetés = 1 Offert 🎁",
+      push: "Farah, profitez de l'offre privilège Succursale Ariana : 3 paquets de café achetés = le 4ème offert + 150 pts.",
+      code: "ARIANA_3PLUS1",
+      taux_ouvert: 67
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019ebc56-7e4", nom: "Ichraf Chebbi", telephone: "54 55 17 64",
+    pdv: "Cafétéria Le Kef", pdv_type: "CAF", region: "Le Kef",
+    recence: 80, visites: 8, ca: 103.860, points: 336,
+    score_pct: 94, niveau: "critique", statut_label: "94% • Ne reviendra plus",
+    affinite_badge: "☕ Café Traditionnel Torréfié & Dégustation Le Kef",
+    habitude_achat: "8 visites • Absence 80j (4x cycle habituel)",
+    diagnostic: "Seuil critique d'inactivité (80j) dépassé de 4x la moyenne",
+    reco_titre: "Le Plaisir d'un Café Authentique au Kef ☕",
+    reco_push: "Bonjour Ichraf ☕ Retrouvez le goût incomparable de votre café chez Bondin Le Kef avec +100 points offerts pour votre retour.",
+    code_promo: "ICHRAF_100", horaire_optimal: "Mardi 09h00",
+    variante_a: {
+      titre: "Le Plaisir d'un Café Authentique au Kef ☕",
+      push: "Bonjour Ichraf ☕ Retrouvez le goût incomparable de votre café chez Bondin Le Kef avec +100 points offerts pour votre retour.",
+      code: "ICHRAF_100",
+      taux_ouvert: 74
+    },
+    variante_b: {
+      titre: "Cadeau Fidélité dès 10 TND d'Achat 🎁",
+      push: "Ichraf, repartez avec une tasse collector Bondin offerte pour tout achat de 10 TND au Kef.",
+      code: "CADEAU_KEF10",
+      taux_ouvert: 62
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "01a03850-ffd", nom: "Rakia Jawali", telephone: "93 79 63 42",
+    pdv: "Succursale Gabès Jara", pdv_type: "SUC", region: "Gabès",
+    recence: 37, visites: 10, ca: 683.250, points: 2439,
+    score_pct: 78, niveau: "eleve", statut_label: "78% • Décrochage fort",
+    affinite_badge: "👑 Grande Consommatrice Prestige (683 TND • 2 439 pts)",
+    habitude_achat: "10 visites • Panier très élevé 68,3 TND",
+    diagnostic: "Ralentissement net d'une cliente à très haute valeur (683 TND)",
+    reco_titre: "Privilège d'Exception à Gabès Jara ☕",
+    reco_push: "Chère Rakia 👑 En tant que cliente d'exception à Gabès Jara, un accueil VIP et une dégustation privée vous sont réservés en Succursale.",
+    code_promo: "VIP_GABES", horaire_optimal: "Mercredi 10h00",
+    variante_a: {
+      titre: "Privilège d'Exception à Gabès Jara ☕",
+      push: "Chère Rakia 👑 En tant que cliente d'exception à Gabès Jara, un accueil VIP et une dégustation privée vous sont réservés en Succursale.",
+      code: "VIP_GABES",
+      taux_ouvert: 81
+    },
+    variante_b: {
+      titre: "Bon d'Achat 40 TND contre 2 000 pts 🎁",
+      push: "Rakia, convertissez vos 2 439 points dormants en un bon d'achat immédiat de 40 TND valable à Gabès Jara.",
+      code: "VOUCHER_GABES40",
+      taux_ouvert: 70
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019f75a6-c39", nom: "Khawla Henchiri", telephone: "29 67 62 82",
+    pdv: "Succursale Gafsa Ville", pdv_type: "SUC", region: "Gafsa",
+    recence: 53, visites: 28, ca: 196.417, points: 547,
+    score_pct: 84, niveau: "eleve", statut_label: "84% • Décrochage fort",
+    affinite_badge: "📦 Café Moulu Pur Arabica & Torréfaction Gafsa",
+    habitude_achat: "28 visites • Baisse de -75% sur 6 semaines",
+    diagnostic: "Baisse de fréquence de -75% sur les 6 dernières semaines",
+    reco_titre: "Les Arômes du Pur Arabica à Gafsa ☕",
+    reco_push: "Bonjour Khawla ✨ Faites le plein d'arômes chez Bondin Gafsa ! Venez redécouvrir notre mouture fraîche avec +90 pts bonus.",
+    code_promo: "DOUBLE_KHAWLA", horaire_optimal: "Vendredi 16h30",
+    variante_a: {
+      titre: "Les Arômes du Pur Arabica à Gafsa ☕",
+      push: "Bonjour Khawla ✨ Faites le plein d'arômes chez Bondin Gafsa ! Venez redécouvrir notre mouture fraîche avec +90 pts bonus.",
+      code: "DOUBLE_KHAWLA",
+      taux_ouvert: 75
+    },
+    variante_b: {
+      titre: "Remise 20% sur la Gamme Café 🎁",
+      push: "Khawla, bénéficiez de -20% sur l'ensemble du rayon café en Succursale Gafsa cette semaine.",
+      code: "REMISE_KHAWLA20",
+      taux_ouvert: 64
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019e9406-a7c", nom: "Oumaima Shili", telephone: "97 08 80 17",
+    pdv: "Cafétéria Tunis Liberté", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 52, visites: 17, ca: 119.517, points: 332,
+    score_pct: 82, niveau: "eleve", statut_label: "82% • Décrochage fort",
+    affinite_badge: "☕ Espresso Allongé & Pause Déjeuner Tunis Liberté",
+    habitude_achat: "17 visites • Inactive 52j",
+    diagnostic: "Absence inhabituelle depuis 52j à Tunis Liberté",
+    reco_titre: "Votre Pause Café Avenue de la Liberté ☕",
+    reco_push: "Bonjour Oumaima ☕ Votre pause café à l'Avenue de la Liberté vous attend ! Scannez votre QR Fidness cette semaine et recevez +75 points bonus.",
+    code_promo: "LIBERTE_75", horaire_optimal: "Jeudi 08h45",
+    variante_a: {
+      titre: "Votre Pause Café Avenue de la Liberté ☕",
+      push: "Bonjour Oumaima ☕ Votre pause café à l'Avenue de la Liberté vous attend ! Scannez votre QR Fidness cette semaine et recevez +75 points bonus.",
+      code: "LIBERTE_75",
+      taux_ouvert: 73
+    },
+    variante_b: {
+      titre: "Formule Café + Douceur à Prix Fidélité 🎁",
+      push: "Oumaima, profitez de la formule gourmande exclusive Fidness à prix réduit chez Bondin Liberté.",
+      code: "FORMULE_LIBERTE",
+      taux_ouvert: 61
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019efb1a-8f4", nom: "Nedra Jlassi", telephone: "52 16 40 19",
+    pdv: "Cafétéria Le Kef", pdv_type: "CAF", region: "Le Kef",
+    recence: 56, visites: 20, ca: 95.850, points: 190,
+    score_pct: 85, niveau: "eleve", statut_label: "85% • Décrochage fort",
+    affinite_badge: "✨ Café Crème & Duo Matinal Le Kef",
+    habitude_achat: "20 visites • 56j d'absence vs cycle 6j",
+    diagnostic: "Écart d'inactivité critique (56j vs cycle moyen de 6j)",
+    reco_titre: "Le Rituel Café au Kef vous sourit ☕",
+    reco_push: "Bonjour Nedra ✨ Venez savourer un doux café crème chez Bondin Le Kef : +60 points offerts dès votre prochain passage en caisse.",
+    code_promo: "NEDRA_60PTS", horaire_optimal: "Mardi 10h00",
+    variante_a: {
+      titre: "Le Rituel Café au Kef vous sourit ☕",
+      push: "Bonjour Nedra ✨ Venez savourer un doux café crème chez Bondin Le Kef : +60 points offerts dès votre prochain passage en caisse.",
+      code: "NEDRA_60PTS",
+      taux_ouvert: 72
+    },
+    variante_b: {
+      titre: "Offre 1 Café Acheté = 1 Offert 🎁",
+      push: "Nedra, venez accompagnée ! Pour 1 café commandé à la Cafétéria Le Kef, le 2ème vous est offert.",
+      code: "DUO_KEF_OFFERT",
+      taux_ouvert: 60
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019cb824-994", nom: "Hayet Ouni", telephone: "29 00 29 20",
+    pdv: "Succursale Tunis Liberté", pdv_type: "SUC", region: "Grand Tunis",
+    recence: 40, visites: 8, ca: 181.978, points: 694,
+    score_pct: 76, niveau: "eleve", statut_label: "76% • Décrochage fort",
+    affinite_badge: "🎁 Gros Volumes Paquets Café Suc. Tunis Liberté",
+    habitude_achat: "694 pts dormants • 8 visites Succursale",
+    diagnostic: "Espacement progressif des achats en Succursale Tunis Liberté",
+    reco_titre: "Votre Cadeau Fidélité vous attend ☕",
+    reco_push: "Chère Hayet 🎁 Vous avez déjà 694 points chez Bondin Tunis Liberté ! Venez choisir votre cadeau fidélité en magasin cette semaine.",
+    code_promo: "CADEAU_HAYET", horaire_optimal: "Mercredi 11h00",
+    variante_a: {
+      titre: "Votre Cadeau Fidélité vous attend ☕",
+      push: "Chère Hayet 🎁 Vous avez déjà 694 points chez Bondin Tunis Liberté ! Venez choisir votre cadeau fidélité en magasin cette semaine.",
+      code: "CADEAU_HAYET",
+      taux_ouvert: 77
+    },
+    variante_b: {
+      titre: "Doublement des Points sur Café Familial 🎁",
+      push: "Hayet, doublez votre cagnotte de points sur vos achats de paquets de café à Tunis Liberté.",
+      code: "DOUBLE_HAYET",
+      taux_ouvert: 66
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019ef39d-5ab", nom: "Emna Sellami", telephone: "97 82 46 99",
+    pdv: "Cafétéria Tunis Menzah VI", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 39, visites: 6, ca: 93.885, points: 371,
+    score_pct: 74, niveau: "eleve", statut_label: "74% • Décrochage fort",
+    affinite_badge: "☕ Dégustation Arabica & Pause Études Menzah VI",
+    habitude_achat: "6 visites régulières • 39j d'absence",
+    diagnostic: "Risque de bascule en inactivité longue sous 7 jours",
+    reco_titre: "Pause Détente & Café à Menzah VI ☕",
+    reco_push: "Bonjour Emna ☕ Ne perdez pas votre rythme fidélité ! Passez chez Bondin Menzah VI avant dimanche et recevez +50 pts bonus immédiats.",
+    code_promo: "EMNA_50PTS", horaire_optimal: "Vendredi 09h00",
+    variante_a: {
+      titre: "Pause Détente & Café à Menzah VI ☕",
+      push: "Bonjour Emna ☕ Ne perdez pas votre rythme fidélité ! Passez chez Bondin Menzah VI avant dimanche et recevez +50 pts bonus immédiats.",
+      code: "EMNA_50PTS",
+      taux_ouvert: 71
+    },
+    variante_b: {
+      titre: "Happy Hour Fidness : Points Triplés 🎁",
+      push: "Emna, passez chez Bondin Menzah VI entre 14h et 17h pour tripler tous vos points fidélité.",
+      code: "HAPPY_MENZAH",
+      taux_ouvert: 63
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019f229e-e8f", nom: "Selma Rourou", telephone: "20 40 78 00",
+    pdv: "Succursale Tunis Menzah VI", pdv_type: "SUC", region: "Grand Tunis",
+    recence: 46, visites: 5, ca: 82.453, points: 304,
+    score_pct: 79, niveau: "eleve", statut_label: "79% • Décrochage fort",
+    affinite_badge: "📦 Réapprovisionnement Café Familial Mensuel",
+    habitude_achat: "5 visites • Cycle mensuel 45j",
+    diagnostic: "Non-renouvellement du stock café familial après 45 jours",
+    reco_titre: "Arômes & Fraîcheur Torréfiée à Menzah VI ☕",
+    reco_push: "Bonjour Selma ✨ Bientôt à court de café ? Venez faire le plein d'arômes à la Succursale Bondin Menzah VI et recevez +70 points offerts !",
+    code_promo: "SELMA_70PTS", horaire_optimal: "Samedi 10h30",
+    variante_a: {
+      titre: "Arômes & Fraîcheur Torréfiée à Menzah VI ☕",
+      push: "Bonjour Selma ✨ Bientôt à court de café ? Venez faire le plein d'arômes à la Succursale Bondin Menzah VI et recevez +70 points offerts !",
+      code: "SELMA_70PTS",
+      taux_ouvert: 74
+    },
+    variante_b: {
+      titre: "1 Paquet Dégustation Offert dès 20 TND 🎁",
+      push: "Selma, pour tout réapprovisionnement café supérieur à 20 TND à Menzah VI, un sachet découverte 100g vous est offert.",
+      code: "PACK_SELMA20",
+      taux_ouvert: 65
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019ec00b-6b0", nom: "Meha Thabouti", telephone: "28 48 38 65",
+    pdv: "Cafétéria Tunis Liberté", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 30, visites: 40, ca: 245.058, points: 696,
+    score_pct: 68, niveau: "modere", statut_label: "68% • En vigilance",
+    affinite_badge: "⚡ 40 Visites Régulières • Espresso Comptoir Liberté",
+    habitude_achat: "Cliente assidue (40 scans) • 30j de ralentissement",
+    diagnostic: "Cliente très régulière (40 visites) absente depuis 30 jours",
+    reco_titre: "Votre Espresso Quotidien vous attend ☕",
+    reco_push: "Bonjour Meha ☕ Votre café habituel vous attend chez Bondin Tunis Liberté ! Vos 696 points sont prêts à être convertis en cadeaux.",
+    code_promo: "MEHA_50PTS", horaire_optimal: "Mardi 08h30",
+    variante_a: {
+      titre: "Votre Espresso Quotidien vous attend ☕",
+      push: "Bonjour Meha ☕ Votre café habituel vous attend chez Bondin Tunis Liberté ! Vos 696 points sont prêts à être convertis en cadeaux.",
+      code: "MEHA_50PTS",
+      taux_ouvert: 78
+    },
+    variante_b: {
+      titre: "Café Gratuit contre 150 pts Immédiat 🎁",
+      push: "Meha, utilisez immédiatement 150 de vos 696 points pour un café gratuit en caisse à Tunis Liberté.",
+      code: "FREE_CAFE_MEHA",
+      taux_ouvert: 67
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019ec38b-589", nom: "Salma Bahloul", telephone: "53 15 23 03",
+    pdv: "Succursale Tunis Liberté", pdv_type: "SUC", region: "Grand Tunis",
+    recence: 32, visites: 4, ca: 170.400, points: 672,
+    score_pct: 66, niveau: "modere", statut_label: "66% • En vigilance",
+    affinite_badge: "✨ Dégustation Grands Crus (Panier 42 TND)",
+    habitude_achat: "4 visites • Panier moyen très élevé 42,6 TND",
+    diagnostic: "Alerte précoce sur cliente à fort panier moyen (42,6 TND)",
+    reco_titre: "Sélection Grands Crus Arabica à Liberté ☕",
+    reco_push: "Chère Salma 🌟 Venez découvrir notre sélection 100% Arabica à Tunis Liberté et cumulez +60 pts bonus sur votre carte Fidness !",
+    code_promo: "SALMA_CRU60", horaire_optimal: "Jeudi 11h00",
+    variante_a: {
+      titre: "Sélection Grands Crus Arabica à Liberté ☕",
+      push: "Chère Salma 🌟 Venez découvrir notre sélection 100% Arabica à Tunis Liberté et cumulez +60 pts bonus sur votre carte Fidness !",
+      code: "SALMA_CRU60",
+      taux_ouvert: 75
+    },
+    variante_b: {
+      titre: "Bon de Réduction VIP 15 TND 🎁",
+      push: "Salma, profitez de 15 TND de réduction immédiate dès 40 TND d'achats sur la gamme torréfaction premium.",
+      code: "VIP_CRU_SALMA15",
+      taux_ouvert: 68
+    },
+    selected: true, pushSent: false
+  },
+  {
+    id: "019edc2b-646", nom: "Rabeb Tissaoui", telephone: "99 60 32 67",
+    pdv: "Cafétéria Tunis France", pdv_type: "CAF", region: "Grand Tunis",
+    recence: 25, visites: 6, ca: 99.050, points: 307,
+    score_pct: 62, niveau: "modere", statut_label: "62% • En vigilance",
+    affinite_badge: "☕ Pause Rapide Matin Rue de France Tunis",
+    habitude_achat: "6 visites comptoir express • 25j sans passage",
+    diagnostic: "Ralentissement détecté dès 25j à la Cafétéria Rue de France",
+    reco_titre: "Une Pause Gourmande Rue de France ☕",
+    reco_push: "Bonjour Rabeb ☕ Une pause gourmande Rue de France ? Passez chez Bondin cette semaine et recevez +40 points fidélité bonus !",
+    code_promo: "FRANCE_40PTS", horaire_optimal: "Vendredi 08h30",
+    variante_a: {
+      titre: "Une Pause Gourmande Rue de France ☕",
+      push: "Bonjour Rabeb ☕ Une pause gourmande Rue de France ? Passez chez Bondin cette semaine et recevez +40 points fidélité bonus !",
+      code: "FRANCE_40PTS",
+      taux_ouvert: 73
+    },
+    variante_b: {
+      titre: "Menu Café + Croissant Prix Fidélité 🎁",
+      push: "Rabeb, venez savourer le menu matinal Bondin à tarif préférentiel exclusif Fidness Rue de France.",
+      code: "MENU_FRANCE_RABEB",
+      taux_ouvert: 62
+    },
+    selected: true, pushSent: false
+  }
+];
+
+window._fidnessCurrentRiskFilter = 'all';
+window._fidnessCurrentSearch = '';
+window._fidnessTotalPushSent = 0;
+window._fidnessCurrentVariant = 'A';
+window._fidnessActiveSimClient = window.FIDNESS_CHURN_CLIENTES[0];
+
+// SÉLECTION DU MODE A/B TESTING DANS LE STUDIO SMARTPHONE
+window.selectFidnessPushVariant = function(variantKey) {
+  window._fidnessCurrentVariant = variantKey;
+  const btnA = document.getElementById('btn-variant-a');
+  const btnB = document.getElementById('btn-variant-b');
+  const rateBadge = document.getElementById('ab-active-rate-badge');
+
+  if (variantKey === 'A') {
+    if (btnA) { btnA.className = 'fidness-ab-btn active'; }
+    if (btnB) { btnB.className = 'fidness-ab-btn inactive'; }
+    if (rateBadge) {
+      rateBadge.innerText = 'Taux Ouv. Prédit : 74% (Arômes ☕)';
+      rateBadge.style.borderColor = '#10B981';
+      rateBadge.style.color = '#6EE7B7';
+    }
+    if (typeof showToast === 'function') {
+      showToast('Variante A activée : Approche Émotionnelle & Rituel Café', 'info');
+    }
+  } else {
+    if (btnA) { btnA.className = 'fidness-ab-btn inactive'; }
+    if (btnB) { btnB.className = 'fidness-ab-btn active'; }
+    if (rateBadge) {
+      rateBadge.innerText = 'Taux Ouv. Prédit : 62% (Points 🎁)';
+      rateBadge.style.borderColor = '#F59E0B';
+      rateBadge.style.color = '#FDE68A';
+    }
+    if (typeof showToast === 'function') {
+      showToast('Variante B activée : Approche Transactionnelle & Points Bonus', 'info');
+    }
+  }
+
+  // Actualise le client actif dans le simulateur
+  if (window._fidnessActiveSimClient) {
+    window.previewClientPushInSimulator(window._fidnessActiveSimClient.id);
+  }
+};
+
+window.openAgentFidnessTab = function() {
+  const btn = document.getElementById('btn-tab-agent-fidness');
+  if (btn) {
+    btn.click();
+    const section = document.getElementById('tab-agent-fidness');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+};
+
+// MISE À JOUR DU COMPTEUR ET DE LA JAUGE ROI EN DIRECT
+window.updateFidnessPushCounterUI = function(addedCount, logMsg) {
+  window._fidnessTotalPushSent += addedCount;
+  const countEl = document.getElementById('fidness-kpi-push-sent-count');
+  if (countEl) {
+    countEl.innerText = `${window._fidnessTotalPushSent} Push envoyés`;
+  }
+  
+  // Calcul dynamique de sauvetage du CA pour la Jauge ROI
+  const totalClients = window.FIDNESS_CHURN_CLIENTES.length; // 22
+  const maxSauve = 1838.000;
+  const ratio = Math.min(1.0, window._fidnessTotalPushSent / totalClients);
+  const caSauve = ratio * maxSauve;
+  const pctSauve = ratio * 38.4;
+
+  const gaugeCaEl = document.getElementById('fidness-gauge-ca-sauve');
+  const gaugePctEl = document.getElementById('fidness-gauge-pct-sauve');
+  const progressBar = document.getElementById('fidness-rescue-progress-bar');
+  const kpiCaSauve = document.getElementById('fidness-kpi-ca-sauve');
+
+  if (gaugeCaEl) {
+    gaugeCaEl.innerText = `${caSauve.toFixed(3).replace('.', ',')} TND`;
+  }
+  if (gaugePctEl) {
+    gaugePctEl.innerText = `(${pctSauve.toFixed(1).replace('.', ',')}%)`;
+  }
+  if (progressBar) {
+    // La jauge avance vers les 38.4%
+    progressBar.style.width = `${pctSauve}%`;
+  }
+  if (kpiCaSauve) {
+    kpiCaSauve.innerText = `Sécurisé : ${caSauve.toFixed(3).replace('.', ',')} TND`;
+  }
+
+  const logEl = document.getElementById('fidness-push-live-log');
+  if (logEl && logMsg) {
+    const time = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    logEl.innerHTML = `<div><span style="color:#FDE68A;">[${time}]</span> ${logMsg}</div>` + logEl.innerHTML;
+  }
+};
+
+window.renderAgentFidnessChurnTable = function() {
+  const tbody = document.getElementById('tbody-agent-fidness-churn');
+  if (!tbody) return;
+
+  const riskFilter = window._fidnessCurrentRiskFilter || 'all';
+  const q = (window._fidnessCurrentSearch || '').trim().toLowerCase();
+
+  let list = window.FIDNESS_CHURN_CLIENTES.filter(c => {
+    if (riskFilter !== 'all' && c.niveau !== riskFilter) return false;
+    if (q) {
+      const hay = `${c.nom} ${c.telephone} ${c.pdv} ${c.region} ${c.diagnostic} ${c.reco_titre} ${c.affinite_badge || ''}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 24px; color: #8E0E14; font-weight: 700;">Aucune cliente sensible trouvée pour ces critères de recherche.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(c => {
+    const initials = c.nom.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    const isCrit = c.niveau === 'critique';
+    const isEleve = c.niveau === 'eleve';
+    const badgeColor = isCrit ? '#B91C1C' : (isEleve ? '#B45309' : '#047857');
+    const badgeBg = isCrit ? '#FEF2F2' : (isEleve ? '#FFFBEB' : '#ECFDF5');
+    const badgeBorder = isCrit ? '#FCA5A5' : (isEleve ? '#FCD34D' : '#6EE7B7');
+    
+    const pdvBadge = c.pdv_type === 'CAF'
+      ? `<span style="display:inline-block; background:#FEF3C7; color:#92400E; font-size:0.72rem; font-weight:800; padding:2px 7px; border-radius:4px; margin-right:6px; border:1px solid #FDE68A;">CAFÉTÉRIA</span>`
+      : `<span style="display:inline-block; background:#FCE7F3; color:#9D174D; font-size:0.72rem; font-weight:800; padding:2px 7px; border-radius:4px; margin-right:6px; border:1px solid #FBCFE8;">SUCCURSALE</span>`;
+
+    const actionHtml = c.pushSent
+      ? `<div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+           <span style="background:#D1FAE5; color:#065F46; font-size:0.8rem; font-weight:800; padding:6px 12px; border-radius:8px; border:1.5px solid #34D399; box-shadow:0 2px 6px rgba(16,185,129,0.15);">✓ Push Envoyé</span>
+           <button type="button" onclick="window.previewClientPushInSimulator('${c.id}')" style="background:none; border:none; color:#475569; font-size:0.74rem; font-weight:700; text-decoration:underline; cursor:pointer;">Revoir Studio</button>
+         </div>`
+      : `<div style="display:flex; flex-direction:column; gap:7px; align-items:stretch;">
+           <button type="button" class="btn-action" onclick="window.sendFidnessClientPush('${c.id}')" style="background:linear-gradient(135deg, #73080E 0%, #A8101E 100%); color:#FFFFFF; border:none; padding:8px 14px; border-radius:8px; font-weight:800; font-size:0.82rem; cursor:pointer; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 3px 8px rgba(115,8,14,0.3); transition:all 0.15s ease;">
+             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+             <span>Envoyer Push</span>
+           </button>
+           <button type="button" onclick="window.previewClientPushInSimulator('${c.id}')" style="background:#FFFFFF; color:#334155; border:1.5px solid #CBD5E1; padding:6px 10px; border-radius:7px; font-weight:700; font-size:0.76rem; cursor:pointer; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:5px; transition:all 0.15s ease;">
+             📱 Aperçu Mobile
+           </button>
+         </div>`;
+
+    return `
+      <tr style="${isCrit ? 'background: rgba(254, 242, 242, 0.35);' : ''}; border-bottom: 1px solid #E2E8F0;">
+        <td style="text-align: center; vertical-align: middle;">
+          <input type="checkbox" style="width:16px; height:16px; cursor:pointer;" ${c.selected ? 'checked' : ''} onchange="window.toggleSingleFidnessClient('${c.id}', this.checked)">
+        </td>
+        <td style="min-width: 230px; vertical-align: middle;">
+          <div style="display:flex; align-items:flex-start; gap:12px;">
+            <div style="width:38px; height:38px; border-radius:50%; background:${badgeBg}; color:${badgeColor}; border:2px solid ${badgeBorder}; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:0.84rem; flex-shrink:0; margin-top:2px;">
+              ${initials}
+            </div>
+            <div style="flex:1;">
+              <div style="font-weight:800; color:#0F172A; font-size:0.95rem; line-height:1.25;">${c.nom}</div>
+              <div style="font-size:0.8rem; color:#475569; margin-top:2px;">📞 <strong style="color:#1E293B;">${c.telephone}</strong> <span style="font-size:0.7rem; color:#94A3B8; font-family:monospace; margin-left:4px;">${c.id}</span></div>
+              <!-- BADGE AFFINITÉ CAFÉ & HABITUDE D'ACHAT -->
+              <div class="fidness-affinite-badge" title="${c.habitude_achat}">
+                <span>${c.affinite_badge}</span>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td style="min-width: 175px; vertical-align: middle;">
+          <div style="font-weight:800; color:#1E293B; font-size:0.9rem; line-height:1.3;">${c.pdv}</div>
+          <div style="margin-top:4px; display:flex; align-items:center;">
+            ${pdvBadge}
+            <span style="font-size:0.78rem; font-weight:700; color:#64748B;">${c.region}</span>
+          </div>
+        </td>
+        <td style="min-width: 145px; vertical-align: middle;">
+          <div style="font-weight:900; color:${badgeColor}; font-size:0.95rem;">Il y a ${c.recence} jours</div>
+          <div style="font-size:0.8rem; color:#475569; font-weight:600; margin-top:2px;"><strong style="color:#1E293B;">${c.visites} visites</strong> historiques</div>
+        </td>
+        <td style="min-width: 160px; vertical-align: middle;">
+          <div style="font-weight:900; color:#0F172A; font-size:0.96rem;">${c.ca.toFixed(3).replace('.', ',')} TND</div>
+          <div style="font-size:0.82rem; color:#B45309; font-weight:800; margin-top:3px; display:flex; align-items:center; gap:4px;">
+            ⭐ ${c.points.toLocaleString('fr-FR')} pts dormants
+          </div>
+        </td>
+        <td style="min-width: 220px; vertical-align: middle;">
+          <div style="margin-bottom:6px;">
+            <span style="display:inline-block; background:${badgeBg}; color:${badgeColor}; border:1.5px solid ${badgeBorder}; font-weight:900; font-size:0.82rem; padding:3px 10px; border-radius:99px;">
+              ${c.statut_label}
+            </span>
+          </div>
+          <div style="width:100%; height:6px; background:#E2E8F0; border-radius:99px; overflow:hidden; margin-bottom:6px;">
+            <div style="width:${c.score_pct}%; height:100%; background:${badgeColor}; border-radius:99px;"></div>
+          </div>
+          <div style="font-size:0.8rem; color:#334155; line-height:1.4; font-weight:500;">
+            ${c.diagnostic}
+          </div>
+        </td>
+        <td style="min-width: 320px; vertical-align: middle;">
+          <div style="margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+            <span style="font-weight:800; color:#73080E; font-size:0.86rem;">🎯 ${c.reco_titre}</span>
+            <span style="font-size:0.75rem; font-weight:800; color:#92400E; background:#FEF3C7; border:1px solid #FDE68A; padding:2px 7px; border-radius:4px;">⏰ ${c.horaire_optimal}</span>
+          </div>
+          <div style="font-size:0.83rem; color:#0F172A; background:#FFFDF7; border:1.5px solid #FDE68A; border-left:4px solid #D97706; padding:9px 12px; border-radius:8px; line-height:1.45; font-weight:500;">
+            « ${c.reco_push} »
+          </div>
+        </td>
+        <td style="text-align:center; min-width: 140px; vertical-align: middle;">
+          ${actionHtml}
+        </td>
+      </tr>
+    `;
+  }).join('');
+};
+
+window.filterFidnessChurnList = function(riskLevel, btnEl) {
+  window._fidnessCurrentRiskFilter = riskLevel;
+  const container = document.getElementById('fidness-churn-filter-pills');
+  if (container) {
+    container.querySelectorAll('.reward-pill').forEach(b => b.classList.remove('active'));
+  }
+  if (btnEl) btnEl.classList.add('active');
+  window.renderAgentFidnessChurnTable();
+};
+
+window.handleFidnessChurnSearch = function(val) {
+  window._fidnessCurrentSearch = val || '';
+  window.renderAgentFidnessChurnTable();
+};
+
+window.toggleSelectAllFidnessClients = function(checked) {
+  window.FIDNESS_CHURN_CLIENTES.forEach(c => { c.selected = !!checked; });
+  window.renderAgentFidnessChurnTable();
+};
+
+window.toggleSingleFidnessClient = function(clientId, checked) {
+  const found = window.FIDNESS_CHURN_CLIENTES.find(c => c.id === clientId);
+  if (found) found.selected = !!checked;
+};
+
+// PRÉVISUALISATION DANS LE SIMULATEUR AVEC GESTION DES VARIANTES A/B
+window.previewClientPushInSimulator = function(clientId) {
+  const c = window.FIDNESS_CHURN_CLIENTES.find(item => item.id === clientId);
+  if (!c) return;
+  window._fidnessActiveSimClient = c;
+
+  const currentVariant = window._fidnessCurrentVariant || 'A';
+  const varData = (currentVariant === 'B' && c.variante_b) ? c.variante_b : c.variante_a;
+
+  const targetInput = document.getElementById('sim-input-target');
+  const titleInput = document.getElementById('sim-input-title');
+  const msgInput = document.getElementById('sim-input-message');
+  const codeEl = document.getElementById('sim-push-code');
+  const badgeEl = document.getElementById('sim-push-target-badge');
+  const abTagEl = document.getElementById('sim-push-ab-tag');
+
+  if (targetInput) targetInput.value = `${c.nom} (${c.telephone}) — ${c.pdv}`;
+  if (titleInput) titleInput.value = varData ? varData.titre : c.reco_titre;
+  if (msgInput) msgInput.value = varData ? varData.push : c.reco_push;
+  if (codeEl) codeEl.innerText = `Code : ${varData ? varData.code : c.code_promo}`;
+  if (badgeEl) badgeEl.innerText = `Cible : ${c.nom} (${c.score_pct}% Churn)`;
+  if (abTagEl) {
+    abTagEl.innerText = currentVariant === 'A' ? 'Variante A (Arômes)' : 'Variante B (Points)';
+    abTagEl.style.background = currentVariant === 'A' ? '#FEF3C7' : '#EFF6FF';
+    abTagEl.style.color = currentVariant === 'A' ? '#92400E' : '#1D4ED8';
+  }
+
+  window.updateFidnessPushPreview();
+  if (typeof showToast === 'function') {
+    showToast(`Aperçu chargé pour ${c.nom} (${currentVariant === 'A' ? 'Variante A' : 'Variante B'})`, 'info');
+  }
+};
+
+window.updateFidnessPushPreview = function() {
+  const titleVal = (document.getElementById('sim-input-title') || {}).value || '';
+  const msgVal = (document.getElementById('sim-input-message') || {}).value || '';
+  const simTitle = document.getElementById('sim-push-title');
+  const simBody = document.getElementById('sim-push-body');
+  if (simTitle) simTitle.innerText = titleVal;
+  if (simBody) simBody.innerText = msgVal;
+};
+
+window.loadScenarioIntoSimulator = function(scenarioKey) {
+  const targetInput = document.getElementById('sim-input-target');
+  const titleInput = document.getElementById('sim-input-title');
+  const msgInput = document.getElementById('sim-input-message');
+  const codeEl = document.getElementById('sim-push-code');
+  const badgeEl = document.getElementById('sim-push-target-badge');
+
+  if (scenarioKey === 'critique') {
+    if (targetInput) targetInput.value = "12 Clientes Critiques (Ne reviendront plus)";
+    if (titleInput) titleInput.value = "Offre de Sauvetage VIP : +100 pts + Café Offert ☕";
+    if (msgInput) msgInput.value = "Bonjour {Prénom} ☕ Votre pause café chez Bondin vous manque ! Vos points vous attendent. Revenez d'ici dimanche : 1 Café Offert + 100 pts bonus en caisse.";
+    if (codeEl) codeEl.innerText = "Code : FIDNESS_SAVE100";
+    if (badgeEl) badgeEl.innerText = "Cible : 12 Clientes Critiques (>88% Churn)";
+  } else if (scenarioKey === 'eleve') {
+    if (targetInput) targetInput.value = "7 Clientes en Décrochage Élevé (30-60 jours)";
+    if (titleInput) titleInput.value = "Points Doublés (x2) + 75 pts Bonus 🌟";
+    if (msgInput) msgInput.value = "Chère {Prénom} ✨ Ne laissez pas s'endormir votre cagnotte ! Vos points sont doublés (x2) dès votre prochain scan chez Bondin.";
+    if (codeEl) codeEl.innerText = "Code : FIDNESS_DOUBLE75";
+    if (badgeEl) badgeEl.innerText = "Cible : 7 Clientes Décrochage (74-85% Churn)";
+  } else if (scenarioKey === 'modere') {
+    if (targetInput) targetInput.value = "3 Clientes en Vigilance (20-30 jours)";
+    if (titleInput) titleInput.value = "Votre Cadeau Fidélité Bondin approche 🎁";
+    if (msgInput) msgInput.value = "Bonjour {Prénom} 🌟 Plus que quelques points pour votre cadeau Bondin ! Venez déguster notre nouvelle fournée fraîche et recevez +50 pts offerts.";
+    if (codeEl) codeEl.innerText = "Code : FIDNESS_CRU50";
+    if (badgeEl) badgeEl.innerText = "Cible : 3 Clientes Vigilance (62-68% Churn)";
+  }
+  window.updateFidnessPushPreview();
+  if (typeof showToast === 'function') {
+    showToast(`Scénario « ${scenarioKey.toUpperCase()} » chargé dans le studio smartphone`, 'info');
+  }
+};
+
+window.sendFidnessClientPush = async function(clientId) {
+  const c = window.FIDNESS_CHURN_CLIENTES.find(item => item.id === clientId);
+  if (!c) return;
+
+  window.previewClientPushInSimulator(clientId);
+  c.pushSent = true;
+  window.renderAgentFidnessChurnTable();
+
+  const variant = window._fidnessCurrentVariant || 'A';
+  const varData = (variant === 'B' && c.variante_b) ? c.variante_b : c.variante_a;
+  const promo = varData ? varData.code : c.code_promo;
+  const msg = varData ? varData.push : c.reco_push;
+
+  try {
+    await fetch('/api/campaign/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: c.id,
+        client_name: c.nom,
+        code: promo,
+        message: msg,
+        variant: variant
+      })
+    });
+  } catch (e) {}
+
+  updateFidnessPushCounterUI(1, `Push ciblé (Var. ${variant}) délivré à <strong>${c.nom}</strong> (${c.telephone}) • Offre <code>${promo}</code>`);
+  if (typeof showToast === 'function') {
+    showToast(`Push ciblé (Variante ${variant}) envoyé avec succès à ${c.nom} !`, 'success');
+  }
+};
+
+window.triggerSimulatorPushSend = async function() {
+  const titleVal = (document.getElementById('sim-input-title') || {}).value || '';
+  const msgVal = (document.getElementById('sim-input-message') || {}).value || '';
+  const active = window._fidnessActiveSimClient;
+
+  if (active) {
+    const found = window.FIDNESS_CHURN_CLIENTES.find(c => c.id === active.id);
+    if (found) {
+      const variant = window._fidnessCurrentVariant || 'A';
+      if (variant === 'B' && found.variante_b) {
+        found.variante_b.titre = titleVal;
+        found.variante_b.push = msgVal;
+      } else if (found.variante_a) {
+        found.variante_a.titre = titleVal;
+        found.variante_a.push = msgVal;
+      }
+      await window.sendFidnessClientPush(found.id);
+      return;
+    }
+  }
+
+  await window.sendBulkFidnessPush('critique');
+};
+
+window.sendBulkFidnessPush = async function(targetGroup) {
+  let targets = [];
+  if (targetGroup === 'all') {
+    targets = window.FIDNESS_CHURN_CLIENTES;
+  } else {
+    targets = window.FIDNESS_CHURN_CLIENTES.filter(c => c.niveau === targetGroup);
+  }
+  if (targets.length === 0) targets = window.FIDNESS_CHURN_CLIENTES;
+
+  targets.forEach(c => { c.pushSent = true; });
+  window.renderAgentFidnessChurnTable();
+
+  try {
+    await fetch('/api/campaign/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code: targetGroup === 'critique' ? 'FIDNESS_SAVE100' : (targetGroup === 'eleve' ? 'FIDNESS_DOUBLE75' : 'FIDNESS_RETENTION'),
+        clients: targets.map(t => ({ id: t.id, nom: t.nom }))
+      })
+    });
+  } catch (e) {}
+
+  const labelMap = {
+    critique: '12 Clientes Critiques (Ne reviendront plus)',
+    eleve: '7 Clientes en Décrochage Élevé',
+    modere: '3 Clientes en Vigilance',
+    all: `${targets.length} Clientes Sensibles`
+  };
+
+  updateFidnessPushCounterUI(targets.length, `Campagne de masse déclenchée pour <strong>${labelMap[targetGroup] || targetGroup}</strong> via l'App Fidness.`);
+  if (typeof showToast === 'function') {
+    showToast(`Campagne Push envoyée avec succès à ${targets.length} clientes !`, 'success');
+  }
+};
+
+
+// Initialisation automatique au chargement du DOM
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    if (typeof window.renderAgentFidnessChurnTable === 'function') {
+      window.renderAgentFidnessChurnTable();
+    }
+  }, 150);
+});
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(() => {
+    if (typeof window.renderAgentFidnessChurnTable === 'function') {
+      window.renderAgentFidnessChurnTable();
+    }
+  }, 150);
+}
+
+// ==========================================================================
+// CHATBOT PRO BONDIN - STUDIO IA v3.0 (PERSONNALISÉ MAISON BONDIN 1910 × FIDNESS)
+// ==========================================================================
+window.__bcp = { mode: 'dg', voice: false, rec: null };
+
+window.BCP_MODES = {
+  dg: [
+    {
+      icon: '📈', iconBg: '#ECFDF5', iconColor: '#065F46',
+      badge: 'Accroître le Bénéfice', badgeBg: '#D1FAE5', badgeColor: '#065F46',
+      title: 'Accroître le Bénéfice IA', sub: '+1 838 TND & ROI +850%',
+      prompt: 'Comment l Agent IA Fidness permet il d accroître les bénéfices et la rentabilité de Maison Bondin ?'
+    },
+    {
+      icon: '🚨', iconBg: '#FEF2F2', iconColor: '#991B1B',
+      badge: '4 786 TND Churn', badgeBg: '#FEE2E2', badgeColor: '#991B1B',
+      title: 'Urgence Churn Top 22', sub: 'Clientes sensibles & relance Push',
+      prompt: 'Quelles sont les clientes en risque de churn et les push recommandees ?'
+    },
+    {
+      icon: '🏬', iconBg: '#EFF6FF', iconColor: '#1E40AF',
+      badge: '59 485 TND CA', badgeBg: '#DBEAFE', badgeColor: '#1E40AF',
+      title: 'Succursales vs Cafétérias', sub: 'Comparatif des 23 points de vente',
+      prompt: 'Quelle est la difference entre les succursales et les cafeterias ?'
+    },
+    {
+      icon: '🏆', iconBg: '#FFFBEB', iconColor: '#92400E',
+      badge: '23 Magasins', badgeBg: '#FEF3C7', badgeColor: '#92400E',
+      title: 'Top Magasins & Régions', sub: 'Gafsa, Grand Tunis, Le Kef, Gabès',
+      prompt: 'Quels sont les magasins les plus rentables ?'
+    },
+    {
+      icon: '📊', iconBg: '#FAF5FF', iconColor: '#6B21A8',
+      badge: '842 950 pts', badgeBg: '#F3E8FF', badgeColor: '#6B21A8',
+      title: 'Dette Points & Burn', sub: 'Ratio Earn & Burn (14,2%)',
+      prompt: 'Quelle est la dette des points et le ratio Earn & Burn ?'
+    },
+    {
+      icon: '⚡', iconBg: '#FFF1F2', iconColor: '#8E0E14',
+      badge: '226 Profils B2B', badgeBg: '#FCE7EB', badgeColor: '#8E0E14',
+      title: 'Grossistes B2B Détectés', sub: 'Audit achats en gros (77,3% CA)',
+      prompt: 'Combien de profils grossistes B2B ont ete detectes ?'
+    }
+  ],
+  churn: [
+    {
+      icon: '🔴', iconBg: '#FEF2F2', iconColor: '#991B1B',
+      badge: '12 Critiques (>88%)', badgeBg: '#FEE2E2', badgeColor: '#991B1B',
+      title: 'Ne reviendront plus', sub: 'Wièm, Amira, Sarra, Mouna, Donia',
+      prompt: 'Quelles sont les clientes en risque de churn et les push recommandees ?'
+    },
+    {
+      icon: '📲', iconBg: '#EFF6FF', iconColor: '#1E40AF',
+      badge: '74% vs 62% Ouv.', badgeBg: '#DBEAFE', badgeColor: '#1E40AF',
+      title: 'Variantes Push A/B', sub: 'Arômes Café vs Points Bonus',
+      prompt: 'Quelles sont les recommandations de notifications push A/B pour retenir les clientes sensibles ?'
+    },
+    {
+      icon: '⭐', iconBg: '#FFFBEB', iconColor: '#92400E',
+      badge: '15 589 pts dormants', badgeBg: '#FEF3C7', badgeColor: '#92400E',
+      title: 'Cagnotte Dormante', sub: 'Levier n°1 de relance mobile',
+      prompt: 'Quelle est la dette des points et le ratio Earn & Burn ?'
+    },
+    {
+      icon: '🛡️', iconBg: '#ECFDF5', iconColor: '#065F46',
+      badge: '+1 838 TND sauvés', badgeBg: '#D1FAE5', badgeColor: '#065F46',
+      title: 'Potentiel Rétention IA', sub: 'Modélisation 38,4% de retour',
+      prompt: 'Quel est le chiffre d affaires expose au churn et combien peut on sauvegarder ?'
+    },
+    {
+      icon: '📍', iconBg: '#FFF1F2', iconColor: '#8E0E14',
+      badge: 'Gafsa & Menzah VI', badgeBg: '#FCE7EB', badgeColor: '#8E0E14',
+      title: 'Churn par Point de Vente', sub: 'Cafétérias vs Succursales',
+      prompt: 'Quels sont les clients en risque d attrition churn ?'
+    },
+    {
+      icon: '👑', iconBg: '#FFFBEB', iconColor: '#B45309',
+      badge: '804 TND • 2 933 pts', badgeBg: '#FEF3C7', badgeColor: '#92400E',
+      title: 'Focus Clientes VIP', sub: 'Amira Baaziz & Rakia Jawali',
+      prompt: 'Analyse les clientes VIP en risque de churn comme Amira Baaziz et Rakia Jawali.'
+    }
+  ],
+  pl: [
+    {
+      icon: '💰', iconBg: '#ECFDF5', iconColor: '#065F46',
+      badge: '59 485 TND', badgeBg: '#D1FAE5', badgeColor: '#065F46',
+      title: "Chiffre d'Affaires Consolidé", sub: '14 233 tickets certifiés DWH',
+      prompt: 'Quel est le chiffre d affaires total et le panier moyen ?'
+    },
+    {
+      icon: '🏬', iconBg: '#EFF6FF', iconColor: '#1E40AF',
+      badge: '64,9% vs 35,1%', badgeBg: '#DBEAFE', badgeColor: '#1E40AF',
+      title: 'Succursales vs Cafétérias', sub: 'Panier 18,45 TND vs 4,12 TND',
+      prompt: 'Quelle est la difference entre les succursales et les cafeterias ?'
+    },
+    {
+      icon: '⚡', iconBg: '#FFF1F2', iconColor: '#8E0E14',
+      badge: '45 985 TND B2B', badgeBg: '#FCE7EB', badgeColor: '#8E0E14',
+      title: 'Poids des Grossistes', sub: '226 comptes générant 77,3% CA',
+      prompt: 'Combien de profils grossistes B2B ont ete detectes ?'
+    },
+    {
+      icon: '🏆', iconBg: '#FFFBEB', iconColor: '#92400E',
+      badge: 'Top 5 PDV', badgeBg: '#FEF3C7', badgeColor: '#92400E',
+      title: 'Rentabilité par Magasin', sub: 'Tunis Liberté, Gafsa, Le Kef',
+      prompt: 'Quels sont les magasins les plus rentables ?'
+    },
+    {
+      icon: '📊', iconBg: '#FEF2F2', iconColor: '#991B1B',
+      badge: 'Provision Fidness', badgeBg: '#FEE2E2', badgeColor: '#991B1B',
+      title: 'Passif Points Fidélité', sub: '842 950 pts distribués vs brûlés',
+      prompt: 'Quelle est la dette des points et le ratio Earn & Burn ?'
+    },
+    {
+      icon: '🛡️', iconBg: '#ECFDF5', iconColor: '#065F46',
+      badge: '+1 150 TND CAC évité', badgeBg: '#D1FAE5', badgeColor: '#065F46',
+      title: 'Impact Marge Anti-Churn', sub: 'Sauvetage des 22 clientes sensibles',
+      prompt: 'Quels sont les clients en risque d attrition churn ?'
+    }
+  ]
+};
+
+window.bcpRenderQuick = function() {
+  const grid = document.getElementById('bcp-quick-grid');
+  if (!grid) return;
+  const set = window.BCP_MODES[window.__bcp.mode] || window.BCP_MODES.dg;
+  window.__bcpQ = set;
+  grid.innerHTML = set.map((item, i) => `
+    <button type="button" class="bcp-qcard" onclick="window.askSuggestedQuestion(window.__bcpQ[${i}].prompt)">
+      <div class="bcp-qcard-top">
+        <span class="bcp-qicon" style="background:${item.iconBg};color:${item.iconColor};">${item.icon}</span>
+        <span class="bcp-qbadge" style="background:${item.badgeBg};color:${item.badgeColor};">${item.badge}</span>
+      </div>
+      <div>
+        <b>${item.title}</b>
+        <small>${item.sub}</small>
+      </div>
+    </button>
+  `).join('');
+
+  const wc = document.getElementById('bcp-welcome-chips');
+  if (wc) {
+    const dotColors = ['#F59E0B', '#EF4444', '#D97706', '#FBBF24'];
+    const chipItems = [
+      { label: '2 783 Clients Fidness (23 PDV)', prompt: 'Quelle est la difference entre les succursales et les cafeterias ?' },
+      { label: '22 Clientes Risque Churn Élevé', prompt: 'Quelles sont les clientes en risque de churn et les push recommandees ?' },
+      { label: '59 485 TND CA (ROI Push +850%)', prompt: 'Quel est le chiffre d affaires total et le panier moyen ?' },
+      { label: '226 Grossistes B2B (77,3% du CA)', prompt: 'Combien de profils grossistes B2B ont ete detectes ?' }
+    ];
+    window.__bcpWelcomePrompts = chipItems;
+    wc.innerHTML = chipItems.map((c, idx) => `
+      <button type="button" class="bcp-wchip" onclick="window.askSuggestedQuestion(window.__bcpWelcomePrompts[${idx}].prompt)">
+        <span class="bcp-wchip-left">
+          <span class="bcp-wchip-dot" style="background:${dotColors[idx]};box-shadow:0 0 6px ${dotColors[idx]};"></span>
+          <span>${c.label}</span>
+        </span>
+        <span class="bcp-wchip-arrow">&rarr;</span>
+      </button>
+    `).join('');
+  }
+};
+
+window.bcpSetMode = function(mode) {
+  window.__bcp.mode = mode;
+  document.querySelectorAll('#bcp-modes .bcp-mode').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  window.bcpRenderQuick();
+  const labels = { dg: 'Synthèse Direction Générale', churn: 'Focus Anti-Churn Fidness', pl: 'Audit P&L & Réseau 23 PDV' };
+  if (typeof showToast === 'function') showToast('Mode activé : ' + (labels[mode] || mode), 'info');
+};
+
+window.bcpRenderRadar = function() {
+  const box = document.getElementById('bcp-radar');
+  if (!box) return;
+  const allClients = window.FIDNESS_CHURN_CLIENTES || [];
+  // Prioriser les 3 premières clientes emblématiques à forte valeur (Wièm, Amira, Sarra)
+  const list = allClients.slice(0, 3);
+  window.__bcpRadar = list;
+  box.innerHTML = list.map((c, i) => `
+    <div class="bcp-radar-item">
+      <div>
+        <b>${c.nom}<span class="bcp-sc">${c.recence}j • ${c.score_pct}%</span></b>
+        <small>${c.pdv} • ${c.ca.toFixed(1).replace('.', ',')} TND (${c.points} pts)</small>
+      </div>
+      <div class="bcp-radar-btns">
+        <button type="button" onclick="window.askSuggestedQuestion('Analyse le profil churn de ${c.nom} (${c.pdv}, ${c.recence} jours d inactivite, ${c.points} points dormants) et donne la notification push ideale.')">IA</button>
+        <button type="button" class="push" onclick="window.bcpPush(${i})">${c.pushSent ? '✓ Envoyé' : 'Offre Push'}</button>
+      </div>
+    </div>
+  `).join('');
+};
+
+window.bcpPush = function(i) {
+  const c = (window.__bcpRadar || [])[i];
+  if (c && typeof window.sendFidnessClientPush === 'function') {
+    window.sendFidnessClientPush(c.id);
+    setTimeout(window.bcpRenderRadar, 250);
+  }
+};
+
+window.bcpSimUpdate = function() {
+  const r = document.getElementById('bcp-sim-range');
+  if (!r) return;
+  const n = parseInt(r.value, 10);
+  const total = (window.FIDNESS_CHURN_CLIENTES || []).length || 22;
+  r.max = total;
+  const avgCa = 4786.25 / total; // ~217.55 TND par cliente sensible
+  const caSauve = Math.round(n * avgCa);
+  const marge = Math.round(caSauve * 0.38);
+  const pct = Math.round((n / total) * 100);
+
+  const elN = document.getElementById('bcp-sim-n');
+  const elMax = document.getElementById('bcp-sim-max');
+  const elPct = document.getElementById('bcp-sim-pct');
+  const elCa = document.getElementById('bcp-sim-ca');
+  const elMarge = document.getElementById('bcp-sim-marge');
+
+  if (elN) elN.innerText = n + (n > 1 ? ' Clientes' : ' Cliente');
+  if (elMax) elMax.innerText = total;
+  if (elPct) elPct.innerText = pct + '% sauvées';
+  if (elCa) elCa.innerText = caSauve.toLocaleString('fr-FR') + ' TND';
+  if (elMarge) elMarge.innerText = '+' + marge.toLocaleString('fr-FR') + ' TND';
+};
+
+window.bcpValidateSim = function() {
+  const r = document.getElementById('bcp-sim-range');
+  const n = r ? r.value : 15;
+  window.askSuggestedQuestion('Quelles sont les clientes en risque de churn et les push recommandees pour sauver ' + n + ' clientes sensibles sur 22 ?');
+};
+
+window.bcpToggleSize = function() {
+  const p = document.getElementById('bcp-panel');
+  if (p) p.classList.toggle('bcp-full');
+};
+
+window.bcpToggleVoice = function() {
+  window.__bcp.voice = !window.__bcp.voice;
+  const btn = document.getElementById('bcp-voice-btn');
+  const lbl = document.getElementById('bcp-voice-label');
+  if (lbl) lbl.innerText = 'Voix IA : ' + (window.__bcp.voice ? 'ON' : 'OFF');
+  if (btn) btn.classList.toggle('on', window.__bcp.voice);
+  if (!window.__bcp.voice && window.speechSynthesis) window.speechSynthesis.cancel();
+};
+
+window.bcpSpeak = function(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const clean = String(text).replace(/<[^>]*>/g, ' ').replace(/[*_#`>|]/g, ' ').replace(/\s+/g, ' ').trim();
+  const u = new SpeechSynthesisUtterance(clean);
+  u.lang = 'fr-FR';
+  window.speechSynthesis.speak(u);
+};
+
+window.bcpToggleMic = function() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = document.getElementById('bcp-mic-btn');
+  if (!SR) {
+    if (typeof showToast === 'function') showToast('Reconnaissance vocale disponible sur Google Chrome et Microsoft Edge.', 'info');
+    return;
+  }
+  if (window.__bcp.rec) { window.__bcp.rec.stop(); return; }
+  const r = new SR();
+  r.lang = 'fr-FR';
+  r.interimResults = false;
+  r.onresult = e => {
+    const inp = document.getElementById('rag-user-input');
+    if (inp) { inp.value = e.results[0][0].transcript; window.sendRagMessage(); }
+  };
+  r.onend = () => { window.__bcp.rec = null; if (btn) btn.classList.remove('rec'); };
+  r.onerror = () => { window.__bcp.rec = null; if (btn) btn.classList.remove('rec'); };
+  window.__bcp.rec = r;
+  if (btn) btn.classList.add('rec');
+  r.start();
+};
+
+window.bcpExport = function() {
+  const rows = document.querySelectorAll('#rag-messages-area .rag-msg-row');
+  let out = "RAPPORT D'ANALYSE EXÉCUTIF — BONDIN COPILOT STUDIO IA v3.0\n";
+  out += 'Maison Bondin 1910 × Fidness | Date : ' + new Date().toLocaleString('fr-FR') + '\n';
+  out += '='.repeat(68) + '\n\n';
+  rows.forEach(r => {
+    const who = r.classList.contains('user') ? 'DIRECTION BONDIN' : 'BONDIN COPILOT IA';
+    const body = r.querySelector('.rag-content-body') || r.querySelector('.rag-msg-bubble');
+    out += '[' + who + ']\n' + (body ? body.innerText.trim() : '') + '\n\n';
+  });
+  const blob = new Blob([out], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Rapport_Bondin_Copilot_IA.txt';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+};
+
+window.bcpOnAnswer = function(text) {
+  const area = document.getElementById('rag-messages-area');
+  if (!area) return;
+  const rows = area.querySelectorAll('.rag-msg-row.assistant');
+  const lastRow = rows[rows.length - 1];
+  if (lastRow) {
+    const av = lastRow.querySelector('.rag-msg-avatar');
+    if (av) {
+      av.className = 'rag-msg-avatar bondin-msg-avatar';
+      av.innerHTML = '<img src="bondin_logo.png" alt="Maison Bondin">';
+    }
+    const bubble = lastRow.querySelector('.rag-msg-bubble');
+    if (bubble && !bubble.querySelector('.bcp-msg-actions')) {
+      const bar = document.createElement('div');
+      bar.className = 'bcp-msg-actions';
+      bar.innerHTML = `<button type="button" data-a="copy">📋 Copier l'analyse</button><button type="button" data-a="read">🔊 Écouter</button><button type="button" data-a="fidness">🤖 Ouvrir Agent IA Fidness</button>`;
+      bar.addEventListener('click', ev => {
+        const btn = ev.target.closest('button');
+        const a = btn && btn.dataset ? btn.dataset.a : null;
+        if (a === 'copy' && navigator.clipboard) {
+          navigator.clipboard.writeText(bubble.innerText);
+          if (typeof showToast === 'function') showToast('Analyse copiée dans le presse-papiers', 'success');
+        }
+        if (a === 'read') window.bcpSpeak(text);
+        if (a === 'fidness') {
+          window.toggleRagChat();
+          if (typeof window.openAgentFidnessTab === 'function') window.openAgentFidnessTab();
+        }
+      });
+      bubble.appendChild(bar);
+    }
+  }
+  if (window.__bcp.voice) window.bcpSpeak(text);
+};
+
+window.toggleRagChat = function() {
+  const panel = document.getElementById('rag-chatbox-panel');
+  if (!panel) return;
+  const open = !(panel.style.display === 'flex');
+  panel.style.display = open ? 'flex' : 'none';
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) {
+    window.bcpRenderQuick();
+    window.bcpRenderRadar();
+    window.bcpSimUpdate();
+    const inp = document.getElementById('rag-user-input');
+    if (inp) setTimeout(() => inp.focus(), 120);
+  } else if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+};
+
+window.clearRagMessages = function() {
+  const area = document.getElementById('rag-messages-area');
+  if (!area) return;
+  area.innerHTML = `
+    <div class="rag-msg-row assistant">
+      <div class="rag-msg-avatar bondin-msg-avatar"><img src="bondin_logo.png" alt="Maison Bondin"></div>
+      <div class="rag-msg-bubble bcp-welcome-bubble">
+        <div class="bcp-bubble-top">
+          <div class="bcp-bubble-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h6v6H9z"/></svg>
+            <span>Chatbot Pro BONDIN Studio &bull; Intelligence Décisionnelle</span>
+          </div>
+          <span class="bcp-sync-pill"><span class="bcp-pulse-mini"></span>Session Réinitialisée</span>
+        </div>
+        <p class="bcp-welcome-p">Session réinitialisée. Sélectionnez l'un des <strong>6 scénarios pré-calibrés</strong> ci-dessus ou interrogez directement votre entrepôt <strong>PostgreSQL 17.7</strong> :</p>
+        <div class="bcp-welcome-chips" id="bcp-welcome-chips"></div>
+        <div class="bcp-welcome-foot">
+          <span class="bcp-foot-left">🎙️ Reconnaissance vocale et synthèse audio disponibles</span>
+          <span class="bcp-foot-right">Précision RAG : 98,8%</span>
+        </div>
+      </div>
+    </div>
+  `;
+  window.bcpRenderQuick();
+};
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const p = document.getElementById('rag-chatbox-panel');
+    if (p && p.style.display === 'flex') window.toggleRagChat();
+  }
+});
+
