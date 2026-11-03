@@ -1185,7 +1185,7 @@ def detect_month_code(text):
         'juillet': '07', 'jul': '07', 'july': '07', 'juil': '07',
         'aout': '08', 'août': '08', 'aug': '08', 'august': '08',
         'septembre': '09', 'sep': '09', 'sept': '09', 'september': '09', 'septemeber': '09', 'septembr': '09',
-        'octobre': '10', 'oct': '10', 'october': '10', 'octbre': '10',
+        'octobre': '10', 'oct': '10', 'october': '10', 'octbre': '10', 'octobtr': '10', 'octobr': '10', 'octob': '10',
         'novembre': '11', 'nov': '11', 'november': '11',
         'decembre': '12', 'dec': '12', 'december': '12', 'décembre': '12'
     }
@@ -1194,7 +1194,7 @@ def detect_month_code(text):
             return m
     canonical = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre']
     for word in re.findall(r'[a-zà-ÿ]{4,}', t):
-        matches = difflib.get_close_matches(word, canonical, n=1, cutoff=0.72)
+        matches = difflib.get_close_matches(word, canonical, n=1, cutoff=0.60)
         if matches:
             idx = canonical.index(matches[0]) + 1
             return f"{idx:02d}"
@@ -1871,6 +1871,20 @@ def api_rag_chat():
 
     # 1. Calcul immédiat de l'ancrage réel PostgreSQL
     rep_db = query_postgres_engine(user_query, store)
+
+    # 1b. Si la question cible un mois ou la dernière transaction, réponse analytique instantanée certifiée (Zero-Latency)
+    m_code = detect_month_code(user_query)
+    is_recent_scan = any(k in user_query.lower() for k in ["dernier scan", "derniere scan", "dernier ticket", "derniere transaction", "dernier achat", "quand la derniere", "quand le dernier", "date de la derniere", "date du dernier"])
+    if m_code or is_recent_scan:
+        return jsonify({
+            "success": True,
+            "question": user_query,
+            "answer": rep_db,
+            "response": rep_db,
+            "sources": ["PostgreSQL 17.7 Live × " + ("Performance Mensuelle" if m_code else "Horodatage Caisse")],
+            "sql": None,
+            "filters": {"month": m_code} if m_code else {"metric": "recence"}
+        })
 
     # 1b. Self-Querying + Text-to-SQL sécurisé (lecture seule, company_id = 2)
     try:

@@ -1,16 +1,52 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-11-03 13:16:27",
+  "timestamp": "2026-11-03 22:48:48",
   "company_name": "BONDIN",
-  "total_scans": 14314,
-  "total_ca_tnd": 168449.41,
-  "panier_moyen_tnd": 11.768,
-  "total_points_emis": 565929,
-  "clients_actifs": 789,
-  "total_inscrits": 2794,
-  "clients_inscrits": 2794,
+  "total_scans": 14352,
+  "total_ca_tnd": 168917.56,
+  "panier_moyen_tnd": 11.77,
+  "total_points_emis": 567629,
+  "clients_actifs": 790,
+  "total_inscrits": 2797,
+  "clients_inscrits": 2797,
   "recent_inscrits": [
+    {
+      "id": "CLI_01A1A350DB",
+      "nom": "Mnari Eya",
+      "date": "2026-11-03",
+      "tel": "Non renseigné",
+      "email": "eyamnari58@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A1A34F31",
+      "nom": "Eya alrahmen Elmnari",
+      "date": "2026-11-03",
+      "tel": "Non renseigné",
+      "email": "eyaelmnari20032005@icloud.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
+    {
+      "id": "CLI_01A1A2604C",
+      "nom": "salma Lah",
+      "date": "2026-11-03",
+      "tel": "+216 90 106 210",
+      "email": "salmarobzz@gmail.com",
+      "magasin": "Base Centrale ENA w BONDIN",
+      "achats": 0,
+      "points": 0.0,
+      "segment": "Inactif / Jamais scanné",
+      "statut": "Nouveau Membre"
+    },
     {
       "id": "CLI_01A1A0DF41",
       "nom": "lotfi khemiri",
@@ -78,8 +114,8 @@
       "tel": "+216 27 912 246",
       "email": "zribanabiha15@gmail.com",
       "magasin": "Succursale Gafsa Ville",
-      "achats": 3,
-      "points": 119.4,
+      "achats": 8,
+      "points": 480.7,
       "segment": "Client Régulier",
       "statut": "Actif"
     },
@@ -154,42 +190,6 @@
       "points": 16.0,
       "segment": "Client Régulier",
       "statut": "Actif"
-    },
-    {
-      "id": "CLI_01A19CBF3A",
-      "nom": "Amira nfissi",
-      "date": "2026-11-02",
-      "tel": "+216 22 937 275",
-      "email": "amira.hooba@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A19CB4D9",
-      "nom": "Boukhour Mira",
-      "date": "2026-11-02",
-      "tel": "+216 23 752 756",
-      "email": "mira.boukhour@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A19C04FB",
-      "nom": "nizar jrad",
-      "date": "2026-11-02",
-      "tel": "+216 98 958 807",
-      "email": "nizar.jrd@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
-      "statut": "Nouveau Membre"
     }
   ],
   "monthly_breakdown": [
@@ -244,107 +244,107 @@
     },
     {
       "month": "2026-11",
-      "scans": 230,
-      "ca": 2643.21,
-      "ca_succ": 1991.01,
-      "ca_cafe": 652.2
+      "scans": 268,
+      "ca": 3111.35,
+      "ca_succ": 2369.95,
+      "ca_cafe": 741.4
     }
   ],
-  "dernier_scan": "2026-11-03 15:11:15",
-  "dernier_ticket": "bondin6375288",
-  "dernier_client": "Zitouni Nizar",
-  "dernier_montant": 2.2,
-  "dernier_magasin": "Cafétéria Le Kef",
+  "dernier_scan": "2026-11-03 20:40:35",
+  "dernier_ticket": "bondin6380291",
+  "dernier_client": "Nabiha Zriba",
+  "dernier_montant": 18.5,
+  "dernier_magasin": "Succursale Gafsa Ville",
   "recent_scans": [
     {
-      "id": 14325,
-      "ticket": "bondin6375288",
-      "montant_tnd": 2.2,
-      "points": 4.2,
-      "date": "2026-11-03 15:11:15",
-      "magasin": "Cafétéria Le Kef",
-      "client": "Zitouni Nizar"
-    },
-    {
-      "id": 14324,
-      "ticket": "bondin6375237",
-      "montant_tnd": 27.75,
-      "points": 111.0,
-      "date": "2026-11-03 15:09:04",
+      "id": 14363,
+      "ticket": "bondin6380291",
+      "montant_tnd": 18.5,
+      "points": 74.0,
+      "date": "2026-11-03 20:40:35",
       "magasin": "Succursale Gafsa Ville",
       "client": "Nabiha Zriba"
     },
     {
-      "id": 14323,
-      "ticket": "bondin6375199",
-      "montant_tnd": 2.997,
-      "points": 12.0,
-      "date": "2026-11-03 15:07:01",
-      "magasin": "Succursale Tunis Libertéé",
-      "client": "elbessaoudi Amine"
+      "id": 14362,
+      "ticket": "bondin6380199",
+      "montant_tnd": 37.0,
+      "points": 148.0,
+      "date": "2026-11-03 20:22:59",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Ben Ali Bassem"
     },
     {
-      "id": 14322,
-      "ticket": "bondin6375194",
-      "montant_tnd": 5.3,
-      "points": 7.6,
-      "date": "2026-11-03 15:06:45",
-      "magasin": "Cafétéria Tunis Libertéé",
-      "client": "elbessaoudi Amine"
-    },
-    {
-      "id": 14321,
-      "ticket": "bondin6375085",
+      "id": 14361,
+      "ticket": "bondin6379929",
       "montant_tnd": 2.1,
       "points": 4.2,
-      "date": "2026-11-03 15:00:57",
+      "date": "2026-11-03 19:44:43",
+      "magasin": "Cafétéria Le Kef",
+      "client": "Hamza Barbouche"
+    },
+    {
+      "id": 14360,
+      "ticket": "bondin6379813",
+      "montant_tnd": 10.5,
+      "points": 42.0,
+      "date": "2026-11-03 19:33:51",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Slimen Abdallah"
+    },
+    {
+      "id": 14359,
+      "ticket": "bondin6379760",
+      "montant_tnd": 4.3,
+      "points": 5.6,
+      "date": "2026-11-03 19:27:42",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Slimen Abdallah"
+    },
+    {
+      "id": 14358,
+      "ticket": "bondin6379746",
+      "montant_tnd": 18.5,
+      "points": 74.0,
+      "date": "2026-11-03 19:25:51",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Imen Massoud"
+    },
+    {
+      "id": 14357,
+      "ticket": "bondin6379574",
+      "montant_tnd": 10.3,
+      "points": 26.3,
+      "date": "2026-11-03 19:12:08",
       "magasin": "Cafétéria Tunis Libertéé",
-      "client": "Farouk Ben Njima"
+      "client": "Mohamed Ben Khelifa"
     },
     {
-      "id": 14320,
-      "ticket": "bondin6374726",
-      "montant_tnd": 2.4,
-      "points": 4.4,
-      "date": "2026-11-03 14:40:12",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Nabiha Zriba"
+      "id": 14356,
+      "ticket": "bondin6379404",
+      "montant_tnd": 37.0,
+      "points": 148.0,
+      "date": "2026-11-03 18:55:35",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Beda Beda"
     },
     {
-      "id": 14319,
-      "ticket": "bondin6374647",
-      "montant_tnd": 2.1,
-      "points": 4.0,
-      "date": "2026-11-03 14:36:51",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Nabiha Zriba"
+      "id": 14355,
+      "ticket": "bondin6379355",
+      "montant_tnd": 13.8,
+      "points": 41.4,
+      "date": "2026-11-03 18:52:08",
+      "magasin": "Cafétéria Le Kef",
+      "client": "Chebbi Ichraf"
     },
     {
-      "id": 14318,
-      "ticket": "bondin6374598",
-      "montant_tnd": 5.3,
-      "points": 7.6,
-      "date": "2026-11-03 14:34:52",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Ridhaa Hasnaoui"
-    },
-    {
-      "id": 14317,
-      "ticket": "bondin6374555",
-      "montant_tnd": 2.0,
-      "points": 3.8,
-      "date": "2026-11-03 14:32:18",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Wassim Ncib"
-    },
-    {
-      "id": 14316,
-      "ticket": "bondin6373201",
-      "montant_tnd": 19.992,
-      "points": 80.0,
-      "date": "2026-11-03 13:16:50",
-      "magasin": "Succursale Tunis Espagne",
-      "client": "Ben Dhief Yacine"
+      "id": 14354,
+      "ticket": "bondin6379350",
+      "montant_tnd": 9.99,
+      "points": 40.0,
+      "date": "2026-11-03 18:51:51",
+      "magasin": "Succursale Le Kef",
+      "client": "Chebbi Ichraf"
     }
   ]
 }

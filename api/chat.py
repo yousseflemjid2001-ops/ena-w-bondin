@@ -59,7 +59,7 @@ def detect_month_code(text):
         'juillet': '07', 'jul': '07', 'july': '07', 'juil': '07',
         'aout': '08', 'août': '08', 'aug': '08', 'august': '08',
         'septembre': '09', 'sep': '09', 'sept': '09', 'september': '09', 'septemeber': '09', 'septembr': '09',
-        'octobre': '10', 'oct': '10', 'october': '10', 'octbre': '10',
+        'octobre': '10', 'oct': '10', 'october': '10', 'octbre': '10', 'octobtr': '10', 'octobr': '10', 'octob': '10',
         'novembre': '11', 'nov': '11', 'november': '11',
         'decembre': '12', 'dec': '12', 'december': '12', 'décembre': '12'
     }
@@ -69,7 +69,7 @@ def detect_month_code(text):
     canonical = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin',
                  'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre']
     for word in re.findall(r'[a-zà-ÿ]{4,}', normalize_rag_query(t)):
-        matches = difflib.get_close_matches(word, canonical, n=1, cutoff=0.72)
+        matches = difflib.get_close_matches(word, canonical, n=1, cutoff=0.60)
         if matches:
             idx = canonical.index(matches[0]) + 1
             return f"{idx:02d}"
@@ -761,6 +761,21 @@ def process_rag_question(raw_question, api_key="", live_info=None):
     rep_db = build_analytical_answer(raw_question, snap, filters)
     sql_res = snap.get("sql_res") or {}
     sql_table = format_sql_results_as_markdown(sql_res.get("columns", []), sql_res.get("rows", [])) if sql_res.get("success") else ""
+
+    # 2b. Si mois spécifique ou dernier scan, réponse analytique PostgreSQL instantanée (Zero-Latency)
+    m_code = detect_month_code(raw_question)
+    norm_q = normalize_rag_query(raw_question)
+    is_recent_scan = any(k in norm_q for k in ["dernier scan", "derniere scan", "dernier ticket", "derniere transaction", "dernier achat", "quand la derniere", "quand le dernier"])
+    if m_code or is_recent_scan:
+        return {
+            "success": True,
+            "question": raw_question,
+            "answer": rep_db,
+            "response": rep_db,
+            "sources": ["PostgreSQL 17.7 Live × " + ("Performance Mensuelle" if m_code else "Horodatage Caisse")],
+            "sql": sql_res.get("sql"),
+            "filters": filters
+        }
 
     # 3. Synthèse IA Gemini ancrée sur le snapshot PostgreSQL 17.7
     ans_gemini = call_gemini_with_snapshot(raw_question, api_key, snap, rep_db, sql_table, filters)
