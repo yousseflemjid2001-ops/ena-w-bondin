@@ -1,10 +1,10 @@
 import base64
 # -*- coding: utf-8 -*-
 r"""
-Backend API & Serveur Web Temps Réel « ENA W BONDIN x FIDNESS »
+Backend API & Serveur Web Temps RÃ©el Â« ENA W BONDIN x FIDNESS Â»
 Framework : Python Flask + CORS + Pandas
-100% Alimenté par : PostgreSQL 17.7 Production Live (57.131.30.69:5432)
-ZÉRO DÉPENDANCE CSV / EXCEL.
+100% AlimentÃ© par : PostgreSQL 17.7 Production Live (57.131.30.69:5432)
+ZÃ‰RO DÃ‰PENDANCE CSV / EXCEL.
 """
 
 import os
@@ -18,6 +18,9 @@ import pandas as pd
 import pg8000.native
 import urllib.request
 import re
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from api import _retrieval as rag_retrieval
 
 # Chemins absolus
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -51,7 +54,7 @@ def get_db_connection():
     )
 
 # ========================================================
-# CHARGEMENT EN MÉMOIRE ET CACHE DIRECT DEPUIS POSTGRESQL
+# CHARGEMENT EN MÃ‰MOIRE ET CACHE DIRECT DEPUIS POSTGRESQL
 # ========================================================
 class DataWarehouseStore:
     def __init__(self):
@@ -62,7 +65,7 @@ class DataWarehouseStore:
 
     def reload_data(self):
         t0 = time.time()
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] Connexion directe PostgreSQL 17.7 (57.131.30.69) - Chargement temps réel...")
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Connexion directe PostgreSQL 17.7 (57.131.30.69) - Chargement temps rÃ©el...")
         try:
             con = get_db_connection()
 
@@ -96,12 +99,12 @@ class DataWarehouseStore:
             """)
             cols_m = ["ID_Magasin", "Nom_Magasin", "Code_Magasin", "Adresse"]
             df_m = pd.DataFrame(m_rows, columns=cols_m)
-            df_m["Type_Etablissement"] = df_m["Nom_Magasin"].apply(lambda n: "Cafétéria" if "caf" in str(n).lower() else "Succursale")
+            df_m["Type_Etablissement"] = df_m["Nom_Magasin"].apply(lambda n: "CafÃ©tÃ©ria" if "caf" in str(n).lower() else "Succursale")
             def _region(n):
                 s = str(n).lower()
                 if any(x in s for x in ["tunis", "ariana", "marsa", "menzah", "bardo", "nasr"]): return "Grand Tunis"
                 if "gafsa" in s: return "Gafsa"
-                if "gab" in s: return "Gabès"
+                if "gab" in s: return "GabÃ¨s"
                 if "sfax" in s: return "Sfax"
                 if "kef" in s: return "Le Kef"
                 if "sousse" in s: return "Sousse"
@@ -115,7 +118,7 @@ class DataWarehouseStore:
             c_rows = con.run("""
                 SELECT 
                     u.id::text as "ID_Client_Hache",
-                    coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'Adhérent Membre') as "Nom",
+                    coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'AdhÃ©rent Membre') as "Nom",
                     u.phone as "Telephone",
                     u.email as "Email",
                     u.created_at::date as "Date_Inscription"
@@ -126,7 +129,7 @@ class DataWarehouseStore:
             cols_c = ["ID_Client_Hache", "Nom", "Telephone", "Email", "Date_Inscription"]
             df_c = pd.DataFrame(c_rows, columns=cols_c)
 
-            # Calcul des agrégats clients pour segmentation RLS
+            # Calcul des agrÃ©gats clients pour segmentation RLS
             c_agg = self.ventes.groupby("ID_Client_Hache").agg(
                 total_ca=("Montant_TND", "sum"),
                 nb_scans=("ID_Transaction", "count")
@@ -144,7 +147,7 @@ class DataWarehouseStore:
                     v.created_at::date as "Date",
                     -coalesce(g.cost_points, 0) as "Points",
                     'BURN' as "Type_Mouvement",
-                    coalesce(g.title, 'Cadeau Réclamé') as "Description"
+                    coalesce(g.title, 'Cadeau RÃ©clamÃ©') as "Description"
                 FROM public.voucher v
                 JOIN public.gift g ON v.gift_id = g.id
                 WHERE g.company_id = 2
@@ -176,7 +179,7 @@ class DataWarehouseStore:
             cols_p = ["ID_Parrainage", "ID_Parrain_Hache", "ID_Filleul_Hache", "Points_Parrainage", "Date"]
             self.parrainages = pd.DataFrame(parr_rows, columns=cols_p)
 
-            # 6. Catégories Produits depuis public.category
+            # 6. CatÃ©gories Produits depuis public.category
             cat_rows = con.run("""
                 SELECT 
                     c.id as "ID_Categorie",
@@ -202,10 +205,10 @@ class DataWarehouseStore:
 
             con.close()
             self.last_sync = datetime.now()
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] [OK] PostgreSQL synchronisé en {time.time()-t0:.2f}s : {len(self.ventes)} ventes, {len(self.clients)} clients CRM, {len(self.magasins)} PDV, {len(self.mouvements)} mouvements pts.")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] [OK] PostgreSQL synchronisÃ© en {time.time()-t0:.2f}s : {len(self.ventes)} ventes, {len(self.clients)} clients CRM, {len(self.magasins)} PDV, {len(self.mouvements)} mouvements pts.")
 
         except Exception as e:
-            print(f"[ERREUR] Échec du rechargement PostgreSQL: {e}")
+            print(f"[ERREUR] Ã‰chec du rechargement PostgreSQL: {e}")
             if not hasattr(self, 'ventes'):
                 self.ventes = pd.DataFrame(columns=["ID_Transaction", "ID_Client_Hache", "ID_Magasin", "Date", "Montant_TND", "Points_Gagnes", "Ticket"])
                 self.clients = pd.DataFrame(columns=["ID_Client_Hache", "Nom", "Flag_Grossiste_Suspect", "Flag_Ultra_Frequent"])
@@ -220,7 +223,7 @@ class DataWarehouseStore:
         c = self.clients.copy()
         m = self.magasins.copy()
 
-        # Filtrage Sécurité RLS (Row-Level Security)
+        # Filtrage SÃ©curitÃ© RLS (Row-Level Security)
         if role == "mkt_b2c":
             clients_b2c = c[c["Flag_Grossiste_Suspect"] == 0]["ID_Client_Hache"]
             v = v[v["ID_Client_Hache"].isin(clients_b2c)]
@@ -231,7 +234,7 @@ class DataWarehouseStore:
             mag_tunis = m[m["Region_Gouvernorat"] == "Grand Tunis"]["ID_Magasin"]
             v = v[v["ID_Magasin"].isin(mag_tunis)]
 
-        # Filtre Slicer Réseau
+        # Filtre Slicer RÃ©seau
         if reseau == "grossistes":
             clients_b2b = c[c["Flag_Grossiste_Suspect"] == 1]["ID_Client_Hache"]
             v = v[v["ID_Client_Hache"].isin(clients_b2b)]
@@ -243,7 +246,7 @@ class DataWarehouseStore:
 
 store = DataWarehouseStore()
 
-# Thread d'arrière-plan pour rafraîchir automatiquement depuis PostgreSQL toutes les 60 secondes
+# Thread d'arriÃ¨re-plan pour rafraÃ®chir automatiquement depuis PostgreSQL toutes les 60 secondes
 def _bg_sync_worker():
     while True:
         time.sleep(60)
@@ -273,12 +276,12 @@ def add_no_cache(response):
     return response
 
 # ========================================================
-# ROUTES API REST TEMPS RÉEL (POSTGRESQL DIRECT)
+# ROUTES API REST TEMPS RÃ‰EL (POSTGRESQL DIRECT)
 # ========================================================
 
 @app.route("/api/live", methods=["GET"])
 def api_live():
-    """Récupère en temps réel les données de production PostgreSQL (57.131.30.69)."""
+    """RÃ©cupÃ¨re en temps rÃ©el les donnÃ©es de production PostgreSQL (57.131.30.69)."""
     try:
         con = get_db_connection()
         stats = con.run("""
@@ -295,7 +298,7 @@ def api_live():
 
         recent = con.run("""
             SELECT p.id, p.ticket, p.amount, p.points, p.created_at, coalesce(s.name, 'BONDIN Magasin') as store_name,
-                   coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'Client Fidélité') as client_name
+                   coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'Client FidÃ©litÃ©') as client_name
             FROM public.purchase p
             LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
             LEFT JOIN public.user u ON p.user_id = u.id
@@ -315,9 +318,9 @@ def api_live():
             m_rows = con.run("""
                 SELECT to_char(p.created_at, 'YYYY-MM') as m,
                        count(*) as scans,
-                       round(coalesce(sum(CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END), 0)::numeric, 2) as ca,
-                       round(coalesce(sum(CASE WHEN coalesce(s.name, '') ILIKE '%%succursale%%' THEN (CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END) ELSE 0 END), 0)::numeric, 2) as ca_succ,
-                       round(coalesce(sum(CASE WHEN coalesce(s.name, '') NOT ILIKE '%%succursale%%' THEN (CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END) ELSE 0 END), 0)::numeric, 2) as ca_cafe
+                       round(coalesce(sum(p.amount/1000.0), 0)::numeric, 2) as ca,
+                       round(coalesce(sum(CASE WHEN coalesce(s.name, '') ILIKE '%%succursale%%' THEN (p.amount/1000.0) ELSE 0 END), 0)::numeric, 2) as ca_succ,
+                       round(coalesce(sum(CASE WHEN coalesce(s.name, '') NOT ILIKE '%%succursale%%' THEN (p.amount/1000.0) ELSE 0 END), 0)::numeric, 2) as ca_cafe
                 FROM public.purchase p
                 LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
                 WHERE p.company_id = 2
@@ -354,17 +357,17 @@ def api_live():
             for r in recent_inscrits_db:
                 uid = str(r[0])
                 phone_raw = str(r[2]).strip() if r[2] else ""
-                phone_clean = f"+216 {phone_raw[:2]} {phone_raw[2:5]} {phone_raw[5:]}" if (phone_raw and not phone_raw.startswith("+216")) else (phone_raw or "Non renseigné")
+                phone_clean = f"+216 {phone_raw[:2]} {phone_raw[2:5]} {phone_raw[5:]}" if (phone_raw and not phone_raw.startswith("+216")) else (phone_raw or "Non renseignÃ©")
                 dt = r[4]
                 date_str = dt.strftime("%Y-%m-%d") if hasattr(dt, 'strftime') else str(dt)[:10]
                 nb_ach = int(r[5])
                 pts = round(float(r[6]), 1)
                 store_str = str(r[7]).strip() if r[7] else "Base Centrale ENA w BONDIN"
-                stat = "Actif Fidélité" if nb_ach > 10 else ("Actif" if nb_ach > 0 else "Nouveau Membre")
-                seg = "Client VIP" if nb_ach > 10 else ("Client Régulier" if nb_ach > 0 else "Inactif / Jamais scanné")
+                stat = "Actif FidÃ©litÃ©" if nb_ach > 10 else ("Actif" if nb_ach > 0 else "Nouveau Membre")
+                seg = "Client VIP" if nb_ach > 10 else ("Client RÃ©gulier" if nb_ach > 0 else "Inactif / Jamais scannÃ©")
                 recent_inscrits.append({
                     "id": "CLI_" + uid.replace("-", "")[:10].upper(),
-                    "nom": str(r[1]).strip() if r[1] else "Adhérent Fidélité",
+                    "nom": str(r[1]).strip() if r[1] else "AdhÃ©rent FidÃ©litÃ©",
                     "date": date_str,
                     "tel": phone_clean,
                     "email": str(r[3]).strip() if r[3] else "non_renseigne@client.tn",
@@ -383,9 +386,9 @@ def api_live():
             if not val:
                 return ""
             s = str(val).strip()
-            s = s.replace("Caftria", "Cafétéria")
-            s = s.replace("Gabs", "Gabès")
-            s = s.replace("Libert", "Liberté")
+            s = s.replace("Caftria", "CafÃ©tÃ©ria")
+            s = s.replace("Gabs", "GabÃ¨s")
+            s = s.replace("Libert", "LibertÃ©")
             return s
 
         recent_list = []
@@ -403,7 +406,7 @@ def api_live():
                 "client": c_name
             })
 
-        # Intégrer les éventuels scans simulés en mémoire par-dessus la base
+        # IntÃ©grer les Ã©ventuels scans simulÃ©s en mÃ©moire par-dessus la base
         extra_scans = getattr(store, "recent_scans", [])
         for es in reversed(extra_scans):
             recent_list.insert(0, {
@@ -412,7 +415,7 @@ def api_live():
                 "montant_tnd": round(float(es.get("Montant_TND", es.get("montant_tnd", 18.500))), 3),
                 "points": float(es.get("Points_Gagnes", es.get("points", 185))),
                 "date": es.get("date", f"{es.get('Date', '')} {es.get('Heure', '')}".strip() or datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
-                "magasin": es.get("magasin", "Cafétéria Le Kef"),
+                "magasin": es.get("magasin", "CafÃ©tÃ©ria Le Kef"),
                 "client": es.get("client", "Salim Ammar")
             })
 
@@ -440,7 +443,7 @@ def api_live():
             "dernier_ticket": recent_list[0]["ticket"] if recent_list else "bondin6170303",
             "dernier_client": recent_list[0]["client"] if recent_list else "Salim Ammar",
             "dernier_montant": recent_list[0]["montant_tnd"] if recent_list else 2.100,
-            "dernier_magasin": recent_list[0]["magasin"] if recent_list else "Cafétéria Le Kef",
+            "dernier_magasin": recent_list[0]["magasin"] if recent_list else "CafÃ©tÃ©ria Le Kef",
             "recent_scans": recent_list[:10]
         }
         
@@ -470,10 +473,10 @@ def api_live():
 @app.route("/api/status", methods=["GET"])
 def api_status():
     """Statut du serveur, du DWH PostgreSQL et horodatage de synchronisation."""
-    sync_str = store.last_sync.strftime("%d/%m/%Y à %H:%M:%S") if store.last_sync else "En cours..."
+    sync_str = store.last_sync.strftime("%d/%m/%Y Ã  %H:%M:%S") if store.last_sync else "En cours..."
     return jsonify({
         "status": "online",
-        "service": "Plateforme Décisionnelle BI & IA Ena w Bondin (PostgreSQL Direct)",
+        "service": "Plateforme DÃ©cisionnelle BI & IA Ena w Bondin (PostgreSQL Direct)",
         "source": "PostgreSQL 17.7 Production (57.131.30.69:5432)",
         "last_sync": sync_str,
         "total_transactions": len(store.ventes),
@@ -485,7 +488,7 @@ def api_status():
 @app.route("/api/cron/sync", methods=["GET", "POST"])
 @app.route("/api/sync", methods=["GET", "POST"])
 def api_cron_sync():
-    """Recharge manuellement ou via Cron les données depuis PostgreSQL."""
+    """Recharge manuellement ou via Cron les donnÃ©es depuis PostgreSQL."""
     start_t = time.time()
     try:
         store.reload_data()
@@ -508,7 +511,7 @@ def api_cron_sync():
 
 @app.route("/api/kpis", methods=["GET"])
 def api_kpis():
-    """Calcul en direct des KPIs exécutifs depuis PostgreSQL avec filtres RLS et Réseau."""
+    """Calcul en direct des KPIs exÃ©cutifs depuis PostgreSQL avec filtres RLS et RÃ©seau."""
     role = request.args.get("role", "dir_gen")
     reseau = request.args.get("reseau", "all")
 
@@ -518,14 +521,14 @@ def api_kpis():
     total_scans = int(len(v))
     panier_moyen = total_ca / total_scans if total_scans > 0 else 0.0
 
-    # Panier moyen Succursale vs Cafétéria
+    # Panier moyen Succursale vs CafÃ©tÃ©ria
     vm = pd.merge(v, m[["ID_Magasin", "Type_Etablissement"]], on="ID_Magasin", how="left")
     succ_v = vm[vm["Type_Etablissement"] == "Succursale"]
     ca_succ = float(succ_v["Montant_TND"].sum()) if not succ_v.empty else 0.0
     scans_succ = int(len(succ_v))
     aov_succ = ca_succ / scans_succ if scans_succ > 0 else 0.0
 
-    cafe_v = vm[vm["Type_Etablissement"] == "Cafétéria"]
+    cafe_v = vm[vm["Type_Etablissement"] == "CafÃ©tÃ©ria"]
     ca_cafe = float(cafe_v["Montant_TND"].sum()) if not cafe_v.empty else 0.0
     scans_cafe = int(len(cafe_v))
     aov_cafe = ca_cafe / scans_cafe if scans_cafe > 0 else 0.0
@@ -577,7 +580,7 @@ def api_kpis():
 
 @app.route("/api/monthly", methods=["GET"])
 def api_monthly():
-    """Évolution mensuelle dynamique calculée directement depuis les achats PostgreSQL."""
+    """Ã‰volution mensuelle dynamique calculÃ©e directement depuis les achats PostgreSQL."""
     try:
         df_v = store.ventes.copy()
         if df_v.empty:
@@ -585,9 +588,9 @@ def api_monthly():
         df_v["Mois_Key"] = pd.to_datetime(df_v["Date"]).dt.strftime('%Y-%m')
         df_v["Mois_Nom"] = pd.to_datetime(df_v["Date"]).dt.strftime('%B %Y')
         months_fr = {
-            "January": "Janvier", "February": "Février", "March": "Mars", "April": "Avril",
-            "May": "Mai", "June": "Juin", "July": "Juillet", "August": "Août",
-            "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "Décembre"
+            "January": "Janvier", "February": "FÃ©vrier", "March": "Mars", "April": "Avril",
+            "May": "Mai", "June": "Juin", "July": "Juillet", "August": "AoÃ»t",
+            "September": "Septembre", "October": "Octobre", "November": "Novembre", "December": "DÃ©cembre"
         }
         for en, fr in months_fr.items():
             df_v["Mois_Nom"] = df_v["Mois_Nom"].str.replace(en, fr)
@@ -618,7 +621,7 @@ def api_monthly():
 
 @app.route("/api/gammes", methods=["GET"])
 def api_gammes():
-    """Ventilation des ventes par gamme calculée en direct depuis category_purchase & category dans PostgreSQL."""
+    """Ventilation des ventes par gamme calculÃ©e en direct depuis category_purchase & category dans PostgreSQL."""
     try:
         con = get_db_connection()
         rows = con.run("""
@@ -652,7 +655,7 @@ def api_gammes():
 
 @app.route("/api/magasins", methods=["GET"])
 def api_magasins():
-    """Classement et indicateurs des 23 points de vente calculés directement depuis PostgreSQL."""
+    """Classement et indicateurs des 23 points de vente calculÃ©s directement depuis PostgreSQL."""
     try:
         v = store.ventes.copy()
         m = store.magasins.copy()
@@ -680,7 +683,7 @@ def api_magasins():
 
 @app.route("/api/parrainages", methods=["GET"])
 def api_parrainages():
-    """Indicateurs de viralité calculés directement depuis public.sponsorship dans PostgreSQL."""
+    """Indicateurs de viralitÃ© calculÃ©s directement depuis public.sponsorship dans PostgreSQL."""
     try:
         p = store.parrainages
         total_parr = len(p)
@@ -695,7 +698,7 @@ def api_parrainages():
                 points=("Points_Parrainage", "sum")
             ).reset_index().sort_values("filleuls", ascending=False).head(5)
             
-            medailles = ["🥇 Ambassadeur Star", "🥈 Parrain Actif", "🥉 Parrain Régulier", "✨ Parrain Initié", "✨ Membre"]
+            medailles = ["ðŸ¥‡ Ambassadeur Star", "ðŸ¥ˆ Parrain Actif", "ðŸ¥‰ Parrain RÃ©gulier", "âœ¨ Parrain InitiÃ©", "âœ¨ Membre"]
             for idx, r in enumerate(top_p.iterrows()):
                 row_data = r[1]
                 uid = str(row_data["ID_Parrain_Hache"])
@@ -723,238 +726,238 @@ def api_parrainages():
 
 @app.route("/api/churn", methods=["GET"])
 def api_churn():
-    """Prédictions IA pour les clients à risque sous 30 jours."""
+    """PrÃ©dictions IA pour les clients Ã  risque sous 30 jours."""
     churn_list = [
-        {"id": "CLI_3595C46849", "recence": 64, "ca": 116.926, "achats": 11, "points": 356.9, "score_churn": "88% (Élevé)"},
+        {"id": "CLI_3595C46849", "recence": 64, "ca": 116.926, "achats": 11, "points": 356.9, "score_churn": "88% (Ã‰levÃ©)"},
         {"id": "CLI_7A2B81C9D0", "recence": 72, "ca": 34.500, "achats": 4, "points": 68.0, "score_churn": "92% (Critique)"},
-        {"id": "CLI_8C3F11A4E2", "recence": 61, "ca": 28.200, "achats": 3, "points": 54.0, "score_churn": "84% (Élevé)"},
-        {"id": "CLI_1B90E341C7", "recence": 68, "ca": 22.400, "achats": 3, "points": 42.0, "score_churn": "86% (Élevé)"},
+        {"id": "CLI_8C3F11A4E2", "recence": 61, "ca": 28.200, "achats": 3, "points": 54.0, "score_churn": "84% (Ã‰levÃ©)"},
+        {"id": "CLI_1B90E341C7", "recence": 68, "ca": 22.400, "achats": 3, "points": 42.0, "score_churn": "86% (Ã‰levÃ©)"},
         {"id": "CLI_5E42C098B1", "recence": 80, "ca": 18.000, "achats": 2, "points": 36.0, "score_churn": "95% (Critique)"}
     ]
     return jsonify(churn_list)
 
 @app.route("/api/agent-fidness/churn", methods=["GET"])
 def api_agent_fidness_churn():
-    """Agent IA Fidness : Détection prédictive des clientes sensibles en risque de churn élevé et recommandations Push ciblées."""
+    """Agent IA Fidness : DÃ©tection prÃ©dictive des clientes sensibles en risque de churn Ã©levÃ© et recommandations Push ciblÃ©es."""
     clientes_sensibles = [
         {
-            "id": "019f277c-4d4", "nom": "Wièm Dkhaïlia", "telephone": "54 27 81 54",
-            "pdv": "Cafétéria Gafsa Ville", "pdv_type": "CAF", "region": "Gafsa",
+            "id": "019f277c-4d4", "nom": "WiÃ¨m DkhaÃ¯lia", "telephone": "54 27 81 54",
+            "pdv": "CafÃ©tÃ©ria Gafsa Ville", "pdv_type": "CAF", "region": "Gafsa",
             "recence": 60, "visites": 87, "ca": 560.850, "points": 1431,
-            "score_pct": 94, "niveau": "critique", "statut_label": "94% • Ne reviendra plus",
-            "diagnostic": "Rupture brutale après 87 visites régulières (cycle habituel 2j)",
-            "reco_titre": "Offre VIP Réactivation +150 pts",
-            "reco_push": "Bonjour Wièm ☕ Vous nous manquez chez Bondin Gafsa ! Vos 1 431 pts fidélité vous attendent. Revenez cette semaine et recevez +150 pts bonus offerts !",
+            "score_pct": 94, "niveau": "critique", "statut_label": "94% â€¢ Ne reviendra plus",
+            "diagnostic": "Rupture brutale aprÃ¨s 87 visites rÃ©guliÃ¨res (cycle habituel 2j)",
+            "reco_titre": "Offre VIP RÃ©activation +150 pts",
+            "reco_push": "Bonjour WiÃ¨m â˜• Vous nous manquez chez Bondin Gafsa ! Vos 1 431 pts fidÃ©litÃ© vous attendent. Revenez cette semaine et recevez +150 pts bonus offerts !",
             "code_promo": "FIDNESS_VIP150", "horaire_optimal": "Mardi 08h30"
         },
         {
             "id": "01a0048c-d33", "nom": "Amira Baaziz", "telephone": "21 11 41 60",
-            "pdv": "Cafétéria Gafsa Ville", "pdv_type": "CAF", "region": "Gafsa",
+            "pdv": "CafÃ©tÃ©ria Gafsa Ville", "pdv_type": "CAF", "region": "Gafsa",
             "recence": 50, "visites": 56, "ca": 804.297, "points": 2933,
-            "score_pct": 89, "niveau": "critique", "statut_label": "89% • Ne reviendra plus",
-            "diagnostic": "Arrêt soudain d'une cliente Championne (2 933 pts dormants)",
-            "reco_titre": "Déblocage Cadeau Prestige + Café Offert",
-            "reco_push": "Chère Amira 👑 Vos 2 933 points vous ouvrent droit à un Coffret Prestige Bondin gratuit en caisse à Gafsa Ville. Venez le retirer sous 7 jours !",
+            "score_pct": 89, "niveau": "critique", "statut_label": "89% â€¢ Ne reviendra plus",
+            "diagnostic": "ArrÃªt soudain d'une cliente Championne (2 933 pts dormants)",
+            "reco_titre": "DÃ©blocage Cadeau Prestige + CafÃ© Offert",
+            "reco_push": "ChÃ¨re Amira ðŸ‘‘ Vos 2 933 points vous ouvrent droit Ã  un Coffret Prestige Bondin gratuit en caisse Ã  Gafsa Ville. Venez le retirer sous 7 jours !",
             "code_promo": "COFFRET_AMIRA", "horaire_optimal": "Jeudi 09h00"
         },
         {
             "id": "019ef834-f4a", "nom": "Sarra Ben Saad", "telephone": "29 03 13 44",
-            "pdv": "Cafétéria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 64, "visites": 7, "ca": 348.200, "points": 1362,
-            "score_pct": 92, "niveau": "critique", "statut_label": "92% • Ne reviendra plus",
-            "diagnostic": "Inactivité > 60 jours sur panier moyen très élevé (49,7 TND)",
-            "reco_titre": "Bonus 100 pts + Dégustation Arabica",
-            "reco_push": "Bonjour Sarra ✨ Votre pause café à Menzah VI nous manque ! Profitez de +100 pts bonus et d'une dégustation 100% Arabica offerte dès votre prochain passage.",
+            "score_pct": 92, "niveau": "critique", "statut_label": "92% â€¢ Ne reviendra plus",
+            "diagnostic": "InactivitÃ© > 60 jours sur panier moyen trÃ¨s Ã©levÃ© (49,7 TND)",
+            "reco_titre": "Bonus 100 pts + DÃ©gustation Arabica",
+            "reco_push": "Bonjour Sarra âœ¨ Votre pause cafÃ© Ã  Menzah VI nous manque ! Profitez de +100 pts bonus et d'une dÃ©gustation 100% Arabica offerte dÃ¨s votre prochain passage.",
             "code_promo": "MENZAH_100PTS", "horaire_optimal": "Mercredi 10h00"
         },
         {
             "id": "019e8972-d09", "nom": "Mouna Lakhoua", "telephone": "22 84 19 03",
-            "pdv": "Cafétéria Tunis La Marsa", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis La Marsa", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 100, "visites": 35, "ca": 213.900, "points": 393,
-            "score_pct": 97, "niveau": "critique", "statut_label": "97% • Ne reviendra plus",
-            "diagnostic": "Décrochage prolongé (100j sans scan après 35 passages)",
-            "reco_titre": "Offre Retour Gagnant : Café + Croissant Offert",
-            "reco_push": "Bonjour Mouna ☕ Cela fait longtemps ! Pour fêter votre retour chez Bondin La Marsa, votre prochain Espresso + +100 pts fidélité vous sont offerts cette semaine.",
+            "score_pct": 97, "niveau": "critique", "statut_label": "97% â€¢ Ne reviendra plus",
+            "diagnostic": "DÃ©crochage prolongÃ© (100j sans scan aprÃ¨s 35 passages)",
+            "reco_titre": "Offre Retour Gagnant : CafÃ© + Croissant Offert",
+            "reco_push": "Bonjour Mouna â˜• Cela fait longtemps ! Pour fÃªter votre retour chez Bondin La Marsa, votre prochain Espresso + +100 pts fidÃ©litÃ© vous sont offerts cette semaine.",
             "code_promo": "RETOUR_MARSA", "horaire_optimal": "Vendredi 08h45"
         },
         {
             "id": "019f27a9-6d0", "nom": "Manel Alaya", "telephone": "27 64 81 41",
-            "pdv": "Cafétéria Gafsa Ville", "pdv_type": "CAF", "region": "Gafsa",
+            "pdv": "CafÃ©tÃ©ria Gafsa Ville", "pdv_type": "CAF", "region": "Gafsa",
             "recence": 71, "visites": 29, "ca": 186.700, "points": 395,
-            "score_pct": 93, "niveau": "critique", "statut_label": "93% • Ne reviendra plus",
+            "score_pct": 93, "niveau": "critique", "statut_label": "93% â€¢ Ne reviendra plus",
             "diagnostic": "Perte d'habitude matinale (71j d'absence vs 29 visites)",
-            "reco_titre": "Points Doublés (x2) + 80 pts Bonus",
-            "reco_push": "Bonjour Manel ✨ Vos 395 points fidélité vous attendent chez Bondin ! Passez cette semaine et bénéficiez de Points Doublés (x2) + 80 pts offerts.",
+            "reco_titre": "Points DoublÃ©s (x2) + 80 pts Bonus",
+            "reco_push": "Bonjour Manel âœ¨ Vos 395 points fidÃ©litÃ© vous attendent chez Bondin ! Passez cette semaine et bÃ©nÃ©ficiez de Points DoublÃ©s (x2) + 80 pts offerts.",
             "code_promo": "BOOST_MANEL80", "horaire_optimal": "Mardi 08h30"
         },
         {
             "id": "019ebd99-dca", "nom": "Oumaima Ferjani", "telephone": "92 47 62 40",
-            "pdv": "Cafétéria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 66, "visites": 40, "ca": 152.290, "points": 457,
-            "score_pct": 91, "niveau": "critique", "statut_label": "91% • Ne reviendra plus",
-            "diagnostic": "Cliente ultra-fidèle (40 scans) inactive depuis plus de 2 mois",
-            "reco_titre": "Pause Café Offerte à Menzah VI",
-            "reco_push": "Chère Oumaima ☕ Votre table vous attend chez Bondin Menzah VI ! Présentez votre app Fidness d'ici dimanche : 1 Boisson Chaude offerte + 100 pts bonus.",
+            "score_pct": 91, "niveau": "critique", "statut_label": "91% â€¢ Ne reviendra plus",
+            "diagnostic": "Cliente ultra-fidÃ¨le (40 scans) inactive depuis plus de 2 mois",
+            "reco_titre": "Pause CafÃ© Offerte Ã  Menzah VI",
+            "reco_push": "ChÃ¨re Oumaima â˜• Votre table vous attend chez Bondin Menzah VI ! PrÃ©sentez votre app Fidness d'ici dimanche : 1 Boisson Chaude offerte + 100 pts bonus.",
             "code_promo": "OUMAIMA_VIP", "horaire_optimal": "Jeudi 16h00"
         },
         {
             "id": "019eb797-1b3", "nom": "Farah Yezza", "telephone": "52 66 17 73",
-            "pdv": "Cafétéria Tunis La Marsa", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis La Marsa", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 97, "visites": 37, "ca": 138.695, "points": 216,
-            "score_pct": 96, "niveau": "critique", "statut_label": "96% • Ne reviendra plus",
-            "diagnostic": "Attrition critique détectée (97j sans passage après 37 visites)",
-            "reco_titre": "Coup de Pouce Rétention +120 pts",
-            "reco_push": "Bonjour Farah 🎁 Ne laissez pas dormir vos points Bondin ! Revenez à La Marsa cette semaine et recevez immédiatement +120 pts sur votre compte Fidness.",
+            "score_pct": 96, "niveau": "critique", "statut_label": "96% â€¢ Ne reviendra plus",
+            "diagnostic": "Attrition critique dÃ©tectÃ©e (97j sans passage aprÃ¨s 37 visites)",
+            "reco_titre": "Coup de Pouce RÃ©tention +120 pts",
+            "reco_push": "Bonjour Farah ðŸŽ Ne laissez pas dormir vos points Bondin ! Revenez Ã  La Marsa cette semaine et recevez immÃ©diatement +120 pts sur votre compte Fidness.",
             "code_promo": "FARAH_120PTS", "horaire_optimal": "Samedi 10h00"
         },
         {
             "id": "019ec195-579", "nom": "Donia Ben Mrad", "telephone": "90 72 05 17",
-            "pdv": "Cafétéria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 128, "visites": 17, "ca": 108.691, "points": 298,
-            "score_pct": 98, "niveau": "critique", "statut_label": "98% • Ne reviendra plus",
-            "diagnostic": "Abandon quasi-définitif (128j d'inactivité) — Urgence maximale",
-            "reco_titre": "Offre de Sauvetage : Sachet 250g à -50%",
-            "reco_push": "Bonjour Donia ☕ Vous nous manquez énormément chez Bondin Menzah VI ! Profitez de +150 pts offerts et d'une surprise en caisse pour votre grand retour.",
+            "score_pct": 98, "niveau": "critique", "statut_label": "98% â€¢ Ne reviendra plus",
+            "diagnostic": "Abandon quasi-dÃ©finitif (128j d'inactivitÃ©) â€” Urgence maximale",
+            "reco_titre": "Offre de Sauvetage : Sachet 250g Ã  -50%",
+            "reco_push": "Bonjour Donia â˜• Vous nous manquez Ã©normÃ©ment chez Bondin Menzah VI ! Profitez de +150 pts offerts et d'une surprise en caisse pour votre grand retour.",
             "code_promo": "SAVE_DONIA150", "horaire_optimal": "Mardi 09h00"
         },
         {
             "id": "019eba77-c2f", "nom": "Rihab Chaabouni", "telephone": "25 91 27 09",
-            "pdv": "Cafétéria Le Kef", "pdv_type": "CAF", "region": "Le Kef",
+            "pdv": "CafÃ©tÃ©ria Le Kef", "pdv_type": "CAF", "region": "Le Kef",
             "recence": 66, "visites": 28, "ca": 113.000, "points": 188,
-            "score_pct": 90, "niveau": "critique", "statut_label": "90% • Ne reviendra plus",
-            "diagnostic": "Rupture de cycle hebdomadaire (28 visites puis arrêt depuis 66j)",
-            "reco_titre": "Invitation Pause Café Le Kef + 80 pts",
-            "reco_push": "Bonjour Rihab ✨ Votre café préféré vous attend à la Cafétéria Bondin Le Kef ! Revenez sous 5 jours et gagnez +80 pts bonus sur votre carte Fidness.",
+            "score_pct": 90, "niveau": "critique", "statut_label": "90% â€¢ Ne reviendra plus",
+            "diagnostic": "Rupture de cycle hebdomadaire (28 visites puis arrÃªt depuis 66j)",
+            "reco_titre": "Invitation Pause CafÃ© Le Kef + 80 pts",
+            "reco_push": "Bonjour Rihab âœ¨ Votre cafÃ© prÃ©fÃ©rÃ© vous attend Ã  la CafÃ©tÃ©ria Bondin Le Kef ! Revenez sous 5 jours et gagnez +80 pts bonus sur votre carte Fidness.",
             "code_promo": "KEF_RIHAB80", "horaire_optimal": "Mercredi 08h30"
         },
         {
             "id": "019f0e5d-c3e", "nom": "Maryem Benredjam", "telephone": "53 11 65 90",
-            "pdv": "Cafétéria Tunis Espagne", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis Espagne", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 63, "visites": 12, "ca": 108.500, "points": 204,
-            "score_pct": 88, "niveau": "critique", "statut_label": "88% • Ne reviendra plus",
-            "diagnostic": "Inactivité supérieure à 2 mois au centre-ville (Rue d'Espagne)",
+            "score_pct": 88, "niveau": "critique", "statut_label": "88% â€¢ Ne reviendra plus",
+            "diagnostic": "InactivitÃ© supÃ©rieure Ã  2 mois au centre-ville (Rue d'Espagne)",
             "reco_titre": "Express Matinal Offert + 75 pts",
-            "reco_push": "Bonjour Maryem ☕ De passage au centre-ville ? Arrêtez-vous chez Bondin Rue d'Espagne : +75 pts bonus crédités dès votre prochain scan Fidness !",
+            "reco_push": "Bonjour Maryem â˜• De passage au centre-ville ? ArrÃªtez-vous chez Bondin Rue d'Espagne : +75 pts bonus crÃ©ditÃ©s dÃ¨s votre prochain scan Fidness !",
             "code_promo": "ESPAGNE_75PTS", "horaire_optimal": "Jeudi 08h30"
         },
         {
             "id": "019f5c5d-e43", "nom": "Farah Bouchoucha", "telephone": "28 99 58 06",
             "pdv": "Succursale Tunis Ariana", "pdv_type": "SUC", "region": "Grand Tunis",
             "recence": 73, "visites": 5, "ca": 104.564, "points": 418,
-            "score_pct": 91, "niveau": "critique", "statut_label": "91% • Ne reviendra plus",
+            "score_pct": 91, "niveau": "critique", "statut_label": "91% â€¢ Ne reviendra plus",
             "diagnostic": "Cliente gros panier en Succursale Ariana absente depuis 73j",
-            "reco_titre": "Bonus Sachet Torréfié Fraîcheur +100 pts",
-            "reco_push": "Chère Farah 🌟 Notre nouvelle fournée de Café Torréfié vient d'arriver à Bondin Ariana ! Venez utiliser vos 418 pts et recevez +100 pts offerts.",
+            "reco_titre": "Bonus Sachet TorrÃ©fiÃ© FraÃ®cheur +100 pts",
+            "reco_push": "ChÃ¨re Farah ðŸŒŸ Notre nouvelle fournÃ©e de CafÃ© TorrÃ©fiÃ© vient d'arriver Ã  Bondin Ariana ! Venez utiliser vos 418 pts et recevez +100 pts offerts.",
             "code_promo": "ARIANA_100PTS", "horaire_optimal": "Vendredi 11h00"
         },
         {
             "id": "019ebc56-7e4", "nom": "Ichraf Chebbi", "telephone": "54 55 17 64",
-            "pdv": "Cafétéria Le Kef", "pdv_type": "CAF", "region": "Le Kef",
+            "pdv": "CafÃ©tÃ©ria Le Kef", "pdv_type": "CAF", "region": "Le Kef",
             "recence": 80, "visites": 8, "ca": 103.860, "points": 336,
-            "score_pct": 94, "niveau": "critique", "statut_label": "94% • Ne reviendra plus",
-            "diagnostic": "Seuil critique d'inactivité (80j) dépassé de 4x la moyenne",
-            "reco_titre": "Réactivation Urgente +100 pts",
-            "reco_push": "Bonjour Ichraf ☕ Vos 336 points fidélité n'attendent que vous chez Bondin Le Kef ! Passez cette semaine pour activer votre bonus de +100 points.",
+            "score_pct": 94, "niveau": "critique", "statut_label": "94% â€¢ Ne reviendra plus",
+            "diagnostic": "Seuil critique d'inactivitÃ© (80j) dÃ©passÃ© de 4x la moyenne",
+            "reco_titre": "RÃ©activation Urgente +100 pts",
+            "reco_push": "Bonjour Ichraf â˜• Vos 336 points fidÃ©litÃ© n'attendent que vous chez Bondin Le Kef ! Passez cette semaine pour activer votre bonus de +100 points.",
             "code_promo": "ICHRAF_100", "horaire_optimal": "Mardi 09h00"
         },
         {
             "id": "01a03850-ffd", "nom": "Rakia Jawali", "telephone": "93 79 63 42",
-            "pdv": "Succursale Gabès Jara", "pdv_type": "SUC", "region": "Gabès",
+            "pdv": "Succursale GabÃ¨s Jara", "pdv_type": "SUC", "region": "GabÃ¨s",
             "recence": 37, "visites": 10, "ca": 683.250, "points": 2439,
-            "score_pct": 78, "niveau": "eleve", "statut_label": "78% • Décrochage fort",
-            "diagnostic": "Ralentissement net d'une cliente à très haute valeur (683 TND)",
-            "reco_titre": "Privilège Grands Comptes / VIP Gabès",
-            "reco_push": "Chère Rakia 👑 Avec 2 439 points Fidness, vous faites partie de nos clientes d'exception à Gabès Jara. Un cadeau VIP vous attend lors de votre prochain achat !",
+            "score_pct": 78, "niveau": "eleve", "statut_label": "78% â€¢ DÃ©crochage fort",
+            "diagnostic": "Ralentissement net d'une cliente Ã  trÃ¨s haute valeur (683 TND)",
+            "reco_titre": "PrivilÃ¨ge Grands Comptes / VIP GabÃ¨s",
+            "reco_push": "ChÃ¨re Rakia ðŸ‘‘ Avec 2 439 points Fidness, vous faites partie de nos clientes d'exception Ã  GabÃ¨s Jara. Un cadeau VIP vous attend lors de votre prochain achat !",
             "code_promo": "VIP_GABES", "horaire_optimal": "Mercredi 10h00"
         },
         {
             "id": "019f75a6-c39", "nom": "Khawla Henchiri", "telephone": "29 67 62 82",
             "pdv": "Succursale Gafsa Ville", "pdv_type": "SUC", "region": "Gafsa",
             "recence": 53, "visites": 28, "ca": 196.417, "points": 547,
-            "score_pct": 84, "niveau": "eleve", "statut_label": "84% • Décrochage fort",
-            "diagnostic": "Baisse de fréquence de -75% sur les 6 dernières semaines",
-            "reco_titre": "Points x2 sur Gamme Café Moulu",
-            "reco_push": "Bonjour Khawla ✨ Faites le plein d'arômes chez Bondin Gafsa ! Vos points sont doublés (x2) sur tous nos cafés moulus et grains jusqu'à dimanche.",
+            "score_pct": 84, "niveau": "eleve", "statut_label": "84% â€¢ DÃ©crochage fort",
+            "diagnostic": "Baisse de frÃ©quence de -75% sur les 6 derniÃ¨res semaines",
+            "reco_titre": "Points x2 sur Gamme CafÃ© Moulu",
+            "reco_push": "Bonjour Khawla âœ¨ Faites le plein d'arÃ´mes chez Bondin Gafsa ! Vos points sont doublÃ©s (x2) sur tous nos cafÃ©s moulus et grains jusqu'Ã  dimanche.",
             "code_promo": "DOUBLE_KHAWLA", "horaire_optimal": "Vendredi 16h30"
         },
         {
             "id": "019e9406-a7c", "nom": "Oumaima Shili", "telephone": "97 08 80 17",
-            "pdv": "Cafétéria Tunis Liberté", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis LibertÃ©", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 52, "visites": 17, "ca": 119.517, "points": 332,
-            "score_pct": 82, "niveau": "eleve", "statut_label": "82% • Décrochage fort",
-            "diagnostic": "Absence inhabituelle depuis 52j à Tunis Liberté",
-            "reco_titre": "Bonus Retour +75 pts Liberté",
-            "reco_push": "Bonjour Oumaima ☕ Votre pause café à l'Avenue de la Liberté vous attend ! Scannez votre QR Fidness cette semaine et recevez +75 points bonus.",
+            "score_pct": 82, "niveau": "eleve", "statut_label": "82% â€¢ DÃ©crochage fort",
+            "diagnostic": "Absence inhabituelle depuis 52j Ã  Tunis LibertÃ©",
+            "reco_titre": "Bonus Retour +75 pts LibertÃ©",
+            "reco_push": "Bonjour Oumaima â˜• Votre pause cafÃ© Ã  l'Avenue de la LibertÃ© vous attend ! Scannez votre QR Fidness cette semaine et recevez +75 points bonus.",
             "code_promo": "LIBERTE_75", "horaire_optimal": "Jeudi 08h45"
         },
         {
             "id": "019efb1a-8f4", "nom": "Nedra Jlassi", "telephone": "52 16 40 19",
-            "pdv": "Cafétéria Le Kef", "pdv_type": "CAF", "region": "Le Kef",
+            "pdv": "CafÃ©tÃ©ria Le Kef", "pdv_type": "CAF", "region": "Le Kef",
             "recence": 56, "visites": 20, "ca": 95.850, "points": 190,
-            "score_pct": 85, "niveau": "eleve", "statut_label": "85% • Décrochage fort",
-            "diagnostic": "Écart d'inactivité critique (56j vs cycle moyen de 6j)",
-            "reco_titre": "Offre Duo Café +60 pts",
-            "reco_push": "Bonjour Nedra ✨ Venez partager un café chez Bondin Le Kef ! +60 points fidélité offerts dès votre prochain passage en caisse.",
+            "score_pct": 85, "niveau": "eleve", "statut_label": "85% â€¢ DÃ©crochage fort",
+            "diagnostic": "Ã‰cart d'inactivitÃ© critique (56j vs cycle moyen de 6j)",
+            "reco_titre": "Offre Duo CafÃ© +60 pts",
+            "reco_push": "Bonjour Nedra âœ¨ Venez partager un cafÃ© chez Bondin Le Kef ! +60 points fidÃ©litÃ© offerts dÃ¨s votre prochain passage en caisse.",
             "code_promo": "NEDRA_60PTS", "horaire_optimal": "Mardi 10h00"
         },
         {
             "id": "019cb824-994", "nom": "Hayet Ouni", "telephone": "29 00 29 20",
-            "pdv": "Succursale Tunis Liberté", "pdv_type": "SUC", "region": "Grand Tunis",
+            "pdv": "Succursale Tunis LibertÃ©", "pdv_type": "SUC", "region": "Grand Tunis",
             "recence": 40, "visites": 8, "ca": 181.978, "points": 694,
-            "score_pct": 76, "niveau": "eleve", "statut_label": "76% • Décrochage fort",
-            "diagnostic": "Espacement progressif des achats en Succursale Tunis Liberté",
-            "reco_titre": "Déblocage Récompense 500 pts",
-            "reco_push": "Chère Hayet 🎁 Vous avez déjà 694 points chez Bondin Tunis Liberté ! Venez choisir votre cadeau fidélité en magasin cette semaine.",
+            "score_pct": 76, "niveau": "eleve", "statut_label": "76% â€¢ DÃ©crochage fort",
+            "diagnostic": "Espacement progressif des achats en Succursale Tunis LibertÃ©",
+            "reco_titre": "DÃ©blocage RÃ©compense 500 pts",
+            "reco_push": "ChÃ¨re Hayet ðŸŽ Vous avez dÃ©jÃ  694 points chez Bondin Tunis LibertÃ© ! Venez choisir votre cadeau fidÃ©litÃ© en magasin cette semaine.",
             "code_promo": "CADEAU_HAYET", "horaire_optimal": "Mercredi 11h00"
         },
         {
             "id": "019ef39d-5ab", "nom": "Emna Sellami", "telephone": "97 82 46 99",
-            "pdv": "Cafétéria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis Menzah VI", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 39, "visites": 6, "ca": 93.885, "points": 371,
-            "score_pct": 74, "niveau": "eleve", "statut_label": "74% • Décrochage fort",
-            "diagnostic": "Risque de bascule en inactivité longue sous 7 jours",
-            "reco_titre": "Bonus Préventif +50 pts Menzah VI",
-            "reco_push": "Bonjour Emna ☕ Ne perdez pas votre rythme fidélité ! Passez chez Bondin Menzah VI avant dimanche et recevez +50 pts bonus immédiats.",
+            "score_pct": 74, "niveau": "eleve", "statut_label": "74% â€¢ DÃ©crochage fort",
+            "diagnostic": "Risque de bascule en inactivitÃ© longue sous 7 jours",
+            "reco_titre": "Bonus PrÃ©ventif +50 pts Menzah VI",
+            "reco_push": "Bonjour Emna â˜• Ne perdez pas votre rythme fidÃ©litÃ© ! Passez chez Bondin Menzah VI avant dimanche et recevez +50 pts bonus immÃ©diats.",
             "code_promo": "EMNA_50PTS", "horaire_optimal": "Vendredi 09h00"
         },
         {
             "id": "019f229e-e8f", "nom": "Selma Rourou", "telephone": "20 40 78 00",
             "pdv": "Succursale Tunis Menzah VI", "pdv_type": "SUC", "region": "Grand Tunis",
             "recence": 46, "visites": 5, "ca": 82.453, "points": 304,
-            "score_pct": 79, "niveau": "eleve", "statut_label": "79% • Décrochage fort",
-            "diagnostic": "Non-renouvellement du stock café familial après 45 jours",
-            "reco_titre": "Rappel Réapprovisionnement Café +70 pts",
-            "reco_push": "Bonjour Selma ✨ Bientôt à court de café ? Venez faire le plein d'arômes à la Succursale Bondin Menzah VI et recevez +70 points offerts !",
+            "score_pct": 79, "niveau": "eleve", "statut_label": "79% â€¢ DÃ©crochage fort",
+            "diagnostic": "Non-renouvellement du stock cafÃ© familial aprÃ¨s 45 jours",
+            "reco_titre": "Rappel RÃ©approvisionnement CafÃ© +70 pts",
+            "reco_push": "Bonjour Selma âœ¨ BientÃ´t Ã  court de cafÃ© ? Venez faire le plein d'arÃ´mes Ã  la Succursale Bondin Menzah VI et recevez +70 points offerts !",
             "code_promo": "SELMA_70PTS", "horaire_optimal": "Samedi 10h30"
         },
         {
             "id": "019ec00b-6b0", "nom": "Meha Thabouti", "telephone": "28 48 38 65",
-            "pdv": "Cafétéria Tunis Liberté", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis LibertÃ©", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 30, "visites": 40, "ca": 245.058, "points": 696,
-            "score_pct": 68, "niveau": "modere", "statut_label": "68% • En vigilance",
-            "diagnostic": "Cliente très régulière (40 visites) absente depuis 30 jours",
-            "reco_titre": "Relance Douce +50 pts Fidélité",
-            "reco_push": "Bonjour Meha ☕ Votre café habituel vous attend chez Bondin Tunis Liberté ! Vos 696 points sont prêts à être convertis en cadeaux.",
+            "score_pct": 68, "niveau": "modere", "statut_label": "68% â€¢ En vigilance",
+            "diagnostic": "Cliente trÃ¨s rÃ©guliÃ¨re (40 visites) absente depuis 30 jours",
+            "reco_titre": "Relance Douce +50 pts FidÃ©litÃ©",
+            "reco_push": "Bonjour Meha â˜• Votre cafÃ© habituel vous attend chez Bondin Tunis LibertÃ© ! Vos 696 points sont prÃªts Ã  Ãªtre convertis en cadeaux.",
             "code_promo": "MEHA_50PTS", "horaire_optimal": "Mardi 08h30"
         },
         {
             "id": "019ec38b-589", "nom": "Salma Bahloul", "telephone": "53 15 23 03",
-            "pdv": "Succursale Tunis Liberté", "pdv_type": "SUC", "region": "Grand Tunis",
+            "pdv": "Succursale Tunis LibertÃ©", "pdv_type": "SUC", "region": "Grand Tunis",
             "recence": 32, "visites": 4, "ca": 170.400, "points": 672,
-            "score_pct": 66, "niveau": "modere", "statut_label": "66% • En vigilance",
-            "diagnostic": "Alerte précoce sur cliente à fort panier moyen (42,6 TND)",
-            "reco_titre": "Invitation Dégustation Grands Crus",
-            "reco_push": "Chère Salma 🌟 Venez découvrir notre sélection 100% Arabica à Tunis Liberté et cumulez +60 pts bonus sur votre carte Fidness !",
+            "score_pct": 66, "niveau": "modere", "statut_label": "66% â€¢ En vigilance",
+            "diagnostic": "Alerte prÃ©coce sur cliente Ã  fort panier moyen (42,6 TND)",
+            "reco_titre": "Invitation DÃ©gustation Grands Crus",
+            "reco_push": "ChÃ¨re Salma ðŸŒŸ Venez dÃ©couvrir notre sÃ©lection 100% Arabica Ã  Tunis LibertÃ© et cumulez +60 pts bonus sur votre carte Fidness !",
             "code_promo": "SALMA_CRU60", "horaire_optimal": "Jeudi 11h00"
         },
         {
             "id": "019edc2b-646", "nom": "Rabeb Tissaoui", "telephone": "99 60 32 67",
-            "pdv": "Cafétéria Tunis France", "pdv_type": "CAF", "region": "Grand Tunis",
+            "pdv": "CafÃ©tÃ©ria Tunis France", "pdv_type": "CAF", "region": "Grand Tunis",
             "recence": 25, "visites": 6, "ca": 99.050, "points": 307,
-            "score_pct": 62, "niveau": "modere", "statut_label": "62% • En vigilance",
-            "diagnostic": "Ralentissement détecté dès 25j à la Cafétéria Rue de France",
+            "score_pct": 62, "niveau": "modere", "statut_label": "62% â€¢ En vigilance",
+            "diagnostic": "Ralentissement dÃ©tectÃ© dÃ¨s 25j Ã  la CafÃ©tÃ©ria Rue de France",
             "reco_titre": "Pause Express +40 pts",
-            "reco_push": "Bonjour Rabeb ☕ Une pause gourmande Rue de France ? Passez chez Bondin cette semaine et recevez +40 points fidélité bonus !",
+            "reco_push": "Bonjour Rabeb â˜• Une pause gourmande Rue de France ? Passez chez Bondin cette semaine et recevez +40 points fidÃ©litÃ© bonus !",
             "code_promo": "FRANCE_40PTS", "horaire_optimal": "Vendredi 08h30"
         }
     ]
@@ -979,21 +982,21 @@ def api_agent_fidness_churn():
 def api_market_basket():
     """Associations de produits Market Basket Analysis."""
     mba_data = [
-        {"produit_a": "Café Moulu Tradition 250g", "produit_b": "Filtres Papier BONDIN (x100)", "support": 24.6, "confiance": 78.2, "lift": 2.45, "type": "Complémentaire Naturel", "action": "Pack Promo Croisé Caisse"},
-        {"produit_a": "Café Grains 100% Arabica 500g", "produit_b": "Boîte Métal Collector 1910", "support": 16.8, "confiance": 64.5, "lift": 3.12, "type": "Montée en Gamme / VIP", "action": "Offre Spéciale Champions"},
-        {"produit_a": "Espresso Simple Cafétéria", "produit_b": "Bouteille Eau Minérale 0.5L", "support": 38.2, "confiance": 82.0, "lift": 1.84, "type": "Consommation Salons", "action": "Formule Pause Express"},
-        {"produit_a": "Boîte Capsules Espresso (x10)", "produit_b": "Assortiment Sucres Spéciaux", "support": 12.4, "confiance": 59.1, "lift": 2.70, "type": "Dégustation Domicile", "action": "Bon de Réduction Application"},
-        {"produit_a": "Café Pur Torréfié 250g", "produit_b": "Tasse Porcelaine Prestige BONDIN", "support": 9.5, "confiance": 45.3, "lift": 3.55, "type": "Article Cadeau Fidélité", "action": "Suggestion Moteur IA Déblocage"}
+        {"produit_a": "CafÃ© Moulu Tradition 250g", "produit_b": "Filtres Papier BONDIN (x100)", "support": 24.6, "confiance": 78.2, "lift": 2.45, "type": "ComplÃ©mentaire Naturel", "action": "Pack Promo CroisÃ© Caisse"},
+        {"produit_a": "CafÃ© Grains 100% Arabica 500g", "produit_b": "BoÃ®te MÃ©tal Collector 1910", "support": 16.8, "confiance": 64.5, "lift": 3.12, "type": "MontÃ©e en Gamme / VIP", "action": "Offre SpÃ©ciale Champions"},
+        {"produit_a": "Espresso Simple CafÃ©tÃ©ria", "produit_b": "Bouteille Eau MinÃ©rale 0.5L", "support": 38.2, "confiance": 82.0, "lift": 1.84, "type": "Consommation Salons", "action": "Formule Pause Express"},
+        {"produit_a": "BoÃ®te Capsules Espresso (x10)", "produit_b": "Assortiment Sucres SpÃ©ciaux", "support": 12.4, "confiance": 59.1, "lift": 2.70, "type": "DÃ©gustation Domicile", "action": "Bon de RÃ©duction Application"},
+        {"produit_a": "CafÃ© Pur TorrÃ©fiÃ© 250g", "produit_b": "Tasse Porcelaine Prestige BONDIN", "support": 9.5, "confiance": 45.3, "lift": 3.55, "type": "Article Cadeau FidÃ©litÃ©", "action": "Suggestion Moteur IA DÃ©blocage"}
     ]
     return jsonify(mba_data)
 
 @app.route("/api/simulate-scan", methods=["POST"])
 def api_simulate_scan():
-    """Simule l'arrivée en direct d'un scan mobile QR Code en caisse."""
+    """Simule l'arrivÃ©e en direct d'un scan mobile QR Code en caisse."""
     body = request.get_json() or {}
     montant = float(body.get("montant", body.get("montant_tnd", 18.500)))
     points = float(body.get("points", round(montant * 10, 1)))
-    magasin_nom = body.get("magasin", "Cafétéria Le Kef")
+    magasin_nom = body.get("magasin", "CafÃ©tÃ©ria Le Kef")
     client_name = body.get("client", body.get("client_name", "Salim Ammar"))
     client_id = body.get("client_id", "CLI_" + str(abs(hash(client_name)))[:8])
     ticket_num = body.get("ticket", f"bondin{6170303 + len(store.recent_scans) + 1}")
@@ -1031,11 +1034,11 @@ def api_simulate_scan():
     }
     store.logs_audit.append(log_entry)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] ⚡ SCAN TEMPS RÉEL REÇU : {montant:.3f} TND ({points} pts) de {client_id} à {magasin_nom}")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] âš¡ SCAN TEMPS RÃ‰EL REÃ‡U : {montant:.3f} TND ({points} pts) de {client_id} Ã  {magasin_nom}")
 
     return jsonify({
         "success": True,
-        "message": f"Scan de {montant:.3f} TND enregistré avec succès !",
+        "message": f"Scan de {montant:.3f} TND enregistrÃ© avec succÃ¨s !",
         "new_total_ca": round(float(store.ventes["Montant_TND"].sum()), 3),
         "new_total_scans": len(store.ventes),
         "transaction": new_trans
@@ -1043,7 +1046,7 @@ def api_simulate_scan():
 
 @app.route("/api/campaign/push", methods=["POST"])
 def api_campaign_push():
-    """Déclenche l'envoi d'une vraie campagne push de réactivation pour un client ciblé."""
+    """DÃ©clenche l'envoi d'une vraie campagne push de rÃ©activation pour un client ciblÃ©."""
     body = request.get_json() or {}
     client_id = body.get("client_id", "INCONNU")
     promo_code = body.get("code", "BONDIN1910")
@@ -1062,11 +1065,11 @@ def api_campaign_push():
                 "message": push_message,
                 "status": "DELIVERED_FIREBASE_FCM"
             })
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] [AGENT IA FIDNESS] CAMPAGNE PUSH GROUPÉE DÉLIVRÉE à {len(batch_clients)} clientes sensibles ({promo_code})")
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] [AGENT IA FIDNESS] CAMPAGNE PUSH GROUPÃ‰E DÃ‰LIVRÃ‰E Ã  {len(batch_clients)} clientes sensibles ({promo_code})")
         return jsonify({
             "success": True,
             "count": len(batch_clients),
-            "message": f"Campagne Push Agent IA Fidness envoyée à {len(batch_clients)} clientes sensibles.",
+            "message": f"Campagne Push Agent IA Fidness envoyÃ©e Ã  {len(batch_clients)} clientes sensibles.",
             "audit_id": len(store.logs_audit)
         })
 
@@ -1079,25 +1082,25 @@ def api_campaign_push():
     }
     store.logs_audit.append(log_entry)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] [PUSH] NOTIFICATION DÉLIVRÉE au client {client_id} avec offre '{promo_code}'")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] [PUSH] NOTIFICATION DÃ‰LIVRÃ‰E au client {client_id} avec offre '{promo_code}'")
 
     return jsonify({
         "success": True,
         "client_id": client_id,
-        "message": f"Notification push expédiée avec succès au client {client_id}.",
+        "message": f"Notification push expÃ©diÃ©e avec succÃ¨s au client {client_id}.",
         "audit_id": len(store.logs_audit)
     })
 
 @app.route("/api/audit-logs", methods=["GET"])
 def api_audit_logs():
-    """Retourne l'historique d'audit des événements enregistrés par le backend."""
+    """Retourne l'historique d'audit des Ã©vÃ©nements enregistrÃ©s par le backend."""
     return jsonify({
         "total_events": len(store.logs_audit),
         "events": store.logs_audit[-20:]
     })
 
 # ========================================================
-# MODULE COPILOT RAG DÉCISIONNEL HAUTE PRÉCISION
+# MODULE COPILOT RAG DÃ‰CISIONNEL HAUTE PRÃ‰CISION
 # ========================================================
 import unicodedata
 
@@ -1106,7 +1109,7 @@ def normalize_rag_query(q):
         return ""
     q = unicodedata.normalize('NFD', q.lower())
     q = ''.join(c for c in q if unicodedata.category(c) != 'Mn')
-    for p in ["'", "-", "_", ",", ";", ".", "?", "!", ":", "(", ")", "/", '"', "«", "»", "•", "–"]:
+    for p in ["'", "-", "_", ",", ";", ".", "?", "!", ":", "(", ")", "/", '"', "Â«", "Â»", "â€¢", "â€“"]:
         q = q.replace(p, " ")
     return " ".join(q.split())
 
@@ -1127,13 +1130,13 @@ def call_gemini_rag(question, dynamic_context, timeout=8.5):
         return None
 
     system_instruction = (
-        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme décisionnelle ENA W BONDIN x FIDNESS (Maison BONDIN 1910).\n"
-        "RÈGLES D'OR STRICTES :\n"
-        "1. Tu réponds STRICTEMENT à partir des données réelles certifiées PostgreSQL 17.7 ci-dessous. Interdiction totale d'inventer des chiffres.\n"
-        "2. Donne les montants exacts en Dinars Tunisiens (TND), les volumes réels de transactions et les ratios calculés.\n"
-        "3. Si la question porte sur le dernier scan ou la dernière transaction (ex: « quand la derniere scan »), réponds DIRECTEMENT et PRÉCISÉMENT avec la Date, l'Heure, le Ticket, le Magasin et le Montant indiqués dans la section DERNIÈRE TRANSACTION. Ne dis JAMAIS que la base ne stocke pas l'horodatage.\n""4. Réponds de façon concise, percutante, professionnelle et structurée avec du markdown soigné (puces, titres, gras).\n"
-        "4. Si la question est hors sujet (politique, sport, météo, cuisine générale), refuse poliment en rappelant ton périmètre décisionnel.\n\n"
-        f"DONNÉES POSTGRESQL 17.7 LIVE (TABLES STORE.* & PUBLIC.*) :\n{dynamic_context}"
+        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme dÃ©cisionnelle ENA W BONDIN x FIDNESS (Maison BONDIN 1910).\n"
+        "RÃˆGLES D'OR STRICTES :\n"
+        "1. Tu rÃ©ponds STRICTEMENT Ã  partir des donnÃ©es rÃ©elles certifiÃ©es PostgreSQL 17.7 ci-dessous. Interdiction totale d'inventer des chiffres.\n"
+        "2. Donne les montants exacts en Dinars Tunisiens (TND), les volumes rÃ©els de transactions et les ratios calculÃ©s.\n"
+        "3. Si la question porte sur le dernier scan ou la derniÃ¨re transaction (ex: Â« quand la derniere scan Â»), rÃ©ponds DIRECTEMENT et PRÃ‰CISÃ‰MENT avec la Date, l'Heure, le Ticket, le Magasin et le Montant indiquÃ©s dans la section DERNIÃˆRE TRANSACTION. Ne dis JAMAIS que la base ne stocke pas l'horodatage.\n""4. RÃ©ponds de faÃ§on concise, percutante, professionnelle et structurÃ©e avec du markdown soignÃ© (puces, titres, gras).\n"
+        "4. Si la question est hors sujet (politique, sport, mÃ©tÃ©o, cuisine gÃ©nÃ©rale), refuse poliment en rappelant ton pÃ©rimÃ¨tre dÃ©cisionnel.\n\n"
+        f"DONNÃ‰ES POSTGRESQL 17.7 LIVE (TABLES STORE.* & PUBLIC.*) :\n{dynamic_context}"
     )
 
     payload = {
@@ -1142,7 +1145,7 @@ def call_gemini_rag(question, dynamic_context, timeout=8.5):
         "generationConfig": {"temperature": 0.2, "maxOutputTokens": 650}
     }
 
-    # Ordre des modèles actifs certifiés Google Generative Language
+    # Ordre des modÃ¨les actifs certifiÃ©s Google Generative Language
     for model_name in ['gemini-3.1-flash-lite', 'gemini-flash-latest', 'gemini-3.5-flash']:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={k}"
         req = urllib.request.Request(
@@ -1179,12 +1182,12 @@ def call_groq_rag(question, dynamic_context, timeout=4.0):
         k = "".join(["gs" + "k_", "DWe" + "go9bg", "KYcb" + "xyhd", "Iftn" + "WGdy", "b3FY" + "eLtG", "nx6U" + "erqD", "muG0" + "Kwa8", "jQ" + "nB"])
 
     system_instruction = (
-        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme décisionnelle ENA W BONDIN x FIDNESS (Maison BONDIN 1910).\n"
-        "RÈGLES D'OR STRICTES :\n"
-        "1. Tu réponds STRICTEMENT à partir des données réelles certifiées PostgreSQL 17.7 ci-dessous. Interdiction totale d'inventer des chiffres.\n"
-        "2. Donne les montants exacts en Dinars Tunisiens (TND), les volumes réels de transactions et les ratios calculés.\n"
-        "3. Réponds de façon concise, percutante, professionnelle et structurée avec du markdown soigné (puces, gras, citations).\n\n"
-        f"DONNÉES POSTGRESQL 17.7 LIVE (TABLES STORE.* & PUBLIC.*) :\n{dynamic_context}"
+        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme dÃ©cisionnelle ENA W BONDIN x FIDNESS (Maison BONDIN 1910).\n"
+        "RÃˆGLES D'OR STRICTES :\n"
+        "1. Tu rÃ©ponds STRICTEMENT Ã  partir des donnÃ©es rÃ©elles certifiÃ©es PostgreSQL 17.7 ci-dessous. Interdiction totale d'inventer des chiffres.\n"
+        "2. Donne les montants exacts en Dinars Tunisiens (TND), les volumes rÃ©els de transactions et les ratios calculÃ©s.\n"
+        "3. RÃ©ponds de faÃ§on concise, percutante, professionnelle et structurÃ©e avec du markdown soignÃ© (puces, gras, citations).\n\n"
+        f"DONNÃ‰ES POSTGRESQL 17.7 LIVE (TABLES STORE.* & PUBLIC.*) :\n{dynamic_context}"
     )
 
     models = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.8-27b']
@@ -1221,39 +1224,39 @@ def call_groq_rag(question, dynamic_context, timeout=4.0):
 
 
 # ========================================================
-# MODULE 1 : FILTRAGE MÉTADONNÉES (SELF-QUERYING)
+# MODULE 1 : FILTRAGE MÃ‰TADONNÃ‰ES (SELF-QUERYING)
 # ========================================================
 
 _MOIS_FR_MAP = {
-    '01': 'Janvier', '02': 'Février', '03': 'Mars', '04': 'Avril',
-    '05': 'Mai', '06': 'Juin', '07': 'Juillet', '08': 'Août',
-    '09': 'Septembre', '10': 'Octobre', '11': 'Novembre', '12': 'Décembre'
+    '01': 'Janvier', '02': 'FÃ©vrier', '03': 'Mars', '04': 'Avril',
+    '05': 'Mai', '06': 'Juin', '07': 'Juillet', '08': 'AoÃ»t',
+    '09': 'Septembre', '10': 'Octobre', '11': 'Novembre', '12': 'DÃ©cembre'
 }
 
 def detect_month_code(text):
-    """Détecte le code mois (01 à 12) avec tolérance aux fautes de frappe et variantes anglais/français."""
+    """DÃ©tecte le code mois (01 Ã  12) avec tolÃ©rance aux fautes de frappe et variantes anglais/franÃ§ais."""
     import difflib, re
     t = text.lower()
     exact_aliases = {
         'janvier': '01', 'jan': '01', 'janv': '01', 'january': '01',
-        'fevrier': '02', 'fev': '02', 'fevr': '02', 'feb': '02', 'february': '02', 'février': '02',
+        'fevrier': '02', 'fev': '02', 'fevr': '02', 'feb': '02', 'february': '02', 'fÃ©vrier': '02',
         'mars': '03', 'mar': '03', 'march': '03',
         'avril': '04', 'avr': '04', 'apr': '04', 'april': '04',
         'mai': '05', 'may': '05',
         'juin': '06', 'jun': '06', 'june': '06',
         'juillet': '07', 'jul': '07', 'july': '07', 'juil': '07',
-        'aout': '08', 'août': '08', 'aug': '08', 'august': '08',
+        'aout': '08', 'aoÃ»t': '08', 'aug': '08', 'august': '08',
         'septembre': '09', 'sep': '09', 'sept': '09', 'september': '09', 'septemeber': '09', 'septembr': '09',
         'octobre': '10', 'oct': '10', 'october': '10', 'octbre': '10', 'octobtr': '10', 'octobr': '10', 'octob': '10',
         'novembre': '11', 'nov': '11', 'november': '11',
-        'decembre': '12', 'dec': '12', 'december': '12', 'décembre': '12'
+        'decembre': '12', 'dec': '12', 'december': '12', 'dÃ©cembre': '12'
     }
     for alias, m in exact_aliases.items():
         if re.search(r'\b' + re.escape(alias) + r'\b', t):
             return m
     canonical = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre']
     stop_words = {'quelle', 'quel', 'quels', 'quelles', 'cette', 'celle', 'celles', 'ville', 'toutes', 'tous', 'pour', 'faire'}
-    for word in re.findall(r'[a-zà-ÿ]{4,}', t):
+    for word in re.findall(r'[a-zÃ -Ã¿]{4,}', t):
         if word in stop_words:
             continue
         matches = difflib.get_close_matches(word, canonical, n=1, cutoff=0.70)
@@ -1263,7 +1266,7 @@ def detect_month_code(text):
     return None
 
 def extract_metadata_filters(query):
-    """Extrait magasins, canal, région, segment client, métrique et période depuis la question."""
+    """Extrait magasins, canal, rÃ©gion, segment client, mÃ©trique et pÃ©riode depuis la question."""
     q = query.lower()
     norm_q = normalize_rag_query(query)
     filters = {'stores': [], 'channel_type': None, 'region': None,
@@ -1272,7 +1275,7 @@ def extract_metadata_filters(query):
     if 'succursale' in q and not ('cafeteria' in norm_q):
         filters['channel_type'] = 'Succursale'
     elif any(k in norm_q for k in ['cafeteria', 'salon', 'comptoir']) and 'succursale' not in q:
-        filters['channel_type'] = 'Cafétéria'
+        filters['channel_type'] = 'CafÃ©tÃ©ria'
 
     if any(k in norm_q for k in ['churn', 'abandon', 'sensible', 'inactif', 'inactives', 'reviendr', 'risque', 'dormant', 'attrition', 'perte', 'decrochage', 'sauver', '45']):
         filters['customer_segment'] = 'churn'
@@ -1309,7 +1312,7 @@ def extract_metadata_filters(query):
             filters['stores'].append(kw)
 
     regions = [('Grand Tunis', ['tunis', 'ariana', 'marsa', 'menzah', 'bardo', 'liberte', 'espagne', 'france']),
-               ('Gafsa', ['gafsa']), ('Le Kef', ['kef']), ('Gabès', ['gabes']),
+               ('Gafsa', ['gafsa']), ('Le Kef', ['kef']), ('GabÃ¨s', ['gabes']),
                ('Sfax', ['sfax']), ('Nabeul', ['nabeul'])]
     for reg, kws in regions:
         if any(k in norm_q for k in kws):
@@ -1318,23 +1321,23 @@ def extract_metadata_filters(query):
     return filters
 
 # ========================================================
-# MODULE 2 : TEXT-TO-SQL SÉCURISÉ (READ-ONLY, company_id = 2)
+# MODULE 2 : TEXT-TO-SQL SÃ‰CURISÃ‰ (READ-ONLY, company_id = 2)
 # ========================================================
 _SQL_FORBIDDEN = re.compile(
     r'\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|GRANT|REVOKE|EXEC|EXECUTE|CREATE|REPLACE|RENAME|CALL|COPY|SHUTDOWN|PG_SLEEP|PG_READ_FILE|INTO)\b',
     re.IGNORECASE)
 
 def validate_and_sanitize_sql(sql_str):
-    """Pare-feu : SELECT/WITH uniquement, mono-requête, company_id = 2 obligatoire, LIMIT <= 50."""
+    """Pare-feu : SELECT/WITH uniquement, mono-requÃªte, company_id = 2 obligatoire, LIMIT <= 50."""
     if not sql_str or not isinstance(sql_str, str):
-        return None, "Requête SQL vide."
+        return None, "RequÃªte SQL vide."
     cleaned = re.sub(r'```(?:sql)?', '', sql_str).strip().rstrip(';').strip()
     if ';' in cleaned:
-        return None, "Requêtes multiples interdites."
+        return None, "RequÃªtes multiples interdites."
     if not re.match(r'^(SELECT|WITH)\s', cleaned, re.IGNORECASE):
-        return None, "Seules les requêtes SELECT sont autorisées."
+        return None, "Seules les requÃªtes SELECT sont autorisÃ©es."
     if _SQL_FORBIDDEN.search(cleaned):
-        return None, "Opération DDL/DML non autorisée (lecture seule)."
+        return None, "OpÃ©ration DDL/DML non autorisÃ©e (lecture seule)."
     if '--' in cleaned or '/*' in cleaned:
         return None, "Commentaires SQL interdits."
     if not re.search(r'company_id\s*=\s*2\b', cleaned, re.IGNORECASE):
@@ -1375,14 +1378,14 @@ def _gemini_text_to_sql(question, filters):
         return None
     schema_prompt = (
         "Tu es expert SQL PostgreSQL 17.7 pour Maison BONDIN 1910.\n"
-        "Schéma :\n"
+        "SchÃ©ma :\n"
         "- public.purchase p (id, user_id, sell_point_id, amount [millimes, /1000.0 pour TND], points, ticket, created_at, company_id)\n"
-        "- public.sell_points sp (id, name ['Succursale X' ou 'Cafétéria X'], code, address, company_id)\n"
+        "- public.sell_points sp (id, name ['Succursale X' ou 'CafÃ©tÃ©ria X'], code, address, company_id)\n"
         "- public.user u (id, full_name, first_name, last_name, created_at)\n"
         "- public.voucher v (id, user_id, gift_id, claimed, created_at)\n"
         "- public.gift g (id, title, cost_points, company_id)\n"
-        "Filtres détectés (à appliquer en WHERE) : " + json.dumps(filters, ensure_ascii=False) + "\n"
-        "RÈGLES : SQL brut uniquement, sans point-virgule ni commentaire ni markdown. SELECT seul. "
+        "Filtres dÃ©tectÃ©s (Ã  appliquer en WHERE) : " + json.dumps(filters, ensure_ascii=False) + "\n"
+        "RÃˆGLES : SQL brut uniquement, sans point-virgule ni commentaire ni markdown. SELECT seul. "
         "Toujours p.company_id = 2 (ou sp.company_id = 2). LIMIT 10 max. Alias de colonnes lisibles."
     )
     payload = {"system_instruction": {"parts": [{"text": schema_prompt}]},
@@ -1408,7 +1411,7 @@ def _template_sql(question, f):
     chan = ""
     if f['channel_type'] == 'Succursale':
         chan = " AND sp.name ILIKE 'succursale%'"
-    elif f['channel_type'] == 'Cafétéria':
+    elif f['channel_type'] == 'CafÃ©tÃ©ria':
         chan = " AND sp.name ILIKE 'caf%'"
     if f['stores']:
         kw = re.sub(r'[^a-z]', '', f['stores'][0])
@@ -1440,7 +1443,7 @@ def _template_sql(question, f):
                 'ROUND(SUM(p.amount)/1000.0, 2) AS "CA_TND", ROUND(AVG(p.amount)/1000.0, 2) AS "Panier_Moyen_TND" '
                 f'FROM public.purchase p WHERE p.company_id = 2{date_cond} GROUP BY 1 ORDER BY 1 DESC LIMIT 12')
     if f['channel_type'] or any(w in q for w in ['succursale', 'cafeteria', 'comparatif', 'typologie']):
-        return ("SELECT CASE WHEN sp.name ILIKE 'caf%' THEN 'Cafétéria' ELSE 'Succursale' END AS \"Canal\", "
+        return ("SELECT CASE WHEN sp.name ILIKE 'caf%' THEN 'CafÃ©tÃ©ria' ELSE 'Succursale' END AS \"Canal\", "
                 'COUNT(p.id) AS "Transactions", ROUND(SUM(p.amount)/1000.0, 2) AS "CA_TND", '
                 'ROUND(AVG(p.amount)/1000.0, 2) AS "Panier_Moyen_TND" FROM public.purchase p '
                 'JOIN public.sell_points sp ON p.sell_point_id = sp.id '
@@ -1451,7 +1454,7 @@ def _template_sql(question, f):
             f'WHERE p.company_id = 2{date_cond} GROUP BY sp.name ORDER BY "CA_TND" DESC LIMIT 5')
 
 def run_text_to_sql(question):
-    """Pipeline : self-query -> SQL (Gemini puis template) -> validation -> exécution. Retourne (filters, result, mode)."""
+    """Pipeline : self-query -> SQL (Gemini puis template) -> validation -> exÃ©cution. Retourne (filters, result, mode)."""
     filters = extract_metadata_filters(question)
     gen = _gemini_text_to_sql(question, filters)
     if gen:
@@ -1463,7 +1466,7 @@ def run_text_to_sql(question):
 
 def format_sql_results_as_markdown(cols, rows):
     if not rows or not cols:
-        return "Aucun enregistrement trouvé."
+        return "Aucun enregistrement trouvÃ©."
     out = ["| " + " | ".join(cols) + " |", "| " + " | ".join(["---"] * len(cols)) + " |"]
     for r in rows:
         cells = []
@@ -1479,7 +1482,7 @@ def format_sql_results_as_markdown(cols, rows):
 
 
 # ========================================================
-# MODULE 3 : RECHERCHE CLIENT PAR NOM (PROFIL 360° DEPUIS POSTGRESQL)
+# MODULE 3 : RECHERCHE CLIENT PAR NOM (PROFIL 360Â° DEPUIS POSTGRESQL)
 # ========================================================
 _NAME_STOPWORDS = set("""qui est cest c est quel quelle quels quelles est-ce ce cet cette le la les un une des de du d l
 a au aux en et ou sur pour par avec sans dans chez moi donne donnez montre montrer affiche afficher dis dites cherche chercher
@@ -1488,18 +1491,18 @@ adherent adherente membre inscrit inscrite personne monsieur madame mr mme mlle 
 points solde total historique voir stats statistiques sur sont a-t-il""".split())
 
 def lookup_client_by_name(question):
-    """Retourne un profil client formaté (markdown) si la question désigne un client par son nom, sinon None."""
+    """Retourne un profil client formatÃ© (markdown) si la question dÃ©signe un client par son nom, sinon None."""
     try:
         raw = normalize_rag_query(question)
     except Exception:
         raw = question.lower()
-    words = re.findall(r"[a-zà-ÿ]{2,}", raw)
+    words = re.findall(r"[a-zÃ -Ã¿]{2,}", raw)
     if not words or len(words) > 8:
         return None
     tokens = [w for w in words if w not in _NAME_STOPWORDS]
     if not tokens or len(tokens) > 3:
         return None
-    # Mots métier : ne jamais traiter comme un nom de client
+    # Mots mÃ©tier : ne jamais traiter comme un nom de client
     business = {'magasin', 'magasins', 'succursale', 'cafeteria', 'churn', 'roi', 'dette', 'burn', 'earn', 'vente', 'ventes',
                 'panier', 'moyen', 'top', 'kef', 'gafsa', 'gabes', 'tunis', 'menzah', 'marsa', 'sfax', 'nabeul', 'mois',
                 'octobre', 'septembre', 'aout', 'juillet', 'juin', 'mai', 'avril', 'mars', 'fevrier', 'janvier', 'novembre',
@@ -1528,12 +1531,12 @@ def lookup_client_by_name(question):
         rows = con.run(sql, **params)
         if not rows:
             return None
-        out = [f"👤 **Recherche client « {' '.join(tokens)} » — {len(rows)} profil(s) trouvé(s) (PostgreSQL 17.7 Live)**\n"]
+        out = [f"ðŸ‘¤ **Recherche client Â« {' '.join(tokens)} Â» â€” {len(rows)} profil(s) trouvÃ©(s) (PostgreSQL 17.7 Live)**\n"]
         for (uid, nom, created, last_act, nb, ca, pts, last_p, nv) in rows:
             ca = float(ca or 0)
             pts = float(pts or 0)
             out.append(f"**{nom}**")
-            out.append(f"• Inscription : **{created}** · Dernière activité : **{last_act or 'n/a'}**")
+            out.append(f"â€¢ Inscription : **{created}** Â· DerniÃ¨re activitÃ© : **{last_act or 'n/a'}**")
             if nb:
                 aov = ca / nb if nb else 0
                 try:
@@ -1543,14 +1546,14 @@ def lookup_client_by_name(question):
                     fav = ", ".join(f"{n} ({c})" for n, c in stores)
                 except Exception:
                     fav = "n/a"
-                out.append(f"• Achats : **{nb}** · CA cumulé : **{ca:,.2f} TND** · Panier moyen : **{aov:.2f} TND**".replace(",", " "))
-                out.append(f"• Points gagnés : **{pts:,.0f} pts** · Vouchers : **{nv}** · Dernier achat : **{str(last_p)[:16]}**".replace(",", " "))
-                out.append(f"• Magasins favoris : {fav}")
+                out.append(f"â€¢ Achats : **{nb}** Â· CA cumulÃ© : **{ca:,.2f} TND** Â· Panier moyen : **{aov:.2f} TND**".replace(",", " "))
+                out.append(f"â€¢ Points gagnÃ©s : **{pts:,.0f} pts** Â· Vouchers : **{nv}** Â· Dernier achat : **{str(last_p)[:16]}**".replace(",", " "))
+                out.append(f"â€¢ Magasins favoris : {fav}")
             else:
-                out.append("• Aucun achat enregistré (inscrit sans scan caisse) · Vouchers : **%s**" % nv)
+                out.append("â€¢ Aucun achat enregistrÃ© (inscrit sans scan caisse) Â· Vouchers : **%s**" % nv)
             out.append("")
         if len(rows) > 1:
-            out.append("💡 *Plusieurs profils correspondent : précisez le prénom et le nom complets pour cibler un client.*")
+            out.append("ðŸ’¡ *Plusieurs profils correspondent : prÃ©cisez le prÃ©nom et le nom complets pour cibler un client.*")
         return "\n".join(out)
     except Exception as e:
         print(f"[lookup_client_by_name] {e}")
@@ -1563,7 +1566,7 @@ def lookup_client_by_name(question):
                 pass
 
 def query_postgres_engine(question, store):
-    """Moteur décisionnel analytique calculant des réponses précises depuis les DataFrames PostgreSQL."""
+    """Moteur dÃ©cisionnel analytique calculant des rÃ©ponses prÃ©cises depuis les DataFrames PostgreSQL."""
     import re
     q = question.lower()
     v = store.ventes
@@ -1586,37 +1589,37 @@ def query_postgres_engine(question, store):
     last_amount = float(last_v['Montant_TND']) if last_v is not None else 9.0
     last_pts = float(last_v['Points_Gagnes']) if last_v is not None else 22.6
     last_st_id = int(last_v['ID_Magasin']) if last_v is not None else 37
-    last_store_name = m[m['ID_Magasin'] == last_st_id]['Nom_Magasin'].values[0] if not m.empty and last_st_id in m['ID_Magasin'].values else "Cafétéria Tunis La Marsa"
+    last_store_name = m[m['ID_Magasin'] == last_st_id]['Nom_Magasin'].values[0] if not m.empty and last_st_id in m['ID_Magasin'].values else "CafÃ©tÃ©ria Tunis La Marsa"
 
-    # 0. Dernière Transaction / Récence des Scans
+    # 0. DerniÃ¨re Transaction / RÃ©cence des Scans
     if any(k in q for k in ["dernier scan", "derniere scan", "dernier ticket", "derniere transaction", "dernier achat", "quand la derniere", "quand le dernier", "date de la derniere", "date du dernier", "quand"]):
         return (
-            f"🕒 **Dernière Transaction Enregistrée en Temps Réel (PostgreSQL 17.7 Live)**\n\n"
-            f"• **Date & Heure** : **{last_date} à {last_time}** (horodatage certifié caisse)\n"
-            f"• **Numéro de Ticket** : **#{last_ticket}**\n"
-            f"• **Point de Vente** : **{last_store_name}**\n"
-            f"• **Montant de la Transaction** : **{last_amount:,.3f} TND**\n"
-            f"• **Points Fidélité Gagnés** : **{last_pts:.1f} pts**\n\n"
-            f"💡 *Toutes les transactions unitaires sont stockées et horodatées en direct dans la table `public.purchase` de PostgreSQL 17.7.*"
+            f"ðŸ•’ **DerniÃ¨re Transaction EnregistrÃ©e en Temps RÃ©el (PostgreSQL 17.7 Live)**\n\n"
+            f"â€¢ **Date & Heure** : **{last_date} Ã  {last_time}** (horodatage certifiÃ© caisse)\n"
+            f"â€¢ **NumÃ©ro de Ticket** : **#{last_ticket}**\n"
+            f"â€¢ **Point de Vente** : **{last_store_name}**\n"
+            f"â€¢ **Montant de la Transaction** : **{last_amount:,.3f} TND**\n"
+            f"â€¢ **Points FidÃ©litÃ© GagnÃ©s** : **{last_pts:.1f} pts**\n\n"
+            f"ðŸ’¡ *Toutes les transactions unitaires sont stockÃ©es et horodatÃ©es en direct dans la table `public.purchase` de PostgreSQL 17.7.*"
         )
 
-    # 1. Recherche spécifique d'un magasin mentionné
+    # 1. Recherche spÃ©cifique d'un magasin mentionnÃ©
     if not vm.empty and not m.empty:
         wants_succ = "succursale" in q
-        wants_cafe = "cafeteria" in q or "cafétéria" in q
+        wants_cafe = "cafeteria" in q or "cafÃ©tÃ©ria" in q
 
         candidate_stores = []
         for _, s_row in m.iterrows():
             name = str(s_row.get("Nom_Magasin", ""))
             s_type = str(s_row.get("Type_Etablissement", ""))
-            clean_name = re.sub(r'succursale|cafétéria|cafeteria', '', name, flags=re.I).strip().lower()
+            clean_name = re.sub(r'succursale|cafÃ©tÃ©ria|cafeteria', '', name, flags=re.I).strip().lower()
             tokens = [t for t in clean_name.split() if len(t) > 2]
             
             if any(t in q for t in tokens):
                 priority = 0
                 if wants_succ and s_type == "Succursale":
                     priority += 10
-                elif wants_cafe and s_type == "Cafétéria":
+                elif wants_cafe and s_type == "CafÃ©tÃ©ria":
                     priority += 10
                 candidate_stores.append((priority, name, s_type))
 
@@ -1633,70 +1636,70 @@ def query_postgres_engine(question, store):
             rank = list(rankings.index).index(target_store) + 1 if target_store in rankings.index else 1
 
             return (
-                f"🏬 **Analyse Détaillée : {target_store} (PostgreSQL 17.7 Live)**\n\n"
-                f"• **Rang Réseau** : **#{rank} sur 23 points de vente**\n"
-                f"• **Chiffre d'Affaires** : **{st_ca:,.2f} TND**\n"
-                f"• **Transactions Validées** : **{st_scans:,} scans QR**\n"
-                f"• **Panier Moyen (AOV)** : **{st_aov:.3f} TND** par acte d'achat\n"
-                f"• **Fidélisation Client** : **{st_clients:,} clients uniques** ont acheté dans ce point de vente."
+                f"ðŸ¬ **Analyse DÃ©taillÃ©e : {target_store} (PostgreSQL 17.7 Live)**\n\n"
+                f"â€¢ **Rang RÃ©seau** : **#{rank} sur 23 points de vente**\n"
+                f"â€¢ **Chiffre d'Affaires** : **{st_ca:,.2f} TND**\n"
+                f"â€¢ **Transactions ValidÃ©es** : **{st_scans:,} scans QR**\n"
+                f"â€¢ **Panier Moyen (AOV)** : **{st_aov:.3f} TND** par acte d'achat\n"
+                f"â€¢ **FidÃ©lisation Client** : **{st_clients:,} clients uniques** ont achetÃ© dans ce point de vente."
             )
 
-    # Détection Churn prioritaire
-    # Détection Churn, Inactivité & Points Dormants
+    # DÃ©tection Churn prioritaire
+    # DÃ©tection Churn, InactivitÃ© & Points Dormants
     if any(k in q for k in ["churn", "sensible", "revien", "reviendra", "part", "push", "retention", "inactif", "inactives", "dormant", "dormants", "attrition", "abandon", "45"]) or ("point" in q and any(w in q for w in ["inactiv", "dormant", "decrochage", "perte", "sauver", "churn"])):
         if any(w in q for w in ["45", "inactiv", "dormant"]) or "1000" in q:
             return (
-                "🚨 **Diagnostic Anti-Churn : Clientes Inactives (> 45 Jours) avec Points Dormants (PostgreSQL 17.7 Live)**\n\n"
-                "• **Synthèse d'Urgence** : **22 Clientes Sensibles Prioritaires** répertoriées (CA cumulé exposé : **4 786,250 TND**, **15 589 points dormants** non convertis).\n"
-                "• 🔴 **Top Clientes Inactives Critiques (> 45j sans scan & points dormants élevés)** :\n"
-                "  1. **Wièm Dkhaïlia** (Cafétéria Gafsa Ville) : **60j inactivité** • 87 achats (560,85 TND) • **1 431 pts dormants** • *Recommandation : Push VIP +150 pts*\n"
-                "  2. **Amira Baaziz** (Cafétéria Gafsa Ville) : **50j inactivité** • 56 achats (804,30 TND) • **2 933 pts dormants** • *Recommandation : Cadeau Prestige*\n"
-                "  3. **Sarra Ben Saad** (Cafétéria Tunis Menzah VI) : **64j inactivité** • 28 achats (348,20 TND) • **1 362 pts dormants** • *Recommandation : Dégustation Arabica +100 pts*\n"
-                "  4. **Rakia Jawali** (Succursale Gabès Jara) : **48j inactivité** • 21 achats (1 120,50 TND) • **2 439 pts dormants** • *Recommandation : Offre Grand Cru VIP*\n"
-                "  5. **Mouna Lakhoua** (Cafétéria Tunis La Marsa) : **100j inactivité** • 35 achats (213,90 TND) • **1 050 pts dormants** • *Recommandation : Café Offert +100 pts*\n"
-                "  6. **Manel Alaya** (Succursale Tunis Liberté) : **75j inactivité** • 14 achats (290,40 TND) • **1 180 pts dormants**\n"
+                "ðŸš¨ **Diagnostic Anti-Churn : Clientes Inactives (> 45 Jours) avec Points Dormants (PostgreSQL 17.7 Live)**\n\n"
+                "â€¢ **SynthÃ¨se d'Urgence** : **22 Clientes Sensibles Prioritaires** rÃ©pertoriÃ©es (CA cumulÃ© exposÃ© : **4 786,250 TND**, **15 589 points dormants** non convertis).\n"
+                "â€¢ ðŸ”´ **Top Clientes Inactives Critiques (> 45j sans scan & points dormants Ã©levÃ©s)** :\n"
+                "  1. **WiÃ¨m DkhaÃ¯lia** (CafÃ©tÃ©ria Gafsa Ville) : **60j inactivitÃ©** â€¢ 87 achats (560,85 TND) â€¢ **1 431 pts dormants** â€¢ *Recommandation : Push VIP +150 pts*\n"
+                "  2. **Amira Baaziz** (CafÃ©tÃ©ria Gafsa Ville) : **50j inactivitÃ©** â€¢ 56 achats (804,30 TND) â€¢ **2 933 pts dormants** â€¢ *Recommandation : Cadeau Prestige*\n"
+                "  3. **Sarra Ben Saad** (CafÃ©tÃ©ria Tunis Menzah VI) : **64j inactivitÃ©** â€¢ 28 achats (348,20 TND) â€¢ **1 362 pts dormants** â€¢ *Recommandation : DÃ©gustation Arabica +100 pts*\n"
+                "  4. **Rakia Jawali** (Succursale GabÃ¨s Jara) : **48j inactivitÃ©** â€¢ 21 achats (1 120,50 TND) â€¢ **2 439 pts dormants** â€¢ *Recommandation : Offre Grand Cru VIP*\n"
+                "  5. **Mouna Lakhoua** (CafÃ©tÃ©ria Tunis La Marsa) : **100j inactivitÃ©** â€¢ 35 achats (213,90 TND) â€¢ **1 050 pts dormants** â€¢ *Recommandation : CafÃ© Offert +100 pts*\n"
+                "  6. **Manel Alaya** (Succursale Tunis LibertÃ©) : **75j inactivitÃ©** â€¢ 14 achats (290,40 TND) â€¢ **1 180 pts dormants**\n"
                 "  7. **Oumaima Ferjani, Farah Yezza, Donia Ben Mrad...**\n\n"
-                "📲 **Actions de Rétention Immédiates** :\n"
-                "• Codes Promos IA ciblés : `FIDNESS_VIP150` & `FIDNESS_SAVE100` (dégustation offerte et bonus retour).\n"
-                "• Potentiel de Sauvetage : **+1 838 TND** de CA sécurisable (taux de réactivation estimé à 38,4%).\n"
-                "👉 *Vous pouvez déclencher les notifications push en 1 clic dans l'onglet « 02 • Agent IA Fidness ».*"
+                "ðŸ“² **Actions de RÃ©tention ImmÃ©diates** :\n"
+                "â€¢ Codes Promos IA ciblÃ©s : `FIDNESS_VIP150` & `FIDNESS_SAVE100` (dÃ©gustation offerte et bonus retour).\n"
+                "â€¢ Potentiel de Sauvetage : **+1 838 TND** de CA sÃ©curisable (taux de rÃ©activation estimÃ© Ã  38,4%).\n"
+                "ðŸ‘‰ *Vous pouvez dÃ©clencher les notifications push en 1 clic dans l'onglet Â« 02 â€¢ Agent IA Fidness Â».*"
             )
         return (
-            "🚨 **Diagnostic Anti-Churn & Recommandations Push — Chatbot Pro BONDIN**\n\n"
-            "• **Détection Prédictive** : **22 Clientes Sensibles Prioritaires** identifiées sur PostgreSQL 17.7 (CA exposé : **4 786,250 TND**, **15 589 points dormants**).\n"
-            "• 🔴 **Critiques (« Ne reviendront plus » > 88% Churn)** : **12 clientes** en abandon imminent :\n"
-            "  1. **Wièm Dkhaïlia** (Gafsa) : 60j inactivité (87 visites, 560,85 TND, 1 431 pts) • *Push VIP +150 pts*\n"
-            "  2. **Amira Baaziz** (Gafsa) : 50j inactivité (56 visites, 804,30 TND, 2 933 pts) • *Cadeau Prestige*\n"
-            "  3. **Sarra Ben Saad** (Menzah VI) : 64j inactivité (348,20 TND, 1 362 pts) • *Dégustation Arabica +100 pts*\n"
-            "  4. **Mouna Lakhoua** (La Marsa) : 100j inactivité (35 visites, 213,90 TND) • *Café Offert +100 pts*\n"
+            "ðŸš¨ **Diagnostic Anti-Churn & Recommandations Push â€” Chatbot Pro BONDIN**\n\n"
+            "â€¢ **DÃ©tection PrÃ©dictive** : **22 Clientes Sensibles Prioritaires** identifiÃ©es sur PostgreSQL 17.7 (CA exposÃ© : **4 786,250 TND**, **15 589 points dormants**).\n"
+            "â€¢ ðŸ”´ **Critiques (Â« Ne reviendront plus Â» > 88% Churn)** : **12 clientes** en abandon imminent :\n"
+            "  1. **WiÃ¨m DkhaÃ¯lia** (Gafsa) : 60j inactivitÃ© (87 visites, 560,85 TND, 1 431 pts) â€¢ *Push VIP +150 pts*\n"
+            "  2. **Amira Baaziz** (Gafsa) : 50j inactivitÃ© (56 visites, 804,30 TND, 2 933 pts) â€¢ *Cadeau Prestige*\n"
+            "  3. **Sarra Ben Saad** (Menzah VI) : 64j inactivitÃ© (348,20 TND, 1 362 pts) â€¢ *DÃ©gustation Arabica +100 pts*\n"
+            "  4. **Mouna Lakhoua** (La Marsa) : 100j inactivitÃ© (35 visites, 213,90 TND) â€¢ *CafÃ© Offert +100 pts*\n"
             "  5. **Manel Alaya, Oumaima Ferjani, Farah Yezza, Donia Ben Mrad...**\n"
-            "• 🟠 **Décrochage Élevé (74% - 85%)** : **7 clientes** (Rakia Jawali 78%, Khawla Henchiri 84%, Oumaima Shili 82%, Hayet Ouni 76%...).\n"
-            "• 🟡 **En Vigilance (60% - 70%)** : **3 clientes** (Meha Thabouti, Salma Bahloul, Rabeb Tissaoui).\n\n"
-            "📲 **Campagnes Push Ciblées Recommandées** :\n"
-            "• Scénario 1 (Critique) : Code promo `FIDNESS_VIP150` & `FIDNESS_SAVE100` (Envoi optimal : Mardi/Jeudi 08h30).\n"
-            "• Scénario 2 (Décrochage) : Code promo `FIDNESS_DOUBLE75` (Points x2 Week-end, Vendredi 16h30).\n\n"
-            "👉 *Vous pouvez déclencher l'envoi direct de ces notifications push depuis l'onglet « 02 • Agent IA Fidness ».*"
+            "â€¢ ðŸŸ  **DÃ©crochage Ã‰levÃ© (74% - 85%)** : **7 clientes** (Rakia Jawali 78%, Khawla Henchiri 84%, Oumaima Shili 82%, Hayet Ouni 76%...).\n"
+            "â€¢ ðŸŸ¡ **En Vigilance (60% - 70%)** : **3 clientes** (Meha Thabouti, Salma Bahloul, Rabeb Tissaoui).\n\n"
+            "ðŸ“² **Campagnes Push CiblÃ©es RecommandÃ©es** :\n"
+            "â€¢ ScÃ©nario 1 (Critique) : Code promo `FIDNESS_VIP150` & `FIDNESS_SAVE100` (Envoi optimal : Mardi/Jeudi 08h30).\n"
+            "â€¢ ScÃ©nario 2 (DÃ©crochage) : Code promo `FIDNESS_DOUBLE75` (Points x2 Week-end, Vendredi 16h30).\n\n"
+            "ðŸ‘‰ *Vous pouvez dÃ©clencher l'envoi direct de ces notifications push depuis l'onglet Â« 02 â€¢ Agent IA Fidness Â».*"
         )
 
-    # 2. Spécifique aux Meilleurs Acheteurs / Dépenses
+    # 2. SpÃ©cifique aux Meilleurs Acheteurs / DÃ©penses
     words_q = set(re.findall(r'\w+', q))
     if any(k in q for k in ["meilleur client", "top client", "plus depense", "gros acheteur", "qui a achete", "qui a depense", "classement client", "gros chiffre", "premier client"]) or ("client" in words_q and any(w in words_q for w in ["gros", "ca", "chiffre", "top", "meilleur", "depense", "record"])):
         if not v.empty:
             top_c = v.groupby("ID_Client_Hache")["Montant_TND"].agg(['sum', 'count']).sort_values(by="sum", ascending=False).head(5)
-            # Mapper avec le nom réel du client depuis store.clients
+            # Mapper avec le nom rÃ©el du client depuis store.clients
             cli_dict = dict(zip(c["ID_Client_Hache"], c["Nom"])) if not c.empty and "Nom" in c.columns else {}
             lines = []
             for idx, (cid, row) in enumerate(top_c.iterrows(), 1):
                 cname = cli_dict.get(str(cid), f"Client #{idx}")
-                lines.append(f"  {idx}. **{cname}** : **{row['sum']:,.2f} TND** ({int(row['count'])} achats scannés)")
+                lines.append(f"  {idx}. **{cname}** : **{row['sum']:,.2f} TND** ({int(row['count'])} achats scannÃ©s)")
             return (
-                "🏆 **Top 5 des Plus Gros Acheteurs du Réseau (PostgreSQL Live)**\n\n"
-                "Voici les clients ayant généré le plus fort volume d'achats :\n" +
+                "ðŸ† **Top 5 des Plus Gros Acheteurs du RÃ©seau (PostgreSQL Live)**\n\n"
+                "Voici les clients ayant gÃ©nÃ©rÃ© le plus fort volume d'achats :\n" +
                 "\n".join(lines) +
-                "\n\n💡 *Ces membres font partie du segment VIP/Grossistes et réalisent des achats réguliers en succursale.*"
+                "\n\nðŸ’¡ *Ces membres font partie du segment VIP/Grossistes et rÃ©alisent des achats rÃ©guliers en succursale.*"
             )
 
-    # 3. Chiffre d'Affaires Mensuel Spécifique ou Évolution Globale
+    # 3. Chiffre d'Affaires Mensuel SpÃ©cifique ou Ã‰volution Globale
     m_code = detect_month_code(q)
     if m_code or any(k in q for k in ["mois", "mensuel", "plus fort", "forte", "croissance", "evolution", "periode"]):
         if not v.empty and "Date" in v.columns:
@@ -1704,7 +1707,7 @@ def query_postgres_engine(question, store):
             v_copy["Date"] = pd.to_datetime(v_copy["Date"], errors="coerce")
             v_copy["Period"] = v_copy["Date"].dt.to_period("M").astype(str)
 
-            # Si un mois particulier est demandé (ex: septembre, septemeber, aout, etc.)
+            # Si un mois particulier est demandÃ© (ex: septembre, septemeber, aout, etc.)
             if m_code:
                 ym = re.search(r'\b(20\d\d)\b', q)
                 target_period = f"{ym.group(1) if ym else '2026'}-{m_code}"
@@ -1726,13 +1729,13 @@ def query_postgres_engine(question, store):
 
                     share_pct = (m_ca / ca_tot * 100) if ca_tot > 0 else 0
                     return (
-                        f"📅 **Chiffre d'Affaires & Performance : {month_name} {target_period[:4]} (PostgreSQL 17.7 Live)**\n\n"
-                        f"• **Chiffre d'Affaires Réalisé** : **{m_ca:,.2f} TND** ({share_pct:.1f}% du CA total consolidé)\n"
-                        f"• **Volume de Transactions** : **{m_scans:,} scans certifiés en caisse**\n"
-                        f"• **Panier Moyen (AOV)** : **{m_aov:.3f} TND** par acte d'achat\n"
-                        f"• **Clients Actifs Fidélité** : **{m_clients:,} membres distincts**\n\n"
-                        f"🏆 **Top 3 Magasins en {month_name} :**{top_stores_txt}\n\n"
-                        f"💡 *Données synchronisées en direct depuis la table `public.purchase` de PostgreSQL 17.7.*"
+                        f"ðŸ“… **Chiffre d'Affaires & Performance : {month_name} {target_period[:4]} (PostgreSQL 17.7 Live)**\n\n"
+                        f"â€¢ **Chiffre d'Affaires RÃ©alisÃ©** : **{m_ca:,.2f} TND** ({share_pct:.1f}% du CA total consolidÃ©)\n"
+                        f"â€¢ **Volume de Transactions** : **{m_scans:,} scans certifiÃ©s en caisse**\n"
+                        f"â€¢ **Panier Moyen (AOV)** : **{m_aov:.3f} TND** par acte d'achat\n"
+                        f"â€¢ **Clients Actifs FidÃ©litÃ©** : **{m_clients:,} membres distincts**\n\n"
+                        f"ðŸ† **Top 3 Magasins en {month_name} :**{top_stores_txt}\n\n"
+                        f"ðŸ’¡ *DonnÃ©es synchronisÃ©es en direct depuis la table `public.purchase` de PostgreSQL 17.7.*"
                     )
 
             monthly = v_copy.groupby("Period")["Montant_TND"].agg(['sum', 'count']).dropna()
@@ -1740,14 +1743,14 @@ def query_postgres_engine(question, store):
             for period, row in monthly.iterrows():
                 p_code = period.split("-")[1] if "-" in period else "00"
                 p_name = _MOIS_FR_MAP.get(p_code, period)
-                lines.append(f"• **{p_name} {period[:4]}** : **{row['sum']:,.2f} TND** ({int(row['count']):,} scans)")
+                lines.append(f"â€¢ **{p_name} {period[:4]}** : **{row['sum']:,.2f} TND** ({int(row['count']):,} scans)")
             best_month = monthly["sum"].idxmax()
             best_ca = monthly.loc[best_month, "sum"]
             best_code = best_month.split("-")[1] if "-" in best_month else "00"
             best_name = _MOIS_FR_MAP.get(best_code, best_month)
             return (
-                f"📅 **Historique & Évolution Mensuelle des Ventes (PostgreSQL Live)**\n\n"
-                f"• **Mois Record Historique** : **{best_name} {best_month[:4]}** avec **{best_ca:,.2f} TND** de chiffre d'affaires !\n\n"
+                f"ðŸ“… **Historique & Ã‰volution Mensuelle des Ventes (PostgreSQL Live)**\n\n"
+                f"â€¢ **Mois Record Historique** : **{best_name} {best_month[:4]}** avec **{best_ca:,.2f} TND** de chiffre d'affaires !\n\n"
                 f"**Ventilation mois par mois :**\n" + "\n".join(lines)
             )
 
@@ -1758,46 +1761,46 @@ def query_postgres_engine(question, store):
             sc_succ = int(len(vm[vm["Type_Etablissement"] == "Succursale"]))
             aov_succ = ca_succ / sc_succ if sc_succ > 0 else 37.625
 
-            ca_cafe = float(vm[vm["Type_Etablissement"] == "Cafétéria"]["Montant_TND"].sum())
-            sc_cafe = int(len(vm[vm["Type_Etablissement"] == "Cafétéria"]))
+            ca_cafe = float(vm[vm["Type_Etablissement"] == "CafÃ©tÃ©ria"]["Montant_TND"].sum())
+            sc_cafe = int(len(vm[vm["Type_Etablissement"] == "CafÃ©tÃ©ria"]))
             aov_cafe = ca_cafe / sc_cafe if sc_cafe > 0 else 4.195
 
             return (
-                f"🛒 **Panier Moyen (AOV) Réseau : {aov:.3f} TND**\n\n"
-                f"• 🏬 **Succursales (Vente en Gros B2B)** : **{aov_succ:.2f} TND** (achats par sacs de café moulu et en grains).\n"
-                f"• ☕ **Cafétérias (Détail & Salons)** : **{aov_cafe:.2f} TND** (consommation quotidienne au comptoir).\n"
-                f"• **Rapport** : Le panier en succursale est **9 fois supérieur** à celui d'une cafétéria."
+                f"ðŸ›’ **Panier Moyen (AOV) RÃ©seau : {aov:.3f} TND**\n\n"
+                f"â€¢ ðŸ¬ **Succursales (Vente en Gros B2B)** : **{aov_succ:.2f} TND** (achats par sacs de cafÃ© moulu et en grains).\n"
+                f"â€¢ â˜• **CafÃ©tÃ©rias (DÃ©tail & Salons)** : **{aov_cafe:.2f} TND** (consommation quotidienne au comptoir).\n"
+                f"â€¢ **Rapport** : Le panier en succursale est **9 fois supÃ©rieur** Ã  celui d'une cafÃ©tÃ©ria."
             )
 
-    # 4b. Détection Churn & Notifications Push Agent IA Fidness
+    # 4b. DÃ©tection Churn & Notifications Push Agent IA Fidness
     if any(k in q for k in ["churn", "sensible", "revien", "reviendra", "part", "push", "recommandation", "retention"]):
         return (
-            "🚨 **Diagnostic Anti-Churn & Recommandations Push — Chatbot Pro BONDIN**\n\n"
-            "• **Détection Prédictive** : **22 Clientes Sensibles Prioritaires** identifiées sur PostgreSQL 17.7 (CA exposé : **4 786,250 TND**, **15 589 points dormants**).\n"
-            "• 🔴 **Critiques (« Ne reviendront plus » > 88% Churn)** : **12 clientes** en abandon imminent :\n"
-            "  1. **Wièm Dkhaïlia** (Gafsa) : 60j inactivité (87 visites, 560,85 TND, 1 431 pts) • *Push VIP +150 pts*\n"
-            "  2. **Amira Baaziz** (Gafsa) : 50j inactivité (56 visites, 804,30 TND, 2 933 pts) • *Cadeau Prestige*\n"
-            "  3. **Sarra Ben Saad** (Menzah VI) : 64j inactivité (348,20 TND, 1 362 pts) • *Dégustation Arabica +100 pts*\n"
-            "  4. **Mouna Lakhoua** (La Marsa) : 100j inactivité (35 visites, 213,90 TND) • *Café Offert +100 pts*\n"
+            "ðŸš¨ **Diagnostic Anti-Churn & Recommandations Push â€” Chatbot Pro BONDIN**\n\n"
+            "â€¢ **DÃ©tection PrÃ©dictive** : **22 Clientes Sensibles Prioritaires** identifiÃ©es sur PostgreSQL 17.7 (CA exposÃ© : **4 786,250 TND**, **15 589 points dormants**).\n"
+            "â€¢ ðŸ”´ **Critiques (Â« Ne reviendront plus Â» > 88% Churn)** : **12 clientes** en abandon imminent :\n"
+            "  1. **WiÃ¨m DkhaÃ¯lia** (Gafsa) : 60j inactivitÃ© (87 visites, 560,85 TND, 1 431 pts) â€¢ *Push VIP +150 pts*\n"
+            "  2. **Amira Baaziz** (Gafsa) : 50j inactivitÃ© (56 visites, 804,30 TND, 2 933 pts) â€¢ *Cadeau Prestige*\n"
+            "  3. **Sarra Ben Saad** (Menzah VI) : 64j inactivitÃ© (348,20 TND, 1 362 pts) â€¢ *DÃ©gustation Arabica +100 pts*\n"
+            "  4. **Mouna Lakhoua** (La Marsa) : 100j inactivitÃ© (35 visites, 213,90 TND) â€¢ *CafÃ© Offert +100 pts*\n"
             "  5. **Manel Alaya, Oumaima Ferjani, Farah Yezza, Donia Ben Mrad...**\n"
-            "• 🟠 **Décrochage Élevé (74% - 85%)** : **7 clientes** (Rakia Jawali 78%, Khawla Henchiri 84%, Oumaima Shili 82%, Hayet Ouni 76%...).\n"
-            "• 🟡 **En Vigilance (60% - 70%)** : **3 clientes** (Meha Thabouti, Salma Bahloul, Rabeb Tissaoui).\n\n"
-            "📲 **Campagnes Push Ciblées Recommandées** :\n"
-            "• Scénario 1 (Critique) : Code promo `FIDNESS_VIP150` & `FIDNESS_SAVE100` (Envoi optimal : Mardi/Jeudi 08h30).\n"
-            "• Scénario 2 (Décrochage) : Code promo `FIDNESS_DOUBLE75` (Points x2 Week-end, Vendredi 16h30).\n\n"
-            "👉 *Vous pouvez déclencher l'envoi direct de ces notifications push depuis l'onglet « 02 • Agent IA Fidness ».*"
+            "â€¢ ðŸŸ  **DÃ©crochage Ã‰levÃ© (74% - 85%)** : **7 clientes** (Rakia Jawali 78%, Khawla Henchiri 84%, Oumaima Shili 82%, Hayet Ouni 76%...).\n"
+            "â€¢ ðŸŸ¡ **En Vigilance (60% - 70%)** : **3 clientes** (Meha Thabouti, Salma Bahloul, Rabeb Tissaoui).\n\n"
+            "ðŸ“² **Campagnes Push CiblÃ©es RecommandÃ©es** :\n"
+            "â€¢ ScÃ©nario 1 (Critique) : Code promo `FIDNESS_VIP150` & `FIDNESS_SAVE100` (Envoi optimal : Mardi/Jeudi 08h30).\n"
+            "â€¢ ScÃ©nario 2 (DÃ©crochage) : Code promo `FIDNESS_DOUBLE75` (Points x2 Week-end, Vendredi 16h30).\n\n"
+            "ðŸ‘‰ *Vous pouvez dÃ©clencher l'envoi direct de ces notifications push depuis l'onglet Â« 02 â€¢ Agent IA Fidness Â».*"
         )
 
     # 5. Base CRM / Inscrits / Actifs / Churn
     if any(k in q for k in ["client", "adherent", "inscrit", "crm", "activation", "churn", "inactif"]):
         nb_churn = int(c[c["Recence_Jours"] > 60]["ID_Client_Hache"].nunique()) if not c.empty and "Recence_Jours" in c.columns else 13
         return (
-            f"👥 **Analyse de la Base Adhérents CRM (PostgreSQL Live)**\n\n"
-            f"• **Total Inscrits Application** : **{total_inscrits:,} comptes réels** dans `public.user`.\n"
-            f"• **Clients Actifs (≥ 1 scan)** : **{clients_actifs:,} membres** ayant scanné leur QR Code.\n"
-            f"• **Taux d'Activation Global** : **{round(clients_actifs/total_inscrits*100, 1)}%**.\n"
-            f"• **Clients en Risque de Churn (> 60j)** : **{nb_churn} adhérents sous alerte**.\n"
-            f"• **Inactifs à Convertir** : {total_inscrits - clients_actifs:,} comptes enregistrés n'ont pas encore acheté."
+            f"ðŸ‘¥ **Analyse de la Base AdhÃ©rents CRM (PostgreSQL Live)**\n\n"
+            f"â€¢ **Total Inscrits Application** : **{total_inscrits:,} comptes rÃ©els** dans `public.user`.\n"
+            f"â€¢ **Clients Actifs (â‰¥ 1 scan)** : **{clients_actifs:,} membres** ayant scannÃ© leur QR Code.\n"
+            f"â€¢ **Taux d'Activation Global** : **{round(clients_actifs/total_inscrits*100, 1)}%**.\n"
+            f"â€¢ **Clients en Risque de Churn (> 60j)** : **{nb_churn} adhÃ©rents sous alerte**.\n"
+            f"â€¢ **Inactifs Ã  Convertir** : {total_inscrits - clients_actifs:,} comptes enregistrÃ©s n'ont pas encore achetÃ©."
         )
 
     # 6. Dette & Points
@@ -1807,12 +1810,12 @@ def query_postgres_engine(question, store):
         pts_solde = pts_earn - pts_burn
         dette_tnd = round(pts_solde * 0.010, 3)
         return (
-            f"💰 **Bilan des Points & Dette Financière (PostgreSQL Live)**\n\n"
-            f"• **Dette Provisionnée au Bilan** : **{dette_tnd:,.3f} TND** (1 point = 0,010 TND).\n"
-            f"• **Solde de Points en Circulation** : **{pts_solde:,} points** en attente d'utilisation.\n"
-            f"• **Points Distribués (Earn)** : **{pts_earn:,} points** crédités lors des achats.\n"
-            f"• **Points Consommés (Burn)** : **{pts_burn:,} points** échangés contre des récompenses.\n"
-            f"• **Ratio Earn / Burn** : **{round(pts_burn/pts_earn*100, 1)}%** (équilibre modèle respecté)."
+            f"ðŸ’° **Bilan des Points & Dette FinanciÃ¨re (PostgreSQL Live)**\n\n"
+            f"â€¢ **Dette ProvisionnÃ©e au Bilan** : **{dette_tnd:,.3f} TND** (1 point = 0,010 TND).\n"
+            f"â€¢ **Solde de Points en Circulation** : **{pts_solde:,} points** en attente d'utilisation.\n"
+            f"â€¢ **Points DistribuÃ©s (Earn)** : **{pts_earn:,} points** crÃ©ditÃ©s lors des achats.\n"
+            f"â€¢ **Points ConsommÃ©s (Burn)** : **{pts_burn:,} points** Ã©changÃ©s contre des rÃ©compenses.\n"
+            f"â€¢ **Ratio Earn / Burn** : **{round(pts_burn/pts_earn*100, 1)}%** (Ã©quilibre modÃ¨le respectÃ©)."
         )
 
     # 7. Magasins globaux / classement
@@ -1820,261 +1823,103 @@ def query_postgres_engine(question, store):
         top_sp = vm.groupby("Nom_Magasin")["Montant_TND"].sum().sort_values(ascending=False).head(5)
         lines = [f"  {idx+1}. **{name}** : {val:,.2f} TND" for idx, (name, val) in enumerate(top_sp.items())]
         return (
-            f"🏬 **Top 5 des Points de Vente BONDIN par Chiffre d'Affaires**\n\n" +
+            f"ðŸ¬ **Top 5 des Points de Vente BONDIN par Chiffre d'Affaires**\n\n" +
             "\n".join(lines) +
-            f"\n\n• **Leader Absolu** : La **Succursale Le Kef** domine le réseau avec plus de 27 900 TND."
+            f"\n\nâ€¢ **Leader Absolu** : La **Succursale Le Kef** domine le rÃ©seau avec plus de 27 900 TND."
         )
 
-    # 7a. Comparatif Typologies : Succursales vs Cafétérias
-    if ("succursale" in q and ("cafeteria" in q or "cafétéria" in q)) or any(w in q for w in ["comparatif", "comparaison", "difference", "différence"]):
+    # 7a. Comparatif Typologies : Succursales vs CafÃ©tÃ©rias
+    if ("succursale" in q and ("cafeteria" in q or "cafÃ©tÃ©ria" in q)) or any(w in q for w in ["comparatif", "comparaison", "difference", "diffÃ©rence"]):
         return (
-            "⚖️ **Comparatif Stratégique : Succursales vs Cafétérias BONDIN (PostgreSQL Live)**\n\n"
-            "• 🏬 **Succursales (Vente en Gros B2B)** :\n"
-            "  - **Part de Marché** : **72,2% du CA total (114 545 TND)** sur 2 933 scans.\n"
-            "  - **Panier Moyen (AOV)** : **37,62 TND** (commandes par sacs de café en grains et moulu de tradition).\n"
+            "âš–ï¸ **Comparatif StratÃ©gique : Succursales vs CafÃ©tÃ©rias BONDIN (PostgreSQL Live)**\n\n"
+            "â€¢ ðŸ¬ **Succursales (Vente en Gros B2B)** :\n"
+            "  - **Part de MarchÃ©** : **72,2% du CA total (114 545 TND)** sur 2 933 scans.\n"
+            "  - **Panier Moyen (AOV)** : **37,62 TND** (commandes par sacs de cafÃ© en grains et moulu de tradition).\n"
             "  - **Top 1 Magasin** : Succursale Le Kef (**27 924,12 TND**).\n\n"
-            "• ☕ **Cafétérias (Détail & Salons)** :\n"
-            "  - **Part de Marché** : **27,8% du CA total (44 104 TND)** sur 10 563 scans.\n"
+            "â€¢ â˜• **CafÃ©tÃ©rias (DÃ©tail & Salons)** :\n"
+            "  - **Part de MarchÃ©** : **27,8% du CA total (44 104 TND)** sur 10 563 scans.\n"
             "  - **Panier Moyen (AOV)** : **4,20 TND** (consommation quotidienne au comptoir : espressos).\n"
-            "  - **Top 1 Magasin** : Cafétéria Gafsa Ville (**12 058,40 TND**, record d'affluence avec 3 109 scans).\n\n"
-            "• **Rapport Clé** : Le panier moyen d'une succursale est **9 fois supérieur** à celui d'une cafétéria."
+            "  - **Top 1 Magasin** : CafÃ©tÃ©ria Gafsa Ville (**12 058,40 TND**, record d'affluence avec 3 109 scans).\n\n"
+            "â€¢ **Rapport ClÃ©** : Le panier moyen d'une succursale est **9 fois supÃ©rieur** Ã  celui d'une cafÃ©tÃ©ria."
         )
 
-    # 7b. Gammes de Produits & Café
+    # 7b. Gammes de Produits & CafÃ©
     tokens = q.split()
-    if (any(k in q for k in ["produit", "gamme", "moulu", "grain", "arabica", "boisson", "torrefie", "torréfié"]) or any(t in tokens for t in ["cafe", "café", "cafes", "cafés"])) and not ("cafeteria" in q or "cafétéria" in q):
+    if (any(k in q for k in ["produit", "gamme", "moulu", "grain", "arabica", "boisson", "torrefie", "torrÃ©fiÃ©"]) or any(t in tokens for t in ["cafe", "cafÃ©", "cafes", "cafÃ©s"])) and not ("cafeteria" in q or "cafÃ©tÃ©ria" in q):
         return (
-            "☕ **Performance Commerciale par Gamme de Café BONDIN (PostgreSQL Live)**\n\n"
-            "• 🥇 **Café Torréfié / Qualité Supérieure** : **76 279,00 TND (49,0% du CA)** - Référence historique numéro 1.\n"
-            "• 🥈 **Café Torréfié / 100% Arabica Lavé** : **37 813,00 TND (24,3% du CA)** - Préférence marquée des Succursales B2B.\n"
-            "• 🥉 **Cafés & Boissons Chaudes Comptoir** : **25 323,00 TND (16,3% du CA)** - Cœur de l'activité Cafétérias.\n"
-            "• 4. **Gâteaux & Pâtisseries Prémium** : **9 827,00 TND (6,3% du CA)**.\n"
-            "• 5. **Boissons Fraîches & Jus** : **6 472,00 TND (4,1% du CA)**."
+            "â˜• **Performance Commerciale par Gamme de CafÃ© BONDIN (PostgreSQL Live)**\n\n"
+            "â€¢ ðŸ¥‡ **CafÃ© TorrÃ©fiÃ© / QualitÃ© SupÃ©rieure** : **76 279,00 TND (49,0% du CA)** - RÃ©fÃ©rence historique numÃ©ro 1.\n"
+            "â€¢ ðŸ¥ˆ **CafÃ© TorrÃ©fiÃ© / 100% Arabica LavÃ©** : **37 813,00 TND (24,3% du CA)** - PrÃ©fÃ©rence marquÃ©e des Succursales B2B.\n"
+            "â€¢ ðŸ¥‰ **CafÃ©s & Boissons Chaudes Comptoir** : **25 323,00 TND (16,3% du CA)** - CÅ“ur de l'activitÃ© CafÃ©tÃ©rias.\n"
+            "â€¢ 4. **GÃ¢teaux & PÃ¢tisseries PrÃ©mium** : **9 827,00 TND (6,3% du CA)**.\n"
+            "â€¢ 5. **Boissons FraÃ®ches & Jus** : **6 472,00 TND (4,1% du CA)**."
         )
 
     # 7c. Grossistes B2B & Retours Ventes
     if any(k in q for k in ["grossiste", "b2b", "suspect", "revendeur", "professionnel", "gros volume"]):
         return (
-            "⚡ **Détection des Profils Grossistes B2B & Distribution**\n\n"
-            "• **Comptes Détectés** : **17 profils majeurs** dépassant le seuil de 1 500 TND d'achats.\n"
-            "• **Poids Économique** : Ils génèrent **77,3% du CA total des Succursales**.\n"
-            "• **Paniers Moyens** : De 150 TND à 1 200 TND par passage (achats de sacs de café en grains et moulu de tradition).\n"
-            "• **Recommandation** : Convention B2B dédiée pour préserver l'équilibre du programme B2C."
+            "âš¡ **DÃ©tection des Profils Grossistes B2B & Distribution**\n\n"
+            "â€¢ **Comptes DÃ©tectÃ©s** : **17 profils majeurs** dÃ©passant le seuil de 1 500 TND d'achats.\n"
+            "â€¢ **Poids Ã‰conomique** : Ils gÃ©nÃ¨rent **77,3% du CA total des Succursales**.\n"
+            "â€¢ **Paniers Moyens** : De 150 TND Ã  1 200 TND par passage (achats de sacs de cafÃ© en grains et moulu de tradition).\n"
+            "â€¢ **Recommandation** : Convention B2B dÃ©diÃ©e pour prÃ©server l'Ã©quilibre du programme B2C."
         )
 
     # 7d. Segmentation RFM & Pareto
     if any(k in q for k in ["rfm", "segment", "pareto", "vip", "champion", "80 20", "20 80"]):
         return (
-            "👑 **Segmentation RFM des Clients & Validation Pareto (80/20)**\n\n"
-            "• 👑 **Champions VIP** : **229 clients (29,8% des actifs)** génèrent **81,4% du CA total** (règle 80/20 vérifiée).\n"
-            "• ☕ **Consommateurs Réguliers** : **170 clients** représentant 10% du CA.\n"
-            "• 🎯 **Consommateurs Occasionnels** : **141 clients**.\n"
-            "• ⚠️ **Risque de Décrochage (Churn)** : **13 clients sous alerte prioritaire**."
+            "ðŸ‘‘ **Segmentation RFM des Clients & Validation Pareto (80/20)**\n\n"
+            "â€¢ ðŸ‘‘ **Champions VIP** : **229 clients (29,8% des actifs)** gÃ©nÃ¨rent **81,4% du CA total** (rÃ¨gle 80/20 vÃ©rifiÃ©e).\n"
+            "â€¢ â˜• **Consommateurs RÃ©guliers** : **170 clients** reprÃ©sentant 10% du CA.\n"
+            "â€¢ ðŸŽ¯ **Consommateurs Occasionnels** : **141 clients**.\n"
+            "â€¢ âš ï¸ **Risque de DÃ©crochage (Churn)** : **13 clients sous alerte prioritaire**."
         )
 
-    # 7e. Vouchers & Récompenses Catalogue
+    # 7e. Vouchers & RÃ©compenses Catalogue
     if any(k in q for k in ["voucher", "recompense", "cadeau", "catalogue", "tasse", "mug", "sac", "lot"]):
         return (
-            "🎁 **Palmarès des Récompenses & Vouchers Débloqués (290 Vouchers)**\n\n"
-            "• 🥇 **Mug BO PFID (600 pts)** : **89 retraits** (Top 1)\n"
-            "• 🥈 **Mug Isotherme BO PFID (1 550 pts)** : **77 retraits** (Forte demande VIP)\n"
-            "• 🥉 **Porte-clés BO PFID (150 pts)** : **63 retraits**\n"
-            "• 4. **Bougie FTC BO PFID (2 200 pts)** : **24 retraits**\n"
-            "• 5. **Sac Isotherme & Casquette** : **29 retraits**\n"
-            "• **Tension Logistique** : Surveillance accrue sur les stocks de Mugs Isothermes."
+            "ðŸŽ **PalmarÃ¨s des RÃ©compenses & Vouchers DÃ©bloquÃ©s (290 Vouchers)**\n\n"
+            "â€¢ ðŸ¥‡ **Mug BO PFID (600 pts)** : **89 retraits** (Top 1)\n"
+            "â€¢ ðŸ¥ˆ **Mug Isotherme BO PFID (1 550 pts)** : **77 retraits** (Forte demande VIP)\n"
+            "â€¢ ðŸ¥‰ **Porte-clÃ©s BO PFID (150 pts)** : **63 retraits**\n"
+            "â€¢ 4. **Bougie FTC BO PFID (2 200 pts)** : **24 retraits**\n"
+            "â€¢ 5. **Sac Isotherme & Casquette** : **29 retraits**\n"
+            "â€¢ **Tension Logistique** : Surveillance accrue sur les stocks de Mugs Isothermes."
         )
 
     # 7f. Parrainage & Filleuls
     if any(k in q for k in ["parrain", "filleul", "ambassadeur", "viral"]):
         return (
-            "🤝 **Programme de Parrainage & Viralité Réseau**\n\n"
-            "• **Invitations Envoyées** : **206 parrainages** initiés par 39 parrains actifs.\n"
-            "• **Filleuls Convertis** : **10 nouveaux membres** avec 1er scan validé.\n"
-            "• **CA Incrémental Filleuls** : **3 189,52 TND** générés pour BONDIN.\n"
-            "• **Top Ambassadeur Star** : `CLI_F848366F47` avec **128 filleuls invités**, 6 convertis et 1 945,20 TND de CA généré !"
+            "ðŸ¤ **Programme de Parrainage & ViralitÃ© RÃ©seau**\n\n"
+            "â€¢ **Invitations EnvoyÃ©es** : **206 parrainages** initiÃ©s par 39 parrains actifs.\n"
+            "â€¢ **Filleuls Convertis** : **10 nouveaux membres** avec 1er scan validÃ©.\n"
+            "â€¢ **CA IncrÃ©mental Filleuls** : **3 189,52 TND** gÃ©nÃ©rÃ©s pour BONDIN.\n"
+            "â€¢ **Top Ambassadeur Star** : `CLI_F848366F47` avec **128 filleuls invitÃ©s**, 6 convertis et 1 945,20 TND de CA gÃ©nÃ©rÃ© !"
         )
 
-    # 8. Réponse générale contextualisée
+    # 8. RÃ©ponse gÃ©nÃ©rale contextualisÃ©e
     return (
-        f"📊 **Synthèse Décisionnelle BONDIN × FIDNESS (PostgreSQL Live)**\n\n"
-        f"• **Chiffre d'Affaires Total** : **{ca_tot:,.2f} TND** sur **{nb_scans:,} scans certifiés**.\n"
-        f"• **Panier Moyen** : **{aov:.3f} TND** (Succursales: 37,62 TND / Cafétérias: 4,20 TND).\n"
-        f"• **Base Clients** : **{total_inscrits:,} inscrits CRM** dont **{clients_actifs:,} actifs**.\n"
-        f"• **Top Magasin** : Succursale Le Kef.\n\n"
-        f"💡 *Vous pouvez poser une question précise sur un magasin (ex: « Stats Le Kef »), un client (ex: « Top acheteur »), un mois (ex: « Ventes août ») ou la dette.*"
+        f"ðŸ“Š **SynthÃ¨se DÃ©cisionnelle BONDIN Ã— FIDNESS (PostgreSQL Live)**\n\n"
+        f"â€¢ **Chiffre d'Affaires Total** : **{ca_tot:,.2f} TND** sur **{nb_scans:,} scans certifiÃ©s**.\n"
+        f"â€¢ **Panier Moyen** : **{aov:.3f} TND** (Succursales: 37,62 TND / CafÃ©tÃ©rias: 4,20 TND).\n"
+        f"â€¢ **Base Clients** : **{total_inscrits:,} inscrits CRM** dont **{clients_actifs:,} actifs**.\n"
+        f"â€¢ **Top Magasin** : Succursale Le Kef.\n\n"
+        f"ðŸ’¡ *Vous pouvez poser une question prÃ©cise sur un magasin (ex: Â« Stats Le Kef Â»), un client (ex: Â« Top acheteur Â»), un mois (ex: Â« Ventes aoÃ»t Â») ou la dette.*"
     )
 
 @app.route("/api/rag/chat", methods=["POST"])
 @app.route("/api/chat", methods=["POST"])
 def api_rag_chat():
-    """Moteur RAG Hybride Haute Disponibilité : Gemini 3.5 Flash + Moteur Analytique PostgreSQL 17.7."""
-    data = request.get_json() or {}
+    """RAG temps rÃ©el : retrieval SQL live sur les tables PostgreSQL (api/retrieval.py) puis gÃ©nÃ©ration Groq -> Gemini."""
+    data = request.get_json(silent=True) or {}
     user_query = (data.get("question") or data.get("query") or data.get("message") or "").strip()
-
-    if not user_query:
-        return jsonify({
-            "success": True,
-            "answer": "👋 Bonjour ! Je suis votre Copilot Décisionnel RAG (ENA W BONDIN × FIDNESS). Posez-moi une question sur le CA, les magasins, les clients ou les points.",
-            "sources": ["PostgreSQL 17.7 Production Live"]
-        })
-
-    # 0. Recherche directe d'un client par son nom (profil 360° PostgreSQL)
-    client_profile = lookup_client_by_name(user_query)
-    if client_profile:
-        return jsonify({
-            "success": True,
-            "question": user_query,
-            "answer": client_profile,
-            "response": client_profile,
-            "sources": ["PostgreSQL 17.7 Live × Profil Client"],
-            "sql": None,
-            "filters": {"customer_lookup": True}
-        })
-
-    # 1. Calcul immédiat de l'ancrage réel PostgreSQL
-    rep_db = query_postgres_engine(user_query, store)
-
-    # 1b. Si la question cible un mois ou la dernière transaction, réponse analytique instantanée certifiée (Zero-Latency)
-    m_code = detect_month_code(user_query)
-    is_recent_scan = any(k in user_query.lower() for k in ["dernier scan", "derniere scan", "dernier ticket", "derniere transaction", "dernier achat", "quand la derniere", "quand le dernier", "date de la derniere", "date du dernier"])
-    if m_code or is_recent_scan:
-        return jsonify({
-            "success": True,
-            "question": user_query,
-            "answer": rep_db,
-            "response": rep_db,
-            "sources": ["PostgreSQL 17.7 Live × " + ("Performance Mensuelle" if m_code else "Horodatage Caisse")],
-            "sql": None,
-            "filters": {"month": m_code} if m_code else {"metric": "recence"}
-        })
-
-    # 1b. Self-Querying + Text-to-SQL sécurisé (lecture seule, company_id = 2)
     try:
-        sq_filters, sq_res, sq_mode = run_text_to_sql(user_query)
-    except Exception as _e:
-        sq_filters, sq_res, sq_mode = {}, {'success': False, 'columns': [], 'rows': [], 'sql': ''}, "Text-to-SQL"
-    if sq_res.get('success'):
-        sql_table = format_sql_results_as_markdown(sq_res['columns'], sq_res['rows'])
-        sql_block = (f"=== RÉSULTATS SQL SÉCURISÉ EN DIRECT ({sq_mode}) ===\n"
-                     f"Filtres métadonnées détectés : {json.dumps(sq_filters, ensure_ascii=False)}\n"
-                     f"Requête exécutée : {sq_res['sql']}\n{sql_table}")
-    else:
-        sql_table = ""
-        sql_block = ""
-
-    # Contexte décisionnel exhaustif extrait de PostgreSQL 17.7
-    v = store.ventes
-    m = store.magasins
-    c = store.clients
-    vm = v.merge(m, on="ID_Magasin", how="left") if not v.empty and not m.empty else pd.DataFrame()
-    ca_tot = float(v["Montant_TND"].sum()) if not v.empty else 158680.42
-    nb_scans = int(len(v))
-    aov = ca_tot / nb_scans if nb_scans > 0 else 11.755
-    total_inscrits = int(len(c)) if not c.empty else 2729
-    clients_actifs = int(v["ID_Client_Hache"].nunique()) if not v.empty else 767
-
-    # Tous les magasins avec classement
-    store_lines = []
-    if not vm.empty:
-        store_agg = vm.groupby(["Nom_Magasin", "Type_Etablissement"])["Montant_TND"].agg(['sum', 'count']).sort_values('sum', ascending=False)
-        for i, ((nom, typ), row) in enumerate(store_agg.iterrows(), 1):
-            store_lines.append(f"{i}. {nom} ({typ}) : {row['sum']:,.2f} TND sur {row['count']} scans")
-    store_summary = "\n".join(store_lines[:15]) if store_lines else "1. Succursale Le Kef : 27 924 TND"
-
-        # Ventes par mois avec libellé en clair (Français + code ISO)
-    month_lines = []
-    if not v.empty and 'Date' in v.columns:
-        v['Mois'] = v['Date'].astype(str).str[:7]
-        m_agg = v.groupby('Mois')["Montant_TND"].agg(['sum', 'count']).sort_values('sum', ascending=False)
-        for m_val, row in m_agg.iterrows():
-            m_code_part = m_val.split("-")[1] if "-" in m_val else "00"
-            m_label = _MOIS_FR_MAP.get(m_code_part, m_val)
-            month_lines.append(f"- {m_label} {m_val[:4]} ({m_val}) : {row['sum']:,.2f} TND sur {int(row['count']):,} scans")
-    month_summary = "\n".join(month_lines) if month_lines else "Août 2026 : 47 772.97 TND" 
-
-    # Top clients acheteurs
-    cli_lines = []
-    if not v.empty and 'ID_Client_Hache' in v.columns:
-        c_agg = v.groupby('ID_Client_Hache')["Montant_TND"].agg(['sum', 'count']).sort_values('sum', ascending=False).head(5)
-        for i, (cid, row) in enumerate(c_agg.iterrows(), 1):
-            cli_lines.append(f"{i}. Client {cid[:12]}... : {row['sum']:,.2f} TND ({row['count']} achats)")
-    cli_summary = "\n".join(cli_lines) if cli_lines else "Top client : 6 591.67 TND"
-
-    last_v = v.sort_values(by=['Date', 'Heure'], ascending=[False, False]).iloc[0] if not v.empty else None
-    last_date = str(last_v['Date']) if last_v is not None else "2026-10-25"
-    last_time = str(last_v['Heure']) if last_v is not None else "17:59:00"
-    last_ticket = str(last_v['Ticket']) if last_v is not None else "bondin6219262"
-    last_amount = float(last_v['Montant_TND']) if last_v is not None else 9.0
-    last_st_id = int(last_v['ID_Magasin']) if last_v is not None else 37
-    last_store_name = m[m['ID_Magasin'] == last_st_id]['Nom_Magasin'].values[0] if not m.empty and last_st_id in m['ID_Magasin'].values else "Cafétéria Tunis La Marsa"
-
-    dynamic_context = f"""
-=== SYNTHÈSE GLOBALE RÉSEAU ===
-- Chiffre d'Affaires Total : {ca_tot:,.2f} TND sur {nb_scans:,} scans certifiés.
-- Panier Moyen Global : {aov:.3f} TND (Succursales B2B : 37,62 TND / Cafétérias détail : 4,20 TND).
-
-=== DERNIÈRE TRANSACTION ENREGISTRÉE EN TEMPS RÉEL (POSTGRESQL 17.7) ===
-- Date & Heure du Tout Dernier Scan : {last_date} à {last_time} (Aujourd'hui)
-- Numéro de Ticket Caisse : #{last_ticket}
-- Point de Vente : {last_store_name}
-- Montant réglé : {last_amount:.3f} TND
-- Règle stricte : Toutes les transactions unitaires sont bien horodatées à la seconde dans PostgreSQL.
-- Adhérents CRM : {total_inscrits:,} inscrits dans public.user, {clients_actifs:,} clients actifs fidélité.
-- Dette Bilan Points : 2 677,450 TND (267 745 points en circulation, valeur 1 pt = 0.010 TND).
-- Programme Fidélité : 532 645 pts émis (Earn), 264 900 pts consommés (Burn en 290 vouchers).
-- Gammes Café : Café Torréfié Qualité Supérieure (76 279 TND - 49%), 100% Arabica Lavé (37 813 TND - 24,3%), Boissons Chaudes Cafétérias (25 323 TND - 16,3%).
-
-=== PERFORMANCE COMPLÈTE MAGASINS (23 PDV) ===
-{store_summary}
-
-=== VENTES PAR MOIS (HISTORIQUE ET RECORD) ===
-{month_summary}
-
-=== TOP 5 CLIENTS (GROS CONSOMMATEURS B2B) ===
-{cli_summary}
-
-=== ANALYSE CIBLÉE SUR LA QUESTION DE L'UTILISATEUR ===
-{rep_db}
-
-{sql_block}
-"""
-
-    # 2. Interrogation prioritaire Groq LPU Ultra-Rapide (GPT-OSS 120B / 20B)
-    rep_groq = call_groq_rag(user_query, dynamic_context, timeout=3.5)
-    if rep_groq:
-        return jsonify({
-            "success": True,
-            "question": user_query,
-            "answer": rep_groq,
-            "response": rep_groq,
-            "sources": ["PostgreSQL 17.7 Live × Groq LPU (GPT-OSS 120B)"],
-            "sql": sq_res.get("sql"),
-            "filters": sq_filters
-        })
-
-    # 3. Relais de secours Google Gemini
-    rep_gemini = call_gemini_rag(user_query, dynamic_context, timeout=4.5)
-    if rep_gemini:
-        return jsonify({
-            "success": True,
-            "question": user_query,
-            "answer": rep_gemini,
-            "response": rep_gemini,
-            "sources": ["PostgreSQL 17.7 Live × Gemini"],
-            "sql": sq_res.get("sql"),
-            "filters": sq_filters
-        })
-
-    # 3. Fallback immédiat sur le Moteur Analytique PostgreSQL (Zero-Latency)
-    return jsonify({
-        "success": True,
-        "question": user_query,
-        "answer": rep_db + (("\n\n📊 **Données SQL en direct**\n\n" + sql_table) if sql_table else ""),
-        "response": rep_db + (("\n\n📊 **Données SQL en direct**\n\n" + sql_table) if sql_table else ""),
-        "sources": ["PostgreSQL 17.7 Production Live"],
-        "sql": sq_res.get("sql"),
-        "filters": sq_filters
-    })
+        return jsonify(rag_retrieval.answer(user_query))
+    except Exception as e:
+        print(f"[api_rag_chat] {e}")
+        return jsonify({"success": False, "answer": "Le moteur de retrieval est momentanÃ©ment indisponible, rÃ©essayez.",
+                        "response": "Le moteur de retrieval est momentanÃ©ment indisponible, rÃ©essayez.",
+                        "sources": ["PostgreSQL 17.7"], "error": str(e)})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8085))

@@ -1,7 +1,7 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-11-03 22:57:53",
+  "timestamp": "2026-11-03 23:11:50",
   "company_name": "BONDIN",
   "total_scans": 14352,
   "total_ca_tnd": 168917.56,
@@ -15,24 +15,24 @@
       "id": "CLI_01A1A350DB",
       "nom": "Mnari Eya",
       "date": "2026-11-03",
-      "tel": "Non renseigné",
+      "tel": "+216 26 264 119",
       "email": "eyamnari58@gmail.com",
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
       "id": "CLI_01A1A34F31",
       "nom": "Eya alrahmen Elmnari",
       "date": "2026-11-03",
-      "tel": "Non renseigné",
+      "tel": "Non renseignÃ©",
       "email": "eyaelmnari20032005@icloud.com",
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
@@ -44,7 +44,7 @@
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
@@ -56,7 +56,7 @@
       "magasin": "Cafétéria Tunis MENZAH VI",
       "achats": 1,
       "points": 4.8,
-      "segment": "Client Régulier",
+      "segment": "Client RÃ©gulier",
       "statut": "Actif"
     },
     {
@@ -68,7 +68,7 @@
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
@@ -80,7 +80,7 @@
       "magasin": "Succursale Tunis Menzah VI",
       "achats": 2,
       "points": 214.4,
-      "segment": "Client Régulier",
+      "segment": "Client RÃ©gulier",
       "statut": "Actif"
     },
     {
@@ -92,19 +92,19 @@
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
       "id": "CLI_01A1A0CBD1",
       "nom": "amine nour",
       "date": "2026-11-03",
-      "tel": "Non renseigné",
+      "tel": "Non renseignÃ©",
       "email": "khouloud.boussahaprof@yahoo.tn",
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
@@ -116,43 +116,43 @@
       "magasin": "Succursale Gafsa Ville",
       "achats": 8,
       "points": 480.7,
-      "segment": "Client Régulier",
+      "segment": "Client RÃ©gulier",
       "statut": "Actif"
     },
     {
       "id": "CLI_01A1A05B20",
       "nom": "emna kaabi",
       "date": "2026-11-03",
-      "tel": "Non renseigné",
+      "tel": "Non renseignÃ©",
       "email": "emnae1045@gmail.com",
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
       "id": "CLI_01A1A00E3B",
       "nom": "Ismail Sahli",
       "date": "2026-11-03",
-      "tel": "Non renseigné",
+      "tel": "Non renseignÃ©",
       "email": "52wm5kvs5t@privaterelay.appleid.com",
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
       "id": "CLI_01A1A00DC3",
       "nom": "Ismail Sahli",
       "date": "2026-11-03",
-      "tel": "Non renseigné",
+      "tel": "Non renseignÃ©",
       "email": "sahli.ismail7@gmail.com",
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
@@ -164,7 +164,7 @@
       "magasin": "Cafétéria Le Kef",
       "achats": 1,
       "points": 4.2,
-      "segment": "Client Régulier",
+      "segment": "Client RÃ©gulier",
       "statut": "Actif"
     },
     {
@@ -176,7 +176,7 @@
       "magasin": "Base Centrale ENA w BONDIN",
       "achats": 0,
       "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
+      "segment": "Inactif / Jamais scannÃ©",
       "statut": "Nouveau Membre"
     },
     {
@@ -188,7 +188,7 @@
       "magasin": "Succursale Tunis Espagne",
       "achats": 1,
       "points": 16.0,
-      "segment": "Client Régulier",
+      "segment": "Client RÃ©gulier",
       "statut": "Actif"
     }
   ],
@@ -203,44 +203,44 @@
     {
       "month": "2026-05",
       "scans": 11,
-      "ca": -7113.3,
+      "ca": 79.5,
       "ca_succ": 64.3,
-      "ca_cafe": -7177.6
+      "ca_cafe": 15.2
     },
     {
       "month": "2026-06",
       "scans": 1937,
-      "ca": -263605.19,
-      "ca_succ": -215047.59,
-      "ca_cafe": -48557.6
+      "ca": 15115.81,
+      "ca_succ": 8328.81,
+      "ca_cafe": 6787.0
     },
     {
       "month": "2026-07",
       "scans": 3209,
-      "ca": -114763.7,
-      "ca_succ": -47111.1,
-      "ca_cafe": -67652.6
+      "ca": 30544.85,
+      "ca_succ": 19476.25,
+      "ca_cafe": 11068.6
     },
     {
       "month": "2026-08",
       "scans": 3224,
-      "ca": -1206817.19,
-      "ca_succ": -1186292.79,
-      "ca_cafe": -20524.4
+      "ca": 47772.97,
+      "ca_succ": 37528.17,
+      "ca_cafe": 10244.8
     },
     {
       "month": "2026-09",
       "scans": 2868,
-      "ca": -110729.19,
-      "ca_succ": -67699.09,
-      "ca_cafe": -43030.1
+      "ca": 38220.71,
+      "ca_succ": 29302.81,
+      "ca_cafe": 8917.9
     },
     {
       "month": "2026-10",
       "scans": 2833,
-      "ca": -46078.2,
-      "ca_succ": -27191.6,
-      "ca_cafe": -18886.6
+      "ca": 34068.57,
+      "ca_succ": 25582.57,
+      "ca_cafe": 8486.0
     },
     {
       "month": "2026-11",
@@ -316,7 +316,7 @@
       "montant_tnd": 10.3,
       "points": 26.3,
       "date": "2026-11-03 19:12:08",
-      "magasin": "Cafétéria Tunis Libertéé",
+      "magasin": "Cafétéria Tunis LibertÃ©é",
       "client": "Mohamed Ben Khelifa"
     },
     {

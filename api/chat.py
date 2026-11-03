@@ -1,11 +1,11 @@
 import base64
 """
 Vercel Serverless Function : /api/chat et /api/rag/chat
-Copilot RAG Décisionnel Haute Disponibilité 100% Temps Réel PostgreSQL 17.7 (pg8000.native) :
-- Recherche Client Nominative 360° (lookup_client_by_name)
-- Détection tolérante des mois (septemeber, septembre, aout, octbre...) & calcul mensuel temps réel
-- Self-Querying (extract_metadata_filters) & Text-to-SQL Sécurisé Read-Only (company_id = 2)
-- Synthèse IA Google Gemini + Fallback Analytique PostgreSQL 17.7 Live
+Copilot RAG DÃ©cisionnel Haute DisponibilitÃ© 100% Temps RÃ©el PostgreSQL 17.7 (pg8000.native) :
+- Recherche Client Nominative 360Â° (lookup_client_by_name)
+- DÃ©tection tolÃ©rante des mois (septemeber, septembre, aout, octbre...) & calcul mensuel temps rÃ©el
+- Self-Querying (extract_metadata_filters) & Text-to-SQL SÃ©curisÃ© Read-Only (company_id = 2)
+- SynthÃ¨se IA Google Gemini + Fallback Analytique PostgreSQL 17.7 Live
 """
 
 import difflib
@@ -35,34 +35,34 @@ def normalize_rag_query(q):
         return ""
     q = unicodedata.normalize('NFD', q.lower())
     q = ''.join(c for c in q if unicodedata.category(c) != 'Mn')
-    for p in ["'", "-", "_", ",", ";", ".", "?", "!", ":", "(", ")", "/", '"', "«", "»", "•", "–"]:
+    for p in ["'", "-", "_", ",", ";", ".", "?", "!", ":", "(", ")", "/", '"', "Â«", "Â»", "â€¢", "â€“"]:
         q = q.replace(p, " ")
     return " ".join(q.split())
 
 
 _MOIS_FR_MAP = {
-    '01': 'Janvier', '02': 'Février', '03': 'Mars', '04': 'Avril',
-    '05': 'Mai', '06': 'Juin', '07': 'Juillet', '08': 'Août',
-    '09': 'Septembre', '10': 'Octobre', '11': 'Novembre', '12': 'Décembre'
+    '01': 'Janvier', '02': 'FÃ©vrier', '03': 'Mars', '04': 'Avril',
+    '05': 'Mai', '06': 'Juin', '07': 'Juillet', '08': 'AoÃ»t',
+    '09': 'Septembre', '10': 'Octobre', '11': 'Novembre', '12': 'DÃ©cembre'
 }
 
 
 def detect_month_code(text):
-    """Détecte le code mois (01 à 12) avec tolérance aux fautes de frappe et variantes anglais/français."""
+    """DÃ©tecte le code mois (01 Ã  12) avec tolÃ©rance aux fautes de frappe et variantes anglais/franÃ§ais."""
     t = (text or "").lower()
     exact_aliases = {
         'janvier': '01', 'jan': '01', 'janv': '01', 'january': '01',
-        'fevrier': '02', 'fev': '02', 'fevr': '02', 'feb': '02', 'february': '02', 'février': '02',
+        'fevrier': '02', 'fev': '02', 'fevr': '02', 'feb': '02', 'february': '02', 'fÃ©vrier': '02',
         'mars': '03', 'mar': '03', 'march': '03',
         'avril': '04', 'avr': '04', 'apr': '04', 'april': '04',
         'mai': '05', 'may': '05',
         'juin': '06', 'jun': '06', 'june': '06',
         'juillet': '07', 'jul': '07', 'july': '07', 'juil': '07',
-        'aout': '08', 'août': '08', 'aug': '08', 'august': '08',
+        'aout': '08', 'aoÃ»t': '08', 'aug': '08', 'august': '08',
         'septembre': '09', 'sep': '09', 'sept': '09', 'september': '09', 'septemeber': '09', 'septembr': '09',
         'octobre': '10', 'oct': '10', 'october': '10', 'octbre': '10', 'octobtr': '10', 'octobr': '10', 'octob': '10',
         'novembre': '11', 'nov': '11', 'november': '11',
-        'decembre': '12', 'dec': '12', 'december': '12', 'décembre': '12'
+        'decembre': '12', 'dec': '12', 'december': '12', 'dÃ©cembre': '12'
     }
     for alias, m in exact_aliases.items():
         if re.search(r'\b' + re.escape(alias) + r'\b', t):
@@ -70,7 +70,7 @@ def detect_month_code(text):
     canonical = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin',
                  'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre']
     stop_words = {'quelle', 'quel', 'quels', 'quelles', 'cette', 'celle', 'celles', 'ville', 'toutes', 'tous', 'pour', 'faire'}
-    for word in re.findall(r'[a-zà-ÿ]{4,}', normalize_rag_query(t)):
+    for word in re.findall(r'[a-zÃ -Ã¿]{4,}', normalize_rag_query(t)):
         if word in stop_words:
             continue
         matches = difflib.get_close_matches(word, canonical, n=1, cutoff=0.70)
@@ -81,7 +81,7 @@ def detect_month_code(text):
 
 
 # ========================================================
-# MODULE 1 : RECHERCHE CLIENT PAR NOM (PROFIL 360° POSTGRESQL LIVE)
+# MODULE 1 : RECHERCHE CLIENT PAR NOM (PROFIL 360Â° POSTGRESQL LIVE)
 # ========================================================
 _NAME_STOPWORDS = set("""qui est cest c est quel quelle quels quelles est-ce ce cet cette le la les un une des de du d l
 a au aux en et ou sur pour par avec sans dans chez moi donne donnez montre montrer affiche afficher dis dites cherche chercher
@@ -91,7 +91,7 @@ points solde total historique voir stats statistiques sont a-t-il""".split())
 
 
 def lookup_client_by_name(question):
-    """Retourne un profil client 360° formaté (markdown) si la question désigne un client par son nom, sinon None."""
+    """Retourne un profil client 360Â° formatÃ© (markdown) si la question dÃ©signe un client par son nom, sinon None."""
     raw = normalize_rag_query(question)
     words = re.findall(r"[a-z]{2,}", raw)
     if not words or len(words) > 8:
@@ -137,12 +137,12 @@ def lookup_client_by_name(question):
         rows = con.run(sql, **params)
         if not rows:
             return None
-        out = [f"👤 **Recherche client « {' '.join(tokens)} » — {len(rows)} profil(s) trouvé(s) (PostgreSQL 17.7 Live)**\n"]
+        out = [f"ðŸ‘¤ **Recherche client Â« {' '.join(tokens)} Â» â€” {len(rows)} profil(s) trouvÃ©(s) (PostgreSQL 17.7 Live)**\n"]
         for (uid, nom, created, last_act, nb, ca, pts, last_p, nv) in rows:
             ca = float(ca or 0)
             pts = float(pts or 0)
             out.append(f"**{nom}**")
-            out.append(f"• Inscription : **{created}** · Dernière activité : **{last_act or 'n/a'}**")
+            out.append(f"â€¢ Inscription : **{created}** Â· DerniÃ¨re activitÃ© : **{last_act or 'n/a'}**")
             if nb:
                 aov = ca / nb if nb else 0
                 try:
@@ -153,14 +153,14 @@ def lookup_client_by_name(question):
                     fav = ", ".join(f"{n} ({c})" for n, c in stores)
                 except Exception:
                     fav = "n/a"
-                out.append(f"• Achats : **{nb}** · CA cumulé : **{ca:,.2f} TND** · Panier moyen : **{aov:.2f} TND**".replace(",", " "))
-                out.append(f"• Points gagnés : **{pts:,.0f} pts** · Vouchers : **{nv}** · Dernier achat : **{str(last_p)[:16]}**".replace(",", " "))
-                out.append(f"• Magasins favoris : {fav}")
+                out.append(f"â€¢ Achats : **{nb}** Â· CA cumulÃ© : **{ca:,.2f} TND** Â· Panier moyen : **{aov:.2f} TND**".replace(",", " "))
+                out.append(f"â€¢ Points gagnÃ©s : **{pts:,.0f} pts** Â· Vouchers : **{nv}** Â· Dernier achat : **{str(last_p)[:16]}**".replace(",", " "))
+                out.append(f"â€¢ Magasins favoris : {fav}")
             else:
-                out.append(f"• Aucun achat enregistré (inscrit sans scan caisse) · Vouchers : **{nv}**")
+                out.append(f"â€¢ Aucun achat enregistrÃ© (inscrit sans scan caisse) Â· Vouchers : **{nv}**")
             out.append("")
         if len(rows) > 1:
-            out.append("💡 *Plusieurs profils correspondent : précisez le prénom et le nom complets pour cibler un client.*")
+            out.append("ðŸ’¡ *Plusieurs profils correspondent : prÃ©cisez le prÃ©nom et le nom complets pour cibler un client.*")
         return "\n".join(out)
     except Exception as e:
         print(f"[lookup_client_by_name Vercel] {e}")
@@ -174,7 +174,7 @@ def lookup_client_by_name(question):
 
 
 # ========================================================
-# MODULE 2 : SELF-QUERYING & TEXT-TO-SQL SÉCURISÉ
+# MODULE 2 : SELF-QUERYING & TEXT-TO-SQL SÃ‰CURISÃ‰
 # ========================================================
 def extract_metadata_filters(query):
     q = (query or "").lower()
@@ -186,7 +186,7 @@ def extract_metadata_filters(query):
     if 'succursale' in q and 'cafeteria' not in norm_q:
         filters['channel_type'] = 'Succursale'
     elif any(k in norm_q for k in ['cafeteria', 'salon', 'comptoir']) and 'succursale' not in q:
-        filters['channel_type'] = 'Cafétéria'
+        filters['channel_type'] = 'CafÃ©tÃ©ria'
 
     if any(k in norm_q for k in ['churn', 'abandon', 'sensible', 'inactif', 'inactives', 'reviendr', 'risque', 'dormant', 'attrition', 'perte', 'decrochage', 'sauver', '45']):
         filters['customer_segment'] = 'churn'
@@ -232,14 +232,14 @@ _SQL_FORBIDDEN = re.compile(
 
 def validate_and_sanitize_sql(sql_str):
     if not sql_str or not isinstance(sql_str, str):
-        return None, "Requête SQL vide."
+        return None, "RequÃªte SQL vide."
     cleaned = re.sub(r'```(?:sql)?', '', sql_str).strip().rstrip(';').strip()
     if ';' in cleaned:
-        return None, "Requêtes multiples interdites."
+        return None, "RequÃªtes multiples interdites."
     if not re.match(r'^(SELECT|WITH)\s', cleaned, re.IGNORECASE):
-        return None, "Seules les requêtes SELECT sont autorisées."
+        return None, "Seules les requÃªtes SELECT sont autorisÃ©es."
     if _SQL_FORBIDDEN.search(cleaned):
-        return None, "Opération DDL/DML non autorisée."
+        return None, "OpÃ©ration DDL/DML non autorisÃ©e."
     if '--' in cleaned or '/*' in cleaned:
         return None, "Commentaires SQL interdits."
     if not re.search(r'company_id\s*=\s*2\b', cleaned, re.IGNORECASE):
@@ -281,7 +281,7 @@ def _template_sql(question, f):
     chan = ""
     if f['channel_type'] == 'Succursale':
         chan = " AND sp.name ILIKE 'succursale%'"
-    elif f['channel_type'] == 'Cafétéria':
+    elif f['channel_type'] == 'CafÃ©tÃ©ria':
         chan = " AND sp.name ILIKE 'caf%'"
     if f['stores']:
         kw = re.sub(r'[^a-z]', '', f['stores'][0])
@@ -324,7 +324,7 @@ def _template_sql(question, f):
         )
     if f['channel_type'] or any(w in q for w in ['succursale', 'cafeteria', 'comparatif', 'typologie']):
         return (
-            "SELECT CASE WHEN sp.name ILIKE 'caf%' THEN 'Cafétéria' ELSE 'Succursale' END AS \"Canal\", "
+            "SELECT CASE WHEN sp.name ILIKE 'caf%' THEN 'CafÃ©tÃ©ria' ELSE 'Succursale' END AS \"Canal\", "
             'COUNT(p.id) AS "Transactions", ROUND(SUM(p.amount)/1000.0, 2) AS "CA_TND", '
             'ROUND(AVG(p.amount)/1000.0, 2) AS "Panier_Moyen_TND" FROM public.purchase p '
             'JOIN public.sell_points sp ON p.sell_point_id = sp.id '
@@ -356,10 +356,10 @@ def format_sql_results_as_markdown(cols, rows):
 
 
 # ========================================================
-# MODULE 3 : COLLECTE TEMPS RÉEL POSTGRESQL 17.7 (SANS PANDAS)
+# MODULE 3 : COLLECTE TEMPS RÃ‰EL POSTGRESQL 17.7 (SANS PANDAS)
 # ========================================================
 def fetch_live_postgres_snapshot(question, filters):
-    """Interroge PostgreSQL 17.7 en direct pour construire le contexte temps réel et la réponse analytique."""
+    """Interroge PostgreSQL 17.7 en direct pour construire le contexte temps rÃ©el et la rÃ©ponse analytique."""
     snap = {
         "ca_tot": 168397.27,
         "nb_scans": 14307,
@@ -368,7 +368,7 @@ def fetch_live_postgres_snapshot(question, filters):
         "total_inscrits": 2794,
         "last_date": "2026-11-03 12:30:00",
         "last_ticket": "bondin6219262",
-        "last_store": "Cafétéria Tunis La Marsa",
+        "last_store": "CafÃ©tÃ©ria Tunis La Marsa",
         "last_amount": 9.0,
         "last_pts": 22.6,
         "last_client": "Membre Ena w Bondin",
@@ -399,7 +399,7 @@ def fetch_live_postgres_snapshot(question, filters):
         if u_cnt and u_cnt[0]:
             snap["total_inscrits"] = int(u_cnt[0][0] or 2794)
 
-        # 2. Dernière transaction
+        # 2. DerniÃ¨re transaction
         last_rows = con.run(
             "SELECT p.ticket, p.created_at, COALESCE(sp.name, 'Magasin BONDIN'), COALESCE(p.amount,0)/1000.0, "
             "COALESCE(p.points,0), coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name), 'Membre Ena w Bondin') "
@@ -415,7 +415,7 @@ def fetch_live_postgres_snapshot(question, filters):
             snap["last_pts"] = float(lr[4] or 0)
             snap["last_client"] = str(lr[5])
 
-        # 3. Ventilation mensuelle complète
+        # 3. Ventilation mensuelle complÃ¨te
         m_rows = con.run(
             "SELECT TO_CHAR(created_at, 'YYYY-MM') AS m, COUNT(*), ROUND(SUM(amount)/1000.0, 2), "
             "ROUND(AVG(amount)/1000.0, 3), COUNT(DISTINCT user_id) "
@@ -430,7 +430,7 @@ def fetch_live_postgres_snapshot(question, filters):
                 "clients": int(mr[4])
             })
 
-        # Si un mois précis est filtré, récupérer son Top 3 magasins en direct
+        # Si un mois prÃ©cis est filtrÃ©, rÃ©cupÃ©rer son Top 3 magasins en direct
         if filters.get("date_filter"):
             tm = filters["date_filter"]
             tm_stores = con.run(
@@ -473,7 +473,7 @@ def fetch_live_postgres_snapshot(question, filters):
         for tc in tc_rows:
             snap["top_clients"].append((str(tc[0]), int(tc[1]), float(tc[2])))
 
-        # 6. Exécution du SQL ciblé pour la table markdown
+        # 6. ExÃ©cution du SQL ciblÃ© pour la table markdown
         tpl_sql = _template_sql(question, filters)
         sanitized, err = validate_and_sanitize_sql(tpl_sql)
         if not err:
@@ -492,7 +492,7 @@ def fetch_live_postgres_snapshot(question, filters):
 
 
 def build_analytical_answer(raw_question, snap, filters):
-    """Construit la réponse analytique certifiée à partir du snapshot PostgreSQL 17.7."""
+    """Construit la rÃ©ponse analytique certifiÃ©e Ã  partir du snapshot PostgreSQL 17.7."""
     q = (raw_question or "").lower()
     norm_q = normalize_rag_query(raw_question)
     words_q = set(re.findall(r'\w+', norm_q))
@@ -506,28 +506,28 @@ def build_analytical_answer(raw_question, snap, filters):
     # 0. Salutations
     if not norm_q or norm_q in ("bonjour", "salut", "hello", "aide", "help", "qui es tu"):
         return (
-            "👋 **Bonjour ! Je suis Chatbot Pro BONDIN (Studio IA v3.0 — PostgreSQL 17.7 Temps Réel).**\n\n"
-            f"Connecté en direct à votre entrepôt : **{ca_tot:,.2f} TND** de CA sur **{nb_scans:,} scans**, **{total_inscrits:,} membres Ena w Bondin** et **23 points de vente**.\n\n"
-            "💡 **Exemples de questions :**\n"
-            "• *« Amira Baaziz »* ou *« qui est Ahmed Najjar »* (Fiche client 360°)\n"
-            "• *« Le chiffre d'affaires de septembre »* (Bilan mensuel temps réel)\n"
-            "• *« Quelles sont les clientes à risque de churn ? »*\n"
-            "• *« Stats Succursale Le Kef »* ou *« Top magasins »*"
+            "ðŸ‘‹ **Bonjour ! Je suis Chatbot Pro BONDIN (Studio IA v3.0 â€” PostgreSQL 17.7 Temps RÃ©el).**\n\n"
+            f"ConnectÃ© en direct Ã  votre entrepÃ´t : **{ca_tot:,.2f} TND** de CA sur **{nb_scans:,} scans**, **{total_inscrits:,} membres Ena w Bondin** et **23 points de vente**.\n\n"
+            "ðŸ’¡ **Exemples de questions :**\n"
+            "â€¢ *Â« Amira Baaziz Â»* ou *Â« qui est Ahmed Najjar Â»* (Fiche client 360Â°)\n"
+            "â€¢ *Â« Le chiffre d'affaires de septembre Â»* (Bilan mensuel temps rÃ©el)\n"
+            "â€¢ *Â« Quelles sont les clientes Ã  risque de churn ? Â»*\n"
+            "â€¢ *Â« Stats Succursale Le Kef Â»* ou *Â« Top magasins Â»*"
         )
 
-    # 1. Dernier scan / récence
+    # 1. Dernier scan / rÃ©cence
     if any(k in norm_q for k in ["dernier scan", "derniere scan", "dernier ticket", "derniere transaction", "dernier achat", "quand la derniere", "quand le dernier", "date de la derniere", "date du dernier"]):
         return (
-            "🕒 **Dernière Transaction Enregistrée en Temps Réel (PostgreSQL 17.7 Live)**\n\n"
-            f"• **Date & Heure** : **{snap['last_date']}** (horodatage certifié caisse)\n"
-            f"• **Numéro de Ticket** : **#{snap['last_ticket']}**\n"
-            f"• **Point de Vente** : **{snap['last_store']}**\n"
-            f"• **Client Membre** : **{snap['last_client']}**\n"
-            f"• **Montant de la Transaction** : **{snap['last_amount']:,.3f} TND**\n"
-            f"• **Points Fidélité Gagnés** : **{snap['last_pts']:.1f} pts**"
+            "ðŸ•’ **DerniÃ¨re Transaction EnregistrÃ©e en Temps RÃ©el (PostgreSQL 17.7 Live)**\n\n"
+            f"â€¢ **Date & Heure** : **{snap['last_date']}** (horodatage certifiÃ© caisse)\n"
+            f"â€¢ **NumÃ©ro de Ticket** : **#{snap['last_ticket']}**\n"
+            f"â€¢ **Point de Vente** : **{snap['last_store']}**\n"
+            f"â€¢ **Client Membre** : **{snap['last_client']}**\n"
+            f"â€¢ **Montant de la Transaction** : **{snap['last_amount']:,.3f} TND**\n"
+            f"â€¢ **Points FidÃ©litÃ© GagnÃ©s** : **{snap['last_pts']:.1f} pts**"
         )
 
-    # 2. Mois spécifique demandé (ex: "le chiffre d'affaire de septemeber", "ventes octobre", "ca aout")
+    # 2. Mois spÃ©cifique demandÃ© (ex: "le chiffre d'affaire de septemeber", "ventes octobre", "ca aout")
     if snap.get("target_month_detail"):
         tm = snap["target_month_detail"]
         period = tm["period"]
@@ -537,16 +537,16 @@ def build_analytical_answer(raw_question, snap, filters):
         top_lines = [f"  {i}. **{n}** : **{c:,.2f} TND** ({s} scans)" for i, (n, c, s) in enumerate(tm.get("top_stores", []), 1)]
         top_txt = "\n".join(top_lines) if top_lines else "  1. **Succursale Le Kef**"
         return (
-            f"📅 **Chiffre d'Affaires & Performance : {m_name} {period[:4]} (PostgreSQL 17.7 Temps Réel)**\n\n"
-            f"• **Chiffre d'Affaires Réalisé** : **{tm['ca']:,.2f} TND** ({share_pct:.1f}% du CA annuel consolidé)\n"
-            f"• **Volume d'Activité** : **{tm['scans']:,} scans certifiés en caisse**\n"
-            f"• **Panier Moyen (AOV)** : **{tm['aov']:.3f} TND** par transaction\n"
-            f"• **Clients Actifs sur le mois** : **{tm['clients']:,} adhérents distincts**\n\n"
-            f"🏆 **Top 3 des Points de Vente en {m_name} {period[:4]} :**\n{top_txt}\n\n"
-            f"💡 *Données calculées en temps réel depuis `public.purchase` (PostgreSQL 17.7).*"
+            f"ðŸ“… **Chiffre d'Affaires & Performance : {m_name} {period[:4]} (PostgreSQL 17.7 Temps RÃ©el)**\n\n"
+            f"â€¢ **Chiffre d'Affaires RÃ©alisÃ©** : **{tm['ca']:,.2f} TND** ({share_pct:.1f}% du CA annuel consolidÃ©)\n"
+            f"â€¢ **Volume d'ActivitÃ©** : **{tm['scans']:,} scans certifiÃ©s en caisse**\n"
+            f"â€¢ **Panier Moyen (AOV)** : **{tm['aov']:.3f} TND** par transaction\n"
+            f"â€¢ **Clients Actifs sur le mois** : **{tm['clients']:,} adhÃ©rents distincts**\n\n"
+            f"ðŸ† **Top 3 des Points de Vente en {m_name} {period[:4]} :**\n{top_txt}\n\n"
+            f"ðŸ’¡ *DonnÃ©es calculÃ©es en temps rÃ©el depuis `public.purchase` (PostgreSQL 17.7).*"
         )
 
-    # 3. Évolution mensuelle globale / meilleur mois
+    # 3. Ã‰volution mensuelle globale / meilleur mois
     if any(k in norm_q for k in ["mois", "mensuel", "plus fort", "forte", "croissance", "evolution", "periode"]) and snap["months"]:
         best = max(snap["months"], key=lambda x: x["ca"])
         b_code = best["period"].split("-")[1] if "-" in best["period"] else "08"
@@ -555,20 +555,20 @@ def build_analytical_answer(raw_question, snap, filters):
         for m_item in snap["months"]:
             mc = m_item["period"].split("-")[1] if "-" in m_item["period"] else "00"
             mn = _MOIS_FR_MAP.get(mc, m_item["period"])
-            lines.append(f"• **{mn} {m_item['period'][:4]}** : **{m_item['ca']:,.2f} TND** ({m_item['scans']:,} scans · AOV {m_item['aov']:.2f} TND)")
+            lines.append(f"â€¢ **{mn} {m_item['period'][:4]}** : **{m_item['ca']:,.2f} TND** ({m_item['scans']:,} scans Â· AOV {m_item['aov']:.2f} TND)")
         return (
-            f"📅 **Historique & Évolution Mensuelle des Ventes (PostgreSQL 17.7 Live)**\n\n"
-            f"• **Mois Record Historique** : **{b_name} {best['period'][:4]}** avec **{best['ca']:,.2f} TND** ({best['scans']:,} scans) !\n\n"
-            f"**Ventilation complète en temps réel :**\n" + "\n".join(lines)
+            f"ðŸ“… **Historique & Ã‰volution Mensuelle des Ventes (PostgreSQL 17.7 Live)**\n\n"
+            f"â€¢ **Mois Record Historique** : **{b_name} {best['period'][:4]}** avec **{best['ca']:,.2f} TND** ({best['scans']:,} scans) !\n\n"
+            f"**Ventilation complÃ¨te en temps rÃ©el :**\n" + "\n".join(lines)
         )
 
-    # 4. Recherche d'un magasin spécifique
+    # 4. Recherche d'un magasin spÃ©cifique
     if snap["stores"] and not any(k in norm_q for k in ["top magasin", "meilleur magasin", "classement magasin", "tous les magasins"]):
         wants_succ = "succursale" in norm_q
         wants_cafe = "cafeteria" in norm_q
         matched = []
         for st in snap["stores"]:
-            clean_name = re.sub(r'succursale|cafétéria|cafeteria', '', st["name"], flags=re.I).strip()
+            clean_name = re.sub(r'succursale|cafÃ©tÃ©ria|cafeteria', '', st["name"], flags=re.I).strip()
             tokens = [t for t in normalize_rag_query(clean_name).split() if len(t) > 2]
             if any(t in words_q for t in tokens):
                 prio = 0
@@ -577,96 +577,96 @@ def build_analytical_answer(raw_question, snap, filters):
                 elif wants_cafe and "caf" in st["name"].lower():
                     prio += 10
                 elif "succursale" in st["name"].lower():
-                    prio += 2  # Prioriser la Succursale par défaut si le CA est majeur
+                    prio += 2  # Prioriser la Succursale par dÃ©faut si le CA est majeur
                 matched.append((prio, st))
         if matched:
             matched.sort(key=lambda x: (x[0], x[1]["ca"]), reverse=True)
             st = matched[0][1]
             out = (
-                f"🏬 **Analyse Détaillée : {st['name']} (PostgreSQL 17.7 Live)**\n\n"
-                f"• **Rang Réseau** : **#{st['rank']} sur {len(snap['stores'])} points de vente**\n"
-                f"• **Chiffre d'Affaires** : **{st['ca']:,.2f} TND**\n"
-                f"• **Transactions Validées** : **{st['scans']:,} scans QR**\n"
-                f"• **Panier Moyen (AOV)** : **{st['aov']:.3f} TND** par acte d'achat\n"
-                f"• **Fidélisation Client** : **{st['clients']:,} clients uniques** ont acheté dans ce point de vente."
+                f"ðŸ¬ **Analyse DÃ©taillÃ©e : {st['name']} (PostgreSQL 17.7 Live)**\n\n"
+                f"â€¢ **Rang RÃ©seau** : **#{st['rank']} sur {len(snap['stores'])} points de vente**\n"
+                f"â€¢ **Chiffre d'Affaires** : **{st['ca']:,.2f} TND**\n"
+                f"â€¢ **Transactions ValidÃ©es** : **{st['scans']:,} scans QR**\n"
+                f"â€¢ **Panier Moyen (AOV)** : **{st['aov']:.3f} TND** par acte d'achat\n"
+                f"â€¢ **FidÃ©lisation Client** : **{st['clients']:,} clients uniques** ont achetÃ© dans ce point de vente."
             )
             if len(matched) > 1 and not wants_succ and not wants_cafe:
                 st2 = matched[1][1]
                 out += (
-                    f"\n\n☕ **Autre établissement de la même zone — {st2['name']} (Rang #{st2['rank']}) :**\n"
-                    f"• **CA** : **{st2['ca']:,.2f} TND** sur **{st2['scans']:,} scans** (Panier moyen : **{st2['aov']:.3f} TND** · **{st2['clients']} clients**)."
+                    f"\n\nâ˜• **Autre Ã©tablissement de la mÃªme zone â€” {st2['name']} (Rang #{st2['rank']}) :**\n"
+                    f"â€¢ **CA** : **{st2['ca']:,.2f} TND** sur **{st2['scans']:,} scans** (Panier moyen : **{st2['aov']:.3f} TND** Â· **{st2['clients']} clients**)."
                 )
             return out
 
-    # 5. Détection Churn, Inactivité & Points Dormants
+    # 5. DÃ©tection Churn, InactivitÃ© & Points Dormants
     if any(k in norm_q for k in ["churn", "sensible", "revien", "reviendra", "push", "retention", "inactif", "inactives", "dormant", "dormants", "attrition", "abandon", "45", "relancer"]):
         return (
-            "🚨 **Diagnostic Anti-Churn : Clientes Inactives (> 45 Jours) avec Points Dormants (PostgreSQL 17.7 Live)**\n\n"
-            "• **Synthèse d'Urgence** : **22 Clientes Sensibles Prioritaires** répertoriées (CA cumulé exposé : **4 786,25 TND**, **15 589 points dormants**).\n"
-            "• 🔴 **Top Clientes Inactives Critiques :**\n"
-            "  1. **Wièm Dkhaïlia** (Cafétéria Gafsa Ville) : **60j inactivité** • 87 achats (560,85 TND) • **1 431 pts dormants** • *Push VIP +150 pts*\n"
-            "  2. **Amira Baaziz** (Cafétéria Gafsa Ville) : **50j inactivité** • 56 achats (804,30 TND) • **2 933 pts dormants** • *Cadeau Prestige*\n"
-            "  3. **Sarra Ben Saad** (Cafétéria Tunis Menzah VI) : **64j inactivité** • 28 achats (348,20 TND) • **1 362 pts dormants** • *Dégustation Arabica +100 pts*\n"
-            "  4. **Rakia Jawali** (Succursale Gabès Jara) : **48j inactivité** • 21 achats (1 120,50 TND) • **2 439 pts dormants** • *Offre Grand Cru VIP*\n"
-            "  5. **Mouna Lakhoua** (Cafétéria Tunis La Marsa) : **100j inactivité** • 35 achats (213,90 TND) • **1 050 pts dormants**\n\n"
-            "📲 **Potentiel de Sauvetage IA** : **+1 838 TND** de CA sécurisable (ROI estimé **+850%**)."
+            "ðŸš¨ **Diagnostic Anti-Churn : Clientes Inactives (> 45 Jours) avec Points Dormants (PostgreSQL 17.7 Live)**\n\n"
+            "â€¢ **SynthÃ¨se d'Urgence** : **22 Clientes Sensibles Prioritaires** rÃ©pertoriÃ©es (CA cumulÃ© exposÃ© : **4 786,25 TND**, **15 589 points dormants**).\n"
+            "â€¢ ðŸ”´ **Top Clientes Inactives Critiques :**\n"
+            "  1. **WiÃ¨m DkhaÃ¯lia** (CafÃ©tÃ©ria Gafsa Ville) : **60j inactivitÃ©** â€¢ 87 achats (560,85 TND) â€¢ **1 431 pts dormants** â€¢ *Push VIP +150 pts*\n"
+            "  2. **Amira Baaziz** (CafÃ©tÃ©ria Gafsa Ville) : **50j inactivitÃ©** â€¢ 56 achats (804,30 TND) â€¢ **2 933 pts dormants** â€¢ *Cadeau Prestige*\n"
+            "  3. **Sarra Ben Saad** (CafÃ©tÃ©ria Tunis Menzah VI) : **64j inactivitÃ©** â€¢ 28 achats (348,20 TND) â€¢ **1 362 pts dormants** â€¢ *DÃ©gustation Arabica +100 pts*\n"
+            "  4. **Rakia Jawali** (Succursale GabÃ¨s Jara) : **48j inactivitÃ©** â€¢ 21 achats (1 120,50 TND) â€¢ **2 439 pts dormants** â€¢ *Offre Grand Cru VIP*\n"
+            "  5. **Mouna Lakhoua** (CafÃ©tÃ©ria Tunis La Marsa) : **100j inactivitÃ©** â€¢ 35 achats (213,90 TND) â€¢ **1 050 pts dormants**\n\n"
+            "ðŸ“² **Potentiel de Sauvetage IA** : **+1 838 TND** de CA sÃ©curisable (ROI estimÃ© **+850%**)."
         )
 
     # 6. Top Magasins
     if any(k in norm_q for k in ["top magasin", "meilleur magasin", "classement magasin", "magasins", "points de vente", "pdv"]) and snap["stores"]:
-        lines = [f"  {s['rank']}. **{s['name']}** : **{s['ca']:,.2f} TND** ({s['scans']:,} scans · AOV {s['aov']:.2f} TND)" for s in snap["stores"][:5]]
+        lines = [f"  {s['rank']}. **{s['name']}** : **{s['ca']:,.2f} TND** ({s['scans']:,} scans Â· AOV {s['aov']:.2f} TND)" for s in snap["stores"][:5]]
         return (
-            "🏆 **Top 5 des Points de Vente BONDIN par Chiffre d'Affaires (PostgreSQL 17.7 Live)**\n\n" +
+            "ðŸ† **Top 5 des Points de Vente BONDIN par Chiffre d'Affaires (PostgreSQL 17.7 Live)**\n\n" +
             "\n".join(lines) +
-            f"\n\n• **Leader Absolu** : **{snap['stores'][0]['name']}** domine le réseau avec **{snap['stores'][0]['ca']:,.2f} TND**."
+            f"\n\nâ€¢ **Leader Absolu** : **{snap['stores'][0]['name']}** domine le rÃ©seau avec **{snap['stores'][0]['ca']:,.2f} TND**."
         )
 
     # 7. Top Clients / Plus gros acheteurs
     if any(k in norm_q for k in ["meilleur client", "top client", "plus depense", "gros acheteur", "qui a achete", "qui a depense", "classement client", "gros chiffre", "premier client"]) or ("client" in words_q and any(w in words_q for w in ["gros", "ca", "chiffre", "top", "meilleur", "depense", "record"])):
         if snap["top_clients"]:
-            lines = [f"  {i}. **{nom}** : **{ca:,.2f} TND** ({nb} achats scannés)" for i, (nom, nb, ca) in enumerate(snap["top_clients"], 1)]
+            lines = [f"  {i}. **{nom}** : **{ca:,.2f} TND** ({nb} achats scannÃ©s)" for i, (nom, nb, ca) in enumerate(snap["top_clients"], 1)]
             return (
-                "🏆 **Top 5 des Plus Gros Acheteurs du Réseau (PostgreSQL 17.7 Live)**\n\n" +
+                "ðŸ† **Top 5 des Plus Gros Acheteurs du RÃ©seau (PostgreSQL 17.7 Live)**\n\n" +
                 "\n".join(lines) +
-                "\n\n💡 *Ces membres font partie du segment VIP/Grossistes et réalisent des achats réguliers en succursale.*"
+                "\n\nðŸ’¡ *Ces membres font partie du segment VIP/Grossistes et rÃ©alisent des achats rÃ©guliers en succursale.*"
             )
 
-    # 8. Comparatif Succursales vs Cafétérias
+    # 8. Comparatif Succursales vs CafÃ©tÃ©rias
     if ("succursale" in norm_q and "cafeteria" in norm_q) or any(w in norm_q for w in ["comparatif", "comparaison", "difference", "typologie"]):
         return (
-            "⚖️ **Comparatif Stratégique : Succursales vs Cafétérias BONDIN (PostgreSQL Live)**\n\n"
-            "• 🏬 **Succursales (Vente en Gros & Détail Café Torréfié)** : **72,2% du CA total**, panier moyen **37,62 TND** (Top 1 : Succursale Le Kef).\n"
-            "• ☕ **Cafétérias (Consommation Comptoir & Salons)** : **27,8% du CA total**, panier moyen **4,20 TND** mais **78% du trafic** (Top affluence : Cafétéria Gafsa Ville).\n"
-            "• **Ratio AOV** : Le panier moyen en succursale est **9 fois supérieur** à celui d'une cafétéria."
+            "âš–ï¸ **Comparatif StratÃ©gique : Succursales vs CafÃ©tÃ©rias BONDIN (PostgreSQL Live)**\n\n"
+            "â€¢ ðŸ¬ **Succursales (Vente en Gros & DÃ©tail CafÃ© TorrÃ©fiÃ©)** : **72,2% du CA total**, panier moyen **37,62 TND** (Top 1 : Succursale Le Kef).\n"
+            "â€¢ â˜• **CafÃ©tÃ©rias (Consommation Comptoir & Salons)** : **27,8% du CA total**, panier moyen **4,20 TND** mais **78% du trafic** (Top affluence : CafÃ©tÃ©ria Gafsa Ville).\n"
+            "â€¢ **Ratio AOV** : Le panier moyen en succursale est **9 fois supÃ©rieur** Ã  celui d'une cafÃ©tÃ©ria."
         )
 
     # 9. Panier Moyen
     if any(k in norm_q for k in ["panier", "aov", "ticket moyen"]):
         return (
-            f"🛒 **Panier Moyen Global (AOV) : {aov:.3f} TND (PostgreSQL 17.7 Live)**\n\n"
-            "• 🏬 **Succursales** : **37,62 TND** (achats de café moulu et en grains).\n"
-            "• ☕ **Cafétérias** : **4,20 TND** (consommation comptoir).\n"
-            f"• **Total Réseau** : **{ca_tot:,.2f} TND** sur **{nb_scans:,} transactions**."
+            f"ðŸ›’ **Panier Moyen Global (AOV) : {aov:.3f} TND (PostgreSQL 17.7 Live)**\n\n"
+            "â€¢ ðŸ¬ **Succursales** : **37,62 TND** (achats de cafÃ© moulu et en grains).\n"
+            "â€¢ â˜• **CafÃ©tÃ©rias** : **4,20 TND** (consommation comptoir).\n"
+            f"â€¢ **Total RÃ©seau** : **{ca_tot:,.2f} TND** sur **{nb_scans:,} transactions**."
         )
 
     # 10. Dette & Points
     if any(k in norm_q for k in ["dette", "passif", "point", "points", "cagnotte", "earn", "burn"]):
         return (
-            "💰 **Bilan des Points & Dette Financière (PostgreSQL 17.7 Live)**\n\n"
-            "• **Points Distribués (Earn)** : **842 950 points** cumulés.\n"
-            "• **Points Consommés (Burn)** : **264 900 points** convertis en récompenses (290 vouchers débloqués).\n"
-            "• **Provision Bilan Active** : **2 677,450 TND** (1 point = 0,010 TND)."
+            "ðŸ’° **Bilan des Points & Dette FinanciÃ¨re (PostgreSQL 17.7 Live)**\n\n"
+            "â€¢ **Points DistribuÃ©s (Earn)** : **842 950 points** cumulÃ©s.\n"
+            "â€¢ **Points ConsommÃ©s (Burn)** : **264 900 points** convertis en rÃ©compenses (290 vouchers dÃ©bloquÃ©s).\n"
+            "â€¢ **Provision Bilan Active** : **2 677,450 TND** (1 point = 0,010 TND)."
         )
 
-    # 11. Réponse synthèse globale temps réel
+    # 11. RÃ©ponse synthÃ¨se globale temps rÃ©el
     top_st = snap["stores"][0]["name"] if snap["stores"] else "Succursale Le Kef"
     top_st_ca = snap["stores"][0]["ca"] if snap["stores"] else 28266.30
     return (
-        f"📊 **Synthèse Décisionnelle ENA W BONDIN (PostgreSQL 17.7 Live)**\n\n"
-        f"• **Chiffre d'Affaires Total** : **{ca_tot:,.2f} TND** sur **{nb_scans:,} scans certifiés**.\n"
-        f"• **Panier Moyen** : **{aov:.3f} TND** (Succursales : 37,62 TND / Cafétérias : 4,20 TND).\n"
-        f"• **Base Clients** : **{total_inscrits:,} inscrits CRM** dont **{clients_actifs:,} actifs**.\n"
-        f"• **Top Magasin** : **{top_st}** (**{top_st_ca:,.2f} TND**)."
+        f"ðŸ“Š **SynthÃ¨se DÃ©cisionnelle ENA W BONDIN (PostgreSQL 17.7 Live)**\n\n"
+        f"â€¢ **Chiffre d'Affaires Total** : **{ca_tot:,.2f} TND** sur **{nb_scans:,} scans certifiÃ©s**.\n"
+        f"â€¢ **Panier Moyen** : **{aov:.3f} TND** (Succursales : 37,62 TND / CafÃ©tÃ©rias : 4,20 TND).\n"
+        f"â€¢ **Base Clients** : **{total_inscrits:,} inscrits CRM** dont **{clients_actifs:,} actifs**.\n"
+        f"â€¢ **Top Magasin** : **{top_st}** (**{top_st_ca:,.2f} TND**)."
     )
 
 
@@ -690,20 +690,20 @@ def call_gemini_with_snapshot(question, api_key, snap, rep_db, sql_table, filter
     cli_summary = "\n".join(cli_lines)
 
     system_instruction = (
-        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme décisionnelle ENA W BONDIN (Maison BONDIN 1910).\n"
-        "RÈGLES STRICTES :\n"
-        "1. Réponds UNIQUEMENT à partir des données temps réel PostgreSQL 17.7 ci-dessous. N'invente aucun chiffre.\n"
-        "2. Si la question porte sur un mois précis (ex: septembre, août, octobre...), donne IMMÉDIATEMENT le Chiffre d'Affaires exact, le nombre de scans, le panier moyen et le Top 3 magasins de ce mois fournis dans ANALYSE CIBLÉE.\n"
-        "3. Réponds de façon concise, structurée et professionnelle en français avec du markdown soigné.\n\n"
-        f"=== SYNTHÈSE GLOBALE TEMPS RÉEL POSTGRESQL 17.7 ===\n"
+        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme dÃ©cisionnelle ENA W BONDIN (Maison BONDIN 1910).\n"
+        "RÃˆGLES STRICTES :\n"
+        "1. RÃ©ponds UNIQUEMENT Ã  partir des donnÃ©es temps rÃ©el PostgreSQL 17.7 ci-dessous. N'invente aucun chiffre.\n"
+        "2. Si la question porte sur un mois prÃ©cis (ex: septembre, aoÃ»t, octobre...), donne IMMÃ‰DIATEMENT le Chiffre d'Affaires exact, le nombre de scans, le panier moyen et le Top 3 magasins de ce mois fournis dans ANALYSE CIBLÃ‰E.\n"
+        "3. RÃ©ponds de faÃ§on concise, structurÃ©e et professionnelle en franÃ§ais avec du markdown soignÃ©.\n\n"
+        f"=== SYNTHÃˆSE GLOBALE TEMPS RÃ‰EL POSTGRESQL 17.7 ===\n"
         f"- CA Total : {snap['ca_tot']:,.2f} TND sur {snap['nb_scans']:,} scans (Panier moyen : {snap['aov']:.3f} TND).\n"
         f"- Membres CRM : {snap['total_inscrits']:,} inscrits dont {snap['clients_actifs']:,} actifs.\n"
         f"- Dernier scan : {snap['last_date']} | Ticket #{snap['last_ticket']} | {snap['last_store']} | {snap['last_amount']:.3f} TND ({snap['last_client']}).\n\n"
-        f"=== VENTES PAR MOIS (TEMPS RÉEL POSTGRESQL) ===\n{month_summary}\n\n"
-        f"=== CLASSEMENT MAGASINS (TEMPS RÉEL POSTGRESQL) ===\n{store_summary}\n\n"
+        f"=== VENTES PAR MOIS (TEMPS RÃ‰EL POSTGRESQL) ===\n{month_summary}\n\n"
+        f"=== CLASSEMENT MAGASINS (TEMPS RÃ‰EL POSTGRESQL) ===\n{store_summary}\n\n"
         f"=== TOP 5 CLIENTS ACHETEURS ===\n{cli_summary}\n\n"
-        f"=== ANALYSE CIBLÉE SUR LA QUESTION DE L'UTILISATEUR ===\n{rep_db}\n\n"
-        f"=== RÉSULTATS SQL EN DIRECT ===\n{sql_table}\n"
+        f"=== ANALYSE CIBLÃ‰E SUR LA QUESTION DE L'UTILISATEUR ===\n{rep_db}\n\n"
+        f"=== RÃ‰SULTATS SQL EN DIRECT ===\n{sql_table}\n"
     )
 
     payload = {
@@ -732,7 +732,7 @@ def call_gemini_with_snapshot(question, api_key, snap, rep_db, sql_table, filter
     return None
 
 def call_groq_with_snapshot(question, groq_key, snap, rep_db, sql_table, filters):
-    """Synthèse ultra-rapide Groq LPU (GPT-OSS 120B / 20B / Qwen 27B) ancrée sur le snapshot PostgreSQL 17.7."""
+    """SynthÃ¨se ultra-rapide Groq LPU (GPT-OSS 120B / 20B / Qwen 27B) ancrÃ©e sur le snapshot PostgreSQL 17.7."""
     if not groq_key:
         groq_key = os.environ.get("GROQ_API_KEY") or "".join(["gs" + "k_", "DWe" + "go9bg", "KYcb" + "xyhd", "Iftn" + "WGdy", "b3FY" + "eLtG", "nx6U" + "erqD", "muG0" + "Kwa8", "jQ" + "nB"])
 
@@ -750,20 +750,20 @@ def call_groq_with_snapshot(question, groq_key, snap, rep_db, sql_table, filters
     cli_summary = "\n".join(cli_lines)
 
     system_instruction = (
-        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme décisionnelle ENA W BONDIN (Maison BONDIN 1910).\n"
-        "RÈGLES STRICTES :\n"
-        "1. Réponds UNIQUEMENT à partir des données réelles certifiées PostgreSQL 17.7 ci-dessous. N'invente aucun chiffre.\n"
-        "2. Si la question porte sur un mois précis (ex: septembre, août, octobre...), donne IMMÉDIATEMENT le Chiffre d'Affaires exact, le nombre de scans, le panier moyen et le Top 3 magasins de ce mois fournis dans ANALYSE CIBLÉE.\n"
-        "3. Réponds de façon concise, structurée et professionnelle en français avec du markdown soigné.\n\n"
-        f"=== SYNTHÈSE GLOBALE TEMPS RÉEL POSTGRESQL 17.7 ===\n"
+        "Tu es l'Analyste BI et IA Senior exclusif de la plateforme dÃ©cisionnelle ENA W BONDIN (Maison BONDIN 1910).\n"
+        "RÃˆGLES STRICTES :\n"
+        "1. RÃ©ponds UNIQUEMENT Ã  partir des donnÃ©es rÃ©elles certifiÃ©es PostgreSQL 17.7 ci-dessous. N'invente aucun chiffre.\n"
+        "2. Si la question porte sur un mois prÃ©cis (ex: septembre, aoÃ»t, octobre...), donne IMMÃ‰DIATEMENT le Chiffre d'Affaires exact, le nombre de scans, le panier moyen et le Top 3 magasins de ce mois fournis dans ANALYSE CIBLÃ‰E.\n"
+        "3. RÃ©ponds de faÃ§on concise, structurÃ©e et professionnelle en franÃ§ais avec du markdown soignÃ©.\n\n"
+        f"=== SYNTHÃˆSE GLOBALE TEMPS RÃ‰EL POSTGRESQL 17.7 ===\n"
         f"- CA Total : {snap['ca_tot']:,.2f} TND sur {snap['nb_scans']:,} scans (Panier moyen : {snap['aov']:.3f} TND).\n"
         f"- Membres CRM : {snap['total_inscrits']:,} inscrits dont {snap['clients_actifs']:,} actifs.\n"
         f"- Dernier scan : {snap['last_date']} | Ticket #{snap['last_ticket']} | {snap['last_store']} | {snap['last_amount']:.3f} TND ({snap['last_client']}).\n\n"
-        f"=== VENTES PAR MOIS (TEMPS RÉEL POSTGRESQL) ===\n{month_summary}\n\n"
-        f"=== CLASSEMENT MAGASINS (TEMPS RÉEL POSTGRESQL) ===\n{store_summary}\n\n"
+        f"=== VENTES PAR MOIS (TEMPS RÃ‰EL POSTGRESQL) ===\n{month_summary}\n\n"
+        f"=== CLASSEMENT MAGASINS (TEMPS RÃ‰EL POSTGRESQL) ===\n{store_summary}\n\n"
         f"=== TOP 5 CLIENTS ACHETEURS ===\n{cli_summary}\n\n"
-        f"=== ANALYSE CIBLÉE SUR LA QUESTION DE L'UTILISATEUR ===\n{rep_db}\n\n"
-        f"=== RÉSULTATS SQL EN DIRECT ===\n{sql_table}\n"
+        f"=== ANALYSE CIBLÃ‰E SUR LA QUESTION DE L'UTILISATEUR ===\n{rep_db}\n\n"
+        f"=== RÃ‰SULTATS SQL EN DIRECT ===\n{sql_table}\n"
     )
 
     models = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.8-27b']
@@ -801,95 +801,15 @@ def call_groq_with_snapshot(question, groq_key, snap, rep_db, sql_table, filters
 
 
 def process_rag_question(raw_question, api_key="", live_info=None):
-    """Point d'entrée unifié pour /api/chat, /api/rag/chat et api/index.py."""
-    raw_question = (raw_question or "").strip()
-    if not raw_question:
-        return {
-            "success": True,
-            "question": "",
-            "answer": "👋 Bonjour ! Je suis Chatbot Pro BONDIN (PostgreSQL 17.7 Live). Posez-moi une question sur un client, un mois, un magasin ou le chiffre d'affaires.",
-            "response": "👋 Bonjour ! Je suis Chatbot Pro BONDIN (PostgreSQL 17.7 Live). Posez-moi une question sur un client, un mois, un magasin ou le chiffre d'affaires.",
-            "sources": ["PostgreSQL 17.7 Production Live"],
-            "sql": None,
-            "filters": {}
-        }
-
-    # 1. Recherche directe d'un client par son nom (Profil 360° PostgreSQL)
-    client_profile = lookup_client_by_name(raw_question)
-    if client_profile:
-        return {
-            "success": True,
-            "question": raw_question,
-            "answer": client_profile,
-            "response": client_profile,
-            "sources": ["PostgreSQL 17.7 Live × Profil Client"],
-            "sql": None,
-            "filters": {"customer_lookup": True}
-        }
-
-    # 2. Extraction des filtres métadonnées + Snapshot temps réel PostgreSQL 17.7
-    filters = extract_metadata_filters(raw_question)
-    snap = fetch_live_postgres_snapshot(raw_question, filters)
-    rep_db = build_analytical_answer(raw_question, snap, filters)
-    sql_res = snap.get("sql_res") or {}
-    sql_table = format_sql_results_as_markdown(sql_res.get("columns", []), sql_res.get("rows", [])) if sql_res.get("success") else ""
-
-    # 2b. Si mois spécifique ou dernier scan, réponse analytique PostgreSQL instantanée (Zero-Latency)
-    m_code = detect_month_code(raw_question)
-    norm_q = normalize_rag_query(raw_question)
-    is_recent_scan = any(k in norm_q for k in ["dernier scan", "derniere scan", "dernier ticket", "derniere transaction", "dernier achat", "quand la derniere", "quand le dernier"])
-    if m_code or is_recent_scan:
-        return {
-            "success": True,
-            "question": raw_question,
-            "answer": rep_db,
-            "response": rep_db,
-            "sources": ["PostgreSQL 17.7 Live × " + ("Performance Mensuelle" if m_code else "Horodatage Caisse")],
-            "sql": sql_res.get("sql"),
-            "filters": filters
-        }
-
-    # 3. Synthèse IA Groq LPU Ultra-Rapide (GPT-OSS 120B / 20B)
-    groq_key = os.environ.get("GROQ_API_KEY") or "".join(["gs" + "k_", "DWe" + "go9bg", "KYcb" + "xyhd", "Iftn" + "WGdy", "b3FY" + "eLtG", "nx6U" + "erqD", "muG0" + "Kwa8", "jQ" + "nB"])
-    ans_groq = call_groq_with_snapshot(raw_question, groq_key, snap, rep_db, sql_table, filters)
-    if ans_groq:
-        return {
-            "success": True,
-            "question": raw_question,
-            "answer": ans_groq,
-            "response": ans_groq,
-            "sources": ["PostgreSQL 17.7 Live × Groq LPU (GPT-OSS 120B)"],
-            "sql": sql_res.get("sql"),
-            "filters": filters
-        }
-
-    # 4. Relais de secours IA Gemini
-    ans_gemini = call_gemini_with_snapshot(raw_question, api_key, snap, rep_db, sql_table, filters)
-    if ans_gemini:
-        return {
-            "success": True,
-            "question": raw_question,
-            "answer": ans_gemini,
-            "response": ans_gemini,
-            "sources": ["PostgreSQL 17.7 Live × Gemini"],
-            "sql": sql_res.get("sql"),
-            "filters": filters
-        }
-
-    # 4. Fallback analytique direct PostgreSQL 17.7
-    final_ans = rep_db + (("\n\n📊 **Données SQL en direct**\n\n" + sql_table) if sql_table else "")
-    return {
-        "success": True,
-        "question": raw_question,
-        "answer": final_ans,
-        "response": final_ans,
-        "sources": ["PostgreSQL 17.7 Production Live"],
-        "sql": sql_res.get("sql"),
-        "filters": filters
-    }
+    """Point d'entrÃ©e unifiÃ© : dÃ©lÃ¨gue au moteur de retrieval temps rÃ©el (api/retrieval.py)."""
+    try:
+        from api import _retrieval as retrieval
+    except ImportError:
+        import _retrieval as retrieval
+    return retrieval.answer(raw_question)
 
 
-# Fonctions de compatibilité si appelées depuis api/index.py
+# Fonctions de compatibilitÃ© si appelÃ©es depuis api/index.py
 def call_gemini_api(question, api_key="", live_info=None):
     res = process_rag_question(question, api_key, live_info)
     return res.get("answer")
@@ -938,6 +858,6 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({
                 "success": True,
-                "answer": f"📊 **Synthèse Temps Réel BONDIN (PostgreSQL 17.7)** : 168 397,27 TND sur 14 307 scans. ({str(e)})",
+                "answer": f"ðŸ“Š **SynthÃ¨se Temps RÃ©el BONDIN (PostgreSQL 17.7)** : 168 397,27 TND sur 14 307 scans. ({str(e)})",
                 "sources": ["PostgreSQL 17.7 Secours"]
             }, ensure_ascii=False).encode('utf-8'))

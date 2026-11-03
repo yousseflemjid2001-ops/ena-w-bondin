@@ -104,9 +104,9 @@ class handler(BaseHTTPRequestHandler):
                 m_rows = con.run("""
                     SELECT to_char(p.created_at, 'YYYY-MM') as m,
                            count(*) as scans,
-                           round(coalesce(sum(CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END), 0)::numeric, 2) as ca,
-                           round(coalesce(sum(CASE WHEN coalesce(s.name, '') ILIKE '%%succursale%%' THEN (CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END) ELSE 0 END), 0)::numeric, 2) as ca_succ,
-                           round(coalesce(sum(CASE WHEN coalesce(s.name, '') NOT ILIKE '%%succursale%%' THEN (CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END) ELSE 0 END), 0)::numeric, 2) as ca_cafe
+                           round(coalesce(sum(p.amount/1000.0), 0)::numeric, 2) as ca,
+                           round(coalesce(sum(CASE WHEN coalesce(s.name, '') ILIKE '%%succursale%%' THEN (p.amount/1000.0) ELSE 0 END), 0)::numeric, 2) as ca_succ,
+                           round(coalesce(sum(CASE WHEN coalesce(s.name, '') NOT ILIKE '%%succursale%%' THEN (p.amount/1000.0) ELSE 0 END), 0)::numeric, 2) as ca_cafe
                     FROM public.purchase p
                     LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
                     WHERE p.company_id = 2

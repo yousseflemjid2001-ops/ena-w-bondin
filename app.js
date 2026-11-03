@@ -5236,128 +5236,46 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
       `• *« Quelles sont les récompenses les plus réclamées ? »*`;
   }
 
-  // 1b. Recherche Client CRM Nominative (Amira Baaziz, Ahmed Najjar, Wièm, Sarra...)
-  if (q.includes("amira") || q.includes("baaziz")) {
-    return `👤 **Profil Client CRM 360° : Amira Baaziz (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Statut CRM** : **Cliente Régulière** (Segment Fidélité Active, Gafsa)\n` +
-      `• **Historique d'Achats** : **56 scans certifiés** enregistrés en caisse\n` +
-      `• **Chiffre d'Affaires Cumulé** : **804,30 TND** · **Panier Moyen** : **14,36 TND**\n` +
-      `• **Cagnotte Fidélité** : **2 933 points disponibles** (Provision bilan : 29,33 DT)\n` +
-      `• **Magasins Favoris** : **Succursale Gafsa Ville** (34 achats) & **Cafétéria Gafsa Ville** (22 achats)\n` +
-      `• **Récence & Alertes** : Dernier scan le **13/09/2026 à 12:18** (~50j d'inactivité, Churn 89%)\n` +
-      `• **Action IA Recommandée** : Notification Push exclusive avec offre *Cadeau Prestige* ou *Points x2* pour réactiver son passage.`;
-  }
-  if (q.includes("ahmed") || q.includes("najjar")) {
-    return `👤 **Recherche Client CRM : Ahmed Najjar — 2 Profils Trouvés (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Ahmed Najjar (ID #019e8a8b...)** :\n` +
-      `  - Inscription : **02/06/2026** · Statut : Membre inscrit sans scan caisse (0 achat)\n` +
-      `  - Vouchers : 0 · Points : 0\n\n` +
-      `• **Ahmed Najjar (ID #019b18a8...)** :\n` +
-      `  - Inscription : **13/12/2025** · Dernière activité : **11/09/2026**\n` +
-      `  - Statut : Compte CRM enregistré sans achat caisse · Vouchers : 0\n\n` +
-      `💡 *Ces deux adhérents font partie du vivier des nouveaux inscrits à convertir lors du prochain passage en point de vente.*`;
-  }
-  if (q.includes("wiem") || q.includes("dkhaïlia") || q.includes("dkhailia")) {
-    return `👤 **Profil Client CRM 360° : Wièm Dkhaïlia (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Statut CRM** : **Cliente VIP / Sensible** (Cafétéria Gafsa Ville)\n` +
-      `• **Historique d'Achats** : **87 visites scannées** · **CA Cumulé** : **560,85 TND**\n` +
-      `• **Cagnotte Fidélité** : **1 431 points dormants** · Inactivité : **60 jours** (Score Churn 94%)\n` +
-      `• **Action IA Recommandée** : Envoi du Push Promo \`FIDNESS_VIP150\` (+150 points offerts).`;
-  }
-  if (q.includes("sarra") || q.includes("ben saad")) {
-    return `👤 **Profil Client CRM 360° : Sarra Ben Saad (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Statut CRM** : **Cliente Fidélité Salon** (Cafétéria Tunis Menzah VI)\n` +
-      `• **Achats Réalisés** : **348,20 TND** · **1 362 points dormants**\n` +
-      `• **Récence** : 64 jours d'inactivité (Score Churn 92%)\n` +
-      `• **Action IA Recommandée** : Invitation dégustation nouvel Arabica Lavé + 100 points offerts.`;
-  }
-  if (q.includes("nabiha") || q.includes("zriba")) {
-    return `👤 **Profil Client CRM 360° : Nabiha Zriba (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Statut CRM** : **Cliente Active** (Succursale Gafsa Ville)\n` +
-      `• **Historique d'Achats** : **8 achats certifiés** · **480,7 points gagnés**\n` +
-      `• **Dernier Scan Caisse** : **Aujourd'hui à 20:40:35** (Ticket #bondin6380291, 18,500 TND, +74 pts)\n` +
-      `• **Fréquence** : Très active sur les achats de café de tradition.`;
-  }
-
-  // 1c. Dernière Transaction / Récence en Temps Réel
-  if (q.includes("dernier scan") || q.includes("derniere scan") || q.includes("dernier ticket") || q.includes("derniere transaction") || q.includes("dernier achat") || (q.includes("quand") && (q.includes("dernier") || q.includes("derniere")))) {
-    return `🕒 **Dernière Transaction Enregistrée en Temps Réel (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Date & Heure du Dernier Scan** : **${lastScan}** (horodatage certifié caisse)\n` +
-      `• **Numéro de Ticket Caisse** : **#${lastTicket}**\n` +
+  // 1b. Mode dégradé (serveur RAG injoignable) : uniquement des chiffres issus de liveSyncData (PostgreSQL)
+  const dernierClient = live.dernier_client || 'n/a';
+  const dernierMontant = live.dernier_montant != null ? parseFloat(live.dernier_montant) : null;
+  if (q.includes("dernier scan") || q.includes("derniere scan") || q.includes("dernier ticket") || q.includes("derniere transaction") || q.includes("dernier achat")) {
+    return `🕒 **Dernière Transaction Enregistrée (PostgreSQL 17.7 Live)**\n\n` +
+      `• **Date & Heure** : **${lastScan}**\n` +
+      `• **Ticket** : **#${lastTicket}**\n` +
       `• **Point de Vente** : **${lastStore}**\n` +
-      `• **Client Membre** : **${live.dernier_client || 'Nabiha Zriba'}**\n` +
-      `• **Montant Réglé** : **${(live.dernier_montant || 18.5).toFixed(3)} DT**\n` +
-      `• **Points Crédités** : **+${((live.dernier_montant || 18.5) * 4).toFixed(1)} pts** (crédit instantané)\n\n` +
-      `💡 *Chaque ticket est horodaté à la seconde et synchronisé en temps réel depuis la table \`public.purchase\`.*`;
+      `• **Client** : **${dernierClient}**\n` +
+      (dernierMontant != null ? `• **Montant** : **${dernierMontant.toFixed(3)} DT**\n` : '');
   }
 
-  // 1d. Performance & Activité Mensuelle (Octobre, Septembre, Août...)
-  const isOct = q.includes("octobre") || q.includes("octobtr") || q.includes("octobr") || q.includes("october") || q.includes("oct");
-  const isSep = q.includes("septembre") || q.includes("septemeber") || q.includes("septembr") || q.includes("september") || q.includes("sep") || q.includes("sept");
-  const isAou = q.includes("aout") || q.includes("août") || q.includes("august") || q.includes("aug");
-  const isJuil = q.includes("juillet") || q.includes("july") || q.includes("juil");
-  const isJuin = q.includes("juin") || q.includes("june");
-  const isNov = q.includes("novembre") || q.includes("november") || q.includes("nov");
-
-  if (isOct) {
-    return `📅 **Chiffre d'Affaires & Activité : Octobre 2026 (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Chiffre d'Affaires Réalisé** : **34 068,57 DT** (20,2% du CA total consolidé)\n` +
-      `• **Volume de Transactions** : **2 833 scans certifiés** en caisse\n` +
-      `• **Panier Moyen (AOV)** : **12,026 DT** par acte d'achat\n` +
-      `• **Clients Actifs Fidélité** : **418 membres distincts** ayant scanné en caisse\n\n` +
-      `🏆 **Top 3 des Magasins en Octobre 2026 :**\n` +
-      `  1. 🥇 **Succursale Le Kef** : **8 114,20 DT** (512 scans)\n` +
-      `  2. 🥈 **Succursale Gabès Jara** : **3 892,40 DT** (184 scans)\n` +
-      `  3. 🥉 **Succursale Tunis Menzah VI** : **3 145,80 DT** (246 scans)\n\n` +
-      `💡 *Données synchronisées en direct depuis la table \`public.purchase\` de PostgreSQL 17.7.*`;
-  }
-  if (isSep) {
-    return `📅 **Chiffre d'Affaires & Activité : Septembre 2026 (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Chiffre d'Affaires Réalisé** : **38 220,71 DT** (22,6% du CA total consolidé)\n` +
-      `• **Volume de Transactions** : **2 868 scans certifiés** en caisse\n` +
-      `• **Panier Moyen (AOV)** : **13,327 DT** par acte d'achat\n` +
-      `• **Clients Actifs Fidélité** : **424 membres distincts**\n\n` +
-      `🏆 **Top 3 des Magasins en Septembre 2026 :**\n` +
-      `  1. 🥇 **Succursale Le Kef** : **9 265,10 DT**\n` +
-      `  2. 🥈 **Succursale Gabès Jara** : **3 504,05 DT**\n` +
-      `  3. 🥉 **Succursale Tunis Menzah VI** : **3 458,33 DT**\n\n` +
-      `💡 *Données synchronisées en direct depuis la table \`public.purchase\` de PostgreSQL 17.7.*`;
-  }
-  if (isAou) {
-    return `📅 **Chiffre d'Affaires & Activité : Août 2026 — Mois Record Historique (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Chiffre d'Affaires Réalisé** : **47 772,97 DT** (28,3% du CA total - Record absolu)\n` +
-      `• **Volume de Transactions** : **3 224 scans certifiés**\n` +
-      `• **Panier Moyen (AOV)** : **14,818 DT** par acte d'achat\n` +
-      `• **Facteur Clé de Succès** : Campagne estivale et forte affluence touristique en Succursales et Cafétérias.`;
-  }
-  if (isNov) {
-    return `📅 **Chiffre d'Affaires & Activité : Novembre 2026 (Mois en Cours - PostgreSQL 17.7 Live)**\n\n` +
-      `• **Chiffre d'Affaires à Date** : **3 111,35 DT** sur **268 scans certifiés** (du 1er au 3 novembre)\n` +
-      `• **Panier Moyen (AOV)** : **11,610 DT** par acte d'achat\n` +
-      `• **Activité du Jour (03/11)** : 24 nouveaux scans enregistrés jusqu'à 20:40:35\n` +
-      `• **Magasin Leader Novembre** : Succursale Gafsa Ville (2 369,95 DT).`;
-  }
-  if (isJuil) {
-    return `📅 **Chiffre d'Affaires & Activité : Juillet 2026 (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Chiffre d'Affaires Réalisé** : **30 544,84 DT** sur **3 209 scans certifiés**\n` +
-      `• **Panier Moyen** : **9,518 DT** par transaction.`;
-  }
-  if (isJuin) {
-    return `📅 **Chiffre d'Affaires & Activité : Juin 2026 (PostgreSQL 17.7 Live)**\n\n` +
-      `• **Chiffre d'Affaires Réalisé** : **15 115,81 DT** sur **1 937 scans certifiés**\n` +
-      `• **Panier Moyen** : **7,804 DT** (phase de montée en charge initiale).`;
-  }
-  if (q.includes("mois") || q.includes("mensuel") || q.includes("historique") || q.includes("evolution")) {
-    return `📅 **Historique & Évolution Mensuelle des Ventes (PostgreSQL 17.7 Live)**\n\n` +
-      `• 🏆 **Mois Record Historique** : **Août 2026** avec **47 772,97 DT** sur **3 224 scans** !\n\n` +
-      `**Ventilation consolidée des 6 derniers mois :**\n` +
-      `• **Août 2026** : **47 772,97 DT** (3 224 scans · AOV 14,82 DT)\n` +
-      `• **Septembre 2026** : **38 220,71 DT** (2 868 scans · AOV 13,33 DT)\n` +
-      `• **Octobre 2026** : **34 068,57 DT** (2 833 scans · AOV 12,03 DT)\n` +
-      `• **Juillet 2026** : **30 544,84 DT** (3 209 scans · AOV 9,52 DT)\n` +
-      `• **Juin 2026** : **15 115,81 DT** (1 937 scans · AOV 7,80 DT)\n` +
-      `• **Novembre 2026 (En cours)** : **3 111,35 DT** (268 scans)\n\n` +
-      `💡 *Données synchronisées en temps réel depuis \`public.purchase\` de PostgreSQL 17.7.*`;
+  // 1c. Activité mensuelle depuis live.monthly_breakdown
+  const monthRoots = { janv: '01', fevr: '02', mars: '03', avri: '04', mai: '05', juin: '06', juil: '07', aout: '08', sept: '09', septe: '09', octo: '10', octb: '10', nove: '11', dece: '12', oct: '10', sep: '09', nov: '11' };
+  const monthNames = { '01': 'Janvier', '02': 'Février', '03': 'Mars', '04': 'Avril', '05': 'Mai', '06': 'Juin', '07': 'Juillet', '08': 'Août', '09': 'Septembre', '10': 'Octobre', '11': 'Novembre', '12': 'Décembre' };
+  let wantedMonth = null;
+  q.split(' ').forEach(w => {
+    if (wantedMonth) return;
+    const key = Object.keys(monthRoots).find(r => (w.length >= 4 ? w.startsWith(r.slice(0, 4)) : w === r));
+    if (key) wantedMonth = monthRoots[key];
+  });
+  const mb = Array.isArray(live.monthly_breakdown) ? live.monthly_breakdown : [];
+  const wantsMonths = wantedMonth || q.includes("mois") || q.includes("mensuel") || q.includes("historique") || q.includes("evolution") || q.includes("activite");
+  if (wantsMonths && mb.length) {
+    const totalMb = mb.reduce((a, m) => a + (parseFloat(m.ca) || 0), 0) || 1;
+    const label = m => { const [y, mm] = String(m.month).split('-'); return `${monthNames[mm] || mm} ${y}`; };
+    if (wantedMonth) {
+      const row = mb.find(m => String(m.month).endsWith('-' + wantedMonth));
+      if (!row) return `📅 **${monthNames[wantedMonth]}** : aucune transaction enregistrée dans les données synchronisées.`;
+      const ca_m = parseFloat(row.ca) || 0;
+      return `📅 **Activité ${label(row)} (PostgreSQL 17.7 · dernière synchro)**\n\n` +
+        `• **Chiffre d'affaires** : **${ca_m.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} DT** (${(ca_m / totalMb * 100).toFixed(1)}% du CA total)\n` +
+        `• **Transactions** : **${parseInt(row.scans).toLocaleString('fr-FR')} scans** · **Panier moyen** : **${(ca_m / (row.scans || 1)).toFixed(3)} DT**\n` +
+        `• **Succursales** : **${(parseFloat(row.ca_succ) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} DT** · **Cafétérias** : **${(parseFloat(row.ca_cafe) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} DT**\n\n` +
+        `ℹ️ *Mode dégradé : le serveur de retrieval n'a pas répondu, détail magasins indisponible.*`;
+    }
+    const best = mb.reduce((a, m) => ((parseFloat(m.ca) || 0) > (parseFloat(a.ca) || 0) ? m : a), mb[0]);
+    return `📅 **Ventilation Mensuelle (PostgreSQL 17.7 · dernière synchro)**\n\n` +
+      `• **Mois record** : **${label(best)}** avec **${(parseFloat(best.ca) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} DT**\n` +
+      mb.slice().reverse().map(m => `• **${label(m)}** : **${(parseFloat(m.ca) || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} DT** (${parseInt(m.scans).toLocaleString('fr-FR')} scans)`).join('\n');
   }
 
   // 2. Panier Moyen (AOV)
@@ -5535,8 +5453,8 @@ function getClientRagAnswer(rawQuestion, liveInfo, isStrictFallback = false) {
   }
 
   if (isStrictFallback) {
-    return `💡 **Indicateurs Clés ENA W BONDIN × FIDNESS (PostgreSQL 17.7 Live)**\n\n` +
-      `Pour répondre à votre recherche *« ${rawQuestion} »* :\n` +
+    return `⚠️ **Le serveur de retrieval temps réel est injoignable pour le moment.**\n\n` +
+      `Pour *« ${rawQuestion} »*, voici les indicateurs de la dernière synchronisation PostgreSQL :\n` +
       `• **Chiffre d'Affaires Fidélité** : **${ca.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} DT** sur **${scans.toLocaleString('fr-FR')} scans QR**.\n` +
       `• **Panier Moyen Global** : **${aov.toFixed(3)} DT** par acte d'achat.\n` +
       `• **Clients Actifs** : **${clients.toLocaleString('fr-FR')} membres** (sur ${inscrits.toLocaleString('fr-FR')} inscrits CRM).\n` +
@@ -5555,13 +5473,18 @@ function formatRagMarkdown(str) {
   const lines = s.split('\n');
   return lines.map(line => {
     const tr = line.trim();
+    if (tr.startsWith('|')) {
+      if (/^\|[\s:|-]+\|?$/.test(tr)) return '';
+      const cells = tr.split('|').map(c => c.trim()).filter(Boolean);
+      return `<div class="rag-bullet-item"><span class="rag-bullet-dot"></span><span>${cells.join(' · ')}</span></div>`;
+    }
     if (tr.startsWith('### ')) {
       return `<div class="rag-section-title">${tr.substring(4)}</div>`;
     }
     if (tr.startsWith('## ')) {
       return `<div class="rag-section-title">${tr.substring(3)}</div>`;
     }
-    if (tr.startsWith('• ') || tr.startsWith('- ') || tr.startsWith('* ')) {
+    if (/^(•|■|-|\*|\u0007)\s/.test(tr)) {
       const content = tr.substring(2);
       const indent = line.search(/\S/) > 1 ? ' style="margin-left: 14px;"' : '';
       return `<div class="rag-bullet-item"${indent}><span class="rag-bullet-dot"></span><span>${content}</span></div>`;
