@@ -237,44 +237,20 @@ class handler(BaseHTTPRequestHandler):
             self._send_json(data)
             return
 
-        # 2. Endpoint /api/rag/chat (Copilot Décisionnel RAG)
+        # 2. Endpoint /api/rag/chat (Copilot Décisionnel RAG 100% PostgreSQL 17.7 Temps Réel)
         if clean_path in ("/api/rag/chat", "/api/chat", "/api/chat.py"):
             body = self._read_body_json()
-            raw_question = (body.get("question") or body.get("message") or "").strip()
+            raw_question = (body.get("question") or body.get("message") or body.get("query") or "").strip()
             api_key = (
                 body.get("apiKey") or 
                 os.environ.get("GEMINI_API_KEY") or 
                 os.environ.get("GOOGLE_API_KEY") or 
                 ""
             ).strip()
-
             live_info = body.get("liveContext") or {}
-            if not live_info:
-                live_info = get_live_dwh_metrics()
-
-            answer = None
-            source = "Moteur Décisionnel DWH Live"
-
-            if raw_question:
-                if api_key:
-                    try:
-                        answer = chat_mod.call_gemini_api(raw_question, api_key, live_info)
-                        if answer:
-                            source = "Moteur IA Décisionnel (Ancrage DWH Certifié)"
-                    except Exception as e:
-                        print("[WARN] Échec Gemini API, fallback déterministe:", e)
-
-                if not answer:
-                    answer = chat_mod.fallback_deterministic_rag(raw_question, live_info)
-            else:
-                answer = chat_mod.fallback_deterministic_rag("", live_info)
-
-            self._send_json({
-                "question": raw_question,
-                "answer": answer,
-                "sources": [source],
-                "timestamp": datetime.now().isoformat()
-            })
+            res = chat_mod.process_rag_question(raw_question, api_key, live_info)
+            res["timestamp"] = datetime.now().isoformat()
+            self._send_json(res)
             return
 
         # 3. Endpoint /api/simulate-scan (Simulation Scan Mobile Caisses)
