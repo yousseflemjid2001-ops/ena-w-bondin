@@ -725,10 +725,10 @@
         <span class="exec-kpi-label">Chiffre d'Affaires Fidélité</span>
         <span class="exec-kpi-tag success">+102% MoM</span>
       </div>
-      <div class="exec-kpi-value" id="kpi-ca-val">153 317 DT</div>
+      <div class="exec-kpi-value" id="kpi-ca-val">168 397 DT</div>
       <div class="exec-kpi-footer">
-        <span>Scans enregistrés</span>
-        <strong id="kpi-scans-summary">13 097 scans</strong>
+        <span>Scans enregistrés (Live)</span>
+        <strong id="kpi-scans-summary">14 307 scans</strong>
       </div>
     </div>
 
@@ -737,7 +737,7 @@
         <span class="exec-kpi-label">Panier Moyen (AOV)</span>
         <span class="exec-kpi-tag info" id="kpi-aov-tag">Consolidé</span>
       </div>
-      <div class="exec-kpi-value" id="kpi-aov-val">11.7 DT</div>
+      <div class="exec-kpi-value" id="kpi-aov-val">11.770 DT</div>
       <div class="exec-kpi-footer">
         <span>Succursales : <strong>37.6 DT</strong></span>
         <span>Cafétérias : <strong>4.2 DT</strong></span>
@@ -747,11 +747,11 @@
     <div class="exec-kpi-card">
       <div class="exec-kpi-header">
         <span class="exec-kpi-label">Membres Actifs (≥ 1 scan)</span>
-        <span class="exec-kpi-tag highlight" id="kpi-activation-val">28,0%</span>
+        <span class="exec-kpi-tag highlight" id="kpi-activation-val">28,2%</span>
       </div>
-      <div class="exec-kpi-value" id="kpi-inscrits-val">759 clients</div>
+      <div class="exec-kpi-value" id="kpi-inscrits-val">787 clients</div>
       <div class="exec-kpi-footer">
-        <span>Sur <strong>2 715</strong> inscrits CRM</span>
+        <span>Sur <strong id="kpi-total-crm">2 794</strong> inscrits CRM</span>
         <span id="kpi-freq-val" style="font-weight: 700; color: #8E0E14;">3,65 visites/mois</span>
       </div>
     </div>
@@ -759,12 +759,12 @@
     <div class="exec-kpi-card">
       <div class="exec-kpi-header">
         <span class="exec-kpi-label">Équilibre Earn &amp; Burn</span>
-        <span class="exec-kpi-tag gold" id="kpi-ratio-val">44,1%</span>
+        <span class="exec-kpi-tag gold" id="kpi-ratio-val">47,7%</span>
       </div>
-      <div class="exec-kpi-value" id="kpi-cadeaux-val">35 cadeaux</div>
+      <div class="exec-kpi-value" id="kpi-cadeaux-val">290 cadeaux</div>
       <div class="exec-kpi-footer">
-        <span>Points brûlés : <strong>226 900</strong></span>
-        <span>Émis : <strong>513 924</strong></span>
+        <span>Points brûlés : <strong>264 900</strong></span>
+        <span>Émis : <strong>555 215</strong></span>
       </div>
     </div>
 
@@ -773,10 +773,10 @@
         <span class="exec-kpi-label">Dette Provisionnée (Passif)</span>
         <span class="exec-kpi-tag secure">Couverture 100%</span>
       </div>
-      <div class="exec-kpi-value debt" id="kpi-dette-val">2 870.2 DT</div>
+      <div class="exec-kpi-value debt" id="kpi-dette-val">2 677.5 DT</div>
       <div class="exec-kpi-footer">
         <span>Solde net en circulation</span>
-        <strong>287 024 pts</strong>
+        <strong>267 745 pts</strong>
       </div>
     </div>
 
@@ -812,7 +812,7 @@
       <button class="pill-tab-btn" data-tab="tab-cagnotte" role="tab" aria-selected="false" id="btn-tab-cagnotte">
         <span class="tab-badge">04</span>
         <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span class="tab-label">Cagnotte, LTV &amp; IA Client</span>
+        <span class="tab-label">Cagnotte, LTV &amp; Récompenses</span>
       </button>
       <button class="pill-tab-btn" data-tab="tab-avancees" role="tab" aria-selected="false" id="btn-tab-avancees">
         <span class="tab-badge">05</span>
@@ -878,7 +878,7 @@
       <div class="pro-date-picker-wrap" style="width: 100%; box-sizing: border-box;">
         <input type="date" id="filter-date-start" class="pro-date-field" value="2026-04-01" min="2026-01-01" max="2026-12-31" title="Date début" onchange="window.handleManualDateChange()">
         <span class="date-arrow">&rarr;</span>
-        <input type="date" id="filter-date-end" class="pro-date-field" value="2026-10-20" min="2026-01-01" max="2026-12-31" title="Date fin" onchange="window.handleManualDateChange()">
+        <input type="date" id="filter-date-end" class="pro-date-field" value="2026-11-30" min="2026-01-01" max="2026-12-31" title="Date fin" onchange="window.handleManualDateChange()">
       </div>
     </div>
 
@@ -1007,12 +1007,35 @@
         <span>RAPPORT CONFIDENTIEL</span>
       </div>
       
-                        <!-- SECTION 1 : DYNAMIQUE DES INSCRIPTIONS & RÉPERTOIRE CRM (PLACÉ EN PREMIER) -->
+      <!-- BANDEAU DERNIÈRES MISES À JOUR EN TEMPS RÉEL (POSTGRESQL 17.7 PRODUCTION LIVE) -->
+      <div id="live-updates-cockpit-strip" style="margin: 10px 0 18px 0; padding: 14px 20px; border-radius: 14px; background: linear-gradient(135deg, #FFFFFF 0%, #FAF7F5 100%); border: 1.5px solid rgba(16, 185, 129, 0.45); box-shadow: 0 6px 22px rgba(16, 185, 129, 0.08); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <span style="display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px; border-radius: 999px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #047857; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.03em;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; box-shadow: 0 0 8px #10B981; display: inline-block;"></span>
+            POSTGRESQL 17.7 TEMPS RÉEL
+          </span>
+          <div style="font-size: 0.83rem; color: #1F2937; font-weight: 600;">
+            <span>Dernière synchro : <strong id="live-cockpit-sync-time" style="color: #8E0E14; font-family: monospace;">Synchronisation en direct...</strong></span>
+            <span style="margin: 0 8px; color: #D1D5DB;">|</span>
+            <span>Dernier encaissement caisse : <strong id="live-cockpit-last-ticket" style="color: #047857;">Chargement du dernier ticket...</strong></span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span id="live-cockpit-db-badge" style="font-size: 0.75rem; font-weight: 700; color: #6B7280; background: #F3F4F6; padding: 4px 10px; border-radius: 6px; border: 1px solid #E5E7EB;">
+            57.131.30.69:5432 &bull; 14 307 scans certifiés
+          </span>
+          <button type="button" onclick="window.refreshLiveDashboard()" style="background: #8E0E14; color: #FFFFFF; border: none; padding: 6px 13px; border-radius: 8px; font-size: 0.76rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(142,14,20,0.25);">
+            <span>⚡ Actualiser Temps Réel</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 1 : DYNAMIQUE DES INSCRIPTIONS & RÉPERTOIRE CRM (PLACÉ EN PREMIER) -->
       <!-- ======================================================== -->
-      <div class="bondin-report-section-header" style="margin: 18px 0 16px 0;">
+      <div class="bondin-report-section-header" style="margin: 14px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">1</span>
-        <h2 class="bondin-section-title">Dynamique d'Acquisition &amp; Répertoire des Clients Inscrits (2 715 Membres DWH)</h2>
+        <h2 class="bondin-section-title" id="section1-crm-title">Dynamique d'Acquisition &amp; Répertoire des Clients Inscrits (2 794 Membres DWH Live)</h2>
       </div>
 
       <!-- GRILLE 2 COLONNES SUR LA MÊME LIGNE : RYTHME D'INSCRIPTION & RÉPERTOIRE CRM -->
@@ -1049,7 +1072,7 @@
               </div>
 
               <span class="tag-badge gold" id="inscriptions-chart-badge" style="font-size: 0.82rem; font-weight: 800; padding: 6px 14px;">
-                2 715 Inscrits · Base CRM
+                2 794 Inscrits · Base CRM (Live)
               </span>
             </div>
           </div>
@@ -1058,7 +1081,7 @@
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px;">
             <div style="background: rgba(142,14,20,0.04); border: 1px solid rgba(142,14,20,0.12); border-radius: 10px; padding: 12px 14px; text-align: center;">
               <div style="font-size: 0.76rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Total Base CRM</div>
-              <div id="badge-total-crm-count" style="font-size: 1.35rem; font-weight: 900; color: #8E0E14; margin-top: 4px;">2 715 membres</div>
+              <div id="badge-total-crm-count" style="font-size: 1.35rem; font-weight: 900; color: #8E0E14; margin-top: 4px;">2 794 membres</div>
             </div>
             <div style="background: rgba(217,119,6,0.06); border: 1px solid rgba(217,119,6,0.18); border-radius: 10px; padding: 12px 14px; text-align: center;">
               <div style="font-size: 0.76rem; color: #6B7280; font-weight: 700; text-transform: uppercase;">Pic Campagne Lancement</div>
@@ -1082,7 +1105,7 @@
             <div>
               <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
                 <img src="bondin_logo.png" alt="BONDIN" style="height: 28px; width: auto; border-radius: 6px; box-shadow: 0 1px 4px rgba(142,14,20,0.25); object-fit: contain;">
-                <span>Répertoire Officiel des Adhérents &amp; Inscrits CRM (2 729+ Membres DWH)</span>
+                <span>Répertoire Officiel des Adhérents &amp; Inscrits CRM (2 794 Membres Live)</span>
               </div>
               <div style="font-size: 0.82rem; color: #6B7280; font-weight: 500; margin-top: 4px;">
                 Base certifiée PostgreSQL · Filtre dynamique &amp; Exportation PDF
@@ -1518,78 +1541,49 @@
       <div class="bondin-report-section-header" style="margin: 22px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">3</span>
-        <h2 class="bondin-section-title">Détection des Profils Grossistes &amp; Volumes B2B Suspects (Réseau Succursales)</h2>
+        <h2 class="bondin-section-title">Dernières Mises à Jour &amp; Flux Live des Transactions Caisse (Direct PostgreSQL 17.7)</h2>
       </div>
 
-      <div class="visual-card" style="margin-bottom: 24px; padding: 22px 24px;">
-        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
-          <div>
-            <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <span>Surveillance des Gros Volumes d'Achats &amp; Risque Détournement B2B</span>
-            </div>
-            <div style="font-size: 0.76rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
-              Comptes professionnels achetant en succursale (panier moyen &gt; 35 DT, fréquence &gt; 2/semaine) · Contrôle des volumes
+      <!-- MODULE FLUX DE TRANSACTIONS EN TEMPS RÉEL (DIRECT POSTGRESQL LIVE) -->
+      <div class="visual-card" style="margin-bottom: 24px; border: 1.5px solid rgba(16, 185, 129, 0.45); box-shadow: 0 6px 25px rgba(16, 185, 129, 0.12);">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
+            <div>
+              <div class="visual-title-center" style="text-align: left; margin: 0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Flux Live des Dernières Transactions Scannées en Caisse (PostgreSQL 17.7 Temps Réel)
+              </div>
+              <div style="font-size: 0.76rem; color: #6B7280; font-weight: 500; margin-top: 2px;">
+                Remontée automatique à la seconde depuis la table <code style="color:#8E0E14; font-weight:700;">public.purchase (company_id = 2)</code>
+              </div>
             </div>
           </div>
-          
-          <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-            <!-- FILTRE PAR TYPE DE PROFIL : TOUS / GROSSISTES B2B / CLIENTS PARTICULIERS -->
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="font-size: 0.74rem; font-weight: 800; color: #4B5563; text-transform: uppercase;">Profil :</span>
-              <div class="grossistes-profile-filter-group" style="display: inline-flex; background: #F3F4F6; padding: 2px; border-radius: 8px; border: 1px solid #D1D5DB; gap: 2px;">
-                <button type="button" class="btn-grossiste-profile active" id="btn-gprof-all" onclick="window.filterGrossistesProfile('all')"
-                  style="border: none; background: #8E0E14; color: #FFFFFF; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">
-                  Tous (Consolidé)
-                </button>
-                <button type="button" class="btn-grossiste-profile" id="btn-gprof-b2b" onclick="window.filterGrossistesProfile('b2b')"
-                  style="border: none; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
-                  Grossistes B2B Pur
-                </button>
-                <button type="button" class="btn-grossiste-profile" id="btn-gprof-client" onclick="window.filterGrossistesProfile('client')"
-                  style="border: none; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
-                  Clients Mixtes / Particuliers
-                </button>
-              </div>
-            </div>
-
-            <!-- FILTRE NOMBRE DE LIGNES : TOP 5 / 10 / 20 / 50 -->
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="font-size: 0.74rem; font-weight: 800; color: #4B5563; text-transform: uppercase;">Volume :</span>
-              <div class="grossistes-top-filter-group" role="group" aria-label="Filtrer top grossistes">
-                <button type="button" class="btn-grossiste-top active" data-top="5" onclick="window.filterTopGrossistes(5)" title="Afficher le Top 5">Top 5</button>
-                <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10">Top 10</button>
-                <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20">Top 20</button>
-                <button type="button" class="btn-grossiste-top" data-top="50" onclick="window.filterTopGrossistes(50)" title="Afficher le Top 50 DWH">Top 50</button>
-              </div>
-            </div>
-
-            <span class="tag-badge alert" id="badge-grossistes-surveillance" style="font-size: 0.72rem; font-weight: 800; padding: 4px 10px;">⚡ 375 Comptes B2B Identifiés</span>
-            <button type="button" class="btn-action" onclick="window.exportGrossistesPDF()" style="background: #8E0E14; color: #FFFFFF; font-weight: 700; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(142,14,20,0.25); font-size: 0.74rem; transition: all 0.2s;" title="Extraire le rapport officiel d'audit des grossistes en PDF">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              <span>Extraire PDF</span>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span class="tag-badge green" id="live-feed-badge">PostgreSQL 17.7 Connecté</span>
+            <button onclick="window.refreshLiveDashboard()" class="btn-action" style="padding: 6px 12px; font-size: 11px; background: #8E0E14; border: none; color: #FFFFFF; cursor: pointer; border-radius: 8px; font-weight: 700; transition: all 0.2s;" title="Actualiser immédiatement les dernières transactions PostgreSQL">
+              🔄 Actualiser Flux Live
+            </button>
+            <button onclick="window.simulateLiveScan()" class="btn-action" style="padding: 6px 12px; font-size: 11px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #D97706; cursor: pointer; border-radius: 8px; font-weight: 700; transition: all 0.2s;" title="Simuler une transaction de caisse en direct et observer la propagation instantanée sur tout le tableau de bord">
+              ⚡ Simuler Encaissement Live
             </button>
           </div>
         </div>
-
-        <div class="table-responsive no-horizontal-scroll" style="overflow-x: hidden;">
-          <table class="data-table fixed-table table-grossistes-sync" id="table-grossistes-cockpit" style="width: 100%; table-layout: fixed;">
+        <div class="table-responsive">
+          <table class="data-table" id="table-live-transactions">
             <thead>
               <tr>
-                <th style="width: 16%;">Client / Raison Sociale</th>
-                <th style="width: 12%;">Numéro</th>
-                <th style="width: 21%;">Email Professionnel</th>
-                <th style="width: 8.5%; text-align: right;">Total CA</th>
-                <th style="width: 7%; text-align: center;">Points</th>
-                <th style="width: 8.5%; text-align: right;">Succursale</th>
-                <th style="width: 7%; text-align: right;">Cafétéria</th>
-                <th style="width: 7%; text-align: right;">Max Ticket</th>
-                <th style="width: 6%; text-align: center;">Fréq.</th>
-                <th style="width: 7%; text-align: center;">Alerte</th>
+                <th>N° Ticket Caisse</th>
+                <th>Client Fidélité</th>
+                <th>Magasin / Point de Vente</th>
+                <th>Montant Ticket (TND)</th>
+                <th>Points Fidélité</th>
+                <th>Horodatage Transaction (Live)</th>
+                <th>Statut Flux DWH</th>
               </tr>
             </thead>
-            <tbody>
-              <!-- Injecté et synchronisé par app.js -->
+            <tbody id="tbody-live-transactions">
+              <!-- Injecté dynamiquement par app.js -->
             </tbody>
           </table>
         </div>
@@ -1680,40 +1674,8 @@
         </div>
       </div>
 
-      <!-- SECTION 6 (FIN DU COCKPIT) : PASSERELLE DIRECTE AGENT IA FIDNESS -->
-      <div class="bondin-report-section-header" style="margin: 24px 0 14px 0;">
-        <span class="bondin-section-bar"></span>
-        <span class="bondin-section-badge" style="background: linear-gradient(135deg, #F59E0B, #8E0E14);">IA</span>
-        <h2 class="bondin-section-title">Agent IA Fidness — Détection Prédictive du Churn &amp; Notifications Push Ciblées</h2>
-      </div>
-      <div class="visual-card" style="margin-bottom: 20px; background: linear-gradient(135deg, #73080E 0%, #8E0E14 55%, #A8101E 100%); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 16px; padding: 20px 26px; color: #FFFFFF; box-shadow: 0 14px 34px rgba(115, 8, 14, 0.25); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px;">
-        <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 280px;">
-          <div style="width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.1); border: 1.5px solid rgba(251, 191, 36, 0.65); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;">
-            <img src="fidness_icon.png" alt="Agent IA Fidness" style="width: 34px; height: 34px; object-fit: contain;" onerror="this.style.display='none'">
-            <span style="position: absolute; top: -4px; right: -4px; width: 12px; height: 12px; border-radius: 50%; background: #10B981; border: 2px solid #8E0E14;"></span>
-          </div>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-              <span style="background: linear-gradient(90deg, #F59E0B, #FBBF24); color: #1E0507; font-size: 0.68rem; font-weight: 900; padding: 2px 9px; border-radius: 999px; letter-spacing: 0.06em; text-transform: uppercase;">🤖 AGENT IA FIDNESS</span>
-              <span style="font-size: 0.75rem; color: #FDE68A; font-weight: 600;">Détection du Churn Élevé &amp; Recommandations Push</span>
-            </div>
-            <h3 style="margin: 0; font-size: 1.06rem; font-weight: 800; color: #FFFFFF;">22 Clientes Sensibles Prioritaires détectées qui risquent de ne plus revenir (4 786,250 TND de CA exposé)</h3>
-            <p style="margin: 4px 0 0 0; font-size: 0.82rem; color: rgba(255,255,255,0.84);">Cliquez pour ouvrir l'<strong>Agent IA Fidness</strong> (situé juste avant la Segmentation), afficher la liste des clientes sensibles et envoyer les notifications push recommandées.</p>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <button type="button" onclick="window.openAgentFidnessTab()" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #1E0507; font-weight: 800; font-size: 0.85rem; padding: 12px 22px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 6px 18px rgba(245, 158, 11, 0.38);">
-            <span>Ouvrir l'Agent IA Fidness</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </button>
-        </div>
-      </div>
-
     </section>
 
-    <!-- ======================================================== -->
-    <!-- ONGLET 2 : SEGMENTATION, GROSSISTES B2B & PARRAINAGE     -->
-    <!-- ======================================================== -->
     <!-- ======================================================== -->
     <!-- ONGLET 2 : AGENT IA FIDNESS (DÉTECTION CHURN & PUSH)     -->
     <!-- ======================================================== -->
@@ -2257,75 +2219,75 @@
       <div class="bondin-report-section-header" style="margin: 10px 0 16px 0;">
         <span class="bondin-section-bar"></span>
         <span class="bondin-section-badge">4</span>
-        <h2 class="bondin-section-title">Top Clients, Grossistes B2B &amp; Flux Caisse</h2>
+        <h2 class="bondin-section-title">Détection des Profils Grossistes &amp; Volumes B2B Suspects (Réseau Succursales)</h2>
       </div>
-      <!-- MODULE FLUX DE TRANSACTIONS EN TEMPS RÉEL (DIRECT POSTGRESQL LIVE) -->
-      <div class="visual-card" style="margin-bottom: 24px; border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 4px 25px rgba(16, 185, 129, 0.12);">
-        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
-            <div class="visual-title-center" style="text-align: left; margin: 0;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              Flux Live des Dernières Transactions Scannées en Caisse (Direct PostgreSQL 17.7)
+
+      <!-- Table des Grossistes sous surveillance (Unique & Complète avec Filtres Profil + Top + PDF) -->
+      <div class="visual-card" style="margin-bottom: 24px; padding: 22px 24px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+          <div>
+            <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 1rem; font-weight: 800; color: #8E0E14; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E0E14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Surveillance des Gros Volumes d'Achats &amp; Risque Détournement B2B</span>
+            </div>
+            <div style="font-size: 0.76rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
+              Comptes professionnels achetant en succursale (panier moyen &gt; 35 DT, fréquence &gt; 2/semaine) · Contrôle des volumes
             </div>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span class="tag-badge green" id="live-feed-badge">PostgreSQL 17.7 Connecté</span>
-            <button onclick="window.simulateLiveScan()" class="btn-action" style="padding: 5px 12px; font-size: 11px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #F59E0B; cursor: pointer; border-radius: 8px; font-weight: 700; transition: all 0.2s;" title="Simuler une transaction de caisse en direct (+18,500 TND) et observer la propagation instantanée sur tout le tableau de bord">
-              ⚡ Simuler Encaissement (+18,500 TND)
+          
+          <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <!-- FILTRE PAR TYPE DE PROFIL : TOUS / GROSSISTES B2B / CLIENTS PARTICULIERS -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.74rem; font-weight: 800; color: #4B5563; text-transform: uppercase;">Profil :</span>
+              <div class="grossistes-profile-filter-group" style="display: inline-flex; background: #F3F4F6; padding: 2px; border-radius: 8px; border: 1px solid #D1D5DB; gap: 2px;">
+                <button type="button" class="btn-grossiste-profile active" id="btn-gprof-all" onclick="window.filterGrossistesProfile('all')"
+                  style="border: none; background: #8E0E14; color: #FFFFFF; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+                  Tous (Consolidé)
+                </button>
+                <button type="button" class="btn-grossiste-profile" id="btn-gprof-b2b" onclick="window.filterGrossistesProfile('b2b')"
+                  style="border: none; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
+                  Grossistes B2B Pur
+                </button>
+                <button type="button" class="btn-grossiste-profile" id="btn-gprof-client" onclick="window.filterGrossistesProfile('client')"
+                  style="border: none; background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700; color: #4B5563; cursor: pointer; transition: all 0.2s;">
+                  Clients Mixtes / Particuliers
+                </button>
+              </div>
+            </div>
+
+            <!-- FILTRE NOMBRE DE LIGNES : TOP 5 / 10 / 20 / 50 -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.74rem; font-weight: 800; color: #4B5563; text-transform: uppercase;">Volume :</span>
+              <div class="grossistes-top-filter-group" role="group" aria-label="Filtrer top grossistes">
+                <button type="button" class="btn-grossiste-top active" data-top="5" onclick="window.filterTopGrossistes(5)" title="Afficher le Top 5">Top 5</button>
+                <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10">Top 10</button>
+                <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20">Top 20</button>
+                <button type="button" class="btn-grossiste-top" data-top="50" onclick="window.filterTopGrossistes(50)" title="Afficher le Top 50 DWH">Top 50</button>
+              </div>
+            </div>
+
+            <span class="tag-badge alert" id="badge-grossistes-surveillance" style="font-size: 0.72rem; font-weight: 800; padding: 4px 10px;">⚡ 375 Comptes B2B Identifiés</span>
+            <button type="button" class="btn-action" onclick="window.exportGrossistesPDF()" style="background: #8E0E14; color: #FFFFFF; font-weight: 700; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(142,14,20,0.25); font-size: 0.74rem; transition: all 0.2s;" title="Extraire le rapport officiel d'audit des grossistes en PDF">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>Extraire PDF</span>
             </button>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="data-table" id="table-live-transactions">
-            <thead>
-              <tr>
-                <th>N° Ticket Caisse</th>
-                <th>Client</th>
-                <th>Magasin / Point de Vente</th>
-                <th>Montant Ticket (TND)</th>
-                <th>Points Fidélité</th>
-                <th>Horodatage Transaction</th>
-                <th>Statut Flux DWH</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-live-transactions">
-              <!-- Injecté dynamiquement par app.js -->
-            </tbody>
-          </table>
-        </div>
-      </div>
 
-      <!-- Table des Grossistes sous surveillance -->
-      <div class="visual-card" style="margin-bottom: 20px;">
-        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <div class="visual-title-center" style="text-align: left; margin: 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Détection des Profils Grossistes &amp; Volumes B2B Suspects</div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-secondary, #6B7280); text-transform: uppercase; letter-spacing: 0.4px;">Affichage :</span>
-            <div class="grossistes-top-filter-group" role="group" aria-label="Filtrer top grossistes">
-              <button type="button" class="btn-grossiste-top active" data-top="5" onclick="window.filterTopGrossistes(5)" title="Afficher le Top 5 des plus grands grossistes">Top 5</button>
-              <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10 des plus grands grossistes">Top 10</button>
-              <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20 des plus grands grossistes">Top 20</button>
-              <button type="button" class="btn-grossiste-top" data-top="50" onclick="window.filterTopGrossistes(50)" title="Afficher l'intégralité du Top 50 des grossistes DWH">Top 50</button>
-            </div>
-            
-            <span class="visual-info-icon" title="Détection automatique des comptes professionnels selon le ticket en succursale">?</span>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <table class="data-table" id="table-grossistes">
+        <div class="table-responsive no-horizontal-scroll" style="overflow-x: hidden;">
+          <table class="data-table fixed-table table-grossistes-sync" id="table-grossistes" style="width: 100%; table-layout: fixed;">
             <thead>
               <tr>
-                <th>Client (Grossiste / B2B)</th>
-                <th>Numéro</th>
-                <th>Email</th>
-                <th style="text-align: right;">Total CA Dépensé</th>
-                <th style="text-align: center;">Total Points</th>
-                <th style="text-align: right;">Achats Succursale</th>
-                <th style="text-align: right;">Achats Cafétéria</th>
-                <th style="text-align: right;">Max Ticket</th>
-                <th style="text-align: center;">Fréquence</th>
-                <th style="text-align: center;">Statut d'Alerte</th>
+                <th style="width: 16%;">Client / Raison Sociale</th>
+                <th style="width: 12%;">Numéro</th>
+                <th style="width: 21%;">Email Professionnel</th>
+                <th style="width: 8.5%; text-align: right;">Total CA</th>
+                <th style="width: 7%; text-align: center;">Points</th>
+                <th style="width: 8.5%; text-align: right;">Succursale</th>
+                <th style="width: 7%; text-align: right;">Cafétéria</th>
+                <th style="width: 7%; text-align: right;">Max Ticket</th>
+                <th style="width: 6%; text-align: center;">Fréq.</th>
+                <th style="width: 7%; text-align: center;">Alerte</th>
               </tr>
             </thead>
             <tbody>
@@ -2413,34 +2375,8 @@
 
       </div>
 
-      <!-- Tables Churn & Market Basket -->
-      <div class="visuals-grid-3x2" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
-        
-        <!-- Table Churn ML -->
-        <div class="visual-card">
-          <div class="visual-header">
-            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Moteur Prédictif : Risque de Churn &amp; Rétention Client (30 jours)</div>
-            <span class="visual-info-icon" title="Score Machine Learning identifiant les clients à réactiver d'urgence par push promo">?</span>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table" id="table-churn">
-              <thead>
-                <tr>
-                  <th>Nom du Client (Fidélité)</th>
-                  <th>Inactivité</th>
-                  <th>CA Cumulé</th>
-                  <th>Points</th>
-                  <th>Score Churn</th>
-                  <th>Action Push</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
+      <!-- Market Basket Analysis (Sans doublon avec l'Agent IA Fidness) -->
+      <div class="visuals-grid-3x2" style="grid-template-columns: 1fr; margin-bottom: 20px;">
         <!-- Market Basket Analysis -->
         <div class="visual-card">
           <div class="visual-header">

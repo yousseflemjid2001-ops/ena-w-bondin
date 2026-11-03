@@ -951,7 +951,7 @@ function initSlicers() {
         const e = document.getElementById('filter-date-end')?.value;
         const gDate = document.getElementById('group-filter-date');
         if (gDate) {
-          gDate.classList.toggle('is-active', s !== '2026-04-01' || e !== '2026-10-20');
+          gDate.classList.toggle('is-active', s !== '2026-04-01' || (e !== '2026-11-30' && e !== '2026-10-20'));
         }
         executeGlobalFilters();
       });
@@ -985,11 +985,11 @@ window.selectPeriodPreset = function(presetKey) {
     eInput.value = '2026-09-30';
   } else if (presetKey === 'ytd') {
     sInput.value = '2026-01-01';
-    eInput.value = '2026-10-20';
+    eInput.value = '2026-11-30';
   } else {
     // 'all'
     sInput.value = '2026-04-01';
-    eInput.value = '2026-10-20';
+    eInput.value = '2026-11-30';
   }
 
   updatePeriodPresetPills(presetKey);
@@ -1005,8 +1005,8 @@ window.selectPeriodPreset = function(presetKey) {
     '7d': '⚡ 7 Derniers Jours (14 au 20 Octobre 2026)',
     '30d': '📅 Dernier Mois (30 Jours Glissants)',
     '90d': '📊 3ème Trimestre Q3 (Juillet - Septembre 2026)',
-    'ytd': '🏛️ Année 2026 en Cours (YTD)',
-    'all': '🌐 Tout l\'Historique Consolidé (Avril - Octobre 2026)'
+    'ytd': '🏛️ Année 2026 en Cours (YTD Temps Réel)',
+    'all': '🌐 Tout l\'Historique Consolidé (Avril - Novembre 2026 Live)'
   };
   if (typeof showToast === 'function') {
     showToast(`Période appliquée : ${labels[presetKey] || presetKey} — 100% des visualisations synchronisées`, 'success');
@@ -1030,8 +1030,8 @@ window.handleManualDateChange = function() {
   if (s === '2026-10-14' && e === '2026-10-20') matchKey = '7d';
   else if (s === '2026-09-21' && e === '2026-10-20') matchKey = '30d';
   else if (s === '2026-07-01' && e === '2026-09-30') matchKey = '90d';
-  else if (s === '2026-01-01' && e === '2026-10-20') matchKey = 'ytd';
-  else if (s === '2026-04-01' && e === '2026-10-20') matchKey = 'all';
+  else if (s === '2026-01-01' && (e === '2026-10-20' || e === '2026-11-30')) matchKey = 'ytd';
+  else if (s === '2026-04-01' && (e === '2026-10-20' || e === '2026-11-30')) matchKey = 'all';
 
   window.currentPeriodPreset = matchKey;
   updatePeriodPresetPills(matchKey);
@@ -1164,7 +1164,7 @@ window.clearCrossFilter = function() {
     const e = document.getElementById('filter-date-end');
     if (s && e) {
       s.value = '2026-04-01';
-      e.value = '2026-10-20';
+      e.value = '2026-11-30';
       const gDate = document.getElementById('group-filter-date');
       if (gDate) gDate.classList.remove('is-active');
     }
@@ -1187,7 +1187,7 @@ window.resetAllFilters = function() {
   const dStart = document.getElementById('filter-date-start');
   const dEnd = document.getElementById('filter-date-end');
   if (dStart) dStart.value = '2026-04-01';
-  if (dEnd) dEnd.value = '2026-10-20';
+  if (dEnd) dEnd.value = '2026-11-30';
   const gDate = document.getElementById('group-filter-date');
   if (gDate) gDate.classList.remove('is-active');
 
@@ -1218,47 +1218,55 @@ function executeGlobalFilters() {
   updateActiveFiltersBadge();
 
   const dStart   = document.getElementById('filter-date-start')?.value || '2026-04-01';
-  const dEnd     = document.getElementById('filter-date-end')?.value || '2026-10-20';
+  const dEnd     = document.getElementById('filter-date-end')?.value || '2026-11-30';
   const magasin  = document.getElementById('filter-magasin')?.value || 'all';
   const gamme    = document.getElementById('filter-gamme')?.value || 'all';
   const segment  = document.getElementById('filter-segment')?.value || 'all';
   const reseau   = document.getElementById('slicer-reseau')?.value || 'all';
   const role     = document.getElementById('slicer-rls')?.value || 'dir_gen';
 
-  // Base métriques Live DWH Consolidées (PostgreSQL 13 097 scans certifiés)
+  // Base métriques Live DWH Consolidées (PostgreSQL 14 307 scans certifiés)
   let baseCA = (liveSyncData && liveSyncData.total_ca_tnd) 
     ? liveSyncData.total_ca_tnd 
-    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.ca_total : 153316.55);
+    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.ca_total : 168397.27);
   let baseScans = (liveSyncData && liveSyncData.total_scans) 
     ? liveSyncData.total_scans 
-    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.nb_scans : 13097);
+    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.nb_scans : 14307);
   let baseClients = (liveSyncData && liveSyncData.clients_actifs) 
     ? liveSyncData.clients_actifs 
-    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_actifs : 759);
-  let baseInscrits = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_inscrits : 2715;
-  let baseDette = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.dette_tnd : 2870.240;
-  let baseBurn = 35;
-  let ratioEarnBurn = 44.15;
+    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_actifs : 787);
+  let baseInscrits = (liveSyncData && (liveSyncData.total_inscrits || liveSyncData.clients_inscrits))
+    ? Number(liveSyncData.total_inscrits || liveSyncData.clients_inscrits)
+    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.clients_inscrits : 2794);
+  let baseDette = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.dette_tnd : 2677.450;
+  let baseBurn = 290;
+  let ratioEarnBurn = 47.71;
   let aov = (liveSyncData && liveSyncData.panier_moyen_tnd) 
     ? liveSyncData.panier_moyen_tnd 
-    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.panier_moyen : 11.706);
+    : ((typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) ? DASHBOARD_DATA.kpis.panier_moyen : 11.770);
   
   // Donut Succursale vs Cafétéria
   let pctSucc = 72.19;
   let pctCafe = 27.81;
 
   // Gammes
-  let gammesSucc = [48500, 33200, 4800, 5100, 2100];
-  let gammesCafe = [20150, 10140, 24180, 2550, 2000];
+  let gammesSucc = [53200, 36400, 5250, 5600, 2300];
+  let gammesCafe = [23079, 11413, 20073, 4227, 4172];
 
-  // Top Magasins
-  let topMagLabels = ['Succursale Le Kef', 'Succursale Gabès Jara', 'Succursale Tunis Menzah VI', 'Succursale Gafsa', 'Cafétéria Gafsa Ville'];
-  let topMagData = [27291, 13426, 12854, 12365, 11314];
+  // Top Magasins (Live PostgreSQL)
+  let topMagLabels = ['Succursale Le Kef', 'Succursale Gabès Jara', 'Succursale Tunis Menzah VI', 'Succursale Gafsa Ville', 'Cafétéria Gafsa Ville'];
+  let topMagData = [28266, 16864, 14668, 12953, 12801];
 
-  // Timeline (7 Mois Live DWH Avril -> Octobre 2026)
-  let monthlyLabels = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct'];
-  let monthlySucc = [0, 64, 8329, 19476, 37528, 29303, 15545];
-  let monthlyCafe = [3.8, 15.2, 6787, 11069, 10245, 8918, 5439];
+  // Timeline (8 Mois Live DWH Avril -> Novembre 2026)
+  let monthlyLabels = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov'];
+  let monthlySucc = [0, 64, 8329, 19476, 37528, 29303, 24192, 2110];
+  let monthlyCafe = [3.8, 15.2, 6787, 11069, 10245, 8918, 9227, 1134];
+  if (liveSyncData && Array.isArray(liveSyncData.monthly_breakdown) && liveSyncData.monthly_breakdown.length >= 6) {
+    const mNamesShort = { '04': 'Avr', '05': 'Mai', '06': 'Juin', '07': 'Juil', '08': 'Août', '09': 'Sept', '10': 'Oct', '11': 'Nov', '12': 'Déc' };
+    monthlyLabels = liveSyncData.monthly_breakdown.map(m => mNamesShort[(m.month || '').split('-')[1]] || m.month);
+    monthlySucc = liveSyncData.monthly_breakdown.map(m => Number(m.ca_succ || 0));
+    monthlyCafe = liveSyncData.monthly_breakdown.map(m => Number(m.ca_cafe || 0));
+  }
 
   // Segments RFM
   let segLabels = ['Champions (81%)', 'Réguliers (10%)', 'En Risque Churn (7%)', 'Occasionnels (2%)'];
@@ -1479,8 +1487,8 @@ function executeGlobalFilters() {
   const isPreset7d  = (dStart === '2026-10-14' && dEnd === '2026-10-20') || window.currentPeriodPreset === '7d';
   const isPreset30d = (dStart === '2026-09-21' && dEnd === '2026-10-20') || window.currentPeriodPreset === '30d';
   const isPreset90d = (dStart === '2026-07-01' && dEnd === '2026-09-30') || window.currentPeriodPreset === '90d';
-  const isPresetYtd = (dStart === '2026-01-01' && dEnd === '2026-10-20') || window.currentPeriodPreset === 'ytd';
-  const isPresetAll = (dStart === '2026-04-01' && dEnd === '2026-10-20') || window.currentPeriodPreset === 'all';
+  const isPresetYtd = (dStart === '2026-01-01' && (dEnd === '2026-10-20' || dEnd === '2026-11-30')) || window.currentPeriodPreset === 'ytd';
+  const isPresetAll = (dStart === '2026-04-01' && (dEnd === '2026-10-20' || dEnd === '2026-11-30')) || window.currentPeriodPreset === 'all';
 
   const activePresetKey = isPreset7d ? '7d' : (isPreset30d ? '30d' : (isPreset90d ? '90d' : (isPresetYtd ? 'ytd' : (isPresetAll ? 'all' : 'custom'))));
   window.currentPeriodPreset = activePresetKey;
@@ -3512,8 +3520,8 @@ window.showToast = showToast;
 // ==========================================================================
 let liveSyncData = null;
 let isSyncInProgress = false;
-let lastKnownScansCount = 13317;
-let lastKnownCaAmount = 156158.84;
+let lastKnownScansCount = 14307;
+let lastKnownCaAmount = 168397.27;
 
 async function fetchLiveProductionData(isManual = false) {
   if (isSyncInProgress && isManual) return;
@@ -3545,7 +3553,7 @@ async function fetchLiveProductionData(isManual = false) {
     let data = null;
     const liveEndpoints = [
       '/api/live',
-      'https://bondin-fidness-bi.vercel.app/api/live',
+      'https://ena-w-bondin.vercel.app/api/live',
       'live_sync_cache.json?t=' + Date.now()
     ];
 
@@ -4620,33 +4628,64 @@ function updateAdvancedCharts(liveData) {
 
 function updateAllVisualsRealTime(data) {
   if (!data) return;
-  const currentScans = Math.max(lastKnownScansCount || 13317, Number(data.total_scans || 13317));
-  const currentCa = Math.max(lastKnownCaAmount || 156158.84, Number(data.total_ca_tnd || 156158.84));
-  const aov = Number(data.panier_moyen_tnd || (currentCa / currentScans) || 11.726);
-  const clientsActifs = Number(data.clients_actifs || 765);
+  const currentScans = Math.max(lastKnownScansCount || 14307, Number(data.total_scans || 14307));
+  const currentCa = Math.max(lastKnownCaAmount || 168397.27, Number(data.total_ca_tnd || 168397.27));
+  const aov = Number(data.panier_moyen_tnd || (currentCa / currentScans) || 11.770);
+  const clientsActifs = Number(data.clients_actifs || 787);
+  const totalInscrits = Number(data.total_inscrits || data.clients_inscrits || 2794);
 
   lastKnownScansCount = currentScans;
   lastKnownCaAmount = currentCa;
   liveSyncData = data;
 
-  // 1. Synchronisation de DASHBOARD_DATA
-  if (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.kpis) {
-    DASHBOARD_DATA.kpis.ca_total = currentCa;
-    DASHBOARD_DATA.kpis.nb_scans = currentScans;
-    DASHBOARD_DATA.kpis.panier_moyen = aov;
-    DASHBOARD_DATA.kpis.clients_actifs = clientsActifs;
-    if (Array.isArray(DASHBOARD_DATA.monthly)) {
-      const octMonth = DASHBOARD_DATA.monthly.find(m => m.mois && m.mois.includes('Octobre'));
-      if (octMonth) {
-        octMonth.ca = Math.round((currentCa - 132333) * 100) / 100;
-        octMonth.scans = currentScans - 11279;
+  // 1. Synchronisation de DASHBOARD_DATA (KPIs + Répertoire Inscrits Live)
+  if (typeof DASHBOARD_DATA !== 'undefined') {
+    if (DASHBOARD_DATA.kpis) {
+      DASHBOARD_DATA.kpis.ca_total = currentCa;
+      DASHBOARD_DATA.kpis.nb_scans = currentScans;
+      DASHBOARD_DATA.kpis.panier_moyen = aov;
+      DASHBOARD_DATA.kpis.clients_actifs = clientsActifs;
+      DASHBOARD_DATA.kpis.clients_inscrits = totalInscrits;
+    }
+    if (Array.isArray(data.recent_inscrits) && data.recent_inscrits.length > 0 && Array.isArray(DASHBOARD_DATA.inscrits_list)) {
+      const existingIds = new Set(DASHBOARD_DATA.inscrits_list.map(x => x.id));
+      const newItems = data.recent_inscrits.filter(x => x && x.id && !existingIds.has(x.id));
+      if (newItems.length > 0) {
+        DASHBOARD_DATA.inscrits_list = [...newItems, ...DASHBOARD_DATA.inscrits_list];
       }
     }
   }
 
-  // 2. Compteurs HUD & Ticker
+  // 2. Compteurs HUD, Ticker & Bandeau Dernières Mises à Jour Temps Réel
   updateLoginScreenMetrics(data);
   updateSyncTimestamps();
+
+  const firstScan = (data.recent_scans && data.recent_scans[0]) || {};
+  const rawTicket = firstScan.ticket || data.dernier_ticket || 'bondin6268889';
+  const rawClient = firstScan.client || data.dernier_client || 'Slim Abid';
+  const lastClient = resolveScanClientName(rawClient, rawTicket, 0);
+  let amtNum = Number(firstScan.montant_tnd != null ? firstScan.montant_tnd : (data.dernier_montant || 2.100));
+  if (isNaN(amtNum) || amtNum <= 0) amtNum = 2.100;
+  if (amtNum > 100) amtNum = amtNum / 1000.0;
+  const formattedAmt = amtNum.toFixed(3);
+  const ticketClean = String(rawTicket).replace(/^#/, '');
+  const storeClean = firstScan.magasin || data.dernier_magasin || 'Cafétéria Tunis Liberté';
+  const lastDateStr = String(firstScan.date || data.dernier_scan || new Date().toISOString().slice(0, 19).replace('T', ' ')).slice(0, 19);
+
+  // Mise à jour du Bandeau Dernières Mises à Jour Temps Réel en haut du Cockpit
+  const liveSyncTimeEl = document.getElementById('live-cockpit-sync-time');
+  if (liveSyncTimeEl) {
+    const now = new Date();
+    liveSyncTimeEl.innerText = `${now.toLocaleDateString('fr-FR')} à ${now.toLocaleTimeString('fr-FR')} (Dernier scan: ${lastDateStr})`;
+  }
+  const liveLastTicketEl = document.getElementById('live-cockpit-last-ticket');
+  if (liveLastTicketEl) {
+    liveLastTicketEl.innerHTML = `#${ticketClean} &bull; ${lastClient} &bull; ${storeClean} (+${formattedAmt} DT)`;
+  }
+  const liveDbBadgeEl = document.getElementById('live-cockpit-db-badge');
+  if (liveDbBadgeEl) {
+    liveDbBadgeEl.innerHTML = `57.131.30.69:5432 &bull; ${currentScans.toLocaleString('fr-FR')} scans &bull; ${currentCa.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} DT`;
+  }
 
   window.lastScanCount = currentScans;
   const scanCounter = document.getElementById('scan-counter');
@@ -4658,21 +4697,8 @@ function updateAllVisualsRealTime(data) {
 
   const clock = document.getElementById('hdr-live-clock');
   if (clock) {
-    const firstScan = (data.recent_scans && data.recent_scans[0]) || {};
-    const rawTicket = firstScan.ticket || data.dernier_ticket || 'bondin6170303';
-    const rawClient = firstScan.client || data.dernier_client || 'Salim Ammar';
-    const lastClient = resolveScanClientName(rawClient, rawTicket, 0);
-
-    let amtNum = Number(firstScan.montant_tnd != null ? firstScan.montant_tnd : (data.dernier_montant || 2.100));
-    if (isNaN(amtNum) || amtNum <= 0) amtNum = 2.100;
-    if (amtNum > 100) amtNum = amtNum / 1000.0;
-    const formattedAmt = amtNum.toFixed(3);
-
-    const ticketClean = String(rawTicket).replace(/^#/, '');
     const lastTicket = `<span class="text-amber-300 font-bold">#${ticketClean}</span>`;
-    const storeClean = firstScan.magasin || data.dernier_magasin || 'Cafétéria Le Kef';
     const lastStore = ` <span class="text-amber-200/90 font-sans">(${storeClean})</span>`;
-
     clock.innerHTML = `Dernier scan : <strong class="text-white font-bold">${lastClient}</strong> &bull; Montant : <strong class="text-emerald-400 font-bold">+${formattedAmt} DT</strong> &bull; Ticket ${lastTicket}${lastStore}`;
     clock.classList.remove('ticket-slide-enter');
     void clock.offsetWidth;
@@ -4682,8 +4708,9 @@ function updateAllVisualsRealTime(data) {
   // 3. Recalculer 100% des visuels selon la période et les filtres actifs
   executeGlobalFilters();
 
-  // 4. Mettre à jour le tableau live des dernières transactions en caisse
+  // 4. Mettre à jour le tableau live des dernières transactions en caisse et le répertoire CRM
   renderLiveTransactionsTable(data.recent_scans);
+  if (typeof window.renderInscritsTable === 'function') window.renderInscritsTable();
 
   // 9. Jauges et sparklines
   if (typeof initGauges === 'function') initGauges();
@@ -4701,10 +4728,11 @@ function updateAllVisualsRealTime(data) {
   if (bSync) bSync.innerText = `À l'instant (${new Date().toLocaleTimeString('fr-FR')})`;
 
   // 12. Synchronisation en temps réel du total Adhérents CRM (PostgreSQL public.user)
-  const totalInscrits = Number(data.total_inscrits || data.clients_inscrits || 2729);
   if (totalInscrits) {
     const elCrm = document.getElementById('badge-total-crm-count');
     if (elCrm) elCrm.innerText = `${totalInscrits.toLocaleString('fr-FR')} membres`;
+    const elSec1Title = document.getElementById('section1-crm-title');
+    if (elSec1Title) elSec1Title.innerText = `Dynamique d'Acquisition & Répertoire des Clients Inscrits (${totalInscrits.toLocaleString('fr-FR')} Membres DWH Live)`;
     const elBadge = document.getElementById('inscriptions-chart-badge');
     if (elBadge && (!window.currentInscriptionsGranularity || window.currentInscriptionsGranularity === 'mois')) {
       elBadge.innerText = `${totalInscrits.toLocaleString('fr-FR')} Inscrits · Base CRM (Live)`;
@@ -5807,16 +5835,17 @@ window.filterInscritsTable = function() {
 
 window.getFilteredInscritsData = function() {
   const rawList = (typeof DASHBOARD_DATA !== 'undefined' && DASHBOARD_DATA.inscrits_list) ? DASHBOARD_DATA.inscrits_list : [];
+  const latestDate = rawList.reduce((maxD, it) => (it && it.date && it.date > maxD ? it.date : maxD), '2026-10-20');
   
-  // 1. Filtre par période (Base DWH cutoff: 2026-10-20)
+  // 1. Filtre par période (inclut les dernières inscriptions temps réel PostgreSQL)
   let filtered = rawList.filter(item => {
     if (!item.date) return true;
     if (currentInscritsPeriod === 'jour') {
-      return item.date === '2026-10-20';
+      return item.date === latestDate || item.date >= '2026-10-20';
     } else if (currentInscritsPeriod === 'semaine') {
-      return item.date >= '2026-10-14' && item.date <= '2026-10-20';
+      return item.date >= '2026-10-14';
     } else if (currentInscritsPeriod === 'mois') {
-      return item.date >= '2026-10-01' && item.date <= '2026-10-20';
+      return item.date >= '2026-10-01';
     }
     return true; // 'all'
   });

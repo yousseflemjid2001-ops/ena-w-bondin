@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    /* ZÉRO LATENCE & THÈME CLAIR EXÉCUTIF IMMÉDIAT (CONFORT VISUEL ABSOLU SANS FATIGUE OCULAIRE) */
+    (function() {
+      try {
+        localStorage.setItem('bondin_theme', 'light');
+        document.documentElement.removeAttribute('data-theme');
+        document.documentElement.classList.remove('dark');
+        var isAuth = localStorage.getItem('bondin_authenticated') === 'true' || 
+                     sessionStorage.getItem('bondin_authenticated') === 'true';
+        var params = new URLSearchParams(window.location.search);
+        if (isAuth && params.get('logout') !== 'true') {
+          document.documentElement.classList.add('is-authenticated');
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <style>
+    /* Masquage immédiat garanti zéro latence au rechargement (F5) */
+    html.is-authenticated #login-screen {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plateforme Décisionnelle BI & IA | ENA W BONDIN x FIDNESS</title>
+  <link rel="stylesheet" href="style.css?v=20261022_espresso_gold_v22">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS (corePlugins preflight disabled to protect charts & tables) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      corePlugins: {
+        preflight: false
+      },
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            serifBrand: ['"Cinzel"', 'serif']
+          },
+          colors: {
+            bondin: {
+              red: '#C8102E',
+              darkRed: '#8F081E',
+              gold: '#F59E0B',
+              espresso: '#180916',
+              plum: '#260E24',
+              accent: '#8B2671'
+            },
+            fidness: {
+              orange: '#FF5500',
+              blue: '#163396',
+              periwinkle: '#5664F5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Leaflet CDN pour la carte interactive -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Favicon officiel BONDIN -->
+  <link rel="icon" type="image/png" href="bondin_logo.png">
+</head>
+<body>
+
+      <!-- =========================================================================
+       0. PAGE DE LOGIN HAUTE SÉCURITÉ PRESTIGE (BONDIN × FIDNESS) - GRAND FORMAT
+       ========================================================================= -->
+  <div id="login-screen" class="login-screen-overlay" role="dialog" aria-modal="true" aria-label="Authentification Plateforme Décisionnelle">
+    <!-- Toile de particules interactives subtiles -->
+    <canvas id="login-particles-canvas" class="login-particles-canvas" style="position: absolute; inset: 0; pointer-events: none; z-index: 1;"></canvas>
+
+    <!-- Top HUD Bar -->
+    <div class="w-full flex items-center justify-between px-6 sm:px-12 py-6 relative z-20">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 font-mono text-xs sm:text-sm font-bold shadow-[0_0_18px_rgba(16,185,129,0.3)]">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Live DWH : <strong id="login-live-scans" class="text-white font-extrabold tracking-wide">13 097 scans</strong></span>
+        </div>
+        <span class="text-amber-400/40 text-sm hidden sm:inline">•</span>
+        <div class="hidden sm:flex items-center gap-2 text-xs sm:text-sm font-mono text-amber-300">
+          <i data-lucide="zap" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
+          <span>Latence IA : <strong class="text-emerald-300 font-bold">14ms</strong></span>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="hidden md:flex items-center gap-2 text-amber-200/90 text-xs sm:text-sm font-medium">
+          <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
+          <span>Protocole RLS Strict (Direction Consolidée)</span>
+        </div>
+        <span class="px-3 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-200 font-mono text-xs sm:text-sm font-bold tracking-wide shadow-sm">
+          BI &amp; IA V4.8
+        </span>
+      </div>
+    </div>
+
+    <div class="w-full max-w-[1360px] mx-auto px-6 sm:px-12 py-8 lg:py-14 my-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center relative z-20">
+
+      <!-- COLONNE GAUCHE : IDENTITÉ OFFICIELLE COUVERTURE DU RAPPORT HEBDOMADAIRE -->
+      <div class="lg:col-span-7 flex flex-col justify-center">
+        
+        <!-- Carré Blanc Signature avec Blason Rouge BONDIN (Exacte Réplique Page 1 Couverture) -->
+        <div class="inline-flex p-4 sm:p-5 rounded-3xl bg-white shadow-[0_15px_50px_rgba(0,0,0,0.35)] mb-6 self-start border border-white/80 transition-transform hover:scale-105 duration-300">
+          <svg width="84" height="90" viewBox="0 0 120 124" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="coverBondinRed" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#C8102E"/>
+                <stop offset="60%" stop-color="#8E0E14"/>
+                <stop offset="100%" stop-color="#6E080E"/>
+              </linearGradient>
+            </defs>
+            <path d="M8 0H112C116.418 0 120 3.58172 120 8V98C120 111.255 109.255 120 96 121.2L10 124C4.47715 124 0 119.523 0 114V8C0 3.58172 3.58172 0 8 0Z" fill="url(#coverBondinRed)"/>
+            <path class="steam-path" d="M64 38 C63 34, 66 32, 65 28" stroke="#FDE68A" stroke-width="1.8" stroke-linecap="round"/>
+            <path class="steam-path" d="M71 38 C70 34, 73 32, 72 28" stroke="#FDE68A" stroke-width="1.8" stroke-linecap="round"/>
+            <g fill="#FFFFFF">
+              <path d="M60 12 C65.5 11.5, 70 15.5, 69.5 22 C69 27.5, 65.5 31.5, 61.5 31.5 C57.5 31.5, 55 28, 55 22.5 C55 16.5, 56.5 12.5, 60 12 Z"/>
+              <path d="M58.5 20.5 Q60 21.5 61.5 20.5" stroke="#8E0E14" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+              <path d="M63.5 20.5 Q65 21.5 66.5 20.5" stroke="#8E0E14" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+              <path d="M59.5 25.5 Q62.5 28 65.5 25.5" stroke="#8E0E14" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M57 32 L63 34 L55 56 L51 44 Z"/>
+              <path d="M40 26 C43 24, 48 26, 51 29 L48 33 C45 31, 41 31, 39 28 Z"/>
+              <path d="M46 31 L54 34 L50 43 L43 39 Z"/>
+              <path d="M54 36 Q61 37 63 42" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <rect x="60" y="42" width="5.5" height="4.2" rx="1"/>
+              <rect x="67.5" y="42" width="5.5" height="4.2" rx="1"/>
+              <rect x="54" y="46.8" width="26" height="2" rx="1"/>
+              <path d="M62 49.5 L68 57.5 L72 56 L75 49.5 L72 52.5 L68 49.5 Z"/>
+            </g>
+            <text x="60" y="88" text-anchor="middle" fill="#FFFFFF" font-family="'Cinzel', serif" font-weight="800" font-size="23.5">BONDIN</text>
+            <text x="60" y="106" text-anchor="middle" fill="#FFE4E6" font-family="sans-serif" font-weight="600" font-size="10.2">DEPUIS 1910</text>
+          </svg>
+        </div>
+
+        <!-- Sous-titre espacé officiel (Style Page 1 Rapport) -->
+        <div class="text-xs sm:text-sm font-extrabold tracking-[0.25em] text-amber-200 uppercase mb-3">
+          RAPPORT D'ANALYSE HEBDOMADAIRE &amp; DÉCISIONNEL
+        </div>
+
+        <!-- Titre Exécutif Officiel (Page 1 Rapport) -->
+        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-[1.15] mb-2">
+          Analyse de Performance de l'Application
+        </h1>
+        <h2 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 tracking-tight leading-[1.15] mb-3">
+          ENA w BONDIN
+        </h2>
+        <div class="text-base sm:text-lg text-rose-100/90 font-medium mb-8">
+          Programme de fidélité &bull; Direction Générale
+        </div>
+
+        <!-- Métrique 1 : TOTAL ACHATS & CA FIDÉLITÉ (Style Synthèse Page 2 Rapport) -->
+        <div class="login-metric-luxury rounded-2xl bg-white/95 border border-white/80 p-5 sm:p-6 flex items-center justify-between mb-4 shadow-[0_10px_30px_rgba(0,0,0,0.25)] backdrop-blur-md">
+          <div class="flex items-center gap-4">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#8E0E14]/10 border border-[#8E0E14]/25 flex items-center justify-center text-[#8E0E14] flex-shrink-0 shadow-inner">
+              <i data-lucide="trending-up" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+            </div>
+            <div>
+              <div class="text-[11px] sm:text-xs font-mono tracking-wider text-slate-500 uppercase font-bold">CHIFFRE D'AFFAIRES FIDÉLITÉ</div>
+              <div id="login-live-ca" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">153 317 DT</div>
+              <div class="text-[11px] text-slate-500 font-medium mt-0.5">Montant total consolidé du réseau</div>
+            </div>
+          </div>
+          <span id="login-live-growth" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 font-mono text-xs sm:text-sm font-extrabold shadow-sm">
+            +102% MoM
+          </span>
+        </div>
+
+        <!-- Métrique 2 : PANIER MOYEN & COPILOT IA (Style Synthèse Page 2 Rapport) -->
+        <div class="login-metric-luxury rounded-2xl bg-white/95 border border-white/80 p-5 sm:p-6 flex items-center justify-between mb-5 shadow-[0_10px_30px_rgba(0,0,0,0.25)] backdrop-blur-md">
+          <div class="flex items-center gap-4">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 flex-shrink-0 shadow-inner">
+              <i data-lucide="sparkles" class="w-6 h-6 sm:w-7 sm:h-7"></i>
+            </div>
+            <div>
+              <div class="text-[11px] sm:text-xs font-mono tracking-wider text-slate-500 uppercase font-bold">PANIER MOYEN (AOV)</div>
+              <div class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">11.724 DT <span class="text-xs font-semibold text-slate-500 font-sans">/ transaction</span></div>
+              <div class="text-[11px] text-slate-500 font-medium mt-0.5">Succursales : 37.6 DT &bull; Cafétérias : 4.2 DT</div>
+            </div>
+          </div>
+          <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 shadow-[0_0_12px_#10B981] animate-pulse"></span>
+        </div>
+
+        <!-- Note d'Audit et Sécurité ISO 27001 -->
+        <div class="rounded-2xl bg-black/25 border border-white/15 p-4 sm:p-5 flex items-start gap-3.5 text-white/85">
+          <i data-lucide="shield-check" class="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5"></i>
+          <p class="text-xs sm:text-sm text-rose-50/80 leading-relaxed font-sans">
+            Session auditée par jeton cryptographique éphémère. Traçabilité complète du réseau ENA w BONDIN conformément aux normes de gouvernance financière.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- COLONNE DROITE : CARTE DE CONNEXION EXÉCUTIVE (BLANCHE PERLE & ROUGE CARMIN) -->
+      <div class="lg:col-span-5">
+        <div class="login-portal-card-luxury rounded-[2.2rem] bg-white/95 border border-amber-400/40 p-8 sm:p-11 shadow-[0_25px_70px_rgba(0,0,0,0.45)] relative overflow-hidden backdrop-blur-2xl text-slate-900">
+          
+          <!-- Liseré supérieur lumineux officiel Rouge Carmin & Or -->
+          <div class="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#8E0E14] via-[#D97706] to-[#8E0E14]"></div>
+
+          <!-- En-tête de la carte : LOGOS OFFICIELS BONDIN & FIDNESS -->
+          <div class="flex flex-col items-center text-center mb-8">
+            <div class="flex items-center justify-center gap-5 sm:gap-6 mb-4">
+              
+              <!-- BLASON OFFICIEL BONDIN GRAND FORMAT -->
+              <div class="relative flex-shrink-0" title="BONDIN Depuis 1910">
+                <svg width="74" height="80" viewBox="0 0 120 124" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_4px_18px_rgba(142,14,20,0.4)]">
+                  <defs>
+                    <linearGradient id="cardBondinRedLg" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#C8102E"/>
+                      <stop offset="60%" stop-color="#8E0E14"/>
+                      <stop offset="100%" stop-color="#6E080E"/>
+                    </linearGradient>
+                    <linearGradient id="cardGoldRimLg" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#FEF08A" stop-opacity="0.95"/>
+                      <stop offset="100%" stop-color="#D97706" stop-opacity="0.5"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M8 0H112C116.418 0 120 3.58172 120 8V98C120 111.255 109.255 120 96 121.2L10 124C4.47715 124 0 119.523 0 114V8C0 3.58172 3.58172 0 8 0Z" fill="url(#cardBondinRedLg)"/>
+                  <path d="M8 1H112C115.866 1 119 4.13401 119 8V98C119 110.703 108.703 119.05 95.8 120.2L10 123C5.02944 123 1 118.971 1 114V8C1 4.13401 4.13401 1 8 1Z" stroke="url(#cardGoldRimLg)" stroke-width="2"/>
+                  <path class="steam-path" d="M64 38 C63 34, 66 32, 65 28" stroke="#FDE68A" stroke-width="1.8" stroke-linecap="round"/>
+                  <path class="steam-path" d="M71 38 C70 34, 73 32, 72 28" stroke="#FDE68A" stroke-width="1.8" stroke-linecap="round"/>
+                  <g fill="#FFFFFF">
+                    <path d="M60 12 C65.5 11.5, 70 15.5, 69.5 22 C69 27.5, 65.5 31.5, 61.5 31.5 C57.5 31.5, 55 28, 55 22.5 C55 16.5, 56.5 12.5, 60 12 Z"/>
+                    <path d="M58.5 20.5 Q60 21.5 61.5 20.5" stroke="#8E0E14" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+                    <path d="M63.5 20.5 Q65 21.5 66.5 20.5" stroke="#8E0E14" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+                    <path d="M59.5 25.5 Q62.5 28 65.5 25.5" stroke="#8E0E14" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    <path d="M57 32 L63 34 L55 56 L51 44 Z"/>
+                    <path d="M40 26 C43 24, 48 26, 51 29 L48 33 C45 31, 41 31, 39 28 Z"/>
+                    <path d="M46 31 L54 34 L50 43 L43 39 Z"/>
+                    <path d="M54 36 Q61 37 63 42" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <rect x="60" y="42" width="5.5" height="4.2" rx="1"/>
+                    <rect x="67.5" y="42" width="5.5" height="4.2" rx="1"/>
+                    <rect x="54" y="46.8" width="26" height="2" rx="1"/>
+                    <path d="M62 49.5 L68 57.5 L72 56 L75 49.5 L72 52.5 L68 49.5 Z"/>
+                  </g>
+                  <text x="60" y="88" text-anchor="middle" fill="#FFFFFF" font-family="'Cinzel', serif" font-weight="800" font-size="23.5">BONDIN</text>
+                  <text x="60" y="106" text-anchor="middle" fill="#FFE4E6" font-family="sans-serif" font-weight="600" font-size="10.2">DEPUIS 1910</text>
+                </svg>
+              </div>
+
+              <!-- ALLIANCE SEPARATOR -->
+              <span class="text-slate-300 text-2xl font-light">×</span>
+
+              <!-- LOGO FIDNESS OFFICIEL -->
+              <div class="relative flex-shrink-0 p-2.5 sm:p-3 rounded-2xl bg-white shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-slate-100 flex items-center justify-center" title="Partenaire FIDNESS">
+                <svg width="36" height="44" viewBox="0 0 110 175" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="22" cy="20" r="19" fill="#FF5500"/>
+                  <path d="M29 44 C12.9837 44 0 56.9837 0 73 V125 H38 V44 H29 Z" fill="#163396"/>
+                  <path d="M0 139 H38 V175 H25 C11.1929 175 0 163.807 0 150 V139 Z" fill="#163396"/>
+                  <path d="M49 44 H110 V54 C110 70.0163 97.0163 83 81 83 H49 V44 Z" fill="#5664F5"/>
+                  <path d="M38 92 H96 V100 C96 113.807 84.8071 125 71 125 H38 V92 Z" fill="#5664F5"/>
+                </svg>
+              </div>
+
+            </div>
+
+            <!-- Titre & Sous-titre -->
+            <div class="flex items-center justify-center gap-2.5 mb-1.5">
+              <span class="text-2xl sm:text-3xl font-black text-[#8E0E14] tracking-wider font-serif">BONDIN</span>
+              <span class="text-xs font-bold text-amber-700 bg-amber-500/15 border border-amber-500/35 px-2.5 py-0.5 rounded-md tracking-wide font-mono">DEPUIS 1910</span>
+            </div>
+            <div class="text-xs sm:text-sm font-extrabold tracking-widest text-[#73080E] uppercase mb-1">COCKPIT DIRECTION GÉNÉRALE</div>
+            <p class="text-xs sm:text-sm text-slate-500">Authentification sécurisée au portail décisionnel &amp; BI client</p>
+          </div>
+
+          <!-- FORMULAIRE DE CONNEXION DIRECT -->
+          <form id="login-form" class="space-y-5" onsubmit="window.handleLoginSubmit(event)">
+            
+            <!-- Identifiant Exécutif / Adresse -->
+            <div>
+              <label class="text-xs sm:text-sm font-bold text-slate-700 mb-2 block" for="login-email">Adresse / Identifiant</label>
+              <div class="relative flex items-center">
+                <span class="absolute left-4 text-[#8E0E14] pointer-events-none flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+                <input type="text" id="login-email" value="enawbondin" autocomplete="username" placeholder="enawbondin" required
+                  class="login-input-luxury w-full bg-[#F9FAFB] border border-slate-300 rounded-2xl pl-12 pr-4 py-3 sm:py-3.5 text-sm sm:text-base text-slate-900 font-semibold focus:border-[#8E0E14] focus:outline-none transition-all shadow-inner" />
+              </div>
+            </div>
+
+            <!-- Mot de passe chiffré -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs sm:text-sm font-bold text-slate-700" for="login-password">Mot de passe</label>
+                <span class="text-xs font-mono text-slate-500 flex items-center gap-1.5 font-semibold">
+                  <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-600"></i> TLS 1.3
+                </span>
+              </div>
+              <div class="relative flex items-center">
+                <span class="absolute left-4 text-[#8E0E14] pointer-events-none flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+                </span>
+                <input type="password" id="login-password" value="ena.w.bondin" autocomplete="current-password" placeholder="••••••••" required
+                  class="login-input-luxury w-full bg-[#F9FAFB] border border-slate-300 rounded-2xl pl-12 pr-12 py-3 sm:py-3.5 text-sm sm:text-base text-slate-900 font-mono font-semibold focus:border-[#8E0E14] focus:outline-none transition-all shadow-inner" />
+                <button type="button" id="login-eye-btn" onclick="window.toggleLoginPasswordVisibility()" class="login-eye-btn absolute right-4 text-slate-400 hover:text-slate-800 transition-colors cursor-pointer p-1.5 rounded-lg hover:bg-slate-100" style="background: transparent !important; border: none !important; box-shadow: none !important;" title="Afficher/Masquer le mot de passe">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Champ caché rôle pour cohérence DWH RLS -->
+            <input type="hidden" id="login-role-select" value="dir_gen" />
+
+            <!-- Options session -->
+            <div class="flex items-center justify-between text-xs sm:text-sm pt-1">
+              <label class="flex items-center gap-2.5 text-slate-600 font-medium cursor-pointer select-none">
+                <input type="checkbox" checked class="rounded border-slate-300 text-[#8E0E14] focus:ring-0 w-4 h-4 cursor-pointer accent-[#8E0E14]">
+                <span>Garder ma session active</span>
+              </label>
+              <a href="javascript:void(0)" onclick="window.showToast('Contactez la Direction des Systèmes d&apos;Information BONDIN', 'shield')" class="text-[#8E0E14] hover:text-[#C31C23] font-semibold hover:underline">Clé perdue ?</a>
+            </div>
+
+            <!-- Bouton Déverrouiller Cockpit Décisionnel Grand Format -->
+            <button type="submit" id="login-submit-btn" class="w-full mt-3 py-4 sm:py-4.5 px-8 rounded-2xl font-black text-white text-sm sm:text-base bg-gradient-to-r from-[#8E0E14] via-[#C31C23] to-[#D97706] hover:from-[#73080E] hover:to-[#B45309] shadow-[0_8px_30px_rgba(142,14,20,0.45)] hover:shadow-[0_10px_36px_rgba(195,28,35,0.6)] transition-all duration-300 flex items-center justify-center gap-2.5 group active:scale-[0.99] cursor-pointer">
+              <span id="login-btn-content" class="flex items-center gap-2.5 font-black">
+                <span>Accéder au Cockpit Décisionnel</span>
+                <i data-lucide="arrow-right" class="w-5 h-5 transition-transform group-hover:translate-x-1.5"></i>
+              </span>
+              <div id="login-btn-loading" class="flex items-center gap-2.5" style="display: none;">
+                <svg class="animate-spin w-5 h-5 text-white" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="opacity-75"></path></svg>
+                <span id="login-loading-text">Authentification en cours...</span>
+              </div>
+            </button>
+
+          </form>
+
+          <!-- Pied de carte de sécurité -->
+          <div class="flex items-center justify-between text-xs text-slate-500 pt-5 border-t border-slate-200 mt-6">
+            <div class="flex items-center gap-2 text-emerald-600 font-semibold">
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              <span>Authentification 256-bit</span>
+            </div>
+            <div class="text-slate-600 font-mono">
+              Rôle : <strong class="text-slate-900">Direction Générale</strong>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PIED DE PAGE LOGIN (STYLE OFFICIEL RAPPORT) -->
+    <div class="w-full flex flex-col sm:flex-row items-center justify-between px-6 sm:px-12 py-5 text-xs text-rose-100/80 border-t border-white/10 relative z-20 bg-black/25 backdrop-blur-md">
+      <div>
+        <strong class="text-white font-bold">&copy; 2026 Powered by FIDNESS</strong> &mdash; CAFÉS BONDIN &bull; Programme de fidélité
+      </div>
+      <div class="flex items-center gap-3 font-mono text-[11px] sm:text-xs mt-2 sm:mt-0 text-amber-200/90">
+        <span>ENA w BONDIN &bull; Plateforme Décisionnelle BI &amp; IA</span>
+        <span class="text-white/30">|</span>
+        <span>Portail Décisionnel Direction Générale</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       0.B CINÉMATIQUE EXÉCUTIVE HAUT DEGREE (BONDIN × FIDNESS - CHARGEMENT PRESTIGE)
+       ========================================================================= -->
+  <div id="executive-loader-screen" class="executive-loader-screen" style="display: none;" role="status" aria-live="polite" aria-label="Chargement du Cockpit Décisionnel">
+    <!-- Toile de particules dorées & rubis montantes -->
+    <canvas id="loader-particles-canvas" class="loader-particles-canvas"></canvas>
+    
+    <!-- Halos lumineux nébuleux cinématiques -->
+    <div class="loader-nebula-crimson"></div>
+    <div class="loader-nebula-gold"></div>
+    <div class="loader-ambient-grid"></div>
+
+    <div class="loader-content-wrapper">
+      
+      <!-- HÉROS CENTRAL : DOUBLES BLASONS AVEC ANNEAUX ORBITAUX GYROSCOPIQUES -->
+      <div class="loader-orbital-stage">
+        <!-- Anneau 1 : Externe or & carmin rotatif continu avec satellite -->
+        <div class="loader-orbit-ring loader-orbit-ring-outer">
+          <div class="loader-satellite-node"></div>
+        </div>
+        <!-- Anneau 2 : Segmenté rubis rotatif sens inverse -->
+        <div class="loader-orbit-ring loader-orbit-ring-mid"></div>
+        <!-- Anneau 3 : Interne pulsation dorée -->
+        <div class="loader-orbit-ring loader-orbit-ring-inner"></div>
+
+        <!-- Coeur du Blason avec reflets dorés et shimmer sweep -->
+        <div class="loader-logo-core">
+          <!-- Blason Officiel BONDIN 1910 (Rouge Rubis & Or Impérial) -->
+          <div class="loader-brand-card loader-brand-bondin" title="Cafés BONDIN Depuis 1910">
+            <img src="bondin_logo.png" alt="Cafés BONDIN" class="loader-bondin-img" />
+            <div class="loader-shimmer-sweep"></div>
+          </div>
+
+          <!-- Symbole d'Alliance Haute Technologie -->
+          <div class="loader-alliance-cross">×</div>
+
+          <!-- Blason Officiel FIDNESS (Blanc Porcelaine & Pastille Orange) -->
+          <div class="loader-brand-card loader-brand-fidness" title="FIDNESS Intelligence">
+            <img src="fidness_icon.png" alt="FIDNESS" class="loader-fidness-img" />
+            <div class="loader-shimmer-sweep"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TYPOGRAPHIE ROYALE & MAJESTÉ BONDIN -->
+      <div class="loader-brand-typography">
+        <div class="loader-title-row">
+          <span class="loader-title-bondin">BONDIN</span>
+          <span class="loader-badge-1910">DEPUIS 1910</span>
+        </div>
+        <div class="loader-cockpit-subtitle">
+          COCKPIT DÉCISIONNEL STRATÉGIQUE
+        </div>
+        <div class="loader-alliance-sub">
+          ALLIANCE BI &bull; DATA WAREHOUSE &bull; COPILOT IA
+        </div>
+      </div>
+
+      <!-- MOTEUR DE TÉLÉMÉTRIE & BARRE DE CHARGEMENT HAUTE PRÉCISION -->
+      <div class="loader-telemetry-container">
+        
+        <!-- Ligne d'état & pourcentage en direct -->
+        <div class="loader-telemetry-header">
+          <div class="loader-status-indicator">
+            <span class="loader-pulse-beacon"></span>
+            <span id="loader-telemetry-text" class="loader-status-msg">Authentification cryptographique TLS 1.3...</span>
+          </div>
+          <div class="loader-percentage-badge">
+            <span id="loader-percent-counter">0%</span>
+          </div>
+        </div>
+
+        <!-- Track & Barre de progression lumineuse -->
+        <div class="loader-progress-track">
+          <div id="loader-progress-fill" class="loader-progress-fill">
+            <div class="loader-progress-glow-head"></div>
+          </div>
+        </div>
+
+        <!-- Badges de gouvernance & sécurité certifiée -->
+        <div class="loader-pills-row">
+          <span class="loader-pill-item"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> ISO 27001</span>
+          <span class="loader-pill-item"><i data-lucide="database" class="w-3.5 h-3.5 text-amber-400"></i> PostgreSQL 17.7</span>
+          <span class="loader-pill-item"><i data-lucide="layout-grid" class="w-3.5 h-3.5 text-purple-400"></i> 22 Visuals Live</span>
+          <span class="loader-pill-item"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-fuchsia-400"></i> Copilot IA 14ms</span>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+    <!-- ======================================================== -->
+  <!-- 1. EN-TÊTE EXÉCUTIF PRESTIGE & MINIMALISTE               -->
+  <!-- ======================================================== -->
+  <!-- =========================================================================
+       1. BARRE SUPÉRIEURE LUMINEUSE ANIMÉE (PROGRESS / SHIMMER)
+       ========================================================================= -->
+  <div id="top-progress-bar" class="h-1 w-full shimmer-bar transition-all duration-500"></div>
+
+  <!-- =========================================================================
+       2. HEADER EXÉCUTIF PRINCIPAL (BONDIN × FIDNESS + LIVE DWH TICKER)
+       ========================================================================= -->
+  <header class="aurora-header cyber-grid border-b border-white/10 shadow-2xl relative z-30">
+    <!-- Orbes lumineux d'arrière-plan -->
+    <div class="aurora-orb-1"></div>
+    <div class="aurora-orb-2"></div>
+
+    <div class="aurora-header-content w-full px-5 sm:px-8 lg:px-10 py-4 sm:py-5 relative z-10">
+      
+      <!-- LIGNE 1 : IDENTITÉ DE MARQUE BONDIN (PLEINE LARGEUR) + LIVE DWH TEMPS RÉEL -->
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 w-full">
+        
+        <!-- GAUCHE : LOGO OFFICIEL BONDIN 1910 AGRANDI + TITRE & BADGES PRESTIGE -->
+        <div class="flex items-center gap-4 sm:gap-5 group">
+          
+          <!-- LOGO BONDIN VECTORIEL OFFICIEL AGRANDI (Avec serveur de café + vapeur animée) -->
+          <div class="bondin-logo-card relative flex-shrink-0 cursor-pointer" onclick="window.showToast('BONDIN Depuis 1910 • Excellence Café & BI Temps Réel', 'coffee')" title="Café Bondin • Depuis 1910">
+            <!-- Halo lumineux derrière le logo -->
+            <div class="absolute -inset-1.5 bg-gradient-to-tr from-[#C8102E] via-amber-500 to-[#C8102E] rounded-2xl rounded-br-[26px] blur-md opacity-60 group-hover:opacity-100 transition duration-500"></div>
+            
+            <!-- SVG Exact du Logo Rouge Bondin Depuis 1910 Agrandie -->
+            <svg width="76" height="78" viewBox="0 0 120 124" fill="none" xmlns="http://www.w3.org/2000/svg" class="relative rounded-2xl rounded-br-[26px] shadow-2xl border border-white/25">
+              <defs>
+                <linearGradient id="bondinRedGrad" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#D91432"/>
+                  <stop offset="60%" stop-color="#C00E29"/>
+                  <stop offset="100%" stop-color="#8B071B"/>
+                </linearGradient>
+                <linearGradient id="goldRim" x1="0" y1="0" x2="120" y2="124" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#D97706" stop-opacity="0.15"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Forme du blason Bondin avec coin inférieur droit arrondi signature -->
+              <path d="M8 0H112C116.418 0 120 3.58172 120 8V98C120 111.255 109.255 120 96 121.2L10 124C4.47715 124 0 119.523 0 114V8C0 3.58172 3.58172 0 8 0Z" fill="url(#bondinRedGrad)"/>
+              <path d="M8 1H112C115.866 1 119 4.13401 119 8V98C119 110.703 108.703 119.05 95.8 120.2L10 123C5.02944 123 1 118.971 1 114V8C1 4.13401 4.13401 1 8 1Z" stroke="url(#goldRim)" stroke-width="1.5"/>
+
+              <!-- Vapeur animée au-dessus des tasses -->
+              <path class="steam-path" d="M64 38 C63 34, 66 32, 65 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
+              <path class="steam-path" d="M71 38 C70 34, 73 32, 72 28" stroke="#FDE68A" stroke-width="1.6" stroke-linecap="round"/>
+
+              <!-- Illustration du serveur emblématique Bondin -->
+              <g fill="#FFFFFF">
+                <path d="M60 12 C65.5 11.5, 70 15.5, 69.5 22 C69 27.5, 65.5 31.5, 61.5 31.5 C57.5 31.5, 55 28, 55 22.5 C55 16.5, 56.5 12.5, 60 12 Z"/>
+                <path d="M58.5 20.5 Q60 21.5 61.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+                <path d="M63.5 20.5 Q65 21.5 66.5 20.5" stroke="#C00E29" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+                <path d="M59.5 25.5 Q62.5 28 65.5 25.5" stroke="#C00E29" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+                <path d="M57 32 L63 34 L55 56 L51 44 Z"/>
+                <path d="M40 26 C43 24, 48 26, 51 29 L48 33 C45 31, 41 31, 39 28 Z"/>
+                <path d="M46 31 L54 34 L50 43 L43 39 Z"/>
+                <path d="M54 36 Q61 37 63 42" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <rect x="60" y="42" width="5.5" height="4.2" rx="1"/>
+                <rect x="67.5" y="42" width="5.5" height="4.2" rx="1"/>
+                <rect x="54" y="46.8" width="26" height="2" rx="1"/>
+                <path d="M62 49.5 L68 57.5 L72 56 L75 49.5 L72 52.5 L68 49.5 Z"/>
+              </g>
+
+              <!-- Typographie Officielle BONDIN -->
+              <text x="60" y="88" text-anchor="middle" fill="#FFFFFF" font-family="'Cinzel', 'Plus Jakarta Sans', serif" font-weight="800" font-size="23.5" letter-spacing="0.8">BONDIN</text>
+              <text x="60" y="106" text-anchor="middle" fill="#FFE4E6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="10.2" letter-spacing="1.6">DEPUIS 1910</text>
+            </svg>
+          </div>
+
+          <!-- TEXTE & BADGES DE LA PLATEFORME (AGRANDIS) -->
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+              <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white drop-shadow-md">
+                BONDIN
+              </h1>
+              
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-amber-500/25 via-amber-400/20 to-amber-600/25 text-amber-300 border border-amber-400/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
+                DEPUIS 1910
+              </span>
+
+              <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white/10 text-pink-200 border border-white/15 backdrop-blur-md">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-400"></i>
+                BI &amp; IA v4.8
+              </span>
+            </div>
+
+            <p class="text-sm sm:text-[15px] text-purple-200/85 font-medium mt-1 flex items-center gap-2.5">
+              <span>Plateforme Décisionnelle BI &amp; IA Client</span>
+              <span class="text-amber-400">&bull;</span>
+              <span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-rose-200 tracking-wide">
+                ENA W BONDIN
+              </span>
+            </p>
+          </div>
+        </div>
+
+        <!-- DROITE : CAPSULE LIVE DWH TEMPS RÉEL (NOM DYNAMIQUE, MONTANT DU SCAN ET TICKET) -->
+        <div class="flex items-center self-start lg:self-center ml-auto lg:ml-0" id="dwh-live-pill-wrapper">
+          <div id="dwh-live-pill" onclick="window.refreshLiveDashboard()" class="group cursor-pointer relative flex items-center gap-3.5 px-5 py-3 rounded-2xl bg-black/55 hover:bg-black/70 border border-emerald-500/40 hover:border-emerald-400/80 backdrop-blur-xl shadow-[0_0_30px_rgba(16,185,129,0.2)] transition-all duration-300">
+            
+            <!-- Point Radar Émeraude Pulsant -->
+            <div class="relative flex items-center justify-center w-3.5 h-3.5">
+              <span class="radar-dot w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_12px_#10B981]"></span>
+            </div>
+
+            <!-- Compteur DWH Dynamique -->
+            <div class="flex items-center gap-2 text-sm sm:text-base font-semibold whitespace-nowrap">
+              <span class="text-emerald-400 font-bold tracking-wide">Live DWH :</span>
+              <span id="scan-counter" class="font-mono font-extrabold text-white text-base sm:text-lg tracking-tight inline-block">13 294</span>
+              <span class="text-emerald-400 font-bold">scans</span>
+            </div>
+
+            <span class="text-purple-400/60 font-bold">&bull;</span>
+
+            <!-- Flux de Tickets Dynamique avec Nom du Client, Montant du Scan et Ticket -->
+            <div class="overflow-hidden h-6 flex items-center min-w-[340px] sm:min-w-[480px]">
+              <div id="hdr-live-clock" class="text-xs sm:text-sm text-rose-100 font-mono truncate ticket-slide-enter">
+                Client : <strong class="text-white font-bold">Mondher Trabelsi</strong> &bull; Montant : <strong class="text-emerald-400 font-bold">+18.500 DT</strong> &bull; Ticket <span class="text-amber-300 font-bold">#bondin6166477</span> <span class="text-amber-200/90 font-sans">(Succursale Tunis Liberté)</span>
+              </div>
+            </div>
+
+            <span class="hidden xl:inline-flex items-center px-2 py-0.5 text-[11px] font-mono rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 opacity-0 group-hover:opacity-100 transition-opacity">
+              +1 live
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SÉPARATEUR SUBTIL LUMINEUX PLEINE LARGEUR -->
+      <div class="my-4 h-px w-full bg-gradient-to-r from-white/20 via-purple-400/25 to-transparent"></div>
+
+      <!-- LIGNE 2 : BARRE D'OUTILS D'ACTION (GAUCHE) & RACCOURCIS IA (DROITE) PLEINE LARGEUR -->
+      <div class="flex flex-wrap items-center justify-between gap-3 w-full">
+        
+        <!-- GAUCHE : BOUTONS D'ACTION & CO-BRANDING FIDNESS AGRANDIS -->
+        <div class="flex flex-wrap items-center gap-3">
+          
+          <!-- Badge Mode Exécutif Pro (Clair & Confort Visuel) -->
+          <div class="group relative inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-amber-200 bg-white/[0.08] border border-amber-400/30 backdrop-blur-md shadow-sm" title="Mode Clair Exécutif actif (Confort de lecture optimal & charte officielle)">
+            <i id="theme-icon" data-lucide="sun" class="w-4 h-4 text-amber-300"></i>
+            <span id="theme-label">Mode Exécutif Pro</span>
+          </div>
+
+          <!-- Bouton Actualiser Intelligent DWH Pro -->
+          <button id="refresh-btn" onclick="window.refreshLiveDashboard()" class="group relative inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-purple-100 bg-white/[0.08] hover:bg-white/[0.16] border border-white/20 hover:border-emerald-400/50 backdrop-blur-md transition-all duration-300 active:scale-95 shadow-sm" title="Synchroniser intelligemment avec le Data Warehouse PostgreSQL en direct (9 tables)">
+            <span id="refresh-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <i id="refresh-icon" data-lucide="refresh-cw" class="w-4 h-4 text-emerald-300 transition-transform duration-300"></i>
+            <span id="refresh-label">Actualiser</span>
+          </button>
+
+          <!-- Bouton Test & Simulation Scan Caisse Live -->
+          <button id="btn-simulate-scan" onclick="window.simulateLiveScan()" class="group relative inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-amber-200 bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 hover:border-amber-400/60 backdrop-blur-md transition-all duration-300 active:scale-95 shadow-sm" title="Simuler un ticket de caisse en direct (+18,500 TND) et observer la propagation instantanée">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-300 fill-amber-300/20"></i>
+            <span class="hidden xl:inline font-bold">Simuler Scan</span>
+          </button>
+
+          <!-- Bouton Exporter PDF Officiel BONDIN -->
+          <button id="btn-export-pdf" onclick="window.openExportModal()" class="btn-shine group relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#8E0E14] via-[#B91C1C] to-[#C31C23] hover:from-[#73080E] hover:to-[#991B1B] border border-amber-400/40 shadow-[0_4px_20px_rgba(142,14,20,0.45)] hover:shadow-[0_6px_26px_rgba(195,28,35,0.6)] transition-all duration-300 active:scale-95">
+            <i data-lucide="download" class="w-4 h-4 text-amber-200 transition-transform duration-300 group-hover:translate-y-0.5"></i>
+            <span>Exporter PDF</span>
+          </button>
+
+          <!-- Séparateur vertical -->
+          <div class="h-7 w-px bg-white/20 mx-1 hidden sm:block"></div>
+
+          <!-- BADGE OFFICIEL PARTENAIRE FIDNESS AGRANDI -->
+          <div onclick="window.showToast('Partenariat FIDNESS × BONDIN : Flux Fidélité & IA synchronisés en temps réel', 'zap')" class="fidness-pill group relative inline-flex items-center gap-2.5 pl-3 pr-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-900 shadow-[0_4px_20px_rgba(86,100,245,0.35)] hover:shadow-[0_6px_25px_rgba(255,85,0,0.45)] border border-white/80 cursor-pointer transition-all duration-300 hover:-translate-y-0.5">
+            <svg width="22" height="28" viewBox="0 0 110 175" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0">
+              <circle class="fidness-dot" cx="22" cy="20" r="19" fill="#FF5500"/>
+              <path d="M29 44 C12.9837 44 0 56.9837 0 73 V125 H38 V44 H29 Z" fill="#163396"/>
+              <path d="M0 139 H38 V175 H25 C11.1929 175 0 163.807 0 150 V139 Z" fill="#163396"/>
+              <path d="M49 44 H110 V54 C110 70.0163 97.0163 83 81 83 H49 V44 Z" fill="#5664F5"/>
+              <path d="M38 92 H96 V100 C96 113.807 84.8071 125 71 125 H38 V92 Z" fill="#5664F5"/>
+            </svg>
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold tracking-tight text-[14px] leading-none">
+                <span class="text-[#163396]">FID</span><span class="text-slate-900">NESS</span>
+              </span>
+              <span class="w-2 h-2 rounded-full bg-[#FF5500] group-hover:scale-125 transition-transform" title="Connecté à Fidness Cloud"></span>
+            </div>
+          </div>
+
+          <!-- Badge Profil DG Agrandie -->
+          <button onclick="window.showToast('Profil actif : Direction Générale (Accès Global Consolidé)', 'shield-check')" class="group relative flex items-center gap-2.5 pl-2 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#8E0E14] to-[#73080E] hover:from-[#A8101E] hover:to-[#8E0E14] border border-amber-400/40 shadow-lg transition-all duration-300 hover:scale-105">
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-[#C8102E] text-white font-black text-xs flex items-center justify-center shadow-inner ring-2 ring-white/30">
+              DG
+            </span>
+            <span class="text-xs sm:text-sm font-bold text-purple-100 hidden sm:inline">Direction</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-purple-900"></span>
+          </button>
+
+          <!-- Bouton Verrouiller Session / Déconnexion -->
+          <button id="btn-lock-session" onclick="window.logoutToLoginScreen()" class="group relative inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-purple-200 bg-white/[0.06] hover:bg-rose-500/20 border border-white/15 hover:border-rose-400/40 backdrop-blur-md transition-all duration-300 active:scale-95 shadow-sm" title="Verrouiller la session et retourner à la page de connexion">
+            <i data-lucide="lock" class="w-3.5 h-3.5 text-rose-300 group-hover:scale-110 transition-transform"></i>
+            <span class="hidden xl:inline text-rose-200 font-bold">Verrouiller</span>
+          </button>
+
+        </div>
+
+        <!-- DROITE : LATENCE & RACCOURCI COPILOT IA (POUSSÉ À DROITE) -->
+        <div class="flex items-center gap-3 ml-auto sm:ml-0">
+          <div class="hidden md:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-purple-200/85">
+            <i data-lucide="cpu" class="w-4 h-4 text-amber-400"></i>
+            <span>Latence IA : <strong class="text-emerald-300 font-mono text-[13px]">14ms</strong></span>
+          </div>
+
+          <button onclick="window.toggleRagChat()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/40 shadow-[0_0_20px_rgba(245,158,11,0.25)] transition-all cursor-pointer">
+            <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+            <span>Copilot IA RAG</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- BANNIÈRE RÉCAPITULATIVE IMPRIMÉE DANS LE PDF -->
+  <div class="print-only-filter-summary" id="print-filter-summary">
+    <div><strong>DOSSIER DÉCISIONNEL BI &amp; IA</strong> &bull; <span id="print-summary-text">Période: Tout l'historique | PDV: Réseau Global | RLS: Direction Générale</span></div>
+    <div id="print-summary-timestamp" style="font-weight: 700;"></div>
+  </div>
+
+  <!-- ======================================================== -->
+    <!-- ======================================================== -->
+  <!-- 2. BANDEAU DES INDICATEURS STRATÉGIQUES (EXECUTIVE KPIS) -->
+  <!-- ======================================================== -->
+  <section class="executive-kpi-banner">
+    
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Chiffre d'Affaires Fidélité</span>
+        <span class="exec-kpi-tag success">+102% MoM</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-ca-val">153 317 DT</div>
+      <div class="exec-kpi-footer">
+        <span>Scans enregistrés</span>
+        <strong id="kpi-scans-summary">13 097 scans</strong>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Panier Moyen (AOV)</span>
+        <span class="exec-kpi-tag info" id="kpi-aov-tag">Consolidé</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-aov-val">11.7 DT</div>
+      <div class="exec-kpi-footer">
+        <span>Succursales : <strong>37.6 DT</strong></span>
+        <span>Cafétérias : <strong>4.2 DT</strong></span>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Membres Actifs (≥ 1 scan)</span>
+        <span class="exec-kpi-tag highlight" id="kpi-activation-val">28,0%</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-inscrits-val">759 clients</div>
+      <div class="exec-kpi-footer">
+        <span>Sur <strong>2 715</strong> inscrits CRM</span>
+        <span id="kpi-freq-val" style="font-weight: 700; color: #8E0E14;">3,65 visites/mois</span>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Équilibre Earn &amp; Burn</span>
+        <span class="exec-kpi-tag gold" id="kpi-ratio-val">44,1%</span>
+      </div>
+      <div class="exec-kpi-value" id="kpi-cadeaux-val">35 cadeaux</div>
+      <div class="exec-kpi-footer">
+        <span>Points brûlés : <strong>226 900</strong></span>
+        <span>Émis : <strong>513 924</strong></span>
+      </div>
+    </div>
+
+    <div class="exec-kpi-card highlight-border">
+      <div class="exec-kpi-header">
+        <span class="exec-kpi-label">Dette Provisionnée (Passif)</span>
+        <span class="exec-kpi-tag secure">Couverture 100%</span>
+      </div>
+      <div class="exec-kpi-value debt" id="kpi-dette-val">2 870.2 DT</div>
+      <div class="exec-kpi-footer">
+        <span>Solde net en circulation</span>
+        <strong>287 024 pts</strong>
+      </div>
+    </div>
+
+  </section>
+
+
+
+  <!-- ======================================================== -->
+  <!-- 3. NAVIGATION PAR ONGLETS (ROW 2)                        -->
+  <!-- ======================================================== -->
+  <div class="subbar-nav-row">
+    
+    <!-- Onglets Segmented Pills Ultra-Design & Animé -->
+    <div class="segmented-pills-group" id="tab-nav-group" role="tablist" aria-label="Navigation des vues décisionnelles">
+      <div class="nav-sliding-indicator" id="nav-sliding-indicator" aria-hidden="true"></div>
+      
+      <button class="pill-tab-btn active" data-tab="tab-cockpit" role="tab" aria-selected="true" id="btn-tab-cockpit">
+        <span class="tab-badge">01</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <span class="tab-label">Cockpit Direction &amp; CA</span>
+      </button>
+      <button class="pill-tab-btn" data-tab="tab-segmentation" role="tab" aria-selected="false" id="btn-tab-segmentation">
+        <span class="tab-badge">02</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="tab-label">Segmentation &amp; Grossistes</span>
+      </button>
+      <button class="pill-tab-btn" data-tab="tab-cagnotte" role="tab" aria-selected="false" id="btn-tab-cagnotte">
+        <span class="tab-badge">03</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="tab-label">Cagnotte, LTV &amp; IA Client</span>
+      </button>
+      <button class="pill-tab-btn" data-tab="tab-avancees" role="tab" aria-selected="false" id="btn-tab-avancees">
+        <span class="tab-badge">04</span>
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <span class="tab-label">Analyses Avancées &amp; Cohortes</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3b. BARRE DE FILTRES PROFESSIONNELLE POWER BI            -->
+  <!-- ======================================================== -->
+  <div class="pro-filter-bar" id="pro-filter-bar">
+
+    <!-- Badge Filtres Exécutif avec Compteur Dynamique (Style Power BI Exécutif) -->
+    <div class="pro-filter-badge-cluster">
+      <div class="pro-filter-icon-box">
+        <i data-lucide="filter" class="w-4 h-4 text-white"></i>
+      </div>
+      <div class="pro-filter-badge-text">
+        <span class="pro-filter-badge-title">FILTRES</span>
+        <span class="pro-filter-badge-count" id="active-filters-count">CONSOLIDÉ</span>
+      </div>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Sélecteur Période Rapide Exécutif (7j, 30j, Q3, YTD, Tout) -->
+    <div class="pro-filter-group period-preset-filter-group" id="group-filter-period-preset">
+      <label class="pro-filter-label">
+        <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-500"></i>
+        <span>Période d'Analyse</span>
+      </label>
+      <div class="pro-period-pill-group" role="group" aria-label="Sélecteur de période">
+        <button type="button" class="preset-period-btn active" data-period="all" onclick="window.selectPeriodPreset('all')" title="Consolider tout l'historique DWH (Avril à Octobre 2026)">
+          <span>Tout</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="7d" onclick="window.selectPeriodPreset('7d')" title="Filtrer sur les 7 derniers jours (14 au 20 Octobre 2026)">
+          <span class="period-dot"></span>
+          <span>7 Jours</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="30d" onclick="window.selectPeriodPreset('30d')" title="Filtrer sur le dernier mois (30 jours glissants)">
+          <span>30 Jours (Mois)</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="90d" onclick="window.selectPeriodPreset('90d')" title="Filtrer sur le 3ème Trimestre Q3 (Juillet à Septembre)">
+          <span>Trimestre Q3</span>
+        </button>
+        <button type="button" class="preset-period-btn" data-period="ytd" onclick="window.selectPeriodPreset('ytd')" title="Filtrer sur l'Année 2026 en cours (YTD)">
+          <span>Année 2026</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Calendrier : Plage de dates personnalisées -->
+    <div class="pro-filter-group date-filter-group" id="group-filter-date">
+      <label class="pro-filter-label" for="filter-date-start">
+        <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#8E0E14]"></i>
+        <span>Plage Personnalisée</span>
+      </label>
+      <div class="pro-date-picker-wrap">
+        <input type="date" id="filter-date-start" class="pro-date-field" value="2026-04-01" min="2026-01-01" max="2026-12-31" title="Date début" onchange="window.handleManualDateChange()">
+        <span class="date-arrow">&rarr;</span>
+        <input type="date" id="filter-date-end" class="pro-date-field" value="2026-10-20" min="2026-01-01" max="2026-12-31" title="Date fin" onchange="window.handleManualDateChange()">
+      </div>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Magasin / Point de Vente -->
+    <div class="pro-filter-group" id="group-filter-magasin">
+      <label class="pro-filter-label" for="filter-magasin">
+        <i data-lucide="store" class="w-3.5 h-3.5 text-[#8E0E14]"></i>
+        <span>Point de Vente</span>
+      </label>
+      <select id="filter-magasin" class="pro-filter-select">
+        <option value="all" selected>Tous les PDV (Réseau)</option>
+        <option value="SUC">Succursales (B2B)</option>
+        <option value="CAF">Cafétérias (B2C)</option>
+        <option value="gafsa">Gafsa (Succursale &amp; Cafétéria)</option>
+        <option value="tunis-liberte">Tunis Liberté</option>
+        <option value="el-menzah">El Menzah</option>
+        <option value="la-marsa">La Marsa</option>
+        <option value="gabes">Gabès Jara</option>
+        <option value="le-kef">Le Kef</option>
+        <option value="sfax">Sfax</option>
+        <option value="sousse">Sousse</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Gamme Café -->
+    <div class="pro-filter-group" id="group-filter-gamme">
+      <label class="pro-filter-label" for="filter-gamme">
+        <i data-lucide="coffee" class="w-3.5 h-3.5 text-amber-500"></i>
+        <span>Gamme Produit</span>
+      </label>
+      <select id="filter-gamme" class="pro-filter-select">
+        <option value="all" selected>Toutes les gammes</option>
+        <option value="grains">Café en Grains Prestige</option>
+        <option value="moulu">Café Moulu Torréfié</option>
+        <option value="boissons">Boissons Salons &amp; Comptoir</option>
+        <option value="capsules">Capsules Compatibles</option>
+        <option value="accessoires">Accessoires &amp; Machines</option>
+        <option value="confiseries">Confiseries &amp; Délices</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Segment RFM -->
+    <div class="pro-filter-group" id="group-filter-segment">
+      <label class="pro-filter-label" for="filter-segment">
+        <i data-lucide="target" class="w-3.5 h-3.5 text-[#8E0E14]"></i>
+        <span>Segment RFM</span>
+      </label>
+      <select id="filter-segment" class="pro-filter-select">
+        <option value="all" selected>Tous les segments</option>
+        <option value="champions">Champions &amp; Ambassadeurs</option>
+        <option value="loyaux">Clients Fidèles &amp; Réguliers</option>
+        <option value="risque">Clients à Risque (Churn)</option>
+        <option value="hibernants">Clients Hibernants</option>
+        <option value="grossistes">Grossistes &amp; B2B</option>
+      </select>
+    </div>
+
+    <div class="pro-filter-divider"></div>
+
+    <!-- Profil Réseau -->
+    <div class="pro-filter-group" id="group-slicer-reseau">
+      <label class="pro-filter-label" for="slicer-reseau">
+        <i data-lucide="network" class="w-3.5 h-3.5 text-amber-600"></i>
+        <span>Profil Réseau</span>
+      </label>
+      <select id="slicer-reseau" class="pro-filter-select">
+        <option value="all" selected>Réseau Global Consolidé</option>
+        <option value="particuliers">Consommateurs Détail (Cafétérias)</option>
+        <option value="grossistes">Grossistes &amp; B2B Suspects (Succursales)</option>
+      </select>
+    </div>
+
+    <!-- Actions filtres (Reset & Appliquer avec effets de brillance) -->
+    <div class="pro-filter-actions">
+      <button class="pro-filter-btn-reset" onclick="window.resetAllFilters()" title="Réinitialiser tous les filtres">
+        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+        <span>Reset</span>
+      </button>
+      <button class="pro-filter-btn-apply btn-shine" onclick="window.applyFilters()" title="Appliquer les filtres sélectionnés">
+        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+        <span>Appliquer</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- BANNIÈRE INTERACTIVE DE FILTRAGE CROISÉ (STYLE POWER BI) -->
+  <!-- ======================================================== -->
+  <div id="cross-filter-banner" class="cross-filter-banner" style="display: none;">
+    <div class="cf-banner-content">
+      <div class="cf-banner-left">
+        <span class="cf-indicator-pulse"></span>
+        <span class="cf-badge-text">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          FILTRAGE CROISÉ POWER BI ACTIF
+        </span>
+        <span class="cf-label-text">Dimension : <strong id="cf-dim-name">Point de Vente</strong></span>
+        <span class="cf-active-pill" id="cf-active-pill">Succursale Gafsa</span>
+        <span class="cf-explainer">Tous les graphiques et KPIs sont synchronisés sur cette sélection. Re-cliquez sur le visuel pour désactiver.</span>
+      </div>
+      <button class="cf-reset-button" onclick="window.clearCrossFilter()" title="Désélectionner et réinitialiser la vue">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Désélectionner (Reset)
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 4. CONTENU PRINCIPAL PAR ONGLETS                         -->
+  <!-- ======================================================== -->
+  <main>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 1 : COCKPIT DIRECTION & CA (GRILLE 2x3 DU MOCKUP) -->
+    <!-- ======================================================== -->
+    <section id="tab-cockpit" class="dashboard-tab active">
+      <div class="print-page-header">
+        <span>SECTION 1 : COCKPIT DIRECTION GÉNÉRALE &amp; ANALYSE DU CHIFFRE D'AFFAIRES</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+      
+            <!-- BANNIÈRE OFFICIELLE DU RAPPORT ENA w BONDIN (STYLE RAPPORT PAGE 1 & 2) -->
+      <div class="visual-card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(142, 14, 20, 0.05) 0%, rgba(217, 119, 6, 0.06) 100%); border: 1px solid rgba(142, 14, 20, 0.25);">
+        <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; gap: 14px;">
+          <div style="width: 100%; display: flex; flex-direction: column; md:flex-row; justify-content: space-between; align-items: flex-start; gap: 10px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span class="bondin-section-bar" style="height: 18px; width: 4px; background: #8E0E14; border-radius: 2px;"></span>
+                <span style="font-size: 0.72rem; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: #8E0E14;">RAPPORT D'ANALYSE HEBDOMADAIRE &amp; DÉCISIONNEL</span>
+                <span class="tag-badge gold" style="font-size: 0.65rem;">Page 1 &bull; Conforme Document Officiel</span>
+              </div>
+              <h1 style="font-size: 1.45rem; font-weight: 900; color: #111827; margin: 0; line-height: 1.2;">
+                Analyse de Performance de l'Application <span style="color: #8E0E14;">ENA w BONDIN</span>
+              </h1>
+              <div style="font-size: 0.82rem; color: #6B7280; font-weight: 500; margin-top: 3px;">
+                Programme de fidélité &bull; Direction Générale &bull; Synthèse Conforme au Rapport Officiel &amp; Live DWH
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span class="tag-badge" style="background: rgba(16,185,129,0.12); color: #059669; border: 1px solid rgba(16,185,129,0.25); font-weight: 800; padding: 5px 12px; border-radius: 8px; font-size: 0.78rem; display: flex; align-items: center; gap: 6px;">
+                <span class="live-dot-pulse" style="width: 6px; height: 6px; background: #10B981;"></span>
+                <span id="banner-scan-count-badge">13 306 Scans Consolidés</span>
+              </span>
+              <span class="tag-badge info" style="font-size: 0.75rem; padding: 5px 10px; border-radius: 8px; font-weight: 700;">16 / 20 PDV Actifs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 1 : SYNTHÈSE GÉNÉRALE (PAGE 2 RAPPORT)          -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">1</span>
+        <h2 class="bondin-section-title">Synthèse générale</h2>
+        
+        <div class="report-mode-toggle" id="report-mode-toggle">
+          <button type="button" class="btn-report-mode active" id="btn-mode-snapshot" onclick="window.setReportViewMode('snapshot')" title="Afficher les chiffres certifiés exacts du Rapport PDF (11-18 Juin 2026)">
+            <span>Mode Rapport PDF (11-18 Juin)</span>
+          </button>
+          <button type="button" class="btn-report-mode" id="btn-mode-live" onclick="window.setReportViewMode('live')" title="Afficher les données DWH Temps Réel Consolidées (Avril - Octobre 2026)">
+            <span class="live-dot-pulse" style="width:5px; height:5px; background:#10B981;"></span>
+            <span>Mode DWH Live (13 306 scans)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="report-kpi-grid">
+        <!-- 1. TOTAL ACHATS -->
+        <div class="report-kpi-card">
+          <div class="report-kpi-label">TOTAL ACHATS</div>
+          <div class="report-kpi-val" id="report-total-achats">527</div>
+          <div class="report-kpi-sub" id="report-sub-achats">transactions</div>
+        </div>
+
+        <!-- 2. CHIFFRE D'AFFAIRES -->
+        <div class="report-kpi-card">
+          <div class="report-kpi-label">CHIFFRE D'AFFAIRES</div>
+          <div class="report-kpi-val" id="report-ca-total">3 736.4 DT</div>
+          <div class="report-kpi-sub" id="report-sub-ca">montant total</div>
+        </div>
+
+        <!-- 3. PANIER MOYEN -->
+        <div class="report-kpi-card">
+          <div class="report-kpi-label">PANIER MOYEN</div>
+          <div class="report-kpi-val" id="report-panier-moyen">7.1 DT</div>
+          <div class="report-kpi-sub">par transaction</div>
+        </div>
+
+        <!-- 4. ACHETEURS UNIQUES -->
+        <div class="report-kpi-card">
+          <div class="report-kpi-label">ACHETEURS UNIQUES</div>
+          <div class="report-kpi-val" id="report-acheteurs-uniques">171</div>
+          <div class="report-kpi-sub" id="report-sub-acheteurs">clients actifs</div>
+        </div>
+
+        <!-- 5. NOUVEAUX INSCRITS -->
+        <div class="report-kpi-card">
+          <div class="report-kpi-label">NOUVEAUX INSCRITS</div>
+          <div class="report-kpi-val" id="report-nouveaux-inscrits">728</div>
+          <div class="report-kpi-sub" id="report-sub-inscrits">sur 742 au total (cumulé)</div>
+        </div>
+
+        <!-- 6. POINTS DE VENTE ACTIFS -->
+        <div class="report-kpi-card">
+          <div class="report-kpi-label">POINTS DE VENTE ACTIFS</div>
+          <div class="report-kpi-val" id="report-pdv-actifs">16 / 20</div>
+          <div class="report-kpi-sub">réseau engagé</div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 2 : RÉPARTITION PAR POINT DE VENTE (PAGE 2)     -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">2</span>
+        <h2 class="bondin-section-title">Répartition par point de vente</h2>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 24px; padding: 22px 28px;">
+        <div class="visual-title-center" style="text-align: left; margin-bottom: 16px; font-size: 0.82rem; font-weight: 800; color: #8E0E14; letter-spacing: 0.08em; text-transform: uppercase;" id="donut-section-title">
+          RÉPARTITION DES ACHATS DE LA SEMAINE
+        </div>
+        <div class="report-donut-wrapper">
+          <div class="report-donut-chart-box">
+            <canvas id="chart-etablissements-donut"></canvas>
+            <div class="report-donut-center-text">
+              <div class="report-donut-center-num" id="donut-center-num">527</div>
+              <div class="report-donut-center-sub" id="donut-center-sub">achats</div>
+            </div>
+          </div>
+          <div class="report-donut-legend" id="donut-report-legend">
+            <div class="report-donut-legend-item">
+              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#8E0E14;"></span>Cafétéria Le Kef</span>
+              <strong id="donut-pct-kef">27%</strong>
+            </div>
+            <div class="report-donut-legend-item">
+              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#C00E29;"></span>Cafétéria Tunis Liberté</span>
+              <strong id="donut-pct-liberte">17%</strong>
+            </div>
+            <div class="report-donut-legend-item">
+              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#C68A36;"></span>Cafétéria Tunis La Marsa</span>
+              <strong id="donut-pct-marsa">16%</strong>
+            </div>
+            <div class="report-donut-legend-item">
+              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#E06D75;"></span>Cafétéria Tunis MENZAH VI</span>
+              <strong id="donut-pct-menzah">13%</strong>
+            </div>
+            <div class="report-donut-legend-item">
+              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#F8B4B4;"></span>Succursale Tunis Menzah VI</span>
+              <strong id="donut-pct-succ-menzah">5%</strong>
+            </div>
+            <div class="report-donut-legend-item">
+              <span style="display:flex; align-items:center;"><span class="report-donut-legend-dot" style="background:#D1D5DB;"></span>Autres</span>
+              <strong id="donut-pct-autres">22%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 3 : CLASSEMENT DES POINTS DE VENTE (PAGE 2)     -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">3</span>
+        <h2 class="bondin-section-title">Classement des points de vente</h2>
+      </div>
+
+      <div class="visuals-grid-2col" style="margin-bottom: 24px;">
+        <!-- Left: TOP POINTS DE VENTE, NOMBRE D'ACHATS -->
+        <div class="visual-card" style="padding: 20px 24px;">
+          <div class="visual-title-center" style="text-align: left; margin-bottom: 12px; font-size: 0.80rem; font-weight: 800; color: #8E0E14; letter-spacing: 0.08em; text-transform: uppercase;">
+            TOP POINTS DE VENTE, NOMBRE D'ACHATS
+          </div>
+          <div style="height: 290px; position: relative;">
+            <canvas id="chart-top-pdv-achats"></canvas>
+          </div>
+          <div style="text-align: center; font-size: 0.72rem; color: #6B7280; margin-top: 6px; font-weight: 600;">
+            Nombre d'achats
+          </div>
+        </div>
+
+        <!-- Right: TOP POINTS DE VENTE, CA (DT) -->
+        <div class="visual-card" style="padding: 20px 24px;">
+          <div class="visual-title-center" style="text-align: left; margin-bottom: 12px; font-size: 0.80rem; font-weight: 800; color: #8E0E14; letter-spacing: 0.08em; text-transform: uppercase;">
+            TOP POINTS DE VENTE, CA (DT)
+          </div>
+          <div style="height: 290px; position: relative;">
+            <canvas id="chart-top-magasins-mockup"></canvas>
+          </div>
+          <div style="text-align: center; font-size: 0.72rem; color: #6B7280; margin-top: 6px; font-weight: 600;">
+            Chiffre d'affaires (DT)
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 4 : TOP 5 CLIENTS (PAGE 2 DU RAPPORT)           -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">4</span>
+        <h2 class="bondin-section-title">Top 5 clients</h2>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 24px; padding: 0; overflow: hidden;">
+        <div class="table-responsive" style="margin: 0;">
+          <table class="report-table-top5" id="table-top5-rapport">
+            <thead>
+              <tr>
+                <th style="width: 45px; text-align: center;">#</th>
+                <th>CLIENT</th>
+                <th style="text-align: center;">ACHATS</th>
+                <th style="text-align: right;">DÉPENSE (DT)</th>
+                <th style="text-align: center;">PDV VISITÉS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="window.filterByClientName('Bellakhdar Manel')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
+                <td class="rank-cell" style="text-align: center;">1</td>
+                <td><strong>Bellakhdar Manel</strong></td>
+                <td style="text-align: center; font-weight: 600;">29</td>
+                <td style="text-align: right; font-weight: 700;">308.1</td>
+                <td style="text-align: center;">2</td>
+              </tr>
+              <tr onclick="window.filterByClientName('Abdallah Ghedifi')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
+                <td class="rank-cell" style="text-align: center;">2</td>
+                <td><strong>Abdallah Ghedifi</strong></td>
+                <td style="text-align: center; font-weight: 600;">6</td>
+                <td style="text-align: right; font-weight: 700;">123.7</td>
+                <td style="text-align: center;">2</td>
+              </tr>
+              <tr onclick="window.filterByClientName('Dridi Ahmed Aziz')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
+                <td class="rank-cell" style="text-align: center;">3</td>
+                <td><strong>Dridi Ahmed Aziz</strong></td>
+                <td style="text-align: center; font-weight: 600;">3</td>
+                <td style="text-align: right; font-weight: 700;">104.6</td>
+                <td style="text-align: center;">1</td>
+              </tr>
+              <tr onclick="window.filterByClientName('Ghazi Karray')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
+                <td class="rank-cell" style="text-align: center;">4</td>
+                <td><strong>Ghazi Karray</strong></td>
+                <td style="text-align: center; font-weight: 600;">7</td>
+                <td style="text-align: right; font-weight: 700;">89.6</td>
+                <td style="text-align: center;">2</td>
+              </tr>
+              <tr onclick="window.filterByClientName('Derouiche Ahmed')" style="cursor: pointer;" title="Cliquer pour voir l'analyse détaillée">
+                <td class="rank-cell" style="text-align: center;">5</td>
+                <td><strong>Derouiche Ahmed</strong></td>
+                <td style="text-align: center; font-weight: 600;">3</td>
+                <td style="text-align: right; font-weight: 700;">87.8</td>
+                <td style="text-align: center;">2</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding: 8px 16px; background: rgba(0,0,0,0.02); font-size: 0.75rem; color: #6B7280; display: flex; justify-content: space-between; align-items: center;">
+          <span>⚡ 55 clients ont réalisé au moins 3 achats durant la semaine (sur 171 acheteurs)</span>
+          <a href="javascript:void(0)" onclick="window.switchToTab('tab-segmentation')" style="color: #8E0E14; font-weight: 700; text-decoration: underline;">Voir la liste complète des 55 clients (Pages 3, 4, 5) &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 5 : CARTOGRAPHIE PAR RÉGION & MAGASINS (TUNISIE) -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">5</span>
+        <h2 class="bondin-section-title">Cartographie par Région &amp; Magasins (Tunisie)</h2>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 24px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <div id="map-live-ticker" style="font-size: 0.74rem; color: #059669; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+              <span class="live-dot-pulse" style="width: 5px; height: 5px;"></span>
+              <span>Flux Caisse Direct : Dernier scan à Tunis Liberté</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" class="btn-dwh-ping" style="padding: 4px 10px; font-size: 0.72rem;" onclick="window.simulateLiveScan()" title="Simuler un scan caisse magasin et voir la bulle pulser">
+              <span class="live-dot-pulse" style="width: 5px; height: 5px;"></span>
+              <span>Tester Scan Magasin</span>
+            </button>
+            <span class="tag-badge info" style="font-size: 0.7rem;">20 Points de Vente &bull; Réseau National</span>
+          </div>
+        </div>
+        <div id="map-tunisie-container"></div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 6 : HEATMAP TEMPORELLE AFFLUENCE DES SCANS QR    -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">6</span>
+        <h2 class="bondin-section-title" id="heatmap-title-text">Heatmap Temporelle : Affluence des Scans QR (13 306 scans &bull; Historique Global Consolidé (Avril - Octobre 2026))</h2>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 24px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 0.85rem; font-weight: 700; color: #6B7280;">
+            Répartition horaire (8h &agrave; 22h) par jour de la semaine
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span class="tag-badge info" style="font-size: 0.7rem;">Heures de Pointe Caisse</span>
+          </div>
+        </div>
+        <div class="heatmap-container" id="heatmap-time-container">
+          <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 7 : MATRICE DE RÉTENTION PAR COHORTE MENSUELLE   -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">7</span>
+        <h2 class="bondin-section-title" id="cohort-matrix-title">Matrice de Rétention par Cohorte Mensuelle (Stickiness Client Consolidé)</h2>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 24px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div class="visual-title-center" style="text-align: left; margin: 0; font-size: 0.85rem; font-weight: 700; color: #6B7280;">
+            Taux de réachat des clients cohortés depuis leur premier mois d'inscription
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div class="cohort-granularity-group" role="group" aria-label="Granularité des cohortes de rétention">
+              <button type="button" class="btn-cohort-grain active" data-grain="month" onclick="window.setCohortGranularity('month')" title="Analyser les cohortes par mois d'inscription">Par Mois</button>
+              <button type="button" class="btn-cohort-grain" data-grain="week" onclick="window.setCohortGranularity('week')" title="Analyser les cohortes par semaine">Par Semaine</button>
+              <button type="button" class="btn-cohort-grain" data-grain="day" onclick="window.setCohortGranularity('day')" title="Analyser les cohortes journalières (30 derniers jours)">Par Jour</button>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table cohort-table" id="table-cohort-retention">
+            <thead>
+              <tr id="cohort-thead-row">
+                <th>Cohorte</th>
+                <th>Inscrits</th>
+                <th>Mois 0</th>
+                <th>Mois +1</th>
+                <th>Mois +2</th>
+                <th>Mois +3</th>
+                <th>Mois +4</th>
+                <th>Mois +5</th>
+                <th>Mois +6</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté dynamiquement par JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 8 : TOP CATÉGORIES & DÉCOMPOSITION (PAGE 3)     -->
+      <!-- ======================================================== -->
+      <div class="bondin-report-section-header">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">8</span>
+        <h2 class="bondin-section-title">Top Catégories &amp; Analyses Complémentaires (Rapport Page 3)</h2>
+      </div>
+
+      <div class="visuals-grid-2col" style="margin-bottom: 24px;">
+        <!-- TOP CATÉGORIES (PAGE 3 DU RAPPORT) -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Top Catégories de Produits (Rapport Page 3)</div>
+            <span class="tag-badge gold" style="font-size: 0.65rem;">Page 3 Rapport</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 9px; padding-top: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(142,14,20,0.06); border-radius: 8px; border-left: 3px solid #8E0E14;">
+              <div>
+                <strong style="font-size: 0.84rem; color: #111827;">Cafés &amp; boissons chaudes</strong>
+                <div style="font-size: 0.70rem; color: #6B7280;">Cafétérias &bull; Espresso, Direct &bull; Volume majeur</div>
+              </div>
+              <span style="font-weight: 800; font-size: 0.84rem; color: #8E0E14;">10 136 scans</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(142,14,20,0.06); border-radius: 8px; border-left: 3px solid #8E0E14;">
+              <div>
+                <strong style="font-size: 0.84rem; color: #111827;">CAFE TORREFIE / Café 100% Arabica Lavé</strong>
+                <div style="font-size: 0.70rem; color: #6B7280;">Café Torréfié en Grains &amp; Moulu Premium</div>
+              </div>
+              <span style="font-weight: 800; font-size: 0.84rem; color: #8E0E14;">48 500 DT</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(217,119,6,0.06); border-radius: 8px; border-left: 3px solid #D97706;">
+              <div>
+                <strong style="font-size: 0.84rem; color: #111827;">CAFE TORREFIE / Café de Qualité Supérieure</strong>
+                <div style="font-size: 0.70rem; color: #6B7280;">Mélange Signature Tradition BONDIN</div>
+              </div>
+              <span style="font-weight: 800; font-size: 0.84rem; color: #D97706;">33 200 DT</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(16,185,129,0.06); border-radius: 8px; border-left: 3px solid #10B981;">
+              <div>
+                <strong style="font-size: 0.84rem; color: #111827;">Gâteaux Prémium</strong>
+                <div style="font-size: 0.70rem; color: #6B7280;">Compléments de panier &bull; Cafétérias</div>
+              </div>
+              <span style="font-weight: 800; font-size: 0.84rem; color: #10B981;">18 400 DT</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.03); border-radius: 8px; border-left: 3px solid #6B7280;">
+              <div>
+                <strong style="font-size: 0.84rem; color: #111827;">Viennoiserie &amp; Croissants</strong>
+                <div style="font-size: 0.70rem; color: #6B7280;">Ventes matinales (8h-11h)</div>
+              </div>
+              <span style="font-weight: 800; font-size: 0.84rem; color: #4B5563;">7 650 DT</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GAMMES DE CAFÉ & SUCCURSALES VS CAFÉTÉRIAS -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">CA par Gamme de Café &amp; Type d'Établissement</div>
+            <div class="chart-custom-legend">
+              <span><span class="legend-dot purple-light"></span> Succursales (Gros)</span>
+              <span><span class="legend-dot purple-dark"></span> Cafétérias (Détail)</span>
+            </div>
+          </div>
+          <div class="chart-container-mockup" style="height: 250px;">
+            <canvas id="chart-gammes-stacked"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE MENSUELLE & SEGMENTS PARETO -->
+      <div class="visuals-grid-2col" style="margin-bottom: 24px;">
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Évolution Mensuelle du Chiffre d'Affaires &amp; Panier Moyen</div>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-light"></span> Succursales</span>
+            <span><span class="legend-dot purple-dark"></span> Cafétérias</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 240px;">
+            <canvas id="chart-monthly-mockup"></canvas>
+          </div>
+        </div>
+
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center">Chiffre d'Affaires par Segment Consommateur (Pareto)</div>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-light"></span> CA Cumulé (TND)</span>
+            <span><span class="legend-dot purple-dark"></span> Clients</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 240px;">
+            <canvas id="chart-segments-mockup"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Module IA CDC : Arbre de Décomposition IA -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Arbre de Décomposition Stratégique du CA Client</div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            
+            <span class="visual-info-icon" title="Exploration guidée IA : Décomposition du CA Global -> Segments -> Gammes -> Magasins">?</span>
+          </div>
+        </div>
+        <div id="decomp-tree-container" style="overflow-x: auto; padding: 6px 0;">
+          <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+        </div>
+      </div>
+
+          <!-- MODULE WHAT-IF SIMULATOR DAX (EXIGENCE EXPLICITE CAHIER DES CHARGES PAGE 3) -->
+      <div class="visual-card whatif-container" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Simulateur Dynamique What-If : Sensibilité du Barème de Points &amp; Impact Dette (Mesures DAX)
+          </div>
+          <span class="tag-badge info">DAX Param_Taux_Points (0.5x &rarr; 3.0x)</span>
+        </div>
+
+        <div class="whatif-body">
+          <div class="whatif-controls-col">
+            <div class="whatif-slider-header">
+              <label for="whatif-slider">Multiplicateur de Barème : <strong id="whatif-multiplier-val">1.0x</strong></label>
+              <span id="whatif-status-badge" class="tag-badge gold">Barème Standard DWH</span>
+            </div>
+            <input type="range" id="whatif-slider" min="0.5" max="3.0" step="0.1" value="1.0" class="whatif-range-input" oninput="window.updateWhatIfSimulation(this.value)">
+            <div class="whatif-scale-labels">
+              <span>0.5x (Frein Dette)</span>
+              <span>1.0x (Normal)</span>
+              <span>1.5x (Boost)</span>
+              <span>2.0x (Double Points)</span>
+              <span>3.0x (Max)</span>
+            </div>
+            
+            <div class="whatif-presets">
+              <button class="whatif-preset-btn active" onclick="window.setWhatIfPreset(1.0, this)">Standard (1.0x)</button>
+              <button class="whatif-preset-btn" onclick="window.setWhatIfPreset(1.5, this)">Campagne Boost (1.5x)</button>
+              <button class="whatif-preset-btn" onclick="window.setWhatIfPreset(2.0, this)">Offre Double Points (2.0x)</button>
+              <button class="whatif-preset-btn" onclick="window.setWhatIfPreset(0.7, this)">Optimisation Marge (0.7x)</button>
+            </div>
+          </div>
+
+          <div class="whatif-metrics-grid">
+            <div class="whatif-metric-card">
+              <span class="whatif-metric-label">Points Émis Simulés [Points_Earn_Simules]</span>
+              <span class="whatif-metric-num" id="whatif-points-sim">188 294 pts</span>
+              <span class="whatif-metric-sub" id="whatif-points-delta">Référence standard</span>
+            </div>
+            <div class="whatif-metric-card">
+              <span class="whatif-metric-label">Dette Estimée [Dette_Simulee_TND]</span>
+              <span class="whatif-metric-num" id="whatif-dette-sim">877,940 TND</span>
+              <span class="whatif-metric-sub" id="whatif-dette-delta">Variation : +0,000 TND</span>
+            </div>
+            <div class="whatif-metric-card">
+              <span class="whatif-metric-label">Impact Trésorerie &amp; Marge</span>
+              <span class="whatif-metric-num" id="whatif-impact-pct">+0,0%</span>
+              <span class="whatif-metric-sub" id="whatif-impact-comment">100% Couverture Réserve</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 2 : SEGMENTATION, GROSSISTES B2B & PARRAINAGE     -->
+    <!-- ======================================================== -->
+    <section id="tab-segmentation" class="dashboard-tab">
+      <div class="print-page-header">
+        <span>SECTION 2 : SEGMENTATION CLIENTS RFM &amp; DÉTECTION DES GROSSISTES B2B</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+      
+      <!-- Alerte Retours Clients Grossistes -->
+      <div class="alert-banner">
+        <div class="alert-banner-content">
+          <span style="font-size: 1.4rem;">⚡</span>
+          <div>
+            <strong>Alerte Spéciale Retours Clients :</strong> <strong>226 profils Grossistes & B2B</strong> identifiés générant <strong>77,3 % du CA global (45 985 TND)</strong> dont 144 clients mixtes achetant en gros en Succursale (panier moyen 39,64 TND) tout en consommant au comptoir !
+          </div>
+        </div>
+        <span class="tag-badge alert">Surveillance Active</span>
+      </div>
+
+      <!-- MINI STRIP KPI SEGMENTATION & RYTHME D'ACHAT (EXIGENCES CDC PAGE 2) -->
+      <div class="visuals-grid-4col" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px;">
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Fréquence d'Achat Moyenne</span>
+            <span class="exec-kpi-tag success">Cible Atteinte</span>
+          </div>
+          <div class="exec-kpi-value" id="kpi-tab2-freq" style="font-size: 1.25rem;">3,8 visites / mois</div>
+          <div class="exec-kpi-footer">
+            <span>Cible CDC : 3 à 4 visites</span>
+            <strong id="kpi-tab2-actifs">Actifs : 765 clients</strong>
+          </div>
+        </div>
+
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Intervalle Moyen de Réachat</span>
+            <span class="exec-kpi-tag info">Rythme Client</span>
+          </div>
+          <div class="exec-kpi-value" id="kpi-tab2-interval" style="font-size: 1.25rem;">7,8 jours</div>
+          <div class="exec-kpi-footer">
+            <span>Champions : 3,2 j</span>
+            <strong>Occasionnels : 24,5 j</strong>
+          </div>
+        </div>
+
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Clients Ultra-Fréquents</span>
+            <span class="exec-kpi-tag purple">&ge; 3 scans / sem.</span>
+          </div>
+          <div class="exec-kpi-value" id="kpi-tab2-ultrafreq" style="font-size: 1.25rem;">147 clients</div>
+          <div class="exec-kpi-footer">
+            <span>Part de la base active</span>
+            <strong id="kpi-tab2-ultrafreq-pct">25,3 % des scans</strong>
+          </div>
+        </div>
+
+        <div class="exec-kpi-card" style="padding: 10px 14px;">
+          <div class="exec-kpi-header">
+            <span class="exec-kpi-label">Taux de Rédemption Cagnotte</span>
+            <span class="exec-kpi-tag gold">Burn Actif</span>
+          </div>
+          <div class="exec-kpi-value" id="kpi-tab2-redemption" style="font-size: 1.25rem;">6,03 %</div>
+          <div class="exec-kpi-footer">
+            <span id="kpi-tab2-convertis">35 clients convertis</span>
+            <strong id="kpi-tab2-burn">16 746 pts brûlés</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="6" x2="16" y2="10"/><line x1="16" y1="6" x2="12" y2="10"/></svg>
+            Diagramme Dynamique de Flux Relationnel (Sankey : Cycle de Vie &amp; Conversion des Membres)
+          </div>
+          <span class="tag-badge info">Cycle de Vie &amp; Attrition Base (2 715 Membres)</span>
+        </div>
+
+        <div class="sankey-flow-wrapper" id="sankey-flow-container">
+          <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+      </div>
+
+      <div class="bondin-report-section-header" style="margin: 10px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">4</span>
+        <h2 class="bondin-section-title">Top Clients, Grossistes B2B &amp; Flux Caisse</h2>
+      </div>
+      <!-- MODULE FLUX DE TRANSACTIONS EN TEMPS RÉEL (DIRECT POSTGRESQL LIVE) -->
+      <div class="visual-card" style="margin-bottom: 24px; border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 4px 25px rgba(16, 185, 129, 0.12);">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_#10B981]"></span>
+            <div class="visual-title-center" style="text-align: left; margin: 0;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              Flux Live des Dernières Transactions Scannées en Caisse (Direct PostgreSQL 17.7)
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="tag-badge green" id="live-feed-badge">PostgreSQL 17.7 Connecté</span>
+            <button onclick="window.simulateLiveScan()" class="btn-action" style="padding: 5px 12px; font-size: 11px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.5); color: #F59E0B; cursor: pointer; border-radius: 8px; font-weight: 700; transition: all 0.2s;" title="Simuler une transaction de caisse en direct (+18,500 TND) et observer la propagation instantanée sur tout le tableau de bord">
+              ⚡ Simuler Encaissement (+18,500 TND)
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-live-transactions">
+            <thead>
+              <tr>
+                <th>N° Ticket Caisse</th>
+                <th>Client</th>
+                <th>Magasin / Point de Vente</th>
+                <th>Montant Ticket (TND)</th>
+                <th>Points Fidélité</th>
+                <th>Horodatage Transaction</th>
+                <th>Statut Flux DWH</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-live-transactions">
+              <!-- Injecté dynamiquement par app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Table des Grossistes sous surveillance -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div class="visual-title-center" style="text-align: left; margin: 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Détection des Profils Grossistes &amp; Volumes B2B Suspects</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-secondary, #6B7280); text-transform: uppercase; letter-spacing: 0.4px;">Affichage :</span>
+            <div class="grossistes-top-filter-group" role="group" aria-label="Filtrer top grossistes">
+              <button type="button" class="btn-grossiste-top active" data-top="5" onclick="window.filterTopGrossistes(5)" title="Afficher le Top 5 des plus grands grossistes">Top 5</button>
+              <button type="button" class="btn-grossiste-top" data-top="10" onclick="window.filterTopGrossistes(10)" title="Afficher le Top 10 des plus grands grossistes">Top 10</button>
+              <button type="button" class="btn-grossiste-top" data-top="20" onclick="window.filterTopGrossistes(20)" title="Afficher le Top 20 des plus grands grossistes">Top 20</button>
+            </div>
+            
+            <span class="visual-info-icon" title="Détection automatique des comptes professionnels selon le ticket en succursale">?</span>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-grossistes">
+            <thead>
+              <tr>
+                <th>Client (Grossiste / B2B)</th>
+                <th>Achats Succursale</th>
+                <th>Achats Cafétéria</th>
+                <th>Total CA Dépensé</th>
+                <th>Max Ticket Succursale</th>
+                <th>Fréquence Hebdo</th>
+                <th>Statut d'Alerte</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté par app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bondin-report-section-header" style="margin: 14px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">6</span>
+        <h2 class="bondin-section-title">Clients Fidèles &amp; Réseau Ambassadeurs</h2>
+      </div>
+      <!-- Module Parrainage & Viralité -->
+      <div class="visual-card" style="margin-bottom: 20px;">
+        <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div class="visual-title-center" style="text-align: left; margin: 0;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Pilotage du Programme Parrainage &amp; Réseau Viral</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-secondary, #6B7280); text-transform: uppercase; letter-spacing: 0.4px;">Affichage :</span>
+            <div class="parrainages-top-filter-group grossistes-top-filter-group" role="group" aria-label="Filtrer top parrains">
+              <button type="button" class="btn-parrainage-top btn-grossiste-top active" data-top="5" onclick="window.filterTopParrainages(5)" title="Afficher le Top 5 des meilleurs ambassadeurs">Top 5</button>
+              <button type="button" class="btn-parrainage-top btn-grossiste-top" data-top="10" onclick="window.filterTopParrainages(10)" title="Afficher le Top 10 des meilleurs ambassadeurs">Top 10</button>
+              <button type="button" class="btn-parrainage-top btn-grossiste-top" data-top="20" onclick="window.filterTopParrainages(20)" title="Afficher le Top 20 des meilleurs ambassadeurs">Top 20</button>
+            </div>
+            
+            <span class="visual-info-icon" title="206 parrainages enregistrés avec suivi des filleuls et primes attribuées">?</span>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-parrainages">
+            <thead>
+              <tr>
+                <th>Ambassadeur / Parrain</th>
+                <th>Rang & Distinction</th>
+                <th>Filleuls Recrutés</th>
+                <th>Filleuls Convertis</th>
+                <th>CA Incrémental Généré</th>
+                <th>Points Primes Gagnés</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 3 : CAGNOTTE, LTV & IA CLIENT                    -->
+    <!-- ======================================================== -->
+    <section id="tab-cagnotte" class="dashboard-tab">
+      <div class="print-page-header">
+        <span>SECTION 3 : CAGNOTTE EARN &amp; BURN, LTV &amp; MOTEUR PRÉDICTIF CHURN</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+      
+      <!-- Grille LTV & Cascade -->
+      <div class="visuals-grid-3x2" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+        
+        <!-- Cascade Financière Waterfall -->
+        <div class="visual-card">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Cascade Financière : Flux Earn &amp; Burn des Points de Fidélité</div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              
+              <span class="visual-info-icon" title="Passif des points : Émis -> Consommés -> Solde actif">?</span>
+            </div>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-waterfall-mockup"></canvas>
+          </div>
+        </div>
+
+        <!-- LTV Stratifiée -->
+        <div class="visual-card">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/></svg>Customer Lifetime Value (LTV Stratifiée par Segment)</div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              
+              <span class="visual-info-icon" title="Valeur moyenne générée par profil : Champions (289,83 TND), Grossistes (238,96 TND)">?</span>
+            </div>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-ltv-mockup"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tables Churn & Market Basket -->
+      <div class="visuals-grid-3x2" style="grid-template-columns: 1fr 1fr; margin-bottom: 20px;">
+        
+        <!-- Table Churn ML -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Moteur Prédictif : Risque de Churn &amp; Rétention Client (30 jours)</div>
+            <span class="visual-info-icon" title="Score Machine Learning identifiant les clients à réactiver d'urgence par push promo">?</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-churn">
+              <thead>
+                <tr>
+                  <th>Nom du Client (Fidélité)</th>
+                  <th>Inactivité</th>
+                  <th>CA Cumulé</th>
+                  <th>Points</th>
+                  <th>Score Churn</th>
+                  <th>Action Push</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Market Basket Analysis -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Analyse des Associations de Produits (Market Basket &amp; Cross-Selling)</div>
+            <span class="visual-info-icon" title="Panier de la ménagère : Articles fréquemment achetés ensemble et actions de cross-selling">?</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-market-basket">
+              <thead>
+                <tr>
+                  <th>Produit A</th>
+                  <th>Produit B</th>
+                  <th>Confiance</th>
+                  <th>Lift</th>
+                  <th>Action Caisse</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Distribution Cadeaux par Magasin -->
+      <div class="visual-card">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Distribution des Cadeaux &amp; Taux de Conversion par Point de Vente</div>
+          <span class="visual-info-icon" title="Alerte logistique : 6 magasins concentrent 100% des cadeaux réclamés (Tunis Liberté 35)">?</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="table-magasins-cadeaux">
+            <thead>
+              <tr>
+                <th>Point de Vente</th>
+                <th>Type</th>
+                <th>Cadeaux Délivrés</th>
+                <th>Points Brûlés</th>
+                <th>Taux de Conv.</th>
+                <th>Statut Approvisionnement</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injecté par app.js?v=20261020_executive_login_dark_v17 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+          <!-- MOTEUR IA RÉCOMPENSES SUR-MESURE & PALMARÈS DU CATALOGUE (EXIGENCE CDC PAGE 2 & 3) -->
+      <div class="visual-card" style="margin-top: 20px;">
+        <div class="visual-header">
+          <div class="visual-title-center" style="text-align: left;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+            Moteur IA de Récompenses Sur-Mesure &amp; Palmarès du Catalogue (Dim_Recompense)
+          </div>
+          <div class="reward-filter-pills">
+            <button class="reward-pill active" onclick="window.filterRewardsTier('all', this)">Tous (14)</button>
+            <button class="reward-pill" onclick="window.filterRewardsTier('Exclusif', this)">Exclusif VIP (Champions)</button>
+            <button class="reward-pill" onclick="window.filterRewardsTier('Privilège', this)">Privilège (Réguliers)</button>
+            <button class="reward-pill" onclick="window.filterRewardsTier('Access', this)">Access (Tout Public)</button>
+          </div>
+        </div>
+
+        <div class="rewards-catalog-grid" id="rewards-catalog-container">
+          <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- ONGLET 4 : ANALYSES AVANCÉES, HEATMAP & COHORTES         -->
+    <!-- ======================================================== -->
+    <section id="tab-avancees" class="dashboard-tab">
+      <div class="print-page-header">
+        <span>SECTION 4 : ANALYSES COMPORTEMENTALES AVANCÉES, HEATMAP &amp; COHORTES</span>
+        <span>RAPPORT CONFIDENTIEL</span>
+      </div>
+
+      <div class="bondin-report-section-header" style="margin: 10px 0 16px 0;">
+        <span class="bondin-section-bar"></span>
+        <span class="bondin-section-badge">4</span>
+        <h2 class="bondin-section-title">Analyses Multidimensionnelles, Benchmarks &amp; Démographie</h2>
+      </div>
+
+      <!-- BANNIÈRE D'INFORMATION COCKPIT ACCUEIL -->
+      <div class="visual-card" style="margin-bottom: 20px; background: linear-gradient(135deg, rgba(142,14,20,0.05), rgba(217,119,6,0.06)); border: 1px solid rgba(217,119,6,0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 12px; padding: 4px 6px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(142,14,20,0.12); display: flex; align-items: center; justify-content: center; color: #8E0E14; flex-shrink: 0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </div>
+            <div>
+              <strong style="color: #8E0E14; font-size: 0.92rem;">Vue Stratégique Premier Plan :</strong>
+              <div style="color: #4B5563; font-size: 0.8rem; margin-top: 1px;">
+                La Cartographie Tunisie, la Heatmap Temporelle (13 306 scans) et la Matrice de Rétention par Cohorte sont intégrées en temps réel sur la page d'accueil (Cockpit Direction).
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-dwh-ping" onclick="window.switchToTab('tab-cockpit')" style="padding: 6px 14px; font-size: 0.76rem; border-radius: 8px;">
+            <span>&larr; Revenir au Cockpit Accueil</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- GRILLE 2 COLONNES : BENCHMARKS & MATRICES -->
+      <div class="visuals-grid-2col" style="margin-bottom: 20px;">
+
+        <!-- VISUEL 3 : RADAR BENCHMARK SUCCURSALES VS CAFÉTÉRIAS -->
+        <div class="visual-card">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="visual-title-center" style="text-align: left;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Benchmark Multidimensionnel : Succursales (Gros) vs Cafétérias (Détail)
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              
+              <span class="visual-info-icon" title="Comparaison normalisée à 6 dimensions de la performance commerciale et fidélité">?</span>
+            </div>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-dark"></span> Succursales B2B (Gros)</span>
+            <span><span class="legend-dot purple-light"></span> Cafétérias B2C (Détail)</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-radar-benchmark"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- GRILLE 2 COLONNES : MATRICE BCG & PYRAMIDE DES ÂGES -->
+      <div class="visuals-grid-2col">
+        
+        <!-- VISUEL 4 : MATRICE BCG / QUADRANT RENTABILITÉ PRODUITS -->
+        <div class="visual-card">
+          <div class="visual-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="visual-title-center" style="text-align: left;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+              Matrice BCG &amp; Quadrant Rentabilité des Produits (Volume vs CA vs Panier)
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              
+              <span class="visual-info-icon" title="Classification stratégique : Étoiles, Vaches à Lait, Dilemmes et Poids Morts">?</span>
+            </div>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot gold"></span> Stars (Moulu &amp; Grains)</span>
+            <span><span class="legend-dot green"></span> Vaches à Lait (Comptoir)</span>
+            <span><span class="legend-dot purple-light"></span> Dilemmes (Capsules)</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-bcg-products"></canvas>
+          </div>
+        </div>
+
+        <!-- VISUEL 5 : PYRAMIDE DES ÂGES & DÉMOGRAPHIE -->
+        <div class="visual-card">
+          <div class="visual-header">
+            <div class="visual-title-center" style="text-align: left;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              Pyramide des Âges &amp; Préférences de Consommation par Génération
+            </div>
+            <span class="visual-info-icon" title="Profil démographique des acheteurs croisé avec leur canal d'achat dominant">?</span>
+          </div>
+          <div class="chart-custom-legend">
+            <span><span class="legend-dot purple-dark"></span> Succursales (Traditionnel Grains/Moulu)</span>
+            <span><span class="legend-dot purple-light"></span> Cafétérias (Boissons &amp; Capsules)</span>
+          </div>
+          <div class="chart-container-mockup" style="height: 260px;">
+            <canvas id="chart-age-demographics"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- 5. FOOTER & NOTIFICATIONS TOAST                          -->
+  <!-- ======================================================== -->
+  <footer>
+    <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; letter-spacing: 0.3px;">
+      &copy; 2026 &bull; Powered by FIDNESS &bull; ENA W BONDIN &bull; Plateforme Décisionnelle BI &amp; IA Client
+    </div>
+    <div style="opacity: 0.85;">
+      Dernière synchronisation DWH : <strong id="footer-sync-time">22/10/2026 à 13:30</strong> &bull; Source : <code>data_dwh/</code> (9 tables consolidées &bull; PostgreSQL Live)
+    </div>
+  </footer>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="data.js?v=20261022_espresso_gold_v22"></script>
+  <script src="app.js?v=20261022_espresso_gold_v22"></script>
+  <!-- ======================================================== -->
+  <!-- MODAL EXÉCUTIF EXPORT PDF HAUTE DÉFINITION                -->
+  <!-- ======================================================== -->
+  <div id="modal-export-pdf" class="modal-overlay" style="display: none;" onclick="if(event.target === this) window.closeExportModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportation du Rapport Décisionnel PDF
+        </div>
+        <button class="modal-close-btn" onclick="window.closeExportModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-description">
+          Configurez votre document pour une présentation de Direction Générale, un audit ou un archivage officiel.
+        </p>
+
+        <div class="export-options-grid">
+          <div class="export-option-card active" id="opt-all-tabs" onclick="window.selectExportScope('all')">
+            <div class="export-opt-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="export-opt-text">
+              <strong>Dossier Exécutif Complet (Multipages A4 Paysage)</strong>
+              <span>Toutes les sections (Cockpit CA, Segments RFM, Cagnotte &amp; IA Client) avec mise en page optimisée et sauts de page automatiques.</span>
+            </div>
+          </div>
+
+          <div class="export-option-card" id="opt-current-tab" onclick="window.selectExportScope('current')">
+            <div class="export-opt-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            <div class="export-opt-text">
+              <strong>Synthèse de la Vue Active Uniquement (1 Page)</strong>
+              <span>Génère un document synthétique centré exclusivement sur la section actuellement sélectionnée à l'écran.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Traçabilité des filtres dans le document -->
+        <div class="export-meta-preview">
+          <div class="meta-preview-title">Traçabilité &amp; Filtres appliqués au document :</div>
+          <div class="meta-preview-tags" id="export-active-filters-tags">
+            <!-- Injecté dynamiquement par JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-btn-cancel" onclick="window.closeExportModal()">Annuler</button>
+        <button class="modal-btn-confirm" onclick="window.triggerExecutivePrint()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Générer / Imprimer le PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- ======================================================== -->
+  <!-- BOUTON FLOTTANT COPILOT IA RAG DÉCISIONNEL PRESTIGE      -->
+  <!-- ======================================================== -->
+  <!-- ======================================================== -->
+  <!-- BOUTON FLOTTANT COPILOT IA RAG DÉCISIONNEL               -->
+  <!-- ======================================================== -->
+  <button id="btn-open-rag-chat" class="rag-floating-trigger" onclick="window.toggleRagChat()" title="Ouvrir le Copilot Décisionnel RAG (IA)">
+    <div class="rag-trigger-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10a9.96 9.96 0 0 1-4.587-1.11L3 22l1.11-4.413A9.96 9.96 0 0 1 2 12 10 10 0 0 1 12 2z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
+    </div>
+    <span class="rag-trigger-label">Copilot IA RAG</span>
+    <span class="rag-trigger-dot"></span>
+  </button>
+
+  <!-- ======================================================== -->
+  <!-- MODAL / DRAWER CHATBOX RAG DÉCISIONNEL                  -->
+  <!-- ======================================================== -->
+  <div id="rag-chatbox-panel" class="rag-chatbox-container" style="display: none;">
+    <div class="rag-chatbox-card">
+      
+      <!-- HEADER CHATBOX (DESIGN ÉPURÉ & ULTRA-PROFESSIONNEL) -->
+      <div class="rag-chat-header">
+        <div class="rag-header-left">
+          <div class="rag-avatar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10a9.96 9.96 0 0 1-4.587-1.11L3 22l1.11-4.413A9.96 9.96 0 0 1 2 12 10 10 0 0 1 12 2z"/>
+              <path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/>
+            </svg>
+          </div>
+          <div class="rag-header-meta">
+            <div class="rag-header-title">Copilot Décisionnel RAG</div>
+            <div class="rag-header-sub">
+              <span class="rag-live-status-dot"></span>
+              <span>BONDIN &times; FIDNESS &bull; Live DWH</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rag-header-actions">
+          <button class="rag-action-btn" onclick="window.clearRagMessages()" title="Nouvelle discussion (Effacer l'historique)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+          <button class="rag-action-btn rag-close" onclick="window.toggleRagChat()" title="Fermer le Copilot">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- SUGGESTIONS DE QUESTIONS STRATÉGIQUES -->
+      <div class="rag-chips-bar">
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quel est le chiffre d affaires total et le panier moyen ?')">💰 Chiffre d'Affaires</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la difference entre les succursales et les cafeterias ?')">🏬 Succursales vs Cafétérias</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quelle est la dette des points et le ratio Earn & Burn ?')">📊 Dette &amp; Points</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les magasins les plus rentables ?')">🏆 Top Magasins</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Combien de profils grossistes B2B ont ete detectes ?')">⚡ Grossistes B2B</button>
+        <button class="rag-chip" onclick="window.askSuggestedQuestion('Quels sont les clients en risque d attrition churn ?')">🚨 Alerte Churn</button>
+      </div>
+
+      <!-- ZONE DES MESSAGES -->
+      <div class="rag-chat-messages" id="rag-messages-area">
+        <div class="rag-msg-row assistant">
+          <div class="rag-msg-avatar">✨</div>
+          <div class="rag-msg-bubble">
+            <div class="rag-msg-author">Copilot Décisionnel BONDIN &bull; Analyse Certifiée</div>
+            <p>Bonjour ! Je suis votre Copilot Décisionnel connecté en temps réel aux <strong>9 tables du Data Warehouse</strong>. Posez-moi vos questions stratégiques ou cliquez sur les suggestions ci-dessus.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE DE SAISIE PROMPT -->
+      <div class="rag-chat-input-bar">
+        <div class="rag-input-wrapper">
+          <input type="text" id="rag-user-input" class="rag-input-field" placeholder="Posez une question sur le CA, les points, les magasins..." onkeydown="if(event.key==='Enter') window.sendRagMessage()">
+        </div>
+        <button id="rag-send-btn" class="rag-send-button" onclick="window.sendRagMessage()" title="Envoyer au Copilot IA">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL RAPPORT OFFICIEL HEBDOMADAIRE (FORMAT PDF 5 PAGES) -->
+  <!-- ======================================================== -->
+  <div id="modal-official-report" class="modal-overlay" style="display: none;" onclick="if(event.target === this) window.closeOfficialReportModal()">
+    <div class="modal-card official-report-modal-card">
+      <div class="modal-header" style="background: linear-gradient(135deg, #8E0E14 0%, #A8101E 100%); color: #FFFFFF; border-bottom: 2px solid #D97706; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FDE68A" stroke-width="2.2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Rapport Officiel ENA w BONDIN &bull; Format Hebdomadaire (11 au 18 juin 2026)</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button onclick="window.printOfficialReportPage()" class="btn-shine" style="padding: 7px 15px; background: #D97706; color: #FFFFFF; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Imprimer / Enregistrer PDF
+          </button>
+          <button class="modal-close-btn" style="color: #FFFFFF; font-size: 24px; cursor: pointer;" onclick="window.closeOfficialReportModal()">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body" style="background: #140708; padding: 20px; overflow-y: auto; max-height: calc(88vh - 70px);">
+        <!-- Navigation des 5 pages avec miniatures -->
+        <div class="report-nav-strip">
+          <button class="report-page-pill active" onclick="window.showReportPage(1)">Page 1 : Couverture</button>
+          <button class="report-page-pill" onclick="window.showReportPage(2)">Page 2 : Synthèse &amp; PDV</button>
+          <button class="report-page-pill" onclick="window.showReportPage(3)">Page 3 : Catégories &amp; Fidèles</button>
+          <button class="report-page-pill" onclick="window.showReportPage(4)">Page 4 : Suite Fidèles</button>
+          <button class="report-page-pill" onclick="window.showReportPage(5)">Page 5 : Fin &amp; Totaux</button>
+        </div>
+
+        <!-- Visionneuse haute résolution -->
+        <div class="report-viewer-viewport">
+          <img id="report-active-img" src="img/rapport_officiel/page_1.png" alt="Rapport Officiel ENA w BONDIN" class="report-page-display shadow-2xl">
+        </div>
+      </div>
+    </div>
+  <!-- ======================================================== -->
+  <!-- MODAL D'AUDIT TÉLÉMÉTRIQUE & REQUÊTES SQL DIRECTES DWH   -->
+  <!-- ======================================================== -->
+  <div id="modal-sql-audit" class="modal-overlay" style="display: none;" onclick="if(event.target === this) window.closeSqlAuditModal()">
+    <div class="modal-card" style="max-width: 820px; width: 92%;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #181120 0%, #2A1730 100%); color: #FFFFFF; border-bottom: 2px solid #10B981; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px;">
+          <span class="live-dot-pulse" style="width: 8px; height: 8px;"></span>
+          <span id="sql-audit-title">Audit Télémétrique &amp; Requête SQL Directe DWH (PostgreSQL 17.7)</span>
+        </div>
+        <button class="modal-close-btn" style="color: #FFFFFF; font-size: 24px; cursor: pointer;" onclick="window.closeSqlAuditModal()">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 20px; max-height: calc(85vh - 70px); overflow-y: auto;">
+        
+        <!-- Cartes métriques DWH -->
+        <div class="sql-audit-meta-grid">
+          <div class="sql-audit-meta-card">
+            <div class="label">Moteur &amp; Version DWH</div>
+            <div class="val" style="color: #059669;">PostgreSQL 17.7 x64</div>
+          </div>
+          <div class="sql-audit-meta-card">
+            <div class="label">Hôte &amp; Protocole</div>
+            <div class="val" style="font-family: monospace; font-size: 0.8rem;">57.131.30.69:5432 (TLS 1.3)</div>
+          </div>
+          <div class="sql-audit-meta-card">
+            <div class="label">Table(s) Analysée(s)</div>
+            <div class="val" id="sql-audit-table" style="font-size: 0.8rem; color: #8E0E14;">public.purchase</div>
+          </div>
+          <div class="sql-audit-meta-card">
+            <div class="label">Latence Requête Live</div>
+            <div class="val" id="sql-audit-latency" style="color: #047857; font-family: monospace;">12 ms</div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; color: #374151; letter-spacing: 0.4px;">
+            Requête SQL PostgreSQL Directe (Exécutée sur la réplique CDC DWH) :
+          </div>
+          <button id="btn-run-sql-ping" class="btn-dwh-ping" onclick="window.runLiveSqlPing()" style="font-size: 0.72rem; padding: 4px 10px;">
+            ⚡ Réexécuter Requête Directe
+          </button>
+        </div>
+
+        <!-- Boîte de code SQL -->
+        <pre class="sql-audit-code-box" id="sql-audit-code">-- Requête SQL en direct</pre>
+
+        <div id="sql-audit-ping-status" style="font-size: 0.75rem; margin-bottom: 8px;">
+          <span style="color:#059669; font-weight:700;">✓ Requête certifiée conforme PostgreSQL 17.7 DWH Production (Données temps réel garanties)</span>
+        </div>
+
+        <!-- Échantillon de données brutes retournées -->
+        <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; color: #374151; margin-top: 14px; letter-spacing: 0.4px;">
+          Résultats Bruts de la Table DWH (<span id="sql-audit-rows">Transactions certifiées</span>) :
+        </div>
+        <div id="sql-audit-sample"></div>
+
+      </div>
+
+      <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid #E5E7EB; display: flex; justify-content: flex-end; gap: 10px; background: #F9FAFB;">
+        <button class="btn-dwh-audit" onclick="window.closeSqlAuditModal()">Fermer l'Audit</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

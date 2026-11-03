@@ -303,12 +303,34 @@ def api_live():
             LIMIT 10
         """)
         
-        total_inscrits = 2729
+        total_inscrits = 2794
         recent_inscrits = []
+        monthly_breakdown = []
         try:
             total_inscrits_res = con.run("SELECT count(*) FROM public.user WHERE app_name = 'bondin'")
             if total_inscrits_res and total_inscrits_res[0]:
                 total_inscrits = int(total_inscrits_res[0][0])
+            
+            m_rows = con.run("""
+                SELECT to_char(p.created_at, 'YYYY-MM') as m,
+                       count(*) as scans,
+                       round(coalesce(sum(CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END), 0)::numeric, 2) as ca,
+                       round(coalesce(sum(CASE WHEN coalesce(s.name, '') ILIKE '%%succursale%%' THEN (CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END) ELSE 0 END), 0)::numeric, 2) as ca_succ,
+                       round(coalesce(sum(CASE WHEN coalesce(s.name, '') NOT ILIKE '%%succursale%%' THEN (CASE WHEN p.amount > 100 THEN p.amount/1000.0 ELSE p.amount END) ELSE 0 END), 0)::numeric, 2) as ca_cafe
+                FROM public.purchase p
+                LEFT JOIN public.sell_points s ON p.sell_point_id = s.id
+                WHERE p.company_id = 2
+                GROUP BY m
+                ORDER BY m ASC
+            """)
+            for mr in m_rows:
+                monthly_breakdown.append({
+                    "month": str(mr[0]),
+                    "scans": int(mr[1]),
+                    "ca": float(mr[2]),
+                    "ca_succ": float(mr[3]),
+                    "ca_cafe": float(mr[4])
+                })
             
             recent_inscrits_db = con.run("""
                 SELECT 
@@ -412,6 +434,7 @@ def api_live():
             "total_inscrits": total_inscrits,
             "clients_inscrits": total_inscrits,
             "recent_inscrits": recent_inscrits,
+            "monthly_breakdown": monthly_breakdown,
             "dernier_scan": recent_list[0]["date"] if recent_list else str(stats[5]),
             "dernier_ticket": recent_list[0]["ticket"] if recent_list else "bondin6170303",
             "dernier_client": recent_list[0]["client"] if recent_list else "Salim Ammar",

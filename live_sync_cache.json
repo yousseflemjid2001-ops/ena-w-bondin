@@ -1,13 +1,13 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-11-03 12:19:40",
+  "timestamp": "2026-11-03 13:16:27",
   "company_name": "BONDIN",
-  "total_scans": 14305,
-  "total_ca_tnd": 168397.27,
-  "panier_moyen_tnd": 11.772,
-  "total_points_emis": 565770,
-  "clients_actifs": 787,
+  "total_scans": 14314,
+  "total_ca_tnd": 168449.41,
+  "panier_moyen_tnd": 11.768,
+  "total_points_emis": 565929,
+  "clients_actifs": 789,
   "total_inscrits": 2794,
   "clients_inscrits": 2794,
   "recent_inscrits": [
@@ -77,11 +77,11 @@
       "date": "2026-11-03",
       "tel": "+216 27 912 246",
       "email": "zribanabiha15@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scanné",
-      "statut": "Nouveau Membre"
+      "magasin": "Succursale Gafsa Ville",
+      "achats": 3,
+      "points": 119.4,
+      "segment": "Client Régulier",
+      "statut": "Actif"
     },
     {
       "id": "CLI_01A1A05B20",
@@ -192,12 +192,151 @@
       "statut": "Nouveau Membre"
     }
   ],
-  "dernier_scan": "2026-11-03 13:16:50",
-  "dernier_ticket": "bondin6373201",
-  "dernier_client": "Ben Dhief Yacine",
-  "dernier_montant": 19.992,
-  "dernier_magasin": "Succursale Tunis Espagne",
+  "monthly_breakdown": [
+    {
+      "month": "2026-04",
+      "scans": 2,
+      "ca": 3.8,
+      "ca_succ": 0.0,
+      "ca_cafe": 3.8
+    },
+    {
+      "month": "2026-05",
+      "scans": 11,
+      "ca": -7113.3,
+      "ca_succ": 64.3,
+      "ca_cafe": -7177.6
+    },
+    {
+      "month": "2026-06",
+      "scans": 1937,
+      "ca": -263605.19,
+      "ca_succ": -215047.59,
+      "ca_cafe": -48557.6
+    },
+    {
+      "month": "2026-07",
+      "scans": 3209,
+      "ca": -114763.7,
+      "ca_succ": -47111.1,
+      "ca_cafe": -67652.6
+    },
+    {
+      "month": "2026-08",
+      "scans": 3224,
+      "ca": -1206817.19,
+      "ca_succ": -1186292.79,
+      "ca_cafe": -20524.4
+    },
+    {
+      "month": "2026-09",
+      "scans": 2868,
+      "ca": -110729.19,
+      "ca_succ": -67699.09,
+      "ca_cafe": -43030.1
+    },
+    {
+      "month": "2026-10",
+      "scans": 2833,
+      "ca": -46078.2,
+      "ca_succ": -27191.6,
+      "ca_cafe": -18886.6
+    },
+    {
+      "month": "2026-11",
+      "scans": 230,
+      "ca": 2643.21,
+      "ca_succ": 1991.01,
+      "ca_cafe": 652.2
+    }
+  ],
+  "dernier_scan": "2026-11-03 15:11:15",
+  "dernier_ticket": "bondin6375288",
+  "dernier_client": "Zitouni Nizar",
+  "dernier_montant": 2.2,
+  "dernier_magasin": "Cafétéria Le Kef",
   "recent_scans": [
+    {
+      "id": 14325,
+      "ticket": "bondin6375288",
+      "montant_tnd": 2.2,
+      "points": 4.2,
+      "date": "2026-11-03 15:11:15",
+      "magasin": "Cafétéria Le Kef",
+      "client": "Zitouni Nizar"
+    },
+    {
+      "id": 14324,
+      "ticket": "bondin6375237",
+      "montant_tnd": 27.75,
+      "points": 111.0,
+      "date": "2026-11-03 15:09:04",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Nabiha Zriba"
+    },
+    {
+      "id": 14323,
+      "ticket": "bondin6375199",
+      "montant_tnd": 2.997,
+      "points": 12.0,
+      "date": "2026-11-03 15:07:01",
+      "magasin": "Succursale Tunis Libertéé",
+      "client": "elbessaoudi Amine"
+    },
+    {
+      "id": 14322,
+      "ticket": "bondin6375194",
+      "montant_tnd": 5.3,
+      "points": 7.6,
+      "date": "2026-11-03 15:06:45",
+      "magasin": "Cafétéria Tunis Libertéé",
+      "client": "elbessaoudi Amine"
+    },
+    {
+      "id": 14321,
+      "ticket": "bondin6375085",
+      "montant_tnd": 2.1,
+      "points": 4.2,
+      "date": "2026-11-03 15:00:57",
+      "magasin": "Cafétéria Tunis Libertéé",
+      "client": "Farouk Ben Njima"
+    },
+    {
+      "id": 14320,
+      "ticket": "bondin6374726",
+      "montant_tnd": 2.4,
+      "points": 4.4,
+      "date": "2026-11-03 14:40:12",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Nabiha Zriba"
+    },
+    {
+      "id": 14319,
+      "ticket": "bondin6374647",
+      "montant_tnd": 2.1,
+      "points": 4.0,
+      "date": "2026-11-03 14:36:51",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Nabiha Zriba"
+    },
+    {
+      "id": 14318,
+      "ticket": "bondin6374598",
+      "montant_tnd": 5.3,
+      "points": 7.6,
+      "date": "2026-11-03 14:34:52",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Ridhaa Hasnaoui"
+    },
+    {
+      "id": 14317,
+      "ticket": "bondin6374555",
+      "montant_tnd": 2.0,
+      "points": 3.8,
+      "date": "2026-11-03 14:32:18",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Wassim Ncib"
+    },
     {
       "id": 14316,
       "ticket": "bondin6373201",
@@ -206,87 +345,6 @@
       "date": "2026-11-03 13:16:50",
       "magasin": "Succursale Tunis Espagne",
       "client": "Ben Dhief Yacine"
-    },
-    {
-      "id": 14315,
-      "ticket": "bondin6372962",
-      "montant_tnd": 33.485,
-      "points": 133.9,
-      "date": "2026-11-03 13:07:15",
-      "magasin": "Succursale Tunis Libertéé",
-      "client": "Basma Salhi"
-    },
-    {
-      "id": 14314,
-      "ticket": "bondin6372959",
-      "montant_tnd": 19.499,
-      "points": 78.0,
-      "date": "2026-11-03 13:07:08",
-      "magasin": "Succursale Tunis Libertéé",
-      "client": "Basma Salhi"
-    },
-    {
-      "id": 14313,
-      "ticket": "bondin6372888",
-      "montant_tnd": 2.1,
-      "points": 4.2,
-      "date": "2026-11-03 13:03:22",
-      "magasin": "Cafétéria Tunis MENZAH VI",
-      "client": "chebbi Eya"
-    },
-    {
-      "id": 14312,
-      "ticket": "bondin6372615",
-      "montant_tnd": 55.072,
-      "points": 215.5,
-      "date": "2026-11-03 12:50:13",
-      "magasin": "Succursale Tunis Menzah VI",
-      "client": "Oussama Fitouhi"
-    },
-    {
-      "id": 14311,
-      "ticket": "bondin6372609",
-      "montant_tnd": 252.0,
-      "points": 1008.0,
-      "date": "2026-11-03 12:49:48",
-      "magasin": "Succursale Tunis La Marsa",
-      "client": "Karim Hamaici"
-    },
-    {
-      "id": 14310,
-      "ticket": "bondin6372598",
-      "montant_tnd": 6.1,
-      "points": 9.2,
-      "date": "2026-11-03 12:49:18",
-      "magasin": "Cafétéria Tunis Espagne",
-      "client": "Arken Rayhana"
-    },
-    {
-      "id": 14309,
-      "ticket": "bondin6372371",
-      "montant_tnd": 9.99,
-      "points": 40.0,
-      "date": "2026-11-03 12:38:14",
-      "magasin": "Succursale Tunis Menzah VI",
-      "client": "Hajer Mohsen"
-    },
-    {
-      "id": 14308,
-      "ticket": "bondin6372367",
-      "montant_tnd": 2.0,
-      "points": 4.0,
-      "date": "2026-11-03 12:37:57",
-      "magasin": "Cafétéria Tunis La Marsa",
-      "client": "Bilel Ben Arous"
-    },
-    {
-      "id": 14307,
-      "ticket": "bondin6372346",
-      "montant_tnd": 4.0,
-      "points": 12.0,
-      "date": "2026-11-03 12:36:54",
-      "magasin": "Cafétéria Tunis Libertéé",
-      "client": "Najoua Hammouda"
     }
   ]
 }
