@@ -1358,6 +1358,91 @@ def format_sql_results_as_markdown(cols, rows):
         out.append("| " + " | ".join(cells) + " |")
     return "\n".join(out)
 
+
+# ========================================================
+# MODULE 3 : RECHERCHE CLIENT PAR NOM (PROFIL 360° DEPUIS POSTGRESQL)
+# ========================================================
+_NAME_STOPWORDS = set("""qui est cest c est quel quelle quels quelles est-ce ce cet cette le la les un une des de du d l
+a au aux en et ou sur pour par avec sans dans chez moi donne donnez montre montrer affiche afficher dis dites cherche chercher
+trouve trouver recherche info infos information informations profil fiche detail details client cliente clients clientes
+adherent adherente membre inscrit inscrite personne monsieur madame mr mme mlle sa son ses ses combien achats achat
+points solde total historique voir stats statistiques sur sont a-t-il""".split())
+
+def lookup_client_by_name(question):
+    """Retourne un profil client formaté (markdown) si la question désigne un client par son nom, sinon None."""
+    try:
+        raw = normalize_rag_query(question)
+    except Exception:
+        raw = question.lower()
+    words = re.findall(r"[a-zà-ÿ]{2,}", raw)
+    if not words or len(words) > 8:
+        return None
+    tokens = [w for w in words if w not in _NAME_STOPWORDS]
+    if not tokens or len(tokens) > 3:
+        return None
+    # Mots métier : ne jamais traiter comme un nom de client
+    business = {'magasin', 'magasins', 'succursale', 'cafeteria', 'churn', 'roi', 'dette', 'burn', 'earn', 'vente', 'ventes',
+                'panier', 'moyen', 'top', 'kef', 'gafsa', 'gabes', 'tunis', 'menzah', 'marsa', 'sfax', 'nabeul', 'mois',
+                'octobre', 'septembre', 'aout', 'juillet', 'juin', 'mai', 'avril', 'mars', 'fevrier', 'janvier', 'novembre',
+                'decembre', 'chiffre', 'affaires', 'ca', 'scan', 'scans', 'parrainage', 'voucher', 'cadeau', 'grossiste'}
+    if any(t in business for t in tokens):
+        return None
+    params = {}
+    conds = []
+    for i, t in enumerate(tokens):
+        params[f"t{i}"] = f"%{t}%"
+        conds.append(f"(u.full_name ILIKE :t{i} OR u.first_name ILIKE :t{i} OR u.last_name ILIKE :t{i})")
+    sql = ("SELECT u.id, coalesce(nullif(u.full_name, ''), concat(u.first_name, ' ', u.last_name)) AS nom, "
+           "u.created_at::date, u.last_activity_at::date, "
+           "(SELECT COUNT(*) FROM public.purchase p WHERE p.user_id = u.id AND p.company_id = 2), "
+           "(SELECT COALESCE(SUM(p.amount),0)/1000.0 FROM public.purchase p WHERE p.user_id = u.id AND p.company_id = 2), "
+           "(SELECT COALESCE(SUM(p.points),0) FROM public.purchase p WHERE p.user_id = u.id AND p.company_id = 2), "
+           "(SELECT MAX(p.created_at) FROM public.purchase p WHERE p.user_id = u.id AND p.company_id = 2), "
+           "(SELECT COUNT(*) FROM public.voucher v WHERE v.user_id = u.id) "
+           "FROM public.\"user\" u WHERE u.deleted_at IS NULL AND " + " AND ".join(conds) +
+           " ORDER BY 5 DESC, u.created_at DESC LIMIT 6")
+    con = None
+    try:
+        con = get_db_connection()
+        con.run("SET statement_timeout = 5000")
+        con.run("SET default_transaction_read_only = on")
+        rows = con.run(sql, **params)
+        if not rows:
+            return None
+        out = [f"👤 **Recherche client « {' '.join(tokens)} » — {len(rows)} profil(s) trouvé(s) (PostgreSQL 17.7 Live)**\n"]
+        for (uid, nom, created, last_act, nb, ca, pts, last_p, nv) in rows:
+            ca = float(ca or 0)
+            pts = float(pts or 0)
+            out.append(f"**{nom}**")
+            out.append(f"• Inscription : **{created}** · Dernière activité : **{last_act or 'n/a'}**")
+            if nb:
+                aov = ca / nb if nb else 0
+                try:
+                    stores = con.run(
+                        "SELECT sp.name, COUNT(*) c FROM public.purchase p JOIN public.sell_points sp ON p.sell_point_id = sp.id "
+                        "WHERE p.user_id = :u AND p.company_id = 2 GROUP BY sp.name ORDER BY c DESC LIMIT 3", u=uid)
+                    fav = ", ".join(f"{n} ({c})" for n, c in stores)
+                except Exception:
+                    fav = "n/a"
+                out.append(f"• Achats : **{nb}** · CA cumulé : **{ca:,.2f} TND** · Panier moyen : **{aov:.2f} TND**".replace(",", " "))
+                out.append(f"• Points gagnés : **{pts:,.0f} pts** · Vouchers : **{nv}** · Dernier achat : **{str(last_p)[:16]}**".replace(",", " "))
+                out.append(f"• Magasins favoris : {fav}")
+            else:
+                out.append("• Aucun achat enregistré (inscrit sans scan caisse) · Vouchers : **%s**" % nv)
+            out.append("")
+        if len(rows) > 1:
+            out.append("💡 *Plusieurs profils correspondent : précisez le prénom et le nom complets pour cibler un client.*")
+        return "\n".join(out)
+    except Exception as e:
+        print(f"[lookup_client_by_name] {e}")
+        return None
+    finally:
+        if con:
+            try:
+                con.close()
+            except Exception:
+                pass
+
 def query_postgres_engine(question, store):
     """Moteur décisionnel analytique calculant des réponses précises depuis les DataFrames PostgreSQL."""
     import re
@@ -1674,6 +1759,19 @@ def api_rag_chat():
             "success": True,
             "answer": "👋 Bonjour ! Je suis votre Copilot Décisionnel RAG (ENA W BONDIN × FIDNESS). Posez-moi une question sur le CA, les magasins, les clients ou les points.",
             "sources": ["PostgreSQL 17.7 Production Live"]
+        })
+
+    # 0. Recherche directe d'un client par son nom (profil 360° PostgreSQL)
+    client_profile = lookup_client_by_name(user_query)
+    if client_profile:
+        return jsonify({
+            "success": True,
+            "question": user_query,
+            "answer": client_profile,
+            "response": client_profile,
+            "sources": ["PostgreSQL 17.7 Live × Profil Client"],
+            "sql": None,
+            "filters": {"customer_lookup": True}
         })
 
     # 1. Calcul immédiat de l'ancrage réel PostgreSQL
