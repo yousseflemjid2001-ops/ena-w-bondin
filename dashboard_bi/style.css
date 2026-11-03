@@ -8254,3 +8254,35 @@ header.aurora-header,
     height: 350px;
   }
 }
+
+/* Auroras fixes : ne créent plus d'espace de défilement vide sous le pied de page */
+.login-ambient-aurora { position: fixed !important; }
+.login-screen-overlay > .relative.z-20 { flex-shrink: 0; }
+.login-footer-bar { margin-top: auto; flex-shrink: 0; }
+.login-screen-overlay > .my-auto { flex: 1 1 auto; }
+
+.login-powered-fidness {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 12px 4px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.login-powered-fidness:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(245, 158, 11, 0.7);
+  transform: translateY(-1px);
+}
+.login-fidness-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 3px 7px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
