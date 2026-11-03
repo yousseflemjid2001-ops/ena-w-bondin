@@ -1141,6 +1141,42 @@ def call_gemini_rag(question, dynamic_context, timeout=8.5):
 # ========================================================
 # MODULE 1 : FILTRAGE MÉTADONNÉES (SELF-QUERYING)
 # ========================================================
+
+_MOIS_FR_MAP = {
+    '01': 'Janvier', '02': 'Février', '03': 'Mars', '04': 'Avril',
+    '05': 'Mai', '06': 'Juin', '07': 'Juillet', '08': 'Août',
+    '09': 'Septembre', '10': 'Octobre', '11': 'Novembre', '12': 'Décembre'
+}
+
+def detect_month_code(text):
+    """Détecte le code mois (01 à 12) avec tolérance aux fautes de frappe et variantes anglais/français."""
+    import difflib, re
+    t = text.lower()
+    exact_aliases = {
+        'janvier': '01', 'jan': '01', 'janv': '01', 'january': '01',
+        'fevrier': '02', 'fev': '02', 'fevr': '02', 'feb': '02', 'february': '02', 'février': '02',
+        'mars': '03', 'mar': '03', 'march': '03',
+        'avril': '04', 'avr': '04', 'apr': '04', 'april': '04',
+        'mai': '05', 'may': '05',
+        'juin': '06', 'jun': '06', 'june': '06',
+        'juillet': '07', 'jul': '07', 'july': '07', 'juil': '07',
+        'aout': '08', 'août': '08', 'aug': '08', 'august': '08',
+        'septembre': '09', 'sep': '09', 'sept': '09', 'september': '09', 'septemeber': '09', 'septembr': '09',
+        'octobre': '10', 'oct': '10', 'october': '10', 'octbre': '10',
+        'novembre': '11', 'nov': '11', 'november': '11',
+        'decembre': '12', 'dec': '12', 'december': '12', 'décembre': '12'
+    }
+    for alias, m in exact_aliases.items():
+        if re.search(r'\b' + re.escape(alias) + r'\b', t):
+            return m
+    canonical = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre']
+    for word in re.findall(r'[a-zà-ÿ]{4,}', t):
+        matches = difflib.get_close_matches(word, canonical, n=1, cutoff=0.72)
+        if matches:
+            idx = canonical.index(matches[0]) + 1
+            return f"{idx:02d}"
+    return None
+
 def extract_metadata_filters(query):
     """Extrait magasins, canal, région, segment client, métrique et période depuis la question."""
     q = query.lower()
@@ -1172,17 +1208,15 @@ def extract_metadata_filters(query):
     elif any(k in norm_q for k in ['dernier', 'derniere', 'quand', 'recent']):
         filters['metric'] = 'recence'
 
-    mois_map = {'janvier': '01', 'fevrier': '02', 'mars': '03', 'avril': '04', 'mai': '05',
-                'juin': '06', 'juillet': '07', 'aout': '08', 'septembre': '09',
-                'octobre': '10', 'novembre': '11', 'decembre': '12'}
-    for nom, num in mois_map.items():
-        if nom in words:
-            ym = re.search(r'\b(20\d\d)\b', norm_q)
-            filters['date_filter'] = f"{ym.group(1) if ym else '2026'}-{num}"
-            break
+    detected_m = detect_month_code(q)
+    if detected_m:
+        ym = re.search(r'\b(20\d\d)\b', norm_q)
+        filters['date_filter'] = f"{ym.group(1) if ym else '2026'}-{detected_m}"
+        filters['metric'] = 'ca'
     dm = re.search(r'\b(20\d\d-(?:0[1-9]|1[0-2]))\b', q)
     if dm:
         filters['date_filter'] = dm.group(1)
+        filters['metric'] = 'ca'
 
     for kw in ['kef', 'gafsa', 'gabes', 'menzah', 'marsa', 'liberte', 'ariana', 'espagne',
                'france', 'sfax', 'nabeul', 'sousse', 'bizerte', 'bardo']:
@@ -1577,20 +1611,58 @@ def query_postgres_engine(question, store):
                 "\n\n💡 *Ces membres font partie du segment VIP/Grossistes et réalisent des achats réguliers en succursale.*"
             )
 
-    # 3. Évolution Mensuelle / Meilleur Mois
-    if any(k in q for k in ["mois", "mensuel", "plus fort", "forte", "croissance", "evolution", "periode"]):
+    # 3. Chiffre d'Affaires Mensuel Spécifique ou Évolution Globale
+    m_code = detect_month_code(q)
+    if m_code or any(k in q for k in ["mois", "mensuel", "plus fort", "forte", "croissance", "evolution", "periode"]):
         if not v.empty and "Date" in v.columns:
             v_copy = v.copy()
             v_copy["Date"] = pd.to_datetime(v_copy["Date"], errors="coerce")
-            monthly = v_copy.groupby(v_copy["Date"].dt.to_period("M"))["Montant_TND"].agg(['sum', 'count']).dropna()
+            v_copy["Period"] = v_copy["Date"].dt.to_period("M").astype(str)
+
+            # Si un mois particulier est demandé (ex: septembre, septemeber, aout, etc.)
+            if m_code:
+                ym = re.search(r'\b(20\d\d)\b', q)
+                target_period = f"{ym.group(1) if ym else '2026'}-{m_code}"
+                month_name = _MOIS_FR_MAP.get(m_code, target_period)
+                mv_month = v_copy[v_copy["Period"] == target_period]
+                if not mv_month.empty:
+                    m_ca = float(mv_month["Montant_TND"].sum())
+                    m_scans = int(len(mv_month))
+                    m_aov = m_ca / m_scans if m_scans > 0 else 0.0
+                    m_clients = int(mv_month["ID_Client_Hache"].nunique()) if "ID_Client_Hache" in mv_month.columns else 0
+
+                    top_m_stores_lines = []
+                    if not m.empty:
+                        m_vm = mv_month.merge(m, on="ID_Magasin", how="left")
+                        top_m = m_vm.groupby("Nom_Magasin")["Montant_TND"].sum().sort_values(ascending=False).head(3)
+                        for idx_s, (sname, sca) in enumerate(top_m.items(), 1):
+                            top_m_stores_lines.append(f"  {idx_s}. **{sname}** : **{sca:,.2f} TND**")
+                    top_stores_txt = "\n" + "\n".join(top_m_stores_lines) if top_m_stores_lines else ""
+
+                    share_pct = (m_ca / ca_tot * 100) if ca_tot > 0 else 0
+                    return (
+                        f"📅 **Chiffre d'Affaires & Performance : {month_name} {target_period[:4]} (PostgreSQL 17.7 Live)**\n\n"
+                        f"• **Chiffre d'Affaires Réalisé** : **{m_ca:,.2f} TND** ({share_pct:.1f}% du CA total consolidé)\n"
+                        f"• **Volume de Transactions** : **{m_scans:,} scans certifiés en caisse**\n"
+                        f"• **Panier Moyen (AOV)** : **{m_aov:.3f} TND** par acte d'achat\n"
+                        f"• **Clients Actifs Fidélité** : **{m_clients:,} membres distincts**\n\n"
+                        f"🏆 **Top 3 Magasins en {month_name} :**{top_stores_txt}\n\n"
+                        f"💡 *Données synchronisées en direct depuis la table `public.purchase` de PostgreSQL 17.7.*"
+                    )
+
+            monthly = v_copy.groupby("Period")["Montant_TND"].agg(['sum', 'count']).dropna()
             lines = []
             for period, row in monthly.iterrows():
-                lines.append(f"• **{str(period)}** : **{row['sum']:,.2f} TND** ({int(row['count']):,} scans)")
+                p_code = period.split("-")[1] if "-" in period else "00"
+                p_name = _MOIS_FR_MAP.get(p_code, period)
+                lines.append(f"• **{p_name} {period[:4]}** : **{row['sum']:,.2f} TND** ({int(row['count']):,} scans)")
             best_month = monthly["sum"].idxmax()
             best_ca = monthly.loc[best_month, "sum"]
+            best_code = best_month.split("-")[1] if "-" in best_month else "00"
+            best_name = _MOIS_FR_MAP.get(best_code, best_month)
             return (
                 f"📅 **Historique & Évolution Mensuelle des Ventes (PostgreSQL Live)**\n\n"
-                f"• **Mois Record** : **{best_month}** avec **{best_ca:,.2f} TND** de chiffre d'affaires !\n\n"
+                f"• **Mois Record Historique** : **{best_name} {best_month[:4]}** avec **{best_ca:,.2f} TND** de chiffre d'affaires !\n\n"
                 f"**Ventilation mois par mois :**\n" + "\n".join(lines)
             )
 
@@ -1810,14 +1882,16 @@ def api_rag_chat():
             store_lines.append(f"{i}. {nom} ({typ}) : {row['sum']:,.2f} TND sur {row['count']} scans")
     store_summary = "\n".join(store_lines[:15]) if store_lines else "1. Succursale Le Kef : 27 924 TND"
 
-    # Ventes par mois
+        # Ventes par mois avec libellé en clair (Français + code ISO)
     month_lines = []
     if not v.empty and 'Date' in v.columns:
         v['Mois'] = v['Date'].astype(str).str[:7]
         m_agg = v.groupby('Mois')["Montant_TND"].agg(['sum', 'count']).sort_values('sum', ascending=False)
         for m_val, row in m_agg.iterrows():
-            month_lines.append(f"- {m_val} : {row['sum']:,.2f} TND ({row['count']} scans)")
-    month_summary = "\n".join(month_lines) if month_lines else "Août 2026 : 47 772.97 TND"
+            m_code_part = m_val.split("-")[1] if "-" in m_val else "00"
+            m_label = _MOIS_FR_MAP.get(m_code_part, m_val)
+            month_lines.append(f"- {m_label} {m_val[:4]} ({m_val}) : {row['sum']:,.2f} TND sur {int(row['count']):,} scans")
+    month_summary = "\n".join(month_lines) if month_lines else "Août 2026 : 47 772.97 TND" 
 
     # Top clients acheteurs
     cli_lines = []
