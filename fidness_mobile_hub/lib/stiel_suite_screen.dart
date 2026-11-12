@@ -211,21 +211,15 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
             // 1. EN-TÊTE STIEL × FIDNESS + BOUTONS LIVE & RAPPORT EXÉCUTIF
             _buildStielTopHeader(),
 
-            // 2. SLICERS FILTRES RÉGIONAUX & GAMMES STIEL
-            _buildStielSlicersBar(),
+            // 2. SLICERS FILTRES RÉGIONAUX & GAMMES STIEL (Masqués sur Copilot IA)
+            if (_activeTab != 4) _buildStielSlicersBar(),
 
-            // 3. RUBAN DES 5 ONGLETS DU HUB B2B
-            _buildStielTabsRibbon(),
-
-            // 4. CORPS DE L'ONGLET ACTIF
+            // 3. CORPS DE L'ONGLET ACTIF
             Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 220),
-                child: _buildActiveTabBody(),
-              ),
+              child: _buildActiveTabBody(),
             ),
 
-            // 5. BARRE DE NAVIGATION INFÉRIEURE
+            // 4. BARRE DE NAVIGATION INFÉRIEURE
             _buildBottomNav(),
           ],
         ),

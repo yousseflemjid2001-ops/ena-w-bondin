@@ -1085,18 +1085,15 @@ class _BondinFullMobileSuiteScreenState
             // 1. EN-TÊTE OFFICIEL MAISON BONDIN 1910 × FIDNESS
             _buildBondinTopHeader(),
 
-            // 2. BARRE DE FILTRES GLOBAUX POWERBI (SLICERS)
-            _buildGlobalFilterSlicersBar(),
+            // 2. BARRE DE FILTRES GLOBAUX POWERBI (Masquée sur Chatbot)
+            if (_activeTab != 5) _buildGlobalFilterSlicersBar(),
 
-            // 3. RUBAN DES 6 ONGLETS DU DASHBOARD WEB
-            _buildWebTabsRibbon(),
-
-            // 4. CORPS DE L'ONGLET ACTIF (TOUTES LES SECTIONS WEB)
+            // 3. CORPS DE L'ONGLET ACTIF
             Expanded(
               child: _buildActiveTabBody(),
             ),
 
-            // 5. BARRE DE NAVIGATION INFÉRIEURE
+            // 4. BARRE DE NAVIGATION INFÉRIEURE (6 ONGLETS)
             _buildBottomNavigationBar(),
           ],
         ),
@@ -1180,7 +1177,7 @@ class _BondinFullMobileSuiteScreenState
                   ],
                 ),
                 Text(
-                  'PostgreSQL 17.7 Live (57.131.30.69) • ${BondinDwhData.totalScansLive} Scans • 23 PDV',
+                  '● Temps Réel • ${BondinDwhData.totalScansLive} Scans • 23 PDV',
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xFFFDE68A),
