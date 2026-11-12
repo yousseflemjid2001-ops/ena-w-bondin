@@ -312,7 +312,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                   ],
                 ),
                 Text(
-                  '${StielDwhData.totalElectriciens} Électriciens • ${StielDwhData.totalChantiers} Chantiers • Sync $syncStr',
+                  '${StielDwhData.totalElectriciens} Élec. • ${StielDwhData.totalChantiers} Chantiers',
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xFF93C5FD),

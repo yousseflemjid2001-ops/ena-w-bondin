@@ -1093,10 +1093,7 @@ class _BondinFullMobileSuiteScreenState
 
             // 4. CORPS DE L'ONGLET ACTIF (TOUTES LES SECTIONS WEB)
             Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                child: _buildActiveTabBody(),
-              ),
+              child: _buildActiveTabBody(),
             ),
 
             // 5. BARRE DE NAVIGATION INFÉRIEURE
