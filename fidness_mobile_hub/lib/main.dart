@@ -427,10 +427,8 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
   late final AnimationController _shimmerCtrl;
   late final AnimationController _entranceCtrl;
 
-  final TextEditingController _emailCtrl =
-      TextEditingController(text: 'dg@bondin.tn');
-  final TextEditingController _passwordCtrl =
-      TextEditingController(text: 'bondin2026');
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passwordCtrl = TextEditingController();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
@@ -479,13 +477,27 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
 
   Future<void> _submitLogin() async {
     FocusScope.of(context).unfocus();
-    final email = _emailCtrl.text.trim().toLowerCase();
+    final id = _emailCtrl.text.trim().toLowerCase();
     final password = _passwordCtrl.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
+    if (id.isEmpty || password.isEmpty) {
       setState(() {
         _errorMessage =
             'Veuillez saisir votre identifiant professionnel et votre mot de passe.';
+      });
+      return;
+    }
+
+    String? resolvedTenant;
+    const bool isSuper = false;
+
+    if (id == 'enawbondin' && password == 'ena.w.bondin') {
+      resolvedTenant = 'bondin';
+    } else if (id == 'clubalpha' && password == 'club.alpha') {
+      resolvedTenant = 'stiel';
+    } else {
+      setState(() {
+        _errorMessage = 'Identifiant ou mot de passe incorrect.';
       });
       return;
     }
@@ -499,15 +511,10 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
     await Future.delayed(const Duration(milliseconds: 550));
     if (!mounted) return;
 
-    final bool isSuper = email.contains('admin') || email.contains('fidness');
-    final String resolvedTenant = (email.contains('stiel') || email.contains('alpha'))
-        ? 'stiel'
-        : 'bondin';
-
     widget.onAuthenticated(
       tenantId: resolvedTenant,
       isSuperAdmin: isSuper,
-      email: email,
+      email: id,
     );
   }
 
@@ -689,15 +696,6 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
         ),
         const SizedBox(height: 8),
         const Text(
-          'FIDNESS BI & AI',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-        const SizedBox(height: 3),
-        const Text(
           'Plateforme Décisionnelle & Intelligence Temps Réel',
           style: TextStyle(
             color: Color(0xFFCBD5E1),
@@ -727,7 +725,7 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                'Email ou Identifiant Professionnel',
+                'Identifiant Professionnel',
                 style: TextStyle(
                   color: Color(0xFFCBD5E1),
                   fontSize: 11.5,
@@ -740,10 +738,12 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
                 focusNode: _emailFocus,
                 style: const TextStyle(color: Colors.white, fontSize: 13.5),
                 decoration: InputDecoration(
+                  hintText: 'Saisissez votre identifiant',
+                  hintStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
                   filled: true,
                   fillColor: const Color(0xFF0F172A),
                   prefixIcon: const Icon(
-                    Icons.alternate_email_rounded,
+                    Icons.person_outline_rounded,
                     size: 18,
                     color: Color(0xFF60A5FA),
                   ),
@@ -770,6 +770,8 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
                 onSubmitted: (_) => _submitLogin(),
                 style: const TextStyle(color: Colors.white, fontSize: 13.5),
                 decoration: InputDecoration(
+                  hintText: '••••••••',
+                  hintStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
                   filled: true,
                   fillColor: const Color(0xFF0F172A),
                   prefixIcon: const Icon(
@@ -796,66 +798,16 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
               ),
               const SizedBox(height: 12),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _rememberSession,
-                        activeColor: const Color(0xFF4B67F6),
-                        onChanged: (v) =>
-                            setState(() => _rememberSession = v ?? true),
-                      ),
-                      const Text(
-                        'Session JWT',
-                        style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 11.5),
-                      ),
-                    ],
+                  Checkbox(
+                    value: _rememberSession,
+                    activeColor: const Color(0xFF4B67F6),
+                    onChanged: (v) =>
+                        setState(() => _rememberSession = v ?? true),
                   ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _emailCtrl.text = 'dg@bondin.tn';
-                            _passwordCtrl.text = 'bondin2026';
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF7F1017).withValues(alpha: 0.35),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: const Color(0xFFD97706).withValues(alpha: 0.4)),
-                          ),
-                          child: const Text(
-                            'BONDIN',
-                            style: TextStyle(color: Color(0xFFFDE68A), fontSize: 9, fontWeight: FontWeight.w800),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _emailCtrl.text = 'direction@stiel.tn';
-                            _passwordCtrl.text = 'stiel2026';
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1E3A8A).withValues(alpha: 0.35),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: const Color(0xFF3B82F6).withValues(alpha: 0.4)),
-                          ),
-                          child: const Text(
-                            'STIEL',
-                            style: TextStyle(color: Color(0xFF93C5FD), fontSize: 9, fontWeight: FontWeight.w800),
-                          ),
-                        ),
-                      ),
-                    ],
+                  const Text(
+                    'Session JWT',
+                    style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 11.5),
                   ),
                 ],
               ),
