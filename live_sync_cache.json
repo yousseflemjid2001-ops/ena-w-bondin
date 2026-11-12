@@ -1,350 +1,348 @@
 {
   "status": "connected_live",
   "source": "PostgreSQL 17.7 (57.131.30.69:5432)",
-  "timestamp": "2026-11-03 23:11:50",
+  "timestamp": "2026-11-12 18:29:30 (Live DB)",
   "company_name": "BONDIN",
-  "total_scans": 14352,
-  "total_ca_tnd": 168917.56,
-  "panier_moyen_tnd": 11.77,
-  "total_points_emis": 567629,
-  "clients_actifs": 790,
-  "total_inscrits": 2797,
-  "clients_inscrits": 2797,
-  "recent_inscrits": [
-    {
-      "id": "CLI_01A1A350DB",
-      "nom": "Mnari Eya",
-      "date": "2026-11-03",
-      "tel": "+216 26 264 119",
-      "email": "eyamnari58@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A34F31",
-      "nom": "Eya alrahmen Elmnari",
-      "date": "2026-11-03",
-      "tel": "Non renseignÃ©",
-      "email": "eyaelmnari20032005@icloud.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A2604C",
-      "nom": "salma Lah",
-      "date": "2026-11-03",
-      "tel": "+216 90 106 210",
-      "email": "salmarobzz@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A0DF41",
-      "nom": "lotfi khemiri",
-      "date": "2026-11-03",
-      "tel": "+216 98 222 646",
-      "email": "khemirilotfi6@gmail.com",
-      "magasin": "Cafétéria Tunis MENZAH VI",
-      "achats": 1,
-      "points": 4.8,
-      "segment": "Client RÃ©gulier",
-      "statut": "Actif"
-    },
-    {
-      "id": "CLI_01A1A0DE83",
-      "nom": "emna kilani",
-      "date": "2026-11-03",
-      "tel": "+216 95 367 636",
-      "email": "emna.kj1997@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A0DBE0",
-      "nom": "Chadia Saidi",
-      "date": "2026-11-03",
-      "tel": "+216 98 267 635",
-      "email": "minouchakinza@gmail.com",
-      "magasin": "Succursale Tunis Menzah VI",
-      "achats": 2,
-      "points": 214.4,
-      "segment": "Client RÃ©gulier",
-      "statut": "Actif"
-    },
-    {
-      "id": "CLI_01A1A0CC5F",
-      "nom": "boussaha khouloud",
-      "date": "2026-11-03",
-      "tel": "+216 21 812 664",
-      "email": "khouloud.boussaha@esprit.tn",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A0CBD1",
-      "nom": "amine nour",
-      "date": "2026-11-03",
-      "tel": "Non renseignÃ©",
-      "email": "khouloud.boussahaprof@yahoo.tn",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A0B70B",
-      "nom": "Nabiha Zriba",
-      "date": "2026-11-03",
-      "tel": "+216 27 912 246",
-      "email": "zribanabiha15@gmail.com",
-      "magasin": "Succursale Gafsa Ville",
-      "achats": 8,
-      "points": 480.7,
-      "segment": "Client RÃ©gulier",
-      "statut": "Actif"
-    },
-    {
-      "id": "CLI_01A1A05B20",
-      "nom": "emna kaabi",
-      "date": "2026-11-03",
-      "tel": "Non renseignÃ©",
-      "email": "emnae1045@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A00E3B",
-      "nom": "Ismail Sahli",
-      "date": "2026-11-03",
-      "tel": "Non renseignÃ©",
-      "email": "52wm5kvs5t@privaterelay.appleid.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A1A00DC3",
-      "nom": "Ismail Sahli",
-      "date": "2026-11-03",
-      "tel": "Non renseignÃ©",
-      "email": "sahli.ismail7@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A19D54E9",
-      "nom": "yahyaoui adel",
-      "date": "2026-11-02",
-      "tel": "+216 98 682 765",
-      "email": "yahyaouiadel3@gmail.com",
-      "magasin": "Cafétéria Le Kef",
-      "achats": 1,
-      "points": 4.2,
-      "segment": "Client RÃ©gulier",
-      "statut": "Actif"
-    },
-    {
-      "id": "CLI_01A19D4A79",
-      "nom": "Ahmed Karray",
-      "date": "2026-11-02",
-      "tel": "+216 58 599 104",
-      "email": "karrayahmed88@gmail.com",
-      "magasin": "Base Centrale ENA w BONDIN",
-      "achats": 0,
-      "points": 0.0,
-      "segment": "Inactif / Jamais scannÃ©",
-      "statut": "Nouveau Membre"
-    },
-    {
-      "id": "CLI_01A19CCC65",
-      "nom": "Chamseddine Moumen",
-      "date": "2026-11-02",
-      "tel": "+216 98 640 628",
-      "email": "chamseddine_moumen@yahoo.fr",
-      "magasin": "Succursale Tunis Espagne",
-      "achats": 1,
-      "points": 16.0,
-      "segment": "Client RÃ©gulier",
-      "statut": "Actif"
-    }
-  ],
-  "monthly_breakdown": [
-    {
-      "month": "2026-04",
-      "scans": 2,
-      "ca": 3.8,
-      "ca_succ": 0.0,
-      "ca_cafe": 3.8
-    },
-    {
-      "month": "2026-05",
-      "scans": 11,
-      "ca": 79.5,
-      "ca_succ": 64.3,
-      "ca_cafe": 15.2
-    },
-    {
-      "month": "2026-06",
-      "scans": 1937,
-      "ca": 15115.81,
-      "ca_succ": 8328.81,
-      "ca_cafe": 6787.0
-    },
-    {
-      "month": "2026-07",
-      "scans": 3209,
-      "ca": 30544.85,
-      "ca_succ": 19476.25,
-      "ca_cafe": 11068.6
-    },
-    {
-      "month": "2026-08",
-      "scans": 3224,
-      "ca": 47772.97,
-      "ca_succ": 37528.17,
-      "ca_cafe": 10244.8
-    },
-    {
-      "month": "2026-09",
-      "scans": 2868,
-      "ca": 38220.71,
-      "ca_succ": 29302.81,
-      "ca_cafe": 8917.9
-    },
-    {
-      "month": "2026-10",
-      "scans": 2833,
-      "ca": 34068.57,
-      "ca_succ": 25582.57,
-      "ca_cafe": 8486.0
-    },
-    {
-      "month": "2026-11",
-      "scans": 268,
-      "ca": 3111.35,
-      "ca_succ": 2369.95,
-      "ca_cafe": 741.4
-    }
-  ],
-  "dernier_scan": "2026-11-03 20:40:35",
-  "dernier_ticket": "bondin6380291",
-  "dernier_client": "Nabiha Zriba",
-  "dernier_montant": 18.5,
-  "dernier_magasin": "Succursale Gafsa Ville",
+  "total_scans": 15240,
+  "total_ca_tnd": 179760.12,
+  "panier_moyen_tnd": 11.795,
+  "total_points_emis": 605437,
+  "clients_actifs": 811,
+  "total_inscrits": 2836,
+  "clients_inscrits": 2836,
+  "total_cadeaux": 349,
+  "total_points_brules": 337400,
+  "dernier_scan": "2026-11-12 18:13:31",
+  "dernier_ticket": "bondin6534668",
+  "dernier_client": "Kalthoum Rahal",
+  "dernier_montant": 8.4,
+  "dernier_magasin": "Cafétéria Tunis La Marsa",
   "recent_scans": [
     {
-      "id": 14363,
-      "ticket": "bondin6380291",
-      "montant_tnd": 18.5,
-      "points": 74.0,
-      "date": "2026-11-03 20:40:35",
-      "magasin": "Succursale Gafsa Ville",
-      "client": "Nabiha Zriba"
+      "id": 15251,
+      "ticket": "bondin6534668",
+      "montant_tnd": 8.4,
+      "points": 15.6,
+      "date": "2026-11-12 18:13:31",
+      "magasin": "Cafétéria Tunis La Marsa",
+      "client": "Kalthoum Rahal"
     },
     {
-      "id": 14362,
-      "ticket": "bondin6380199",
-      "montant_tnd": 37.0,
-      "points": 148.0,
-      "date": "2026-11-03 20:22:59",
-      "magasin": "Succursale Gafsa Ville",
-      "client": "Ben Ali Bassem"
-    },
-    {
-      "id": 14361,
-      "ticket": "bondin6379929",
-      "montant_tnd": 2.1,
-      "points": 4.2,
-      "date": "2026-11-03 19:44:43",
-      "magasin": "Cafétéria Le Kef",
-      "client": "Hamza Barbouche"
-    },
-    {
-      "id": 14360,
-      "ticket": "bondin6379813",
-      "montant_tnd": 10.5,
-      "points": 42.0,
-      "date": "2026-11-03 19:33:51",
-      "magasin": "Succursale Gafsa Ville",
-      "client": "Slimen Abdallah"
-    },
-    {
-      "id": 14359,
-      "ticket": "bondin6379760",
-      "montant_tnd": 4.3,
-      "points": 5.6,
-      "date": "2026-11-03 19:27:42",
-      "magasin": "Cafétéria Gafsa Ville",
-      "client": "Slimen Abdallah"
-    },
-    {
-      "id": 14358,
-      "ticket": "bondin6379746",
-      "montant_tnd": 18.5,
-      "points": 74.0,
-      "date": "2026-11-03 19:25:51",
-      "magasin": "Succursale Gafsa Ville",
-      "client": "Imen Massoud"
-    },
-    {
-      "id": 14357,
-      "ticket": "bondin6379574",
-      "montant_tnd": 10.3,
-      "points": 26.3,
-      "date": "2026-11-03 19:12:08",
-      "magasin": "Cafétéria Tunis LibertÃ©é",
-      "client": "Mohamed Ben Khelifa"
-    },
-    {
-      "id": 14356,
-      "ticket": "bondin6379404",
-      "montant_tnd": 37.0,
-      "points": 148.0,
-      "date": "2026-11-03 18:55:35",
+      "id": 15250,
+      "ticket": "bondin6534579",
+      "montant_tnd": 28.49,
+      "points": 114.0,
+      "date": "2026-11-12 18:08:09",
       "magasin": "Succursale Gafsa Ville",
       "client": "Beda Beda"
     },
     {
-      "id": 14355,
-      "ticket": "bondin6379355",
-      "montant_tnd": 13.8,
-      "points": 41.4,
-      "date": "2026-11-03 18:52:08",
-      "magasin": "Cafétéria Le Kef",
-      "client": "Chebbi Ichraf"
+      "id": 15249,
+      "ticket": "bondin6534426",
+      "montant_tnd": 18.5,
+      "points": 74.0,
+      "date": "2026-11-12 17:58:03",
+      "magasin": "Succursale Gafsa Ville",
+      "client": "Beda Beda"
     },
     {
-      "id": 14354,
-      "ticket": "bondin6379350",
-      "montant_tnd": 9.99,
-      "points": 40.0,
-      "date": "2026-11-03 18:51:51",
-      "magasin": "Succursale Le Kef",
-      "client": "Chebbi Ichraf"
+      "id": 15248,
+      "ticket": "bondin6534068",
+      "montant_tnd": 6.0,
+      "points": 18.0,
+      "date": "2026-11-12 17:40:21",
+      "magasin": "Cafétéria Tunis Liberté",
+      "client": "Ridhaa Hasnaoui"
+    },
+    {
+      "id": 15247,
+      "ticket": "bondin6533972",
+      "montant_tnd": 8.442,
+      "points": 33.8,
+      "date": "2026-11-12 17:35:23",
+      "magasin": "Succursale Tunis Liberté",
+      "client": "Kaouthar Ben Said"
+    },
+    {
+      "id": 15246,
+      "ticket": "bondin6533939",
+      "montant_tnd": 4.9,
+      "points": 14.7,
+      "date": "2026-11-12 17:33:42",
+      "magasin": "Cafétéria Tunis Liberté",
+      "client": "Kaouthar Ben Said"
+    },
+    {
+      "id": 15245,
+      "ticket": "bondin6533879",
+      "montant_tnd": 10.027,
+      "points": 40.1,
+      "date": "2026-11-12 17:30:12",
+      "magasin": "Succursale Tunis Liberté",
+      "client": "elbessaoudi Amine"
+    },
+    {
+      "id": 15244,
+      "ticket": "bondin6533791",
+      "montant_tnd": 5.6,
+      "points": 6.2,
+      "date": "2026-11-12 17:25:29",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Nid hal"
+    },
+    {
+      "id": 15243,
+      "ticket": "bondin6533759",
+      "montant_tnd": 1.9,
+      "points": 3.8,
+      "date": "2026-11-12 17:23:44",
+      "magasin": "Cafétéria Gafsa Ville",
+      "client": "Montasser belhoula"
+    },
+    {
+      "id": 15242,
+      "ticket": "bondin6533742",
+      "montant_tnd": 3.4,
+      "points": 3.8,
+      "date": "2026-11-12 17:22:34",
+      "magasin": "Cafétéria Tunis Liberté",
+      "client": "elbessaoudi Amine"
+    },
+    {
+      "id": 15241,
+      "ticket": "bondin6533695",
+      "montant_tnd": 4.2,
+      "points": 8.4,
+      "date": "2026-11-12 17:20:28",
+      "magasin": "Cafétéria Tunis MENZAH VI",
+      "client": "Trigui Skander"
+    },
+    {
+      "id": 15240,
+      "ticket": "bondin6533524",
+      "montant_tnd": 41.958,
+      "points": 167.8,
+      "date": "2026-11-12 17:11:28",
+      "magasin": "Succursale Tunis Menzah VI",
+      "client": "Meriem JAIDANE"
+    }
+  ],
+  "recent_inscrits": [
+    {
+      "id": "CLI_01A1CFE39E",
+      "nom": "Rkaiess Houssem",
+      "date": "2026-11-12 14:12",
+      "tel": "99341798",
+      "email": "houssem.rekhaiess@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1CE925D",
+      "nom": "insaf hajji",
+      "date": "2026-11-12 08:04",
+      "tel": "22381726",
+      "email": "hajjiinsaf15@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1CD5A93",
+      "nom": "Anwarsadique CV",
+      "date": "2026-11-12 02:23",
+      "tel": "56848470",
+      "email": "anwarcv70@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1CAD023",
+      "nom": "Kinge Kinge",
+      "date": "2026-11-11 14:33",
+      "tel": "22130570",
+      "email": "kinge00kinge@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1CA9534",
+      "nom": "Epoch",
+      "date": "2026-11-11 13:28",
+      "tel": "55382970",
+      "email": "epochtimeless24@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1C9D27A",
+      "nom": "Bilel Ben talha",
+      "date": "2026-11-11 09:56",
+      "tel": "Non renseigné",
+      "email": "dwh8z97yfv@privaterelay.appleid.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1C98E65",
+      "nom": "Mohamed Aalimi",
+      "date": "2026-11-11 08:41",
+      "tel": "95309096",
+      "email": "hamma.aalimi@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1C687F1",
+      "nom": "Salah Bensettari",
+      "date": "2026-11-10 18:36",
+      "tel": "25000000",
+      "email": "glaise@netc.fr",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1C5DB79",
+      "nom": "Mariem Mahmoudi",
+      "date": "2026-11-10 15:27",
+      "tel": "25203512",
+      "email": "b9fz4zb9k4@privaterelay.appleid.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1C0276A",
+      "nom": "Randa Helali",
+      "date": "2026-11-09 12:52",
+      "tel": "22060985",
+      "email": "randahelali87@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1BFE6DA",
+      "nom": "Yassine Melki",
+      "date": "2026-11-09 11:42",
+      "tel": "52883954",
+      "email": "yassinemelki@gmail.com",
+      "achats": 0,
+      "points": 0.0,
+      "magasin": "Application Mobile BONDIN",
+      "segment": "Nouveau Membre",
+      "statut": "Inscrit Récent"
+    },
+    {
+      "id": "CLI_01A1BF398D",
+      "nom": "La vize HA",
+      "date": "2026-11-09 08:33",
+      "tel": "98601614",
+      "email": "lavieha90@gmail.com",
+      "achats": 4,
+      "points": 195.0,
+      "magasin": "Succursale Tunis Liberté",
+      "segment": "Client Actif",
+      "statut": "Actif Fidélité"
+    }
+  ],
+  "top_magasins_ca": [
+    {
+      "nom": "Succursale Le Kef",
+      "type": "Succursale",
+      "scans": 460,
+      "ca": 28554.99,
+      "aov": 62.08
+    },
+    {
+      "nom": "Succursale Gabès Jara",
+      "type": "Succursale",
+      "scans": 384,
+      "ca": 17642.88,
+      "aov": 45.94
+    },
+    {
+      "nom": "Succursale Tunis Menzah VI",
+      "type": "Succursale",
+      "scans": 598,
+      "ca": 16233.88,
+      "aov": 27.15
+    },
+    {
+      "nom": "Succursale Gafsa",
+      "type": "Succursale",
+      "scans": 149,
+      "ca": 13776.77,
+      "aov": 92.46
+    },
+    {
+      "nom": "Succursale Tunis Liberté",
+      "type": "Succursale",
+      "scans": 536,
+      "ca": 13289.51,
+      "aov": 24.79
+    },
+    {
+      "nom": "Cafétéria Gafsa Ville",
+      "type": "Cafétéria",
+      "scans": 3468,
+      "ca": 12541.6,
+      "aov": 3.62
+    },
+    {
+      "nom": "Succursale Gafsa Ville",
+      "type": "Succursale",
+      "scans": 529,
+      "ca": 10724.82,
+      "aov": 20.27
+    },
+    {
+      "nom": "Succursale Tunis Ariana",
+      "type": "Succursale",
+      "scans": 341,
+      "ca": 9953.07,
+      "aov": 29.19
+    },
+    {
+      "nom": "Succursale Tunis Espagne",
+      "type": "Succursale",
+      "scans": 309,
+      "ca": 9158.03,
+      "aov": 29.64
+    },
+    {
+      "nom": "Succursale Tunis La Marsa",
+      "type": "Succursale",
+      "scans": 177,
+      "ca": 8274.21,
+      "aov": 46.75
     }
   ]
 }
