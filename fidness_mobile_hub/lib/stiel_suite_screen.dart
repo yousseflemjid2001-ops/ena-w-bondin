@@ -40,6 +40,11 @@ class StielFullMobileSuiteScreen extends StatefulWidget {
 
 class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen> {
   int _activeTab = 0;
+  int _stielSub01 = 0;
+  int _stielSub02 = 0;
+  int _stielSub03 = 0;
+  int _stielSub04 = 0;
+  int _stielSub05 = 0;
   String _selectedGouv = 'Toutes Régions';
   String? _selectedGamme;
   String _searchArtisanQuery = '';
@@ -47,6 +52,57 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
   String _pushStatusMsg = '🟢 Prêt pour relance artisan (API Agent IA)';
   bool _sendingOffer = false;
   bool _copilotBusy = false;
+
+  Widget _buildStielSubSelector(
+    List<String> labels,
+    int activeIdx,
+    ValueChanged<int> onSelect,
+  ) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0A132C),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF3B82F6).withValues(alpha: 0.35),
+        ),
+      ),
+      child: Row(
+        children: List.generate(labels.length, (i) {
+          final bool active = i == activeIdx;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => onSelect(i),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 4),
+                decoration: BoxDecoration(
+                  gradient: active
+                      ? const LinearGradient(
+                          colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
+                        )
+                      : null,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  labels[i],
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: active ? Colors.white : const Color(0xFF94A3B8),
+                    fontSize: 10.2,
+                    fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
 
   final TextEditingController _copilotInputCtrl = TextEditingController();
   List<String> _copilotFollowups = [
@@ -608,170 +664,180 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSectionTitle(
-          badge: 'KPI B2B',
-          title: _selectedGouv == 'Toutes Régions'
-              ? 'Indicateurs Clés Chantiers STIEL (National)'
-              : 'Indicateurs Clés Chantiers — $_selectedGouv',
+        _buildStielSubSelector(
+          ['📊 Synthèse', '🗺️ Carte & Pareto', '🔀 Treemap & Flux', '🏆 Palmarès'],
+          _stielSub01,
+          (i) => setState(() => _stielSub01 = i),
         ),
-        const SizedBox(height: 8),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.58,
-          children: [
-            _buildKpiCard(
-              'CA Matériel Incrémental',
-              '${fmtNum(caAffiche, 2)} DT',
-              '$validesAffiches chantiers certifiés',
-              'ROI ${fmtNum(StielDwhData.roiRatio, 0)}%',
-              const Color(0xFF3B82F6),
-              Icons.payments_rounded,
-            ),
-            _buildKpiCard(
-              'Taux de Validation',
-              '${fmtNum(StielDwhData.tauxValidation, 1)} %',
-              '$validesAffiches validés / $chantiersAffiches soumis',
-              '${StielDwhData.chantiersEnAttente} en attente',
-              const Color(0xFF10B981),
-              Icons.verified_rounded,
-            ),
-            _buildKpiCard(
-              'Panier Moyen Chantier',
-              '${fmtNum(StielDwhData.panierMoyenCa, 2)} DT',
-              '${fmtNum(StielDwhData.panierMoyenArticles, 1)} composants / dossier',
-              '${fmtNum(StielDwhData.totalComposants)} u.',
-              const Color(0xFFF59E0B),
-              Icons.shopping_cart_rounded,
-            ),
-            _buildKpiCard(
-              'Électriciens Adhérents',
-              '${StielDwhData.totalElectriciens} Artisans',
-              '${StielDwhData.mauActifs} Actifs (${fmtNum(tauxAct, 1)}%)',
-              'LTV ${fmtNum(StielDwhData.ltvMoyenneArtisan)} DT',
-              const Color(0xFF8B5CF6),
-              Icons.engineering_rounded,
-            ),
-            _buildKpiCard(
-              'Marge Brute Générée',
-              '${fmtNum(StielDwhData.margeBruteTnd, 2)} DT',
-              'Marge industrielle 38,0%',
-              'Rentabilité Forte',
-              const Color(0xFF06B6D4),
-              Icons.trending_up_rounded,
-            ),
-            _buildKpiCard(
-              'Passif Financier Prévu',
-              '${fmtNum(StielDwhData.passifFinancierTnd, 2)} DT',
-              '${fmtNum(StielDwhData.pointsEnCirculation)} pts en circulation',
-              '0,010 DT / pt',
-              const Color(0xFFEC4899),
-              Icons.account_balance_wallet_rounded,
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        _buildSectionTitle(badge: 'ÉVOLUTION', title: 'Volume Mensuel des Chantiers Déclarés (Fév - Oct 2026)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('📈 Trajectoire d\'Accélération Terrain STIEL', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800)),
-              SizedBox(height: 10),
-              StielEvolutionChart(),
-            ],
+        if (_stielSub01 == 0) ...[
+          _buildSectionTitle(
+            badge: 'KPI B2B',
+            title: _selectedGouv == 'Toutes Régions'
+                ? 'Indicateurs Clés Chantiers STIEL (National)'
+                : 'Indicateurs Clés Chantiers — $_selectedGouv',
           ),
-        ),
-        const SizedBox(height: 16),
-
-        _buildSectionTitle(badge: 'GÉO', title: 'Cartographie Nationale des Gouvernorats Chantiers'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: StielTunisiaMapCard(
-            onSelectGouv: (g) => setState(() => _selectedGouv = g),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // PARETO ABC
-        _buildSectionTitle(badge: 'PARETO ABC', title: 'Top 10 Références STIEL — Analyse Pareto ABC (80/20)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 8),
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.58,
             children: [
-              const Text(
-                '📊 Valeur CA & Courbe Cumulée Pareto (%)',
-                style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
+              _buildKpiCard(
+                'CA Matériel Incrémental',
+                '${fmtNum(caAffiche, 2)} DT',
+                '$validesAffiches chantiers certifiés',
+                'ROI ${fmtNum(StielDwhData.roiRatio, 0)}%',
+                const Color(0xFF3B82F6),
+                Icons.payments_rounded,
               ),
-              const SizedBox(height: 8),
-              StielParetoChart(
-                articles: filteredArticles.isEmpty ? StielDwhData.topArticles : filteredArticles,
+              _buildKpiCard(
+                'Taux de Validation',
+                '${fmtNum(StielDwhData.tauxValidation, 1)} %',
+                '$validesAffiches validés / $chantiersAffiches soumis',
+                '${StielDwhData.chantiersEnAttente} en attente',
+                const Color(0xFF10B981),
+                Icons.verified_rounded,
+              ),
+              _buildKpiCard(
+                'Panier Moyen Chantier',
+                '${fmtNum(StielDwhData.panierMoyenCa, 2)} DT',
+                '${fmtNum(StielDwhData.panierMoyenArticles, 1)} composants / dossier',
+                '${fmtNum(StielDwhData.totalComposants)} u.',
+                const Color(0xFFF59E0B),
+                Icons.shopping_cart_rounded,
+              ),
+              _buildKpiCard(
+                'Électriciens Adhérents',
+                '${StielDwhData.totalElectriciens} Artisans',
+                '${StielDwhData.mauActifs} Actifs (${fmtNum(tauxAct, 1)}%)',
+                'LTV ${fmtNum(StielDwhData.ltvMoyenneArtisan)} DT',
+                const Color(0xFF8B5CF6),
+                Icons.engineering_rounded,
+              ),
+              _buildKpiCard(
+                'Marge Brute Générée',
+                '${fmtNum(StielDwhData.margeBruteTnd, 2)} DT',
+                'Marge industrielle 38,0%',
+                'Rentabilité Forte',
+                const Color(0xFF06B6D4),
+                Icons.trending_up_rounded,
+              ),
+              _buildKpiCard(
+                'Passif Financier Prévu',
+                '${fmtNum(StielDwhData.passifFinancierTnd, 2)} DT',
+                '${fmtNum(StielDwhData.pointsEnCirculation)} pts en circulation',
+                '0,010 DT / pt',
+                const Color(0xFFEC4899),
+                Icons.account_balance_wallet_rounded,
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
-        // TREEMAP HIÉRARCHIQUE
-        _buildSectionTitle(badge: 'TREEMAP', title: 'Répartition Hiérarchique de la Valeur (Gamme → Référence)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '🗂️ Touchez une gamme pour filtrer les articles par famille STIEL',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
-              ),
-              const SizedBox(height: 8),
-              StielTreemap(
-                articles: StielDwhData.topArticles,
-                onTapGamme: (g) => setState(() {
-                  _selectedGamme = (_selectedGamme == g) ? null : g;
-                }),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // FLUX B2B SANKEY
-        _buildSectionTitle(badge: 'FLUX B2B', title: 'Flux B2B Sankey : Gammes → Commerciaux → Typologie Chantier'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '🔀 Traçabilité Complète du CA Matériel par Canal & Typologie',
-                style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 10),
-              StielSankey(nodes: sankeyNodes, links: sankeyLinks),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // GRAND PALMARÈS & MATRICES DÉCISIONNELLES B2B (7 CATÉGORIES)
-        _buildSectionTitle(badge: 'PALMARÈS B2B', title: 'Grand Palmarès & Matrices Décisionnelles (7 Dimensions)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: StielGrandPalmares(
-            region: _selectedGouv,
-            onOpenElectricien: (e) => showStielElectricien360(
-              context,
-              sS(e['id'], '1'),
-              sS(e['nom'], 'Électricien'),
+          _buildSectionTitle(badge: 'ÉVOLUTION', title: 'Volume Mensuel des Chantiers Déclarés (Fév - Oct 2026)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('📈 Trajectoire d\'Accélération Terrain STIEL', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800)),
+                SizedBox(height: 10),
+                StielEvolutionChart(),
+              ],
             ),
           ),
-        ),
+        ],
+
+        if (_stielSub01 == 1) ...[
+          _buildSectionTitle(badge: 'GÉO', title: 'Cartographie Nationale des Gouvernorats Chantiers'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: StielTunisiaMapCard(
+              onSelectGouv: (g) => setState(() => _selectedGouv = g),
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // PARETO ABC
+          _buildSectionTitle(badge: 'PARETO ABC', title: 'Top 10 Références STIEL — Analyse Pareto ABC (80/20)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '📊 Valeur CA & Courbe Cumulée Pareto (%)',
+                  style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 8),
+                StielParetoChart(
+                  articles: filteredArticles.isEmpty ? StielDwhData.topArticles : filteredArticles,
+                ),
+              ],
+            ),
+          ),
+        ],
+
+        if (_stielSub01 == 2) ...[
+          // TREEMAP HIÉRARCHIQUE
+          _buildSectionTitle(badge: 'TREEMAP', title: 'Répartition Hiérarchique de la Valeur (Gamme → Référence)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '🗂️ Touchez une gamme pour filtrer les articles par famille STIEL',
+                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
+                ),
+                const SizedBox(height: 8),
+                StielTreemap(
+                  articles: StielDwhData.topArticles,
+                  onTapGamme: (g) => setState(() {
+                    _selectedGamme = (_selectedGamme == g) ? null : g;
+                  }),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // FLUX B2B SANKEY
+          _buildSectionTitle(badge: 'FLUX B2B', title: 'Flux B2B Sankey : Gammes → Commerciaux → Typologie Chantier'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '🔀 Traçabilité Complète du CA Matériel par Canal & Typologie',
+                  style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 10),
+                StielSankey(nodes: sankeyNodes, links: sankeyLinks),
+              ],
+            ),
+          ),
+        ],
+
+        if (_stielSub01 == 3) ...[
+          // GRAND PALMARÈS & MATRICES DÉCISIONNELLES B2B (7 CATÉGORIES)
+          _buildSectionTitle(badge: 'PALMARÈS B2B', title: 'Grand Palmarès & Matrices Décisionnelles (7 Dimensions)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: StielGrandPalmares(
+              region: _selectedGouv,
+              onOpenElectricien: (e) => showStielElectricien360(
+                context,
+                sS(e['id'], '1'),
+                sS(e['nom'], 'Électricien'),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -825,192 +891,201 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSectionTitle(
-          badge: 'PALIERS',
-          title: 'Répartition du Réseau Artisans Club Alpha (${StielDwhData.totalElectriciens} Membres)',
+        _buildStielSubSelector(
+          ['🏅 Paliers & Points', '👷 Annuaire 360°', '🎛️ What-If & Cohortes'],
+          _stielSub02,
+          (i) => setState(() => _stielSub02 = i),
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            _buildTierBadge('Platine ⭐', '${paliersMap['Platine'] ?? 3} Artisans', const Color(0xFF38BDF8)),
-            const SizedBox(width: 6),
-            _buildTierBadge('Or 🏆', '${paliersMap['Or'] ?? 5} Artisans', const Color(0xFFF59E0B)),
-            const SizedBox(width: 6),
-            _buildTierBadge('Argent 🥈', '${paliersMap['Argent'] ?? 5} Artisans', const Color(0xFFCBD5E1)),
-            const SizedBox(width: 6),
-            _buildTierBadge('Bronze 🥉', '${paliersMap['Bronze'] ?? 159} Membres', const Color(0xFFD97706)),
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        // CASCADE FINANCIÈRE DES POINTS (WATERFALL)
-        _buildSectionTitle(badge: 'WATERFALL', title: 'Cascade Financière des Points & Passif Provisionné'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        if (_stielSub02 == 0) ...[
+          _buildSectionTitle(
+            badge: 'PALIERS',
+            title: 'Répartition du Réseau Artisans Club Alpha (${StielDwhData.totalElectriciens} Membres)',
+          ),
+          const SizedBox(height: 8),
+          Row(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    '💰 Équilibre Earn & Burn (1 pt = 0,010 TND)',
-                    style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
-                  ),
-                  Text(
-                    'Passif : ${fmtNum(StielDwhData.passifFinancierTnd, 2)} DT',
-                    style: const TextStyle(color: Color(0xFFFBBF24), fontSize: 10.5, fontWeight: FontWeight.w900),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              StielWaterfall(steps: waterfallList),
+              _buildTierBadge('Platine ⭐', '${paliersMap['Platine'] ?? 3} Artisans', const Color(0xFF38BDF8)),
+              const SizedBox(width: 6),
+              _buildTierBadge('Or 🏆', '${paliersMap['Or'] ?? 5} Artisans', const Color(0xFFF59E0B)),
+              const SizedBox(width: 6),
+              _buildTierBadge('Argent 🥈', '${paliersMap['Argent'] ?? 5} Artisans', const Color(0xFFCBD5E1)),
+              const SizedBox(width: 6),
+              _buildTierBadge('Bronze 🥉', '${paliersMap['Bronze'] ?? 159} Membres', const Color(0xFFD97706)),
             ],
           ),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
-        // SIMULATEUR DYNAMIQUE WHAT-IF (CONNECTÉ API)
-        _buildSectionTitle(badge: 'WHAT-IF', title: 'Simulateur Dynamique de Rentabilité & Barème Points'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: const StielWhatIfCard(),
-        ),
-        const SizedBox(height: 16),
-
-        // COHORTES DE RÉTENTION & PROCHES DU SEUIL
-        _buildSectionTitle(badge: 'COHORTES', title: 'Rétention par Cohorte Mensuelle & Proches Palier Supérieur'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              StielCohorts(cohortes: cohortesList),
-              if (prochesList.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                const Text(
-                  '🎯 Artisans proches du palier supérieur (Opportunité d\'upsell) :',
-                  style: TextStyle(color: Color(0xFFFDE68A), fontSize: 10.5, fontWeight: FontWeight.w800),
+          // CASCADE FINANCIÈRE DES POINTS (WATERFALL)
+          _buildSectionTitle(badge: 'WATERFALL', title: 'Cascade Financière des Points & Passif Provisionné'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      '💰 Équilibre Earn & Burn (1 pt = 0,010 TND)',
+                      style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
+                    ),
+                    Text(
+                      'Passif : ${fmtNum(StielDwhData.passifFinancierTnd, 2)} DT',
+                      style: const TextStyle(color: Color(0xFFFBBF24), fontSize: 10.5, fontWeight: FontWeight.w900),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 6),
-                ...prochesList.take(5).map((p) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '• ${sS(p['nom'])} (${sS(p['ville'], sS(p['gouvernorat']))}) — ${fmtNum(sD(p['points']))} pts',
-                              style: const TextStyle(color: Colors.white, fontSize: 10),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Text(
-                            'Manque ${fmtNum(sD(p['points_manquants'], sD(p['manque'])))} pts → ${sS(p['prochain_palier'], sS(p['cible']))}',
-                            style: const TextStyle(color: Color(0xFF34D399), fontSize: 9.5, fontWeight: FontWeight.w800),
-                          ),
-                        ],
-                      ),
-                    )),
+                const SizedBox(height: 10),
+                StielWaterfall(steps: waterfallList),
               ],
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // ANNUAIRE INTERACTIF AVEC FICHE ÉLECTRICIEN 360°
-        _buildSectionTitle(badge: 'FICHE 360°', title: 'Annuaire Électriciens (Touchez un artisan pour ouvrir sa Fiche 360°)'),
-        const SizedBox(height: 8),
-        TextField(
-          onChanged: (v) => setState(() => _searchArtisanQuery = v),
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-          decoration: InputDecoration(
-            hintText: 'Rechercher un électricien (Nom, Ville, Code EL-)...',
-            hintStyle: const TextStyle(color: Colors.white38, fontSize: 11),
-            prefixIcon: const Icon(Icons.search_rounded, size: 16, color: Color(0xFF60A5FA)),
-            filled: true,
-            fillColor: Colors.black26,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        ...filtered.take(30).map((e) {
-          final isPlatine = e['tier'] == 'PLATINE';
-          final isOr = e['tier'] == 'OR';
-          final Color badgeCol = isPlatine
-              ? const Color(0xFF38BDF8)
-              : isOr
-                  ? const Color(0xFFF59E0B)
-                  : const Color(0xFF94A3B8);
-
-          return InkWell(
-            onTap: () => showStielElectricien360(
-              context,
-              sS(e['id'], '1'),
-              e['nom'].toString(),
             ),
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.04),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: badgeCol.withValues(alpha: 0.35)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+          ),
+        ],
+
+        if (_stielSub02 == 2) ...[
+          // SIMULATEUR DYNAMIQUE WHAT-IF (CONNECTÉ API)
+          _buildSectionTitle(badge: 'WHAT-IF', title: 'Simulateur Dynamique de Rentabilité & Barème Points'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: const StielWhatIfCard(),
+          ),
+          const SizedBox(height: 14),
+
+          // COHORTES DE RÉTENTION & PROCHES DU SEUIL
+          _buildSectionTitle(badge: 'COHORTES', title: 'Rétention par Cohorte Mensuelle & Proches Palier Supérieur'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StielCohorts(cohortes: cohortesList),
+                if (prochesList.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  const Text(
+                    '🎯 Artisans proches du palier supérieur (Opportunité d\'upsell) :',
+                    style: TextStyle(color: Color(0xFFFDE68A), fontSize: 10.5, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 6),
+                  ...prochesList.take(5).map((p) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Flexible(
+                            Expanded(
                               child: Text(
-                                e['nom'] as String,
-                                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800),
+                                '• ${sS(p['nom'])} (${sS(p['ville'], sS(p['gouvernorat']))}) — ${fmtNum(sD(p['points']))} pts',
+                                style: const TextStyle(color: Colors.white, fontSize: 10),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                              decoration: BoxDecoration(
-                                color: badgeCol.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(e['tier'] as String, style: TextStyle(color: badgeCol, fontSize: 8.5, fontWeight: FontWeight.w900)),
+                            Text(
+                              'Manque ${fmtNum(sD(p['points_manquants'], sD(p['manque'])))} pts → ${sS(p['prochain_palier'], sS(p['cible']))}',
+                              style: const TextStyle(color: Color(0xFF34D399), fontSize: 9.5, fontWeight: FontWeight.w800),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 2),
-                        Text('${e['code']} • ${e['region']} • ${e['status']}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
-                        Text('${e['chantiers']} chantiers réalisés • ${fmtNum(sD(e['ca']))} DT volume', style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 10, fontWeight: FontWeight.w700)),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('${fmtNum(sD(e['points']))} pts', style: const TextStyle(color: Color(0xFF34D399), fontSize: 12, fontWeight: FontWeight.w900)),
-                      const Row(
+                      )),
+                ],
+              ],
+            ),
+          ),
+        ],
+
+        if (_stielSub02 == 1) ...[
+          // ANNUAIRE INTERACTIF AVEC FICHE ÉLECTRICIEN 360°
+          _buildSectionTitle(badge: 'FICHE 360°', title: 'Annuaire Électriciens (Touchez un artisan pour ouvrir sa Fiche 360°)'),
+          const SizedBox(height: 8),
+          TextField(
+            onChanged: (v) => setState(() => _searchArtisanQuery = v),
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+            decoration: InputDecoration(
+              hintText: 'Rechercher un électricien (Nom, Ville, Code EL-)...',
+              hintStyle: const TextStyle(color: Colors.white38, fontSize: 11),
+              prefixIcon: const Icon(Icons.search_rounded, size: 16, color: Color(0xFF60A5FA)),
+              filled: true,
+              fillColor: Colors.black26,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          ...filtered.take(30).map((e) {
+            final isPlatine = e['tier'] == 'PLATINE';
+            final isOr = e['tier'] == 'OR';
+            final Color badgeCol = isPlatine
+                ? const Color(0xFF38BDF8)
+                : isOr
+                    ? const Color(0xFFF59E0B)
+                    : const Color(0xFF94A3B8);
+
+            return InkWell(
+              onTap: () => showStielElectricien360(
+                context,
+                sS(e['id'], '1'),
+                e['nom'].toString(),
+              ),
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.04),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: badgeCol.withValues(alpha: 0.35)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.open_in_new_rounded, size: 10, color: Color(0xFF60A5FA)),
-                          SizedBox(width: 3),
-                          Text('Fiche 360°', style: TextStyle(color: Color(0xFF60A5FA), fontSize: 9, fontWeight: FontWeight.w800)),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  e['nom'] as String,
+                                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                                decoration: BoxDecoration(
+                                  color: badgeCol.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(e['tier'] as String, style: TextStyle(color: badgeCol, fontSize: 8.5, fontWeight: FontWeight.w900)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text('${e['code']} • ${e['region']} • ${e['status']}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
+                          Text('${e['chantiers']} chantiers réalisés • ${fmtNum(sD(e['ca']))} DT volume', style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 10, fontWeight: FontWeight.w700)),
                         ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('${fmtNum(sD(e['points']))} pts', style: const TextStyle(color: Color(0xFF34D399), fontSize: 12, fontWeight: FontWeight.w900)),
+                        const Row(
+                          children: [
+                            Icon(Icons.open_in_new_rounded, size: 10, color: Color(0xFF60A5FA)),
+                            SizedBox(width: 3),
+                            Text('Fiche 360°', style: TextStyle(color: Color(0xFF60A5FA), fontSize: 9, fontWeight: FontWeight.w800)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ],
       ],
     );
   }
@@ -1046,119 +1121,128 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        // JAUGES DE CONFORMITÉ SLA, GPS IN-SITU & AUDIT
-        _buildSectionTitle(badge: 'JAUGES SLA & GPS', title: 'Jauges Nationales de Conformité Terrain & SLA (<48h)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        _buildStielSubSelector(
+          ['🎯 Jauges & Funnel', '👔 Équipe Terrain', '🚨 Alertes SLA'],
+          _stielSub03,
+          (i) => setState(() => _stielSub03 = i),
+        ),
+        if (_stielSub03 == 0) ...[
+          // JAUGES DE CONFORMITÉ SLA, GPS IN-SITU & AUDIT
+          _buildSectionTitle(badge: 'JAUGES SLA & GPS', title: 'Jauges Nationales de Conformité Terrain & SLA (<48h)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      '🎯 Contrôle Qualité Temps Réel des Audits',
+                      style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
+                    ),
+                    Text(
+                      'SLA Moyen : ${fmtNum(StielDwhData.slaMoyenGlobalHeures, 1)}h',
+                      style: const TextStyle(color: Color(0xFF34D399), fontSize: 10, fontWeight: FontWeight.w900),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                StielGaugeRow(
+                  sla: tauxSla,
+                  gps: tauxInsitu,
+                  photos: tauxPhotos,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          _buildSectionTitle(badge: 'FUNNEL', title: 'Funnel d\'Audit des Déclarations Chantiers'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Contrôle des 4 Étapes de Validation Terrain', style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800)),
+                SizedBox(height: 10),
+                StielFunnelAuditWidget(),
+              ],
+            ),
+          ),
+        ],
+
+        if (_stielSub03 == 1) ...[
+          _buildSectionTitle(badge: 'ÉQUIPE', title: 'Palmarès des Délégués Commerciaux & SLA'),
+          const SizedBox(height: 8),
+          ...StielDwhData.palmaresCommerciaux.map((c) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.35)),
+              ),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    '🎯 Contrôle Qualité Temps Réel des Audits',
-                    style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(c['nom'] as String, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800)),
+                        Text('${c['region']} • ${c['phone']}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
+                        Text('SLA Moyen : ${c['sla']}h • In-situ : ${c['insitu']}% • Conformité : ${c['conformite']}%', style: const TextStyle(color: Color(0xFF93C5FD), fontSize: 10, fontWeight: FontWeight.w700)),
+                      ],
+                    ),
                   ),
-                  Text(
-                    'SLA Moyen : ${fmtNum(StielDwhData.slaMoyenGlobalHeures, 1)}h',
-                    style: const TextStyle(color: Color(0xFF34D399), fontSize: 10, fontWeight: FontWeight.w900),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('${c['valides']} / ${c['chantiers']} validés', style: const TextStyle(color: Color(0xFF34D399), fontSize: 10.5, fontWeight: FontWeight.w800)),
+                      Text('${fmtNum(sD(c['points']))} pts', style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 10, fontWeight: FontWeight.w700)),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              StielGaugeRow(
-                sla: tauxSla,
-                gps: tauxInsitu,
-                photos: tauxPhotos,
+            );
+          }),
+        ],
+
+        if (_stielSub03 == 2) ...[
+          _buildSectionTitle(badge: 'ALERTES', title: 'Alertes GPS Suspectes (>300m) & Délais SLA (>48h)'),
+          const SizedBox(height: 8),
+          ...StielDwhData.alertesChantiers.map((al) {
+            final isCrit = al['gravite'] == 'critique';
+            final Color col = isCrit ? const Color(0xFFEF4444) : const Color(0xFFF59E0B);
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 7),
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: col.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: col.withValues(alpha: 0.45)),
               ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        _buildSectionTitle(badge: 'FUNNEL', title: 'Funnel d\'Audit des Déclarations Chantiers'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Contrôle des 4 Étapes de Validation Terrain', style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800)),
-              SizedBox(height: 10),
-              StielFunnelAuditWidget(),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        _buildSectionTitle(badge: 'ÉQUIPE', title: 'Palmarès des Délégués Commerciaux & SLA'),
-        const SizedBox(height: 8),
-        ...StielDwhData.palmaresCommerciaux.map((c) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.35)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(c['nom'] as String, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800)),
-                      Text('${c['region']} • ${c['phone']}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
-                      Text('SLA Moyen : ${c['sla']}h • In-situ : ${c['insitu']}% • Conformité : ${c['conformite']}%', style: const TextStyle(color: Color(0xFF93C5FD), fontSize: 10, fontWeight: FontWeight.w700)),
-                    ],
+              child: Row(
+                children: [
+                  Icon(isCrit ? Icons.timer_off_rounded : Icons.fmd_bad_rounded, color: col, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Chantier #${al['id']} • ${al['artisan']} (${al['gouv']})', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
+                        Text('${al['type']} : ${al['valeur']} • Délégué : ${al['commercial']}', style: TextStyle(color: col, fontSize: 9.5, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('${c['valides']} / ${c['chantiers']} validés', style: const TextStyle(color: Color(0xFF34D399), fontSize: 10.5, fontWeight: FontWeight.w800)),
-                    Text('${fmtNum(sD(c['points']))} pts', style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 10, fontWeight: FontWeight.w700)),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }),
-        const SizedBox(height: 16),
-
-        _buildSectionTitle(badge: 'ALERTES', title: 'Alertes GPS Suspectes (>300m) & Délais SLA (>48h)'),
-        const SizedBox(height: 8),
-        ...StielDwhData.alertesChantiers.map((al) {
-          final isCrit = al['gravite'] == 'critique';
-          final Color col = isCrit ? const Color(0xFFEF4444) : const Color(0xFFF59E0B);
-
-          return Container(
-            margin: const EdgeInsets.only(bottom: 7),
-            padding: const EdgeInsets.all(9),
-            decoration: BoxDecoration(
-              color: col.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: col.withValues(alpha: 0.45)),
-            ),
-            child: Row(
-              children: [
-                Icon(isCrit ? Icons.timer_off_rounded : Icons.fmd_bad_rounded, color: col, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Chantier #${al['id']} • ${al['artisan']} (${al['gouv']})', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
-                      Text('${al['type']} : ${al['valeur']} • Délégué : ${al['commercial']}', style: TextStyle(color: col, fontSize: 9.5, fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
+                ],
+              ),
+            );
+          }),
+        ],
       ],
     );
   }
@@ -1170,123 +1254,131 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSectionTitle(badge: 'COMPTOIRS', title: 'Réseau Distributeurs Partenaires STIEL (20 Comptoirs)'),
-        const SizedBox(height: 8),
-        ...StielDwhData.distributeurs.map((d) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        _buildStielSubSelector(
+          ['🏢 Comptoirs (20)', '🎁 Cadeaux & Boutique'],
+          _stielSub04,
+          (i) => setState(() => _stielSub04 = i),
+        ),
+        if (_stielSub04 == 0) ...[
+          _buildSectionTitle(badge: 'COMPTOIRS', title: 'Réseau Distributeurs Partenaires STIEL (20 Comptoirs)'),
+          const SizedBox(height: 8),
+          ...StielDwhData.distributeurs.map((d) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(d['nom'] as String, style: const TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800)),
+                        Text('${d['ville']} • Délégué : ${d['commercial']}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
+                        Text('${d['artisans']} électriciens rattachés • Part : ${d['share']}', style: const TextStyle(color: Color(0xFF60A5FA), fontSize: 9.5, fontWeight: FontWeight.w700)),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(d['nom'] as String, style: const TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800)),
-                      Text('${d['ville']} • Délégué : ${d['commercial']}', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 10)),
-                      Text('${d['artisans']} électriciens rattachés • Part : ${d['share']}', style: const TextStyle(color: Color(0xFF60A5FA), fontSize: 9.5, fontWeight: FontWeight.w700)),
+                      Text('${fmtNum(sD(d['ca']))} DT', style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 11, fontWeight: FontWeight.w900)),
+                      Text(d['tier'] as String, style: const TextStyle(color: Color(0xFF34D399), fontSize: 9, fontWeight: FontWeight.w800)),
                     ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('${fmtNum(sD(d['ca']))} DT', style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 11, fontWeight: FontWeight.w900)),
-                    Text(d['tier'] as String, style: const TextStyle(color: Color(0xFF34D399), fontSize: 9, fontWeight: FontWeight.w800)),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }),
-        const SizedBox(height: 16),
+                ],
+              ),
+            );
+          }),
+        ],
 
-        // TOP CADEAUX CONVOITÉS (LIVE DWH DEMANDES & BURN)
-        _buildSectionTitle(badge: 'BURN LIVE', title: 'Top Cadeaux Convoités & Points Brûlés (DWH Live)'),
-        const SizedBox(height: 8),
-        ...StielDwhData.cadeauxLive.map((c) {
-          final nom = sS(c['nom'], sS(c['titre'], 'Cadeau STIEL'));
-          final ptsReq = sD(c['points_requis'], sD(c['cout_points'], 1000));
-          final demandes = sI(c['demandes'], 1);
-          final brules = sD(c['points_brules'], ptsReq * demandes);
-          final statut = sS(c['statut'], sS(c['stock'], 'Disponible'));
-          final isCrit = statut.toLowerCase().contains('critique');
-          return Container(
-            margin: const EdgeInsets.only(bottom: 7),
-            padding: const EdgeInsets.all(9),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(9),
-              border: Border.all(color: isCrit ? const Color(0xFFF59E0B).withValues(alpha: 0.45) : Colors.white12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        if (_stielSub04 == 1) ...[
+          // TOP CADEAUX CONVOITÉS (LIVE DWH DEMANDES & BURN)
+          _buildSectionTitle(badge: 'BURN LIVE', title: 'Top Cadeaux Convoités & Points Brûlés (DWH Live)'),
+          const SizedBox(height: 8),
+          ...StielDwhData.cadeauxLive.map((c) {
+            final nom = sS(c['nom'], sS(c['titre'], 'Cadeau STIEL'));
+            final ptsReq = sD(c['points_requis'], sD(c['cout_points'], 1000));
+            final demandes = sI(c['demandes'], 1);
+            final brules = sD(c['points_brules'], ptsReq * demandes);
+            final statut = sS(c['statut'], sS(c['stock'], 'Disponible'));
+            final isCrit = statut.toLowerCase().contains('critique');
+            return Container(
+              margin: const EdgeInsets.only(bottom: 7),
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(9),
+                border: Border.all(color: isCrit ? const Color(0xFFF59E0B).withValues(alpha: 0.45) : Colors.white12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(nom, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
+                        Text(
+                          '$demandes demandes • ${fmtNum(ptsReq)} pts/u • $statut',
+                          style: TextStyle(color: isCrit ? const Color(0xFFFBBF24) : const Color(0xFF94A3B8), fontSize: 9.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(nom, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
-                      Text(
-                        '$demandes demandes • ${fmtNum(ptsReq)} pts/u • $statut',
-                        style: TextStyle(color: isCrit ? const Color(0xFFFBBF24) : const Color(0xFF94A3B8), fontSize: 9.5),
-                      ),
+                      Text('${fmtNum(brules)} pts', style: const TextStyle(color: Color(0xFF34D399), fontSize: 11, fontWeight: FontWeight.w900)),
+                      const Text('Points brûlés', style: TextStyle(color: Color(0xFF64748B), fontSize: 8.5)),
                     ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('${fmtNum(brules)} pts', style: const TextStyle(color: Color(0xFF34D399), fontSize: 11, fontWeight: FontWeight.w900)),
-                    const Text('Points brûlés', style: TextStyle(color: Color(0xFF64748B), fontSize: 8.5)),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }),
-        const SizedBox(height: 16),
+                ],
+              ),
+            );
+          }),
+          const SizedBox(height: 14),
 
-        _buildSectionTitle(badge: 'BOUTIQUE', title: 'Catalogue Récompenses & Outillage Pro Facom / STIEL'),
-        const SizedBox(height: 8),
-        ...StielDwhData.cadeauxPro.map((cad) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 7),
-            padding: const EdgeInsets.all(9),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.03),
-              borderRadius: BorderRadius.circular(9),
-              border: Border.all(color: Colors.white10),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          _buildSectionTitle(badge: 'BOUTIQUE', title: 'Catalogue Récompenses & Outillage Pro Facom / STIEL'),
+          const SizedBox(height: 8),
+          ...StielDwhData.cadeauxPro.map((cad) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 7),
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.03),
+                borderRadius: BorderRadius.circular(9),
+                border: Border.all(color: Colors.white10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(cad['titre'] as String, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
+                        Text('${cad['cat']} • Stock : ${cad['stock']} unités (${cad['status']})', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 9.5)),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(cad['titre'] as String, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
-                      Text('${cad['cat']} • Stock : ${cad['stock']} unités (${cad['status']})', style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 9.5)),
+                      Text('${fmtNum(sD(cad['points']))} pts', style: const TextStyle(color: Color(0xFFFBBF24), fontSize: 11, fontWeight: FontWeight.w900)),
+                      Text('Valeur ${(cad['valeurTnd'] as double).toStringAsFixed(0)} DT', style: const TextStyle(color: Color(0xFF34D399), fontSize: 9.5, fontWeight: FontWeight.w700)),
                     ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('${fmtNum(sD(cad['points']))} pts', style: const TextStyle(color: Color(0xFFFBBF24), fontSize: 11, fontWeight: FontWeight.w900)),
-                    Text('Valeur ${(cad['valeurTnd'] as double).toStringAsFixed(0)} DT', style: const TextStyle(color: Color(0xFF34D399), fontSize: 9.5, fontWeight: FontWeight.w700)),
-                  ],
-                ),
-              ],
-            ),
-          );
-        }),
+                ],
+              ),
+            );
+          }),
+        ],
       ],
     );
   }
@@ -1346,324 +1438,333 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        // 1. BANDEAU PÉRIODE D'ESSAI 30 JOURS AGENT IA FIDNESS
-        StielTrialBanner(trial: StielLive.instance.trial),
-        const SizedBox(height: 14),
-
-        // 2. KPIS SYNTHÉTIQUES AGENT IA CHURN
-        _buildSectionTitle(badge: 'RADAR IA', title: 'Indicateurs Prédictifs d\'Attrition & CA Menacé'),
-        const SizedBox(height: 8),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.65,
-          children: [
-            _buildKpiCard(
-              'Artisans à Risque IA',
-              '$nbRisque Électriciens',
-              'Dont $nbCritiques en urgence critique',
-              'Détection SHAP',
-              const Color(0xFFEF4444),
-              Icons.warning_amber_rounded,
-            ),
-            _buildKpiCard(
-              'CA Annuel Menacé',
-              '${fmtNum(caMenace, 0)} DT',
-              '$unitesPerdues unités perdues / mois',
-              'Risque Direct',
-              const Color(0xFFF59E0B),
-              Icons.trending_down_rounded,
-            ),
-            _buildKpiCard(
-              'Réactivation < 48h',
-              '${fmtNum(avgProb48h, 1)} %',
-              'vs ${fmtNum(avgProb15j, 1)}% si attente 15j',
-              'Gain +${fmtNum(avgProb48h - avgProb15j, 0)} pts',
-              const Color(0xFF10B981),
-              Icons.bolt_rounded,
-            ),
-            _buildKpiCard(
-              'Sauvetage Points x2',
-              '${fmtNum(caMenace * 0.68, 0)} DT',
-              'CA préservé estimé (68% succès)',
-              'ROI +840%',
-              const Color(0xFF3B82F6),
-              Icons.shield_rounded,
-            ),
-          ],
+        _buildStielSubSelector(
+          ['💬 Copilot IA', '🎯 Radar & Relance Churn', '🎙️ WhatsApp & E-mail'],
+          _stielSub05,
+          (i) => setState(() => _stielSub05 = i),
         ),
-        const SizedBox(height: 16),
-
-        // 3. SÉVÉRITÉ DU CHURN & TOP GOUVERNORATS EXPOSÉS
-        _buildSectionTitle(badge: 'SÉVÉRITÉ & GÉO', title: 'Distribution de Sévérité & Gouvernorats Exposés'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '📊 Répartition du Portefeuille (Champions, Réguliers, À risque, Critiques)',
-                style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 8),
-              StielSeverityBar(summary: churnSum),
-              const SizedBox(height: 14),
-              const Text(
-                '📍 Top Gouvernorats Exposés au Churn (CA Menacé en TND)',
-                style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 8),
-              StielHBars(data: gouvEntries.take(5).toList()),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // 4. TRAJECTOIRE CA : SANS ACTION VS AVEC OFFRE POINTS X2
-        _buildSectionTitle(badge: 'TRAJECTOIRE CA', title: 'Projection CA : Sans Action vs Relance IA Points x2'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '📈 Impact Financier sur 6 Mois de la Relance Automatique <48h',
-                style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: 10),
-              StielTrajectory(caMenace: caMenace, probReactivation: avgProb48h),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // 5. DÉTECTEUR DE GAMMES ABANDONNÉES (ANTI-ÉROSION)
-        _buildSectionTitle(badge: 'ANTI-ÉROSION', title: 'Détecteur de Gammes Abandonnées & Cross-Sell IA'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: StielGammesErosion(gammes: gammesErosion),
-        ),
-        const SizedBox(height: 16),
-
-        // 6. SCORE PRÉDICTIF DE RÉACTIVATION IA (48H VS 15J)
-        _buildSectionTitle(badge: 'SCORE 48H VS 15J', title: 'Score Prédictif de Réactivation IA : Fenêtre 48h vs 15 Jours'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: StielReactivationList(artisans: StielDwhData.churnArtisans),
-        ),
-        const SizedBox(height: 16),
-
-        // 7. ACTIONNEMENT OFFRE PUSH SUR ARTISAN CIBLÉ
-        _buildSectionTitle(badge: 'ACTION IA', title: 'Ciblage Artisan & Déclenchement Offre Anti-Churn (API)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Artisan Ciblé : ${curChurn['nom']} (${curChurn['code']} • ${curChurn['gouv']})',
-                      style: const TextStyle(color: Color(0xFF93C5FD), fontSize: 12, fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => showStielElectricien360(
-                      context,
-                      sS(curChurn['id'], '1'),
-                      curChurn['nom'].toString(),
-                    ),
-                    child: const Text(
-                      'Fiche 360° ↗',
-                      style: TextStyle(color: Color(0xFF60A5FA), fontSize: 10, fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Score Risque : ${curChurn['score']}/100 • Inactif : ${curChurn['inactifJours']}j • CA menacé : ${fmtNum(sD(curChurn['ca_menace'], 2400))} DT',
-                style: const TextStyle(color: Color(0xFFF87171), fontSize: 10.5, fontWeight: FontWeight.w700),
-              ),
-              Text(
-                'Gamme abandonnée : ${sS(curChurn['gamme_abandonnee'], 'Modules Blanc Neige')} → Cross-sell : ${sS(curChurn['cross_sell'], 'Modules Noir Carbone')}',
-                style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 10, fontWeight: FontWeight.w600),
-              ),
-              Text('Cause SHAP : ${curChurn['cause']}', style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 10)),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: const Color(0xFF1E3A8A).withValues(alpha: 0.3), borderRadius: BorderRadius.circular(8)),
-                child: Text('Offre IA : ${curChurn['action']}', style: const TextStyle(color: Color(0xFFFBBF24), fontSize: 10.5, fontWeight: FontWeight.w700)),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: _sendingOffer ? null : () => _triggerChurnOffer(curChurn),
-                icon: const Icon(Icons.send_rounded, size: 14),
-                label: Text(_sendingOffer ? 'Envoi en cours...' : 'Envoyer Offre Points x2 (${curChurn['nom']})'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  visualDensity: VisualDensity.compact,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(_pushStatusMsg, style: const TextStyle(color: Color(0xFF34D399), fontSize: 10, fontWeight: FontWeight.w700)),
-            ],
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        const Text('Sélectionnez un artisan à risque dans la file prioritaire :', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10.5, fontWeight: FontWeight.w700)),
-        const SizedBox(height: 6),
-        SizedBox(
-          height: 165,
-          child: ListView.builder(
-            itemCount: StielDwhData.churnArtisans.length,
-            itemBuilder: (context, i) {
-              final a = StielDwhData.churnArtisans[i];
-              final bool isSel = i == safeIdx;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedChurnIdx = i),
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 5),
-                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: isSel ? const Color(0xFF2563EB).withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.03),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: isSel ? const Color(0xFF60A5FA) : Colors.white10),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          '${i + 1}. ${a['nom']} (${a['gouv']}) • Score ${a['score']}/100',
-                          style: const TextStyle(color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w700),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+        if (_stielSub05 == 0) ...[
+          // COPILOT RAG DÉCISIONNEL STIEL LIVE (EN PREMIÈRE VUE)
+          _buildSectionTitle(badge: 'COPILOT RAG LIVE', title: 'Copilot RAG Décisionnel STIEL (PostgreSQL Live)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Suggestions rapides cliquables
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: _copilotFollowups.map((q) {
+                    return ActionChip(
+                      onPressed: () => _sendCopilotQuestion(q),
+                      backgroundColor: const Color(0xFF1E3A8A).withValues(alpha: 0.4),
+                      side: BorderSide(color: const Color(0xFF60A5FA).withValues(alpha: 0.4)),
+                      visualDensity: VisualDensity.compact,
+                      label: Text(
+                        q,
+                        style: const TextStyle(color: Color(0xFFBFDBFE), fontSize: 9.5, fontWeight: FontWeight.w700),
                       ),
-                      Text(a['status'].toString(), style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800)),
-                    ],
-                  ),
+                    );
+                  }).toList(),
                 ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // 8. APERÇU DU RAPPORT E-MAIL HEBDOMADAIRE LUNDI 09H00
-        _buildSectionTitle(badge: 'E-MAIL LUNDI 09H', title: 'Aperçu du Rapport E-mail Hebdomadaire Automatique'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: const StielEmailPreview(),
-        ),
-        const SizedBox(height: 16),
-
-        // 9. SIMULATEUR VOCAL WHATSAPP IA (DARIJA / FR)
-        _buildSectionTitle(badge: 'WHATSAPP VOCAL IA', title: 'Simulateur de Note Vocale WhatsApp Artisan (Darija / FR)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: const StielWhatsAppVoiceCard(),
-        ),
-        const SizedBox(height: 16),
-
-        // 10. COPILOT RAG DÉCISIONNEL STIEL LIVE
-        _buildSectionTitle(badge: 'COPILOT RAG LIVE', title: 'Copilot RAG Décisionnel STIEL (PostgreSQL Live)'),
-        const SizedBox(height: 8),
-        _buildCardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Suggestions rapides cliquables
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: _copilotFollowups.map((q) {
-                  return ActionChip(
-                    onPressed: () => _sendCopilotQuestion(q),
-                    backgroundColor: const Color(0xFF1E3A8A).withValues(alpha: 0.4),
-                    side: BorderSide(color: const Color(0xFF60A5FA).withValues(alpha: 0.4)),
-                    visualDensity: VisualDensity.compact,
-                    label: Text(
-                      q,
-                      style: const TextStyle(color: Color(0xFFBFDBFE), fontSize: 9.5, fontWeight: FontWeight.w700),
+                const SizedBox(height: 10),
+                ..._copilotChat.map((m) {
+                  final bool isAi = m['role'] == 'ai';
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(9),
+                    decoration: BoxDecoration(
+                      color: isAi ? const Color(0xFF0F1E3D) : const Color(0xFF2563EB).withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: isAi ? const Color(0xFF3B82F6).withValues(alpha: 0.3) : Colors.transparent),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        StielRichText(m['text']!, fontSize: 10.5),
+                        if (isAi && m['sources'] != null && m['sources']!.isNotEmpty) ...[
+                          const SizedBox(height: 5),
+                          Text(
+                            '🔎 Sources : ${m['sources']}',
+                            style: const TextStyle(color: Color(0xFF60A5FA), fontSize: 8.5, fontWeight: FontWeight.w700),
+                          ),
+                        ],
+                      ],
                     ),
                   );
-                }).toList(),
-              ),
-              const SizedBox(height: 10),
-              ..._copilotChat.map((m) {
-                final bool isAi = m['role'] == 'ai';
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.all(9),
-                  decoration: BoxDecoration(
-                    color: isAi ? const Color(0xFF0F1E3D) : const Color(0xFF2563EB).withValues(alpha: 0.35),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: isAi ? const Color(0xFF3B82F6).withValues(alpha: 0.3) : Colors.transparent),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      StielRichText(m['text']!, fontSize: 10.5),
-                      if (isAi && m['sources'] != null && m['sources']!.isNotEmpty) ...[
-                        const SizedBox(height: 5),
-                        Text(
-                          '🔎 Sources : ${m['sources']}',
-                          style: const TextStyle(color: Color(0xFF60A5FA), fontSize: 8.5, fontWeight: FontWeight.w700),
-                        ),
+                }),
+                if (_copilotBusy)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF60A5FA))),
+                        SizedBox(width: 8),
+                        Text('Interrogation du Data Warehouse PostgreSQL...', style: TextStyle(color: Color(0xFF93C5FD), fontSize: 10)),
                       ],
-                    ],
-                  ),
-                );
-              }),
-              if (_copilotBusy)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 6),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF60A5FA))),
-                      SizedBox(width: 8),
-                      Text('Interrogation du Data Warehouse PostgreSQL...', style: TextStyle(color: Color(0xFF93C5FD), fontSize: 10)),
-                    ],
-                  ),
-                ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _copilotInputCtrl,
-                      onSubmitted: _sendCopilotQuestion,
-                      style: const TextStyle(color: Colors.white, fontSize: 11),
-                      decoration: InputDecoration(
-                        hintText: 'Interrogez le Copilot RAG (Chantiers, SLA, Churn, CA, Régions)...',
-                        hintStyle: const TextStyle(color: Colors.white38, fontSize: 10),
-                        filled: true,
-                        fillColor: Colors.black26,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                      ),
                     ),
                   ),
-                  const SizedBox(width: 6),
-                  IconButton(
-                    onPressed: () => _sendCopilotQuestion(_copilotInputCtrl.text),
-                    icon: const Icon(Icons.send_rounded, color: Color(0xFF60A5FA), size: 18),
-                  ),
-                ],
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _copilotInputCtrl,
+                        onSubmitted: _sendCopilotQuestion,
+                        style: const TextStyle(color: Colors.white, fontSize: 11),
+                        decoration: InputDecoration(
+                          hintText: 'Interrogez le Copilot RAG (Chantiers, SLA, Churn, CA, Régions)...',
+                          hintStyle: const TextStyle(color: Colors.white38, fontSize: 10),
+                          filled: true,
+                          fillColor: Colors.black26,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    IconButton(
+                      onPressed: () => _sendCopilotQuestion(_copilotInputCtrl.text),
+                      icon: const Icon(Icons.send_rounded, color: Color(0xFF60A5FA), size: 18),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+
+        if (_stielSub05 == 1) ...[
+          // 1. BANDEAU PÉRIODE D'ESSAI 30 JOURS AGENT IA FIDNESS
+          StielTrialBanner(trial: StielLive.instance.trial),
+          const SizedBox(height: 12),
+
+          // 2. KPIS SYNTHÉTIQUES AGENT IA CHURN
+          _buildSectionTitle(badge: 'RADAR IA', title: 'Indicateurs Prédictifs d\'Attrition & CA Menacé'),
+          const SizedBox(height: 8),
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.65,
+            children: [
+              _buildKpiCard(
+                'Artisans à Risque IA',
+                '$nbRisque Électriciens',
+                'Dont $nbCritiques en urgence critique',
+                'Détection SHAP',
+                const Color(0xFFEF4444),
+                Icons.warning_amber_rounded,
+              ),
+              _buildKpiCard(
+                'CA Annuel Menacé',
+                '${fmtNum(caMenace, 0)} DT',
+                '$unitesPerdues unités perdues / mois',
+                'Risque Direct',
+                const Color(0xFFF59E0B),
+                Icons.trending_down_rounded,
+              ),
+              _buildKpiCard(
+                'Réactivation < 48h',
+                '${fmtNum(avgProb48h, 1)} %',
+                'vs ${fmtNum(avgProb15j, 1)}% si attente 15j',
+                'Gain +${fmtNum(avgProb48h - avgProb15j, 0)} pts',
+                const Color(0xFF10B981),
+                Icons.bolt_rounded,
+              ),
+              _buildKpiCard(
+                'Sauvetage Points x2',
+                '${fmtNum(caMenace * 0.68, 0)} DT',
+                'CA préservé estimé (68% succès)',
+                'ROI +840%',
+                const Color(0xFF3B82F6),
+                Icons.shield_rounded,
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 14),
+
+          // 7. ACTIONNEMENT OFFRE PUSH SUR ARTISAN CIBLÉ
+          _buildSectionTitle(badge: 'ACTION IA', title: 'Ciblage Artisan & Déclenchement Offre Anti-Churn (API)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Artisan Ciblé : ${curChurn['nom']} (${curChurn['code']} • ${curChurn['gouv']})',
+                        style: const TextStyle(color: Color(0xFF93C5FD), fontSize: 12, fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => showStielElectricien360(
+                        context,
+                        sS(curChurn['id'], '1'),
+                        curChurn['nom'].toString(),
+                      ),
+                      child: const Text(
+                        'Fiche 360° ↗',
+                        style: TextStyle(color: Color(0xFF60A5FA), fontSize: 10, fontWeight: FontWeight.w900),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Score Risque : ${curChurn['score']}/100 • Inactif : ${curChurn['inactifJours']}j • CA menacé : ${fmtNum(sD(curChurn['ca_menace'], 2400))} DT',
+                  style: const TextStyle(color: Color(0xFFF87171), fontSize: 10.5, fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  'Gamme abandonnée : ${sS(curChurn['gamme_abandonnee'], 'Modules Blanc Neige')} → Cross-sell : ${sS(curChurn['cross_sell'], 'Modules Noir Carbone')}',
+                  style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 10, fontWeight: FontWeight.w600),
+                ),
+                Text('Cause SHAP : ${curChurn['cause']}', style: const TextStyle(color: Color(0xFFCBD5E1), fontSize: 10)),
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: const Color(0xFF1E3A8A).withValues(alpha: 0.3), borderRadius: BorderRadius.circular(8)),
+                  child: Text('Offre IA : ${curChurn['action']}', style: const TextStyle(color: Color(0xFFFBBF24), fontSize: 10.5, fontWeight: FontWeight.w700)),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  onPressed: _sendingOffer ? null : () => _triggerChurnOffer(curChurn),
+                  icon: const Icon(Icons.send_rounded, size: 14),
+                  label: Text(_sendingOffer ? 'Envoi en cours...' : 'Envoyer Offre Points x2 (${curChurn['nom']})'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2563EB),
+                    foregroundColor: Colors.white,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(_pushStatusMsg, style: const TextStyle(color: Color(0xFF34D399), fontSize: 10, fontWeight: FontWeight.w700)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          const Text('Sélectionnez un artisan à risque dans la file prioritaire :', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10.5, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 6),
+          SizedBox(
+            height: 165,
+            child: ListView.builder(
+              itemCount: StielDwhData.churnArtisans.length,
+              itemBuilder: (context, i) {
+                final a = StielDwhData.churnArtisans[i];
+                final bool isSel = i == safeIdx;
+                return GestureDetector(
+                  onTap: () => setState(() => _selectedChurnIdx = i),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: isSel ? const Color(0xFF2563EB).withValues(alpha: 0.3) : Colors.white.withValues(alpha: 0.03),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: isSel ? const Color(0xFF60A5FA) : Colors.white10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${i + 1}. ${a['nom']} (${a['gouv']}) • Score ${a['score']}/100',
+                            style: const TextStyle(color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w700),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(a['status'].toString(), style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w800)),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // 3. SÉVÉRITÉ DU CHURN & TOP GOUVERNORATS EXPOSÉS
+          _buildSectionTitle(badge: 'SÉVÉRITÉ & GÉO', title: 'Distribution de Sévérité & Gouvernorats Exposés'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '📊 Répartition du Portefeuille (Champions, Réguliers, À risque, Critiques)',
+                  style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 8),
+                StielSeverityBar(summary: churnSum),
+                const SizedBox(height: 14),
+                const Text(
+                  '📍 Top Gouvernorats Exposés au Churn (CA Menacé en TND)',
+                  style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 8),
+                StielHBars(data: gouvEntries.take(5).toList()),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // 4. TRAJECTOIRE CA : SANS ACTION VS AVEC OFFRE POINTS X2
+          _buildSectionTitle(badge: 'TRAJECTOIRE CA', title: 'Projection CA : Sans Action vs Relance IA Points x2'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '📈 Impact Financier sur 6 Mois de la Relance Automatique <48h',
+                  style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 10),
+                StielTrajectory(caMenace: caMenace, probReactivation: avgProb48h),
+              ],
+            ),
+          ),
+        ],
+
+        if (_stielSub05 == 2) ...[
+          // 9. SIMULATEUR VOCAL WHATSAPP IA (DARIJA / FR)
+          _buildSectionTitle(badge: 'WHATSAPP VOCAL IA', title: 'Simulateur de Note Vocale WhatsApp Artisan (Darija / FR)'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: const StielWhatsAppVoiceCard(),
+          ),
+          const SizedBox(height: 14),
+
+          // 8. APERÇU DU RAPPORT E-MAIL HEBDOMADAIRE LUNDI 09H00
+          _buildSectionTitle(badge: 'E-MAIL LUNDI 09H', title: 'Aperçu du Rapport E-mail Hebdomadaire Automatique'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: const StielEmailPreview(),
+          ),
+          const SizedBox(height: 14),
+
+          // 5. DÉTECTEUR DE GAMMES ABANDONNÉES (ANTI-ÉROSION)
+          _buildSectionTitle(badge: 'ANTI-ÉROSION', title: 'Détecteur de Gammes Abandonnées & Cross-Sell IA'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: StielGammesErosion(gammes: gammesErosion),
+          ),
+          const SizedBox(height: 14),
+
+          // 6. SCORE PRÉDICTIF DE RÉACTIVATION IA (48H VS 15J)
+          _buildSectionTitle(badge: 'SCORE 48H VS 15J', title: 'Score Prédictif de Réactivation IA : Fenêtre 48h vs 15 Jours'),
+          const SizedBox(height: 8),
+          _buildCardContainer(
+            child: StielReactivationList(artisans: StielDwhData.churnArtisans),
+          ),
+        ],
       ],
     );
   }
