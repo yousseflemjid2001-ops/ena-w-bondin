@@ -21,10 +21,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_BUILD_DIR = os.path.join(BASE_DIR, "fidness_mobile_hub", "build", "web")
 CACHE_FILE = os.path.join(BASE_DIR, "live_sync_cache.json")
 STIEL_API_BASE = os.environ.get("STIEL_API_BASE", "http://localhost:8086").rstrip("/")
-# Routes Alpha by STIEL autorisees (lecture + actions du dashboard web).
-# Galerie photos et envoi e-mail volontairement exclus.
+# Routes Alpha by STIEL autorisees (lecture + actions du dashboard web + galerie photos).
 STIEL_ALLOWED = re.compile(
-    r"^(kpis/(general|commercials|loyalty)|churn|users|status|simulate-whatif|rag/chat|whatsapp/voice-simulate|"
+    r"^(kpis/(general|commercials|loyalty)|churn|users|status|gallery|chantiers|simulate-whatif|rag/chat|whatsapp/voice-simulate|"
     r"agent-ia/(churn|offers|trial)|electricien/360/[A-Za-z0-9_-]{1,64})$"
 )
 

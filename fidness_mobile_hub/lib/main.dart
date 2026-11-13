@@ -898,60 +898,6 @@ class BondinFullMobileSuiteScreen extends StatefulWidget {
 class _BondinFullMobileSuiteScreenState
     extends State<BondinFullMobileSuiteScreen> {
   int _activeTab = 0;
-  int _subTab01 = 0;
-  int _subTab02 = 0;
-  int _subTab03 = 0;
-  int _subTab04 = 0;
-  int _subTab05 = 0;
-
-  Widget _buildSubTabSelector(
-    List<String> labels,
-    int activeIdx,
-    ValueChanged<int> onSelect,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A0D10),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFD97706).withValues(alpha: 0.35),
-        ),
-      ),
-      child: Row(
-        children: List.generate(labels.length, (i) {
-          final bool active = activeIdx == i;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => onSelect(i),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                decoration: BoxDecoration(
-                  gradient: active
-                      ? const LinearGradient(
-                          colors: [Color(0xFF991B1B), Color(0xFFD97706)],
-                        )
-                      : null,
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Text(
-                  labels[i],
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: active ? Colors.white : const Color(0xFFCBD5E1),
-                    fontSize: 10.5,
-                    fontWeight: active ? FontWeight.w900 : FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
 
   // SLICERS GLOBAUX POWERBI (Comme sur le dashboard web)
   String _selectedPeriod = 'Tous (Avr-Nov)';
@@ -1047,7 +993,6 @@ class _BondinFullMobileSuiteScreenState
     final c = BondinDwhData.churnSensitiveClients[idx];
     setState(() {
       _selectedChurnClientIdx = idx;
-      _subTab02 = 1;
       _pushTitleCtrl.text = c['tier'] == 'critique'
           ? 'Offre VIP Réactivation +150 pts ☕'
           : c['tier'] == 'eleve'
@@ -1509,565 +1454,549 @@ class _BondinFullMobileSuiteScreenState
       key: const ValueKey('tab_01_full'),
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSubTabSelector(
-          const ['📊 Synthèse', '🏪 23 PDV', '👥 Base CRM', '⚡ Flux & Sim.'],
-          _subTab01,
-          (i) => setState(() => _subTab01 = i),
+        // BANDEAU EXÉCUTIF 6 CARTES KPIs (TEMPS RÉEL POSTGRESQL)
+        _buildSectionTitle(
+          badge: 'LIVE DB',
+          title:
+              'Bandeau Exécutif Consolidé • Synchro : ${BondinDwhData.lastSyncTimestamp}',
         ),
-        if (_subTab01 == 0) ...[
-          // BANDEAU EXÉCUTIF 6 CARTES KPIs (TEMPS RÉEL POSTGRESQL)
-          _buildSectionTitle(
-            badge: 'LIVE DB',
-            title: 'Bandeau Exécutif Consolidé • ${BondinDwhData.lastSyncTimestamp}',
-          ),
-          const SizedBox(height: 8),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.52,
+        const SizedBox(height: 8),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.58,
+          children: [
+            _buildExecutiveKpiCard(
+              title: 'Chiffre d\'Affaires Fidélité',
+              value: '${caFiltered.toStringAsFixed(2)} DT',
+              sub: '$scansFiltered scans QR certifiés',
+              badge: '+20,4% vs N-1',
+              accent: const Color(0xFFF59E0B),
+              icon: Icons.payments_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Panier Moyen Global (AOV)',
+              value: '${BondinDwhData.panierMoyenLive.toStringAsFixed(3)} DT',
+              sub: 'Succ: 36,0 DT | Café: 4,2 DT',
+              badge: '+60,6% av. don',
+              accent: const Color(0xFF10B981),
+              icon: Icons.shopping_bag_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Adhérents & Base CRM',
+              value: '${BondinDwhData.totalInscritsLive} Inscrits',
+              sub: '$actifsFiltered Actifs (28,6%) | $dormantsFiltered Dorm.',
+              badge: '+99 en Nov',
+              accent: const Color(0xFF38BDF8),
+              icon: Icons.groups_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Points Émis vs Brûlés',
+              value: '${BondinDwhData.totalPointsEmisLive} pts',
+              sub: 'Burn: ${BondinDwhData.totalPointsBrulesLive} pts (${BondinDwhData.totalCadeauxReclamesLive} cad.)',
+              badge: 'Ratio 55,4%',
+              accent: const Color(0xFFA855F7),
+              icon: Icons.auto_graph_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Dette Financière Provisionnée',
+              value: '${detteTnd.toStringAsFixed(2)} DT',
+              sub: 'Solde: ${BondinDwhData.soldePointsActifsLive} pts × 0,010 DT',
+              badge: 'Provision DAX',
+              accent: const Color(0xFFF43F5E),
+              icon: Icons.account_balance_wallet_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Alerte Grossistes B2B',
+              value: '375 Suspects',
+              sub: '77,3% du CA Succursales',
+              badge: 'Surveillance IA',
+              accent: const Color(0xFFEF4444),
+              icon: Icons.gpp_maybe_rounded,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // SECTION 1 : DYNAMIQUE D'ACQUISITION & RÉPERTOIRE DES CLIENTS INSCRITS
+        _buildSectionTitle(
+          badge: '1',
+          title:
+              'Dynamique d\'Acquisition & Répertoire des Clients Inscrits (${BondinDwhData.totalInscritsLive} Membres)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildExecutiveKpiCard(
-                title: 'Chiffre d\'Affaires Fidélité',
-                value: '${caFiltered.toStringAsFixed(2)} DT',
-                sub: '$scansFiltered scans QR certifiés',
-                badge: '+20,4% vs N-1',
-                accent: const Color(0xFFF59E0B),
-                icon: Icons.payments_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Panier Moyen Global (AOV)',
-                value: '${BondinDwhData.panierMoyenLive.toStringAsFixed(3)} DT',
-                sub: 'Succ: 36,0 DT | Café: 4,2 DT',
-                badge: '+60,6% av. don',
-                accent: const Color(0xFF10B981),
-                icon: Icons.shopping_bag_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Adhérents & Base CRM',
-                value: '${BondinDwhData.totalInscritsLive} Inscrits',
-                sub: '$actifsFiltered Actifs (28,6%) | $dormantsFiltered Dorm.',
-                badge: '+99 en Nov',
-                accent: const Color(0xFF38BDF8),
-                icon: Icons.groups_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Points Émis vs Brûlés',
-                value: '${BondinDwhData.totalPointsEmisLive} pts',
-                sub: 'Burn: ${BondinDwhData.totalPointsBrulesLive} pts (${BondinDwhData.totalCadeauxReclamesLive} cad.)',
-                badge: 'Ratio 55,4%',
-                accent: const Color(0xFFA855F7),
-                icon: Icons.auto_graph_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Dette Financière Provisionnée',
-                value: '${detteTnd.toStringAsFixed(2)} DT',
-                sub: 'Solde: ${BondinDwhData.soldePointsActifsLive} pts × 0,010 DT',
-                badge: 'Provision DAX',
-                accent: const Color(0xFFF43F5E),
-                icon: Icons.account_balance_wallet_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Alerte Grossistes B2B',
-                value: '375 Suspects',
-                sub: '77,3% du CA Succursales',
-                badge: 'Surveillance IA',
-                accent: const Color(0xFFEF4444),
-                icon: Icons.gpp_maybe_rounded,
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildSectionTitle(
-            badge: 'ACQUISITION',
-            title: 'Dynamique d\'Acquisition (${BondinDwhData.totalInscritsLive} Membres)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      '📈 Courbe d\'Acquisition Mensuelle & Cumul CRM',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      '${BondinDwhData.totalInscritsLive} Inscrits Live',
-                      style: const TextStyle(
-                        color: Color(0xFF34D399),
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                const InscriptionsComboChart(),
-              ],
-            ),
-          ),
-        ],
-        if (_subTab01 == 2) ...[
-          _buildSectionTitle(
-            badge: 'CRM LIVE',
-            title: 'Répertoire des Adhérents CRM (${BondinDwhData.totalInscritsLive} Membres)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '🗂️ Répertoire Officiel des Adhérents & Inscrits CRM',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                // Barre de recherche en direct dans le répertoire CRM
-                TextField(
-                  onChanged: (v) => setState(() => _crmSearchQuery = v),
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
-                  decoration: InputDecoration(
-                    hintText:
-                        'Rechercher un membre (Nom, Email, Magasin, ID CLI_)...',
-                    hintStyle:
-                        const TextStyle(color: Colors.white38, fontSize: 11),
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      size: 17,
-                      color: Color(0xFFF59E0B),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black26,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '📈 Courbe d\'Acquisition Mensuelle & Cumul CRM',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                ...filteredCrm.map((m) {
-                  final bool isActif = (m['achats'] as int) > 0;
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 6),
-                    padding: const EdgeInsets.all(9),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.03),
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(
-                        color: isActif
-                            ? const Color(0xFF10B981).withValues(alpha: 0.35)
-                            : Colors.white10,
-                      ),
+                  Text(
+                    '${BondinDwhData.totalInscritsLive} Inscrits Live',
+                    style: const TextStyle(
+                      color: Color(0xFF34D399),
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w800,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${m['nom']} (${m['id']})',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                '${m['magasin']} • ${m['tel']}',
-                                style: const TextStyle(
-                                  color: Color(0xFF94A3B8),
-                                  fontSize: 10,
-                                ),
-                              ),
-                              Text(
-                                '${m['email']} • Inscrit le ${m['date']}',
-                                style: const TextStyle(
-                                  color: Color(0xFF64748B),
-                                  fontSize: 9.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const InscriptionsComboChart(),
+              const Divider(color: Colors.white12, height: 22),
+              const Text(
+                '🗂️ Répertoire Officiel des Adhérents & Inscrits CRM (public.user)',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Barre de recherche en direct dans le répertoire CRM
+              TextField(
+                onChanged: (v) => setState(() => _crmSearchQuery = v),
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+                decoration: InputDecoration(
+                  hintText:
+                      'Rechercher un membre (Nom, Email, Magasin, ID CLI_)...',
+                  hintStyle:
+                      const TextStyle(color: Colors.white38, fontSize: 11),
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    size: 17,
+                    color: Color(0xFFF59E0B),
+                  ),
+                  filled: true,
+                  fillColor: Colors.black26,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...filteredCrm.map((m) {
+                final bool isActif = (m['achats'] as int) > 0;
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.all(9),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.03),
+                    borderRadius: BorderRadius.circular(9),
+                    border: Border.all(
+                      color: isActif
+                          ? const Color(0xFF10B981).withValues(alpha: 0.35)
+                          : Colors.white10,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
+                            Text(
+                              '${m['nom']} (${m['id']})',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w700,
                               ),
-                              decoration: BoxDecoration(
+                            ),
+                            Text(
+                              '${m['magasin']} • ${m['tel']}',
+                              style: const TextStyle(
+                                color: Color(0xFF94A3B8),
+                                fontSize: 10,
+                              ),
+                            ),
+                            Text(
+                              '${m['email']} • Inscrit le ${m['date']}',
+                              style: const TextStyle(
+                                color: Color(0xFF64748B),
+                                fontSize: 9.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isActif
+                                  ? const Color(0xFF10B981)
+                                      .withValues(alpha: 0.2)
+                                  : Colors.white10,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              m['statut'] as String,
+                              style: TextStyle(
                                 color: isActif
-                                    ? const Color(0xFF10B981)
-                                        .withValues(alpha: 0.2)
-                                    : Colors.white10,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                m['statut'] as String,
-                                style: TextStyle(
-                                  color: isActif
-                                      ? const Color(0xFF34D399)
-                                      : const Color(0xFF94A3B8),
-                                  fontSize: 9.5,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              '${m['achats']} achats • ${m['points']} pts',
-                              style: const TextStyle(
-                                color: Color(0xFFFDE68A),
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-        ],
-
-        if (_subTab01 == 1) ...[
-          // SECTION 2 : RÉPARTITION, CLASSEMENT & CARTOGRAPHIE DES 23 POINTS DE VENTE
-          _buildSectionTitle(
-            badge: '23 PDV',
-            title:
-                'Répartition, Classement & Cartographie des Points de Vente (23 PDV)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 2.1 CARTE INTERACTIVE DE TUNISIE + TICKER LIVE
-                const Text(
-                  '🗺️ Cartographie Nationale Interactive (6 Gouvernorats • 23 PDV)',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TunisiaInteractiveMapCard(
-                  onSelectRegion: (reg) {
-                    setState(() => _selectedRegion = reg);
-                  },
-                ),
-                const Divider(color: Colors.white12, height: 22),
-
-                // 2.2 CLASSEMENT TOP MAGASINS PAR CHIFFRE D'AFFAIRES
-                const Text(
-                  '🏆 Top 10 Points de Vente par Chiffre d\'Affaires Temps Réel (TND)',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ...BondinDwhData.topMagasinsCa.take(10).map((st) {
-                  final double ca = (st['ca'] as num).toDouble();
-                  final double ratio = (ca / 28500.0).clamp(0.05, 1.0);
-                  final bool isSucc = st['type'] == 'Succursale';
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 7),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              st['nom'] as String,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              '${ca.toStringAsFixed(1)} DT • PM: ${st['aov']} DT',
-                              style: const TextStyle(
-                                color: Color(0xFFFDE68A),
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 3),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: LinearProgressIndicator(
-                            value: ratio,
-                            minHeight: 6,
-                            backgroundColor: Colors.white10,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              isSucc
-                                  ? const Color(0xFFD97706)
-                                  : const Color(0xFFEF4444),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-
-                const Divider(color: Colors.white12, height: 22),
-
-                // 2.3 CLASSEMENT TOP PDV PAR VOLUME D'ACHATS SCANS
-                const Text(
-                  '📲 Top Points de Vente par Volume de Scans QR (Fréquentation)',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ...BondinDwhData.topPdvByScans.map((p) {
-                  final int sc = (p['scans'] as num).toInt();
-                  final double ratio = (sc / 3500.0).clamp(0.05, 1.0);
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 7),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              p['nom'] as String,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              '$sc scans QR (${p['ca']} DT)',
-                              style: const TextStyle(
-                                color: Color(0xFF38BDF8),
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 3),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: LinearProgressIndicator(
-                            value: ratio,
-                            minHeight: 6,
-                            backgroundColor: Colors.white10,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Color(0xFF38BDF8),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-        ],
-
-        if (_subTab01 == 0) ...[
-          const SizedBox(height: 14),
-          // SECTION 2.B : PERFORMANCE PAR CATÉGORIE DE PRODUITS (CATALOGUE BONDIN 1910)
-          _buildSectionTitle(
-            badge: 'GAMMES',
-            title:
-                'Performance & Répartition par Catégorie de Produits (5 Gammes Clés)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Ventilation Succursales (Gros) vs Cafétérias (Détail)',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        _buildLegendDot(const Color(0xFF991B1B), 'Succ.'),
-                        const SizedBox(width: 8),
-                        _buildLegendDot(const Color(0xFFD97706), 'Café.'),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                ...BondinDwhData.gammesProduits.map((g) {
-                  final double succ = g['succ'] as double;
-                  final double cafe = g['cafe'] as double;
-                  final double tot = g['total'] as double;
-                  final double wSucc = succ / 65000.0;
-                  final double wCafe = cafe / 65000.0;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${g['gamme']} (${g['part']})',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              '${tot.toStringAsFixed(0)} DT • ${g['badge']}',
-                              style: const TextStyle(
-                                color: Color(0xFFFDE68A),
-                                fontSize: 10,
+                                    ? const Color(0xFF34D399)
+                                    : const Color(0xFF94A3B8),
+                                fontSize: 9.5,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        LayoutBuilder(
-                          builder: (context, box) {
-                            return Row(
-                              children: [
-                                Container(
-                                  width: (box.maxWidth * wSucc).clamp(6.0, box.maxWidth),
-                                  height: 8,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF991B1B),
-                                    borderRadius: BorderRadius.horizontal(
-                                      left: Radius.circular(4),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: (box.maxWidth * wCafe).clamp(4.0, box.maxWidth),
-                                  height: 8,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFD97706),
-                                    borderRadius: BorderRadius.horizontal(
-                                      right: Radius.circular(4),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 14),
-
-          // SECTION 2.C : DYNAMIQUE TEMPORELLE & CROISSANCE COMPARATIVE N VS N-1
-          _buildSectionTitle(
-            badge: 'N vs N-1',
-            title:
-                'Dynamique Temporelle & Croissance Comparative N vs N-1 (CA & Scans)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: const YoYComparativeChartCard(),
-          ),
-        ],
-
-        if (_subTab01 == 3) ...[
-          // SECTION 3 : DERNIÈRES MISES À JOUR & FLUX LIVE DES TRANSACTIONS CAISSE
-          _buildSectionTitle(
-            badge: 'LIVE POS',
-            title:
-                'Dernières Mises à Jour & Flux Live des Transactions Caisse (PostgreSQL 17.7)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              children: BondinDwhData.liveTransactions.map((t) {
-                return _buildLiveTransactionRow(
-                  ticket: '#${t['id']} • ${t['ticket']}',
-                  client: t['client'] as String,
-                  store: '${t['magasin']} (${t['date']})',
-                  amount: '${(t['montant'] as double).toStringAsFixed(2)} DT',
-                  pts: '+${t['points']} pts',
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            '${m['achats']} achats • ${m['points']} pts',
+                            style: const TextStyle(
+                              color: Color(0xFFFDE68A),
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
-              }).toList(),
-            ),
+              }),
+            ],
           ),
+        ),
 
-          const SizedBox(height: 14),
+        const SizedBox(height: 16),
 
-          // SECTION 4 : ARBRE DE DÉCOMPOSITION STRATÉGIQUE DU CA CLIENT
-          _buildSectionTitle(
-            badge: 'ARBRE BI',
-            title: 'Arbre de Décomposition Stratégique du CA Client (PowerBI Tree)',
+        // SECTION 2 : RÉPARTITION, CLASSEMENT & CARTOGRAPHIE DES 23 POINTS DE VENTE
+        _buildSectionTitle(
+          badge: '2',
+          title:
+              'Répartition, Classement & Cartographie des Points de Vente (23 PDV)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 2.1 CARTE INTERACTIVE DE TUNISIE + TICKER LIVE
+              const Text(
+                '🗺️ Cartographie Nationale Interactive (6 Gouvernorats • 23 PDV)',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TunisiaInteractiveMapCard(
+                onSelectRegion: (reg) {
+                  setState(() => _selectedRegion = reg);
+                },
+              ),
+              const Divider(color: Colors.white12, height: 22),
+
+              // 2.2 CLASSEMENT TOP MAGASINS PAR CHIFFRE D'AFFAIRES (chart-top-magasins-mockup)
+              const Text(
+                '🏆 Top 10 Points de Vente par Chiffre d\'Affaires Temps Réel (TND)',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...BondinDwhData.topMagasinsCa.take(10).map((st) {
+                final double ca = (st['ca'] as num).toDouble();
+                final double ratio = (ca / 28500.0).clamp(0.05, 1.0);
+                final bool isSucc = st['type'] == 'Succursale';
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 7),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            st['nom'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '${ca.toStringAsFixed(1)} DT • PM: ${st['aov']} DT',
+                            style: const TextStyle(
+                              color: Color(0xFFFDE68A),
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: LinearProgressIndicator(
+                          value: ratio,
+                          minHeight: 6,
+                          backgroundColor: Colors.white10,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            isSucc
+                                ? const Color(0xFFD97706)
+                                : const Color(0xFFEF4444),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+
+              const Divider(color: Colors.white12, height: 22),
+
+              // 2.3 CLASSEMENT TOP PDV PAR VOLUME D'ACHATS SCANS (chart-top-pdv-achats)
+              const Text(
+                '📲 Top Points de Vente par Volume de Scans QR (Fréquentation)',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...BondinDwhData.topPdvByScans.map((p) {
+                final int sc = (p['scans'] as num).toInt();
+                final double ratio = (sc / 3500.0).clamp(0.05, 1.0);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 7),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            p['nom'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '$sc scans QR (${p['ca']} DT)',
+                            style: const TextStyle(
+                              color: Color(0xFF38BDF8),
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: LinearProgressIndicator(
+                          value: ratio,
+                          minHeight: 6,
+                          backgroundColor: Colors.white10,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Color(0xFF38BDF8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
           ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: const StrategicDecompositionTreeCard(),
-          ),
+        ),
 
-          const SizedBox(height: 14),
+        const SizedBox(height: 16),
 
-          // SECTION 5 : SIMULATEUR DYNAMIQUE WHAT-IF (SENSIBILITÉ BARÈME & DETTE DAX)
-          _buildSectionTitle(
-            badge: 'WHAT-IF',
-            title:
-                'Simulateur Dynamique What-If : Sensibilité Barème & Dette DAX (0.5x → 3.0x)',
+        // SECTION 2.B : PERFORMANCE PAR CATÉGORIE DE PRODUITS (CATALOGUE BONDIN 1910)
+        _buildSectionTitle(
+          badge: '2.B',
+          title:
+              'Performance & Répartition par Catégorie de Produits (5 Gammes Clés)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Ventilation Succursales (Gros) vs Cafétérias (Détail)',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      _buildLegendDot(const Color(0xFF991B1B), 'Succ.'),
+                      const SizedBox(width: 8),
+                      _buildLegendDot(const Color(0xFFD97706), 'Café.'),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              ...BondinDwhData.gammesProduits.map((g) {
+                final double succ = g['succ'] as double;
+                final double cafe = g['cafe'] as double;
+                final double tot = g['total'] as double;
+                final double wSucc = succ / 65000.0;
+                final double wCafe = cafe / 65000.0;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${g['gamme']} (${g['part']})',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${tot.toStringAsFixed(0)} DT • ${g['badge']}',
+                            style: const TextStyle(
+                              color: Color(0xFFFDE68A),
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      LayoutBuilder(
+                        builder: (context, box) {
+                          return Row(
+                            children: [
+                              Container(
+                                width: (box.maxWidth * wSucc).clamp(6.0, box.maxWidth),
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF991B1B),
+                                  borderRadius: BorderRadius.horizontal(
+                                    left: Radius.circular(4),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: (box.maxWidth * wCafe).clamp(4.0, box.maxWidth),
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFD97706),
+                                  borderRadius: BorderRadius.horizontal(
+                                    right: Radius.circular(4),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
           ),
-          const SizedBox(height: 8),
-          _buildWhatIfSimulatorCard(),
-        ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // SECTION 2.C : DYNAMIQUE TEMPORELLE & CROISSANCE COMPARATIVE N VS N-1
+        _buildSectionTitle(
+          badge: '2.C',
+          title:
+              'Dynamique Temporelle & Croissance Comparative N vs N-1 (CA & Scans)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: const YoYComparativeChartCard(),
+        ),
+
+        const SizedBox(height: 16),
+
+        // SECTION 3 : DERNIÈRES MISES À JOUR & FLUX LIVE DES TRANSACTIONS CAISSE
+        _buildSectionTitle(
+          badge: '3',
+          title:
+              'Dernières Mises à Jour & Flux Live des Transactions Caisse (PostgreSQL 17.7)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            children: BondinDwhData.liveTransactions.map((t) {
+              return _buildLiveTransactionRow(
+                ticket: '#${t['id']} • ${t['ticket']}',
+                client: t['client'] as String,
+                store: '${t['magasin']} (${t['date']})',
+                amount: '${(t['montant'] as double).toStringAsFixed(2)} DT',
+                pts: '+${t['points']} pts',
+              );
+            }).toList(),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // SECTION 4 : ARBRE DE DÉCOMPOSITION STRATÉGIQUE DU CA CLIENT
+        _buildSectionTitle(
+          badge: '4',
+          title: 'Arbre de Décomposition Stratégique du CA Client (PowerBI Tree)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: const StrategicDecompositionTreeCard(),
+        ),
+
+        const SizedBox(height: 16),
+
+        // SECTION 5 : SIMULATEUR DYNAMIQUE WHAT-IF (SENSIBILITÉ BARÈME & DETTE DAX)
+        _buildSectionTitle(
+          badge: '5',
+          title:
+              'Simulateur Dynamique What-If : Sensibilité Barème & Dette DAX (0.5x → 3.0x)',
+        ),
+        const SizedBox(height: 8),
+        _buildWhatIfSimulatorCard(),
       ],
     );
   }
@@ -2209,379 +2138,369 @@ class _BondinFullMobileSuiteScreenState
       key: const ValueKey('tab_02_full'),
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSubTabSelector(
-          ['🎯 Scénarios IA', '📲 Studio Push', '📋 Clientes (15)'],
-          _subTab02,
-          (i) => setState(() => _subTab02 = i),
+        _buildSectionTitle(
+          badge: 'IA',
+          title:
+              'Agent IA Fidness — Détection du Churn & Notifications Push Ciblées',
         ),
-        if (_subTab02 == 0) ...[
-          _buildSectionTitle(
-            badge: 'IA',
-            title:
-                'Agent IA Fidness — Détection du Churn & Notifications Push Ciblées',
-          ),
-          const SizedBox(height: 8),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.58,
+        const SizedBox(height: 8),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.58,
+          children: [
+            _buildExecutiveKpiCard(
+              title: 'Clientes Sensibles Détectées',
+              value: '15 Clientes',
+              sub: '5 VIP | 7 Élevées | 3 Modérées',
+              badge: 'XGBoost 94,2%',
+              accent: const Color(0xFFEF4444),
+              icon: Icons.warning_amber_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Chiffre d\'Affaires Sauvegardé',
+              value: '+1 838 TND',
+              sub: 'Sur 2 480 TND de CA exposé',
+              badge: 'ROI +850%',
+              accent: const Color(0xFF10B981),
+              icon: Icons.trending_up_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Points Fidélité Dormants',
+              value: '14 820 pts',
+              sub: 'Immobilisés sur comptes à risque',
+              badge: '148,20 DT',
+              accent: const Color(0xFFF59E0B),
+              icon: Icons.hourglass_bottom_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Taux de Sauvetage Prévu',
+              value: '68,0 %',
+              sub: 'Ouverture Push Mobile < 15 min',
+              badge: 'A/B Test Actif',
+              accent: const Color(0xFF38BDF8),
+              icon: Icons.send_to_mobile_rounded,
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // LES 3 SCÉNARIOS ANTI-CHURN PERSONNALISÉS (COMME SUR LE WEB)
+        _buildSectionTitle(
+          badge: '3 SCÉNARIOS',
+          title: 'Scénarios Anti-Churn Personnalisés & Envoi Groupé',
+        ),
+        const SizedBox(height: 8),
+        _buildChurnScenarioCard(
+          title: '1. Urgence Critique (>60 jours sans scan)',
+          desc:
+              '5 clientes VIP historiques en rupture. Offre choc de réactivation immédiate.',
+          target: '5 clientes VIP • Code : FIDNESS_VIP150 • Conv. 68%',
+          btnLabel: 'Envoyer Push aux 5 VIP Critiques',
+          color: const Color(0xFFEF4444),
+          onSend: () {
+            setState(() {
+              _pushLiveLog =
+                  '🚀 Campagne Gruppe [URGENCE CRITIQUE] envoyée aux 5 clientes VIP (Code FIDNESS_VIP150) !';
+            });
+          },
+        ),
+        const SizedBox(height: 8),
+        _buildChurnScenarioCard(
+          title: '2. Décrochage Élevé (35 à 55 jours)',
+          desc:
+              '7 clientes régulières montrant un espacement anormal des visites. Réancrage de l\'habitude.',
+          target: '7 clientes • Code : FIDNESS_DOUBLE75 • Conv. 42%',
+          btnLabel: 'Envoyer Push aux 7 Clientes en Décrochage',
+          color: const Color(0xFFD97706),
+          onSend: () {
+            setState(() {
+              _pushLiveLog =
+                  '🚀 Campagne Groupe [DÉCROCHAGE ÉLEVÉ] envoyée aux 7 clientes (Code FIDNESS_DOUBLE75) !';
+            });
+          },
+        ),
+        const SizedBox(height: 8),
+        _buildChurnScenarioCard(
+          title: '3. Sensibles Récentes (25 à 32 jours)',
+          desc:
+              '3 clientes (Meha Thabouti, Salma Bahloul, Rabeb Tissaoui). Notification de courtoisie valorisant leur solde.',
+          target: '3 clientes • Code : FIDNESS_CRU50 • Rétention 58%',
+          btnLabel: 'Envoyer Push Préventif (3 Clientes)',
+          color: const Color(0xFF059669),
+          onSend: () {
+            setState(() {
+              _pushLiveLog =
+                  '🚀 Campagne Préventive envoyée aux 3 clientes sensibles (Code FIDNESS_CRU50) !';
+            });
+          },
+        ),
+
+        const SizedBox(height: 16),
+
+        // STUDIO PUSH MOBILE SMARTPHONE FIDNESS (AVEC CHAMPS ÉDITABLES)
+        _buildSectionTitle(
+          badge: 'STUDIO',
+          title: 'Simulateur & Studio Push Mobile — Agent IA Fidness',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildExecutiveKpiCard(
-                title: 'Clientes Sensibles Détectées',
-                value: '15 Clientes',
-                sub: '5 VIP | 7 Élevées | 3 Modérées',
-                badge: 'XGBoost 94,2%',
-                accent: const Color(0xFFEF4444),
-                icon: Icons.warning_amber_rounded,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Cible : ${selectedClient['nom']}',
+                    style: const TextStyle(
+                      color: Color(0xFFFDE68A),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      _buildVariantBtn('A'),
+                      const SizedBox(width: 6),
+                      _buildVariantBtn('B'),
+                    ],
+                  ),
+                ],
               ),
-              _buildExecutiveKpiCard(
-                title: 'Chiffre d\'Affaires Sauvegardé',
-                value: '+1 838 TND',
-                sub: 'Sur 2 480 TND de CA exposé',
-                badge: 'ROI +850%',
-                accent: const Color(0xFF10B981),
-                icon: Icons.trending_up_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Points Fidélité Dormants',
-                value: '14 820 pts',
-                sub: 'Immobilisés sur comptes à risque',
-                badge: '148,20 DT',
-                accent: const Color(0xFFF59E0B),
-                icon: Icons.hourglass_bottom_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Taux de Sauvetage Prévu',
-                value: '68,0 %',
-                sub: 'Ouverture Push Mobile < 15 min',
-                badge: 'A/B Test Actif',
-                accent: const Color(0xFF38BDF8),
-                icon: Icons.send_to_mobile_rounded,
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 14),
-
-          // LES 3 SCÉNARIOS ANTI-CHURN PERSONNALISÉS
-          _buildSectionTitle(
-            badge: '3 SCÉNARIOS',
-            title: 'Scénarios Anti-Churn Personnalisés & Envoi Groupé',
-          ),
-          const SizedBox(height: 8),
-          _buildChurnScenarioCard(
-            title: '1. Urgence Critique (>60 jours sans scan)',
-            desc:
-                '5 clientes VIP historiques en rupture. Offre choc de réactivation immédiate.',
-            target: '5 clientes VIP • Code : FIDNESS_VIP150 • Conv. 68%',
-            btnLabel: 'Envoyer Push aux 5 VIP Critiques',
-            color: const Color(0xFFEF4444),
-            onSend: () {
-              setState(() {
-                _pushLiveLog =
-                    '🚀 Campagne Groupe [URGENCE CRITIQUE] envoyée aux 5 clientes VIP (Code FIDNESS_VIP150) !';
-                _subTab02 = 1;
-              });
-            },
-          ),
-          const SizedBox(height: 8),
-          _buildChurnScenarioCard(
-            title: '2. Décrochage Élevé (35 à 55 jours)',
-            desc:
-                '7 clientes régulières montrant un espacement anormal des visites. Réancrage de l\'habitude.',
-            target: '7 clientes • Code : FIDNESS_DOUBLE75 • Conv. 42%',
-            btnLabel: 'Envoyer Push aux 7 Clientes en Décrochage',
-            color: const Color(0xFFD97706),
-            onSend: () {
-              setState(() {
-                _pushLiveLog =
-                    '🚀 Campagne Groupe [DÉCROCHAGE ÉLEVÉ] envoyée aux 7 clientes (Code FIDNESS_DOUBLE75) !';
-                _subTab02 = 1;
-              });
-            },
-          ),
-          const SizedBox(height: 8),
-          _buildChurnScenarioCard(
-            title: '3. Sensibles Récentes (25 à 32 jours)',
-            desc:
-                '3 clientes (Meha Thabouti, Salma Bahloul, Rabeb Tissaoui). Notification de courtoisie valorisant leur solde.',
-            target: '3 clientes • Code : FIDNESS_CRU50 • Rétention 58%',
-            btnLabel: 'Envoyer Push Préventif (3 Clientes)',
-            color: const Color(0xFF059669),
-            onSend: () {
-              setState(() {
-                _pushLiveLog =
-                    '🚀 Campagne Préventive envoyée aux 3 clientes sensibles (Code FIDNESS_CRU50) !';
-                _subTab02 = 1;
-              });
-            },
-          ),
-        ],
-
-        if (_subTab02 == 1) ...[
-          // STUDIO PUSH MOBILE SMARTPHONE FIDNESS (AVEC CHAMPS ÉDITABLES)
-          _buildSectionTitle(
-            badge: 'STUDIO',
-            title: 'Simulateur & Studio Push Mobile — Agent IA Fidness',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              const SizedBox(height: 10),
+              // Aperçu Écran Verrouillé Smartphone Fidness
+              Container(
+                padding: const EdgeInsets.all(11),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.96),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(
+                              Icons.coffee_rounded,
+                              size: 15,
+                              color: Color(0xFF73080E),
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              'FIDNESS × CAFÉ BONDIN',
+                              style: TextStyle(
+                                color: Color(0xFF73080E),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          'Code : ${selectedClient['code']}',
+                          style: const TextStyle(
+                            color: Color(0xFF8E0E14),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
                     Text(
-                      'Cible : ${selectedClient['nom']}',
+                      _pushTitleCtrl.text,
                       style: const TextStyle(
-                        color: Color(0xFFFDE68A),
+                        color: Colors.black87,
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    Row(
-                      children: [
-                        _buildVariantBtn('A'),
-                        const SizedBox(width: 6),
-                        _buildVariantBtn('B'),
-                      ],
+                    const SizedBox(height: 2),
+                    Text(
+                      _pushBodyCtrl.text,
+                      style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 10.8,
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                // Aperçu Écran Verrouillé Smartphone Fidness
-                Container(
-                  padding: const EdgeInsets.all(11),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.96),
-                    borderRadius: BorderRadius.circular(14),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _pushTitleCtrl,
+                onChanged: (_) => setState(() {}),
+                style: const TextStyle(color: Colors.white, fontSize: 11.5),
+                decoration: InputDecoration(
+                  labelText: 'Titre de la Notification Push',
+                  labelStyle:
+                      const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                  filled: true,
+                  fillColor: Colors.black26,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Row(
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _pushBodyCtrl,
+                maxLines: 2,
+                onChanged: (_) => setState(() {}),
+                style: const TextStyle(color: Colors.white, fontSize: 11),
+                decoration: InputDecoration(
+                  labelText: 'Message Personnalisé IA',
+                  labelStyle:
+                      const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                  filled: true,
+                  fillColor: Colors.black26,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF064E3B).withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: const Color(0xFF10B981).withValues(alpha: 0.4),
+                  ),
+                ),
+                child: Text(
+                  _pushLiveLog,
+                  style: const TextStyle(
+                    color: Color(0xFFA7F3D0),
+                    fontSize: 10.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // TABLEAU COMPLET DES CLIENTES SENSIBLES (table-agent-fidness-churn)
+        _buildSectionTitle(
+          badge: 'TABLE',
+          title:
+              'Tableau Diagnostic des Clientes Sensibles (Touchez pour cibler)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            children: List.generate(
+              BondinDwhData.churnSensitiveClients.length,
+              (idx) {
+                final c = BondinDwhData.churnSensitiveClients[idx];
+                final int score = c['score'] as int;
+                final Color col = score >= 85
+                    ? const Color(0xFFEF4444)
+                    : score >= 70
+                        ? const Color(0xFFF59E0B)
+                        : const Color(0xFF10B981);
+                final bool isSel = idx == _selectedChurnClientIdx;
+
+                return GestureDetector(
+                  onTap: () => _selectChurnClientForPush(idx),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isSel
+                          ? const Color(0xFF7F1017).withValues(alpha: 0.35)
+                          : Colors.white.withValues(alpha: 0.03),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: isSel ? const Color(0xFFF59E0B) : col.withValues(alpha: 0.35),
+                        width: isSel ? 1.5 : 1.0,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(
-                                Icons.coffee_rounded,
-                                size: 15,
-                                color: Color(0xFF73080E),
-                              ),
-                              SizedBox(width: 5),
                               Text(
-                                'FIDNESS × CAFÉ BONDIN',
+                                '${c['nom']} • ${c['tel']}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              Text(
+                                '${c['pdv']} • Inactivité : ${c['inactivite']} (${c['freq']})',
+                                style: const TextStyle(
+                                  color: Color(0xFFCBD5E1),
+                                  fontSize: 10,
+                                ),
+                              ),
+                              Text(
+                                'CA Cumulé : ${c['ca']} • Cagnotte : ${c['pts']}',
+                                style: const TextStyle(
+                                  color: Color(0xFFFDE68A),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: col.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'Churn $score%',
                                 style: TextStyle(
-                                  color: Color(0xFF73080E),
+                                  color: col,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),
-                            ],
-                          ),
-                          Text(
-                            'Code : ${selectedClient['code']}',
-                            style: const TextStyle(
-                              color: Color(0xFF8E0E14),
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _pushTitleCtrl.text,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
+                            const SizedBox(height: 4),
+                            Text(
+                              c['code'] as String,
+                              style: const TextStyle(
+                                color: Color(0xFF34D399),
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        _pushBodyCtrl.text,
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontSize: 10.8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _pushTitleCtrl,
-                  onChanged: (_) => setState(() {}),
-                  style: const TextStyle(color: Colors.white, fontSize: 11.5),
-                  decoration: InputDecoration(
-                    labelText: 'Titre de la Notification Push',
-                    labelStyle:
-                        const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
-                    filled: true,
-                    fillColor: Colors.black26,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: _pushBodyCtrl,
-                  maxLines: 2,
-                  onChanged: (_) => setState(() {}),
-                  style: const TextStyle(color: Colors.white, fontSize: 11),
-                  decoration: InputDecoration(
-                    labelText: 'Message Personnalisé IA',
-                    labelStyle:
-                        const TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
-                    filled: true,
-                    fillColor: Colors.black26,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF064E3B).withValues(alpha: 0.45),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: const Color(0xFF10B981).withValues(alpha: 0.4),
-                    ),
-                  ),
-                  child: Text(
-                    _pushLiveLog,
-                    style: const TextStyle(
-                      color: Color(0xFFA7F3D0),
-                      fontSize: 10.5,
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ),
-        ],
-
-        if (_subTab02 == 2) ...[
-          // TABLEAU COMPLET DES CLIENTES SENSIBLES
-          _buildSectionTitle(
-            badge: 'TABLE',
-            title:
-                'Tableau Diagnostic des Clientes Sensibles (Touchez pour cibler)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              children: List.generate(
-                BondinDwhData.churnSensitiveClients.length,
-                (idx) {
-                  final c = BondinDwhData.churnSensitiveClients[idx];
-                  final int score = c['score'] as int;
-                  final Color col = score >= 85
-                      ? const Color(0xFFEF4444)
-                      : score >= 70
-                          ? const Color(0xFFF59E0B)
-                          : const Color(0xFF10B981);
-                  final bool isSel = idx == _selectedChurnClientIdx;
-
-                  return GestureDetector(
-                    onTap: () => _selectChurnClientForPush(idx),
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: isSel
-                            ? const Color(0xFF7F1017).withValues(alpha: 0.35)
-                            : Colors.white.withValues(alpha: 0.03),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: isSel ? const Color(0xFFF59E0B) : col.withValues(alpha: 0.35),
-                          width: isSel ? 1.5 : 1.0,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${c['nom']} • ${c['tel']}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 11.5,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                                Text(
-                                  '${c['pdv']} • Inactivité : ${c['inactivite']} (${c['freq']})',
-                                  style: const TextStyle(
-                                    color: Color(0xFFCBD5E1),
-                                    fontSize: 10,
-                                  ),
-                                ),
-                                Text(
-                                  'CA Cumulé : ${c['ca']} • Cagnotte : ${c['pts']}',
-                                  style: const TextStyle(
-                                    color: Color(0xFFFDE68A),
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 7,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: col.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  'Churn $score%',
-                                  style: TextStyle(
-                                    color: col,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                c['code'] as String,
-                                style: const TextStyle(
-                                  color: Color(0xFF34D399),
-                                  fontSize: 9.5,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
+        ),
       ],
     );
   }
@@ -2690,230 +2609,150 @@ class _BondinFullMobileSuiteScreenState
       key: const ValueKey('tab_03_full'),
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSubTabSelector(
-          ['📊 Cycle RFM', '🏢 Grossistes B2B', '🤝 Parrainages'],
-          _subTab03,
-          (i) => setState(() => _subTab03 = i),
+        _buildSectionTitle(
+          badge: 'RFM',
+          title: 'Indicateurs Comportementaux & Cycle de Vie Client',
         ),
-        if (_subTab03 == 0) ...[
-          _buildSectionTitle(
-            badge: 'RFM',
-            title: 'Indicateurs Comportementaux & Cycle de Vie Client',
-          ),
-          const SizedBox(height: 8),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.6,
-            children: [
-              _buildExecutiveKpiCard(
-                title: 'Fréquence d\'Achat Moyenne',
-                value: '18,2 visites',
-                sub: 'Par client actif sur la période',
-                badge: 'Forte Fidélité',
-                accent: const Color(0xFF10B981),
-                icon: Icons.repeat_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Intervalle Moyen Réachat',
-                value: '9,4 jours',
-                sub: 'Cafétéria: 4,2j | Succ: 16,8j',
-                badge: 'Rythme Hebdo',
-                accent: const Color(0xFF38BDF8),
-                icon: Icons.schedule_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Clients Ultra-Fréquents',
-                value: '147 Membres',
-                sub: '+15 passages en caisse',
-                badge: 'Top 18,5%',
-                accent: const Color(0xFFF59E0B),
-                icon: Icons.stars_rounded,
-              ),
-              _buildExecutiveKpiCard(
-                title: 'Taux Rédemption Cagnotte',
-                value: '53,4 %',
-                sub: '100 500 pts convertis',
-                badge: 'Cible >50%',
-                accent: const Color(0xFFA855F7),
-                icon: Icons.redeem_rounded,
-              ),
-            ],
-          ),
-        ],
-
-        if (_subTab03 == 1) ...[
-          // TABLEAU COMPLET DES PROFILS GROSSISTES B2B SUSPECTS
-          _buildSectionTitle(
-            badge: 'B2B',
-            title:
-                'Détection des Profils Grossistes & Volumes B2B Suspects (375 Comptes)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    _buildFilterChip('Tous', 'all'),
-                    const SizedBox(width: 6),
-                    _buildFilterChip('Grossistes B2B Pur', 'b2b'),
-                    const SizedBox(width: 6),
-                    _buildFilterChip('Mixtes Suspects', 'mixte'),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                ...grossistes.map((g) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: const Color(0xFFEF4444).withValues(alpha: 0.4),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                g['nom'] as String,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color:
-                                    const Color(0xFFEF4444).withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                g['status'] as String,
-                                style: const TextStyle(
-                                  color: Color(0xFFF87171),
-                                  fontSize: 9.5,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          '${g['id']} • ${g['tel']} • ${g['email']}',
-                          style: const TextStyle(
-                            color: Color(0xFF94A3B8),
-                            fontSize: 10,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Total CA : ${g['total']} DT (Succ: ${g['succ']} DT)',
-                              style: const TextStyle(
-                                color: Color(0xFFFDE68A),
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                            Text(
-                              'Max: ${g['maxTicket']} DT • ${g['points']} pts',
-                              style: const TextStyle(
-                                color: Color(0xFF34D399),
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
+        const SizedBox(height: 8),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.6,
+          children: [
+            _buildExecutiveKpiCard(
+              title: 'Fréquence d\'Achat Moyenne',
+              value: '18,2 visites',
+              sub: 'Par client actif sur la période',
+              badge: 'Forte Fidélité',
+              accent: const Color(0xFF10B981),
+              icon: Icons.repeat_rounded,
             ),
-          ),
-        ],
+            _buildExecutiveKpiCard(
+              title: 'Intervalle Moyen Réachat',
+              value: '9,4 jours',
+              sub: 'Cafétéria: 4,2j | Succ: 16,8j',
+              badge: 'Rythme Hebdo',
+              accent: const Color(0xFF38BDF8),
+              icon: Icons.schedule_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Clients Ultra-Fréquents',
+              value: '147 Membres',
+              sub: '+15 passages en caisse',
+              badge: 'Top 18,5%',
+              accent: const Color(0xFFF59E0B),
+              icon: Icons.stars_rounded,
+            ),
+            _buildExecutiveKpiCard(
+              title: 'Taux Rédemption Cagnotte',
+              value: '53,4 %',
+              sub: '100 500 pts convertis',
+              badge: 'Cible >50%',
+              accent: const Color(0xFFA855F7),
+              icon: Icons.redeem_rounded,
+            ),
+          ],
+        ),
 
-        if (_subTab03 == 2) ...[
-          // TABLEAU TOP PARRAINS & AMBASSADEURS
-          _buildSectionTitle(
-            badge: 'VIRALITÉ',
-            title:
-                'Top Ambassadeurs & Parrainage Viral (206 Filleuls • 3 189,5 DT)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              children: BondinDwhData.topParrains.map((p) {
+        const SizedBox(height: 16),
+
+        // TABLEAU COMPLET DES PROFILS GROSSISTES B2B SUSPECTS (table-grossistes)
+        _buildSectionTitle(
+          badge: 'B2B',
+          title:
+              'Détection des Profils Grossistes & Volumes B2B Suspects (375 Comptes)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _buildFilterChip('Tous', 'all'),
+                  const SizedBox(width: 6),
+                  _buildFilterChip('Grossistes B2B Pur', 'b2b'),
+                  const SizedBox(width: 6),
+                  _buildFilterChip('Mixtes Suspects', 'mixte'),
+                ],
+              ),
+              const SizedBox(height: 10),
+              ...grossistes.map((g) {
                 return Container(
-                  margin: const EdgeInsets.only(bottom: 7),
-                  padding: const EdgeInsets.all(9),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.03),
-                    borderRadius: BorderRadius.circular(9),
-                    border: Border.all(color: Colors.white10),
+                    color: Colors.white.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color(0xFFEF4444).withValues(alpha: 0.4),
+                    ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              p['nom'] as String,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              g['nom'] as String,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                            Text(
-                              '${p['rang']} • ${p['filleuls']} recrutés (${p['convertis']} convertis)',
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  const Color(0xFFEF4444).withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              g['status'] as String,
                               style: const TextStyle(
-                                color: Color(0xFF94A3B8),
-                                fontSize: 10,
+                                color: Color(0xFFF87171),
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w800,
                               ),
                             ),
-                          ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        '${g['id']} • ${g['tel']} • ${g['email']}',
+                        style: const TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 10,
                         ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '+${p['ca']} DT',
+                            'Total CA : ${g['total']} DT (Succ: ${g['succ']} DT)',
                             style: const TextStyle(
                               color: Color(0xFFFDE68A),
-                              fontSize: 11,
+                              fontSize: 10.5,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
                           Text(
-                            '+${p['pts']} pts prime',
+                            'Max: ${g['maxTicket']} DT • ${g['points']} pts',
                             style: const TextStyle(
                               color: Color(0xFF34D399),
-                              fontSize: 9.5,
+                              fontSize: 10,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -2922,10 +2761,83 @@ class _BondinFullMobileSuiteScreenState
                     ],
                   ),
                 );
-              }).toList(),
-            ),
+              }),
+            ],
           ),
-        ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // TABLEAU TOP PARRAINS & AMBASSADEURS (table-parrainages)
+        _buildSectionTitle(
+          badge: 'VIRALITÉ',
+          title:
+              'Top Ambassadeurs & Parrainage Viral (206 Filleuls • 3 189,5 DT)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            children: BondinDwhData.topParrains.map((p) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 7),
+                padding: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.03),
+                  borderRadius: BorderRadius.circular(9),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            p['nom'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            '${p['rang']} • ${p['filleuls']} recrutés (${p['convertis']} convertis)',
+                            style: const TextStyle(
+                              color: Color(0xFF94A3B8),
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '+${p['ca']} DT',
+                          style: const TextStyle(
+                            color: Color(0xFFFDE68A),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        Text(
+                          '+${p['pts']} pts prime',
+                          style: const TextStyle(
+                            color: Color(0xFF34D399),
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
       ],
     );
   }
@@ -2968,250 +2880,113 @@ class _BondinFullMobileSuiteScreenState
       key: const ValueKey('tab_04_full'),
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSubTabSelector(
-          ['💧 Flux & Dette', '🎁 Catalogue', '🛒 Panier & PDV'],
-          _subTab04,
-          (i) => setState(() => _subTab04 = i),
+        // 1. FLUX SANKEY ACQUISITION -> ACTIVATION -> FIDÉLISATION (sankey-flow-container)
+        _buildSectionTitle(
+          badge: 'SANKEY',
+          title: 'Flux Sankey : De l\'Inscription Mobile à la Valeur Client',
         ),
-        if (_subTab04 == 0) ...[
-          // 1. FLUX SANKEY ACQUISITION -> ACTIVATION -> FIDÉLISATION
-          _buildSectionTitle(
-            badge: 'SANKEY',
-            title: 'Flux Sankey : De l\'Inscription Mobile à la Valeur Client',
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildWaterfallBar(
+                label: 'Étape 1 : Inscriptions Mobile CRM (100%)',
+                pts: '${BondinDwhData.totalInscritsLive} Membres',
+                tnd: 'Base Totale',
+                ratio: 1.0,
+                color: const Color(0xFFD97706),
+              ),
+              const SizedBox(height: 8),
+              _buildWaterfallBar(
+                label: 'Étape 2 : Activation 1er Scan Caisse (28,6%)',
+                pts: '${BondinDwhData.clientsActifsLive} Actifs',
+                tnd: '${BondinDwhData.totalCaTndLive.toStringAsFixed(2)} DT',
+                ratio: 0.286,
+                color: const Color(0xFF10B981),
+              ),
+              const SizedBox(height: 8),
+              _buildWaterfallBar(
+                label: 'Étape 3 : Champions VIP (78,4% du CA)',
+                pts: '165 Champions',
+                tnd: 'LTV 294,40 DT',
+                ratio: 0.784,
+                color: const Color(0xFFF59E0B),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildWaterfallBar(
-                  label: 'Étape 1 : Inscriptions Mobile CRM (100%)',
-                  pts: '${BondinDwhData.totalInscritsLive} Membres',
-                  tnd: 'Base Totale',
-                  ratio: 1.0,
-                  color: const Color(0xFFD97706),
-                ),
-                const SizedBox(height: 8),
-                _buildWaterfallBar(
-                  label: 'Étape 2 : Activation 1er Scan Caisse (28,6%)',
-                  pts: '${BondinDwhData.clientsActifsLive} Actifs',
-                  tnd: '${BondinDwhData.totalCaTndLive.toStringAsFixed(2)} DT',
-                  ratio: 0.286,
-                  color: const Color(0xFF10B981),
-                ),
-                const SizedBox(height: 8),
-                _buildWaterfallBar(
-                  label: 'Étape 3 : Champions VIP (78,4% du CA)',
-                  pts: '165 Champions',
-                  tnd: 'LTV 294,40 DT',
-                  ratio: 0.784,
-                  color: const Color(0xFFF59E0B),
-                ),
-              ],
-            ),
-          ),
+        ),
 
-          const SizedBox(height: 14),
+        const SizedBox(height: 16),
 
-          // 2. WATERFALL EARN / BURN
-          _buildSectionTitle(
-            badge: 'WATERFALL',
-            title: 'Cascade Waterfall Earn & Burn des Points Fidélité (Live)',
+        // 2. WATERFALL EARN / BURN (chart-waterfall-mockup)
+        _buildSectionTitle(
+          badge: 'WATERFALL',
+          title: 'Cascade Waterfall Earn & Burn des Points Fidélité (Live)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            children: [
+              _buildWaterfallBar(
+                label: 'Points Émis (Earn Global)',
+                pts: '${BondinDwhData.totalPointsEmisLive} pts',
+                tnd: '${(BondinDwhData.totalPointsEmisLive * 0.01).toStringAsFixed(2)} DT',
+                ratio: 1.0,
+                color: const Color(0xFF10B981),
+              ),
+              const SizedBox(height: 8),
+              _buildWaterfallBar(
+                label: 'Points Brûlés (Burn • ${BondinDwhData.totalCadeauxReclamesLive} Cadeaux • 55,4%)',
+                pts: '-${BondinDwhData.totalPointsBrulesLive} pts',
+                tnd: '-${(BondinDwhData.totalPointsBrulesLive * 0.01).toStringAsFixed(2)} DT',
+                ratio: 0.554,
+                color: const Color(0xFFF59E0B),
+              ),
+              const SizedBox(height: 8),
+              _buildWaterfallBar(
+                label: 'Solde Actif (Dette Provisionnée)',
+                pts: '${BondinDwhData.soldePointsActifsLive} pts',
+                tnd: '${(BondinDwhData.soldePointsActifsLive * 0.01).toStringAsFixed(2)} DT',
+                ratio: 0.446,
+                color: const Color(0xFFEF4444),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              children: [
-                _buildWaterfallBar(
-                  label: 'Points Émis (Earn Global)',
-                  pts: '${BondinDwhData.totalPointsEmisLive} pts',
-                  tnd: '${(BondinDwhData.totalPointsEmisLive * 0.01).toStringAsFixed(2)} DT',
-                  ratio: 1.0,
-                  color: const Color(0xFF10B981),
-                ),
-                const SizedBox(height: 8),
-                _buildWaterfallBar(
-                  label: 'Points Brûlés (Burn • ${BondinDwhData.totalCadeauxReclamesLive} Cadeaux • 55,4%)',
-                  pts: '-${BondinDwhData.totalPointsBrulesLive} pts',
-                  tnd: '-${(BondinDwhData.totalPointsBrulesLive * 0.01).toStringAsFixed(2)} DT',
-                  ratio: 0.554,
-                  color: const Color(0xFFF59E0B),
-                ),
-                const SizedBox(height: 8),
-                _buildWaterfallBar(
-                  label: 'Solde Actif (Dette Provisionnée)',
-                  pts: '${BondinDwhData.soldePointsActifsLive} pts',
-                  tnd: '${(BondinDwhData.soldePointsActifsLive * 0.01).toStringAsFixed(2)} DT',
-                  ratio: 0.446,
-                  color: const Color(0xFFEF4444),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
 
-        if (_subTab04 == 1) ...[
-          // 3. CATALOGUE OFFICIEL DES RÉCOMPENSES
-          _buildSectionTitle(
-            badge: 'CADEAUX',
-            title: 'Catalogue Officiel des Récompenses BONDIN × FIDNESS',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    _buildRewardFilterBtn('Tous', 'all'),
-                    const SizedBox(width: 6),
-                    _buildRewardFilterBtn('Exclusif VIP', 'Exclusif'),
-                    const SizedBox(width: 6),
-                    _buildRewardFilterBtn('Privilège', 'Privilège'),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                ...rewards.map((r) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.04),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: const Color(0xFFD97706).withValues(alpha: 0.35),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                r['nom'] as String,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              Text(
-                                '${r['desc']} • 🎯 ${r['profile']}',
-                                style: const TextStyle(
-                                  color: Color(0xFF94A3B8),
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              '${r['cout']} pts',
-                              style: const TextStyle(
-                                color: Color(0xFFFDE68A),
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                            Text(
-                              'Val: ${(r['valTnd'] as double).toStringAsFixed(1)} DT',
-                              style: const TextStyle(
-                                color: Color(0xFF34D399),
-                                fontSize: 9.5,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-        ],
+        const SizedBox(height: 16),
 
-        if (_subTab04 == 2) ...[
-          // 4. MARKET BASKET ANALYSIS
-          _buildSectionTitle(
-            badge: 'PANIER CROISÉ',
-            title: 'Market Basket Analysis (Associations Produits Apriori)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              children: BondinDwhData.marketBasketRules.map((m) {
+        // 3. CATALOGUE OFFICIEL DES RÉCOMPENSES (rewards-catalog-container)
+        _buildSectionTitle(
+          badge: 'CADEAUX',
+          title: 'Catalogue Officiel des Récompenses BONDIN × FIDNESS',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _buildRewardFilterBtn('Tous', 'all'),
+                  const SizedBox(width: 6),
+                  _buildRewardFilterBtn('Exclusif VIP', 'Exclusif'),
+                  const SizedBox(width: 6),
+                  _buildRewardFilterBtn('Privilège', 'Privilège'),
+                ],
+              ),
+              const SizedBox(height: 10),
+              ...rewards.map((r) {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.all(9),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.03),
-                    borderRadius: BorderRadius.circular(9),
-                    border: Border.all(color: Colors.white10),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${m['prodA']}  ➕  ${m['prodB']}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Confiance : ${m['confiance']} • Lift : ${m['lift']}',
-                            style: const TextStyle(
-                              color: Color(0xFFFDE68A),
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Text(
-                            m['action'] as String,
-                            style: const TextStyle(
-                              color: Color(0xFF34D399),
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-
-          const SizedBox(height: 14),
-
-          // 5. TABLE DES CAISSES CADEAUX PAR MAGASIN
-          _buildSectionTitle(
-            badge: 'STOCKS PDV',
-            title: 'Distribution des Cadeaux & Points Brûlés par Point de Vente',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              children: BondinDwhData.magasinsCadeaux.map((mc) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 7),
-                  padding: const EdgeInsets.all(9),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.03),
-                    borderRadius: BorderRadius.circular(9),
+                    color: Colors.white.withValues(alpha: 0.04),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color(0xFFD97706).withValues(alpha: 0.35),
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -3221,15 +2996,15 @@ class _BondinFullMobileSuiteScreenState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              mc['nom'] as String,
+                              r['nom'] as String,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w800,
                               ),
                             ),
                             Text(
-                              '${mc['cadeaux']} cadeaux délivrés • ${mc['ptsBrules']} pts brûlés',
+                              '${r['desc']} • 🎯 ${r['profile']}',
                               style: const TextStyle(
                                 color: Color(0xFF94A3B8),
                                 fontSize: 10,
@@ -3238,21 +3013,151 @@ class _BondinFullMobileSuiteScreenState
                           ],
                         ),
                       ),
-                      Text(
-                        mc['statut'] as String,
-                        style: const TextStyle(
-                          color: Color(0xFFFDE68A),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${r['cout']} pts',
+                            style: const TextStyle(
+                              color: Color(0xFFFDE68A),
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                          Text(
+                            'Val: ${(r['valTnd'] as double).toStringAsFixed(1)} DT',
+                            style: const TextStyle(
+                              color: Color(0xFF34D399),
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 );
-              }).toList(),
-            ),
+              }),
+            ],
           ),
-        ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // 4. MARKET BASKET ANALYSIS (table-market-basket)
+        _buildSectionTitle(
+          badge: 'PANIER CROISÉ',
+          title: 'Market Basket Analysis (Associations Produits Apriori)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            children: BondinDwhData.marketBasketRules.map((m) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.03),
+                  borderRadius: BorderRadius.circular(9),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${m['prodA']}  ➕  ${m['prodB']}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Confiance : ${m['confiance']} • Lift : ${m['lift']}',
+                          style: const TextStyle(
+                            color: Color(0xFFFDE68A),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          m['action'] as String,
+                          style: const TextStyle(
+                            color: Color(0xFF34D399),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 5. TABLE DES CAISSES CADEAUX PAR MAGASIN (table-magasins-cadeaux)
+        _buildSectionTitle(
+          badge: 'STOCKS PDV',
+          title: 'Distribution des Cadeaux & Points Brûlés par Point de Vente',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            children: BondinDwhData.magasinsCadeaux.map((mc) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 7),
+                padding: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.03),
+                  borderRadius: BorderRadius.circular(9),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            mc['nom'] as String,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            '${mc['cadeaux']} cadeaux délivrés • ${mc['ptsBrules']} pts brûlés',
+                            style: const TextStyle(
+                              color: Color(0xFF94A3B8),
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      mc['statut'] as String,
+                      style: const TextStyle(
+                        color: Color(0xFFFDE68A),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
       ],
     );
   }
@@ -3287,334 +3192,327 @@ class _BondinFullMobileSuiteScreenState
       key: const ValueKey('tab_05_full'),
       padding: const EdgeInsets.all(12),
       children: [
-        _buildSubTabSelector(
-          ['🔥 Heatmap & Cohortes', '🕸️ Radar & BCG', '👥 Démographie'],
-          _subTab05,
-          (i) => setState(() => _subTab05 = i),
+        // 1. HEATMAP TEMPORELLE 7 JOURS x 6 CRÉNEAUX HORAIRES (heatmap-time-container)
+        _buildSectionTitle(
+          badge: 'HEATMAP',
+          title: 'Heatmap Temporelle : Affluence des Scans QR (Jours × Heures)',
         ),
-        if (_subTab05 == 0) ...[
-          // 1. HEATMAP TEMPORELLE 7 JOURS x 6 CRÉNEAUX HORAIRES
-          _buildSectionTitle(
-            badge: 'HEATMAP',
-            title: 'Heatmap Temporelle : Affluence des Scans QR (Jours × Heures)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 34),
-                    ...BondinDwhData.heatmapSlots.map(
-                      (s) => Expanded(
-                        child: Text(
-                          s,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Color(0xFF94A3B8),
-                            fontSize: 8.5,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                ...BondinDwhData.heatmapDays.map((row) {
-                  final List<int> vals = row['values'] as List<int>;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 34,
-                          child: Text(
-                            row['day'] as String,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        ...vals.map((v) {
-                          final double intensity = (v / 780.0).clamp(0.12, 1.0);
-                          return Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 1.5),
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              decoration: BoxDecoration(
-                                color: Color.lerp(
-                                  const Color(0xFF311014),
-                                  const Color(0xFFF59E0B),
-                                  intensity,
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                '$v',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: intensity > 0.65
-                                      ? Colors.black
-                                      : Colors.white,
-                                  fontSize: 8.8,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 14),
-
-          // 2. MATRICE TRIANGULAIRE DE RÉTENTION PAR COHORTE
-          _buildSectionTitle(
-            badge: 'COHORTES',
-            title: 'Matrice de Rétention Mensuelle des Membres (M0 → M+6)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 62,
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const SizedBox(width: 34),
+                  ...BondinDwhData.heatmapSlots.map(
+                    (s) => Expanded(
                       child: Text(
-                        'Cohorte',
-                        style: TextStyle(
-                          color: Color(0xFFFDE68A),
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w800,
+                        s,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                    ...['M0', 'M+1', 'M+2', 'M+3', 'M+4', 'M+5', 'M+6'].map(
-                      (m) => Expanded(
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              ...BondinDwhData.heatmapDays.map((row) {
+                final List<int> vals = row['values'] as List<int>;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 34,
                         child: Text(
-                          m,
-                          textAlign: TextAlign.center,
+                          row['day'] as String,
                           style: const TextStyle(
-                            color: Color(0xFF94A3B8),
-                            fontSize: 9,
+                            color: Colors.white,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                ...BondinDwhData.cohortRetentionRows.map((c) {
-                  final List<double?> vals = c['vals'] as List<double?>;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 62,
-                          child: Text(
-                            '${c['cohorte']}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w700,
+                      ...vals.map((v) {
+                        final double intensity = (v / 780.0).clamp(0.12, 1.0);
+                        return Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Color.lerp(
+                                const Color(0xFF311014),
+                                const Color(0xFFF59E0B),
+                                intensity,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              '$v',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: intensity > 0.65
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontSize: 8.8,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
                           ),
+                        );
+                      }),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 2. MATRICE TRIANGULAIRE DE RÉTENTION PAR COHORTE (table-cohort-retention)
+        _buildSectionTitle(
+          badge: 'COHORTES',
+          title: 'Matrice de Rétention Mensuelle des Membres (M0 → M+6)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 62,
+                    child: Text(
+                      'Cohorte',
+                      style: TextStyle(
+                        color: Color(0xFFFDE68A),
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  ...['M0', 'M+1', 'M+2', 'M+3', 'M+4', 'M+5', 'M+6'].map(
+                    (m) => Expanded(
+                      child: Text(
+                        m,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
                         ),
-                        ...vals.map((v) {
-                          if (v == null) {
-                            return Expanded(
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 1),
-                                padding: const EdgeInsets.symmetric(vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.03),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: const Text(
-                                  '-',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white24,
-                                    fontSize: 8.5,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                          final Color cellCol = v >= 95
-                              ? const Color(0xFF10B981)
-                              : v >= 85
-                                  ? const Color(0xFF059669)
-                                  : v >= 75
-                                      ? const Color(0xFFD97706)
-                                      : const Color(0xFF991B1B);
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              ...BondinDwhData.cohortRetentionRows.map((c) {
+                final List<double?> vals = c['vals'] as List<double?>;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 62,
+                        child: Text(
+                          '${c['cohorte']}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      ...vals.map((v) {
+                        if (v == null) {
                           return Expanded(
                             child: Container(
                               margin: const EdgeInsets.symmetric(horizontal: 1),
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               decoration: BoxDecoration(
-                                color: cellCol.withValues(alpha: 0.35),
+                                color: Colors.white.withValues(alpha: 0.03),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: Text(
-                                '${v.toStringAsFixed(0)}%',
+                              child: const Text(
+                                '-',
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: Colors.white24,
                                   fontSize: 8.5,
-                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                             ),
                           );
-                        }),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ),
-          ),
-        ],
-
-        if (_subTab05 == 1) ...[
-          // 3. GRAPHIQUE RADAR BENCHMARK 6 AXES
-          _buildSectionTitle(
-            badge: 'RADAR',
-            title: 'Radar Benchmark : Succursales B2B vs Cafétérias B2C',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: const RadarBenchmarkChart(),
-          ),
-
-          const SizedBox(height: 14),
-
-          // 4. MATRICE BCG DU CATALOGUE PRODUITS
-          _buildSectionTitle(
-            badge: 'BCG',
-            title: 'Matrice BCG : Volume vs Chiffre d\'Affaires vs Panier Moyen',
-          ),
-          const SizedBox(height: 8),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.45,
-            children: [
-              _buildBcgCard(
-                title: '⭐ STARS (Forte Croiss.)',
-                sub: 'Grains & Moulu Torréfié B2B\n1 160 scans • 37 703 DT',
-                col: const Color(0xFFF59E0B),
-              ),
-              _buildBcgCard(
-                title: '🐄 VACHES À LAIT',
-                sub: 'Espresso & Boissons Chaudes\n5 200 scans • 21 777 DT',
-                col: const Color(0xFF10B981),
-              ),
-              _buildBcgCard(
-                title: '❓ DILEMMES (Cross-Sell)',
-                sub: 'Capsules & Coffrets 1910\n410 scans • 4 510 DT',
-                col: const Color(0xFF38BDF8),
-              ),
-              _buildBcgCard(
-                title: '🍂 POIDS MORTS',
-                sub: 'Sirops & Accessoires Été\n95 scans • 840 DT',
-                col: const Color(0xFF94A3B8),
-              ),
-            ],
-          ),
-        ],
-
-        if (_subTab05 == 2) ...[
-          // 5. PYRAMIDE DES ÂGES COMPARÉE SUCCURSALES VS CAFÉTÉRIAS
-          _buildSectionTitle(
-            badge: 'DÉMOGRAPHIE',
-            title:
-                'Pyramide des Âges Comparée : Succursales vs Cafétérias (580 Actifs)',
-          ),
-          const SizedBox(height: 8),
-          _buildCardContainer(
-            child: Column(
-              children: BondinDwhData.ageDemographics.map((a) {
-                final int succ = a['succ'] as int;
-                final int cafe = a['cafe'] as int;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            a['tranche'] as String,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
+                        }
+                        final Color cellCol = v >= 95
+                            ? const Color(0xFF10B981)
+                            : v >= 85
+                                ? const Color(0xFF059669)
+                                : v >= 75
+                                    ? const Color(0xFFD97706)
+                                    : const Color(0xFF991B1B);
+                        return Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 1),
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            decoration: BoxDecoration(
+                              color: cellCol.withValues(alpha: 0.35),
+                              borderRadius: BorderRadius.circular(4),
                             ),
-                          ),
-                          Text(
-                            'Succ: $succ clients | Café: $cafe clients',
-                            style: const TextStyle(
-                              color: Color(0xFFCBD5E1),
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: succ,
-                            child: Container(
-                              height: 7,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFA855F7),
-                                borderRadius: BorderRadius.horizontal(
-                                  left: Radius.circular(4),
-                                ),
+                            child: Text(
+                              '${v.toStringAsFixed(0)}%',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 8.5,
+                                fontWeight: FontWeight.w800,
                               ),
                             ),
                           ),
-                          Expanded(
-                            flex: cafe,
-                            child: Container(
-                              height: 7,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF38BDF8),
-                                borderRadius: BorderRadius.horizontal(
-                                  right: Radius.circular(4),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        );
+                      }),
                     ],
                   ),
                 );
-              }).toList(),
-            ),
+              }),
+            ],
           ),
-        ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // 3. GRAPHIQUE RADAR BENCHMARK 6 AXES (chart-radar-benchmark)
+        _buildSectionTitle(
+          badge: 'RADAR',
+          title: 'Radar Benchmark : Succursales B2B vs Cafétérias B2C',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: const RadarBenchmarkChart(),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 4. MATRICE BCG DU CATALOGUE PRODUITS (chart-bcg-products)
+        _buildSectionTitle(
+          badge: 'BCG',
+          title: 'Matrice BCG : Volume vs Chiffre d\'Affaires vs Panier Moyen',
+        ),
+        const SizedBox(height: 8),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.45,
+          children: [
+            _buildBcgCard(
+              title: '⭐ STARS (Forte Croiss.)',
+              sub: 'Grains & Moulu Torréfié B2B\n1 160 scans • 37 703 DT',
+              col: const Color(0xFFF59E0B),
+            ),
+            _buildBcgCard(
+              title: '🐄 VACHES À LAIT',
+              sub: 'Espresso & Boissons Chaudes\n5 200 scans • 21 777 DT',
+              col: const Color(0xFF10B981),
+            ),
+            _buildBcgCard(
+              title: '❓ DILEMMES (Cross-Sell)',
+              sub: 'Capsules & Coffrets 1910\n410 scans • 4 510 DT',
+              col: const Color(0xFF38BDF8),
+            ),
+            _buildBcgCard(
+              title: '🍂 POIDS MORTS',
+              sub: 'Sirops & Accessoires Été\n95 scans • 840 DT',
+              col: const Color(0xFF94A3B8),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // 5. PYRAMIDE DES ÂGES COMPARÉE SUCCURSALES VS CAFÉTÉRIAS (chart-age-demographics)
+        _buildSectionTitle(
+          badge: 'DÉMOGRAPHIE',
+          title:
+              'Pyramide des Âges Comparée : Succursales vs Cafétérias (580 Actifs)',
+        ),
+        const SizedBox(height: 8),
+        _buildCardContainer(
+          child: Column(
+            children: BondinDwhData.ageDemographics.map((a) {
+              final int succ = a['succ'] as int;
+              final int cafe = a['cafe'] as int;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          a['tranche'] as String,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          'Succ: $succ clients | Café: $cafe clients',
+                          style: const TextStyle(
+                            color: Color(0xFFCBD5E1),
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: succ,
+                          child: Container(
+                            height: 7,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFA855F7),
+                              borderRadius: BorderRadius.horizontal(
+                                left: Radius.circular(4),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: cafe,
+                          child: Container(
+                            height: 7,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF38BDF8),
+                              borderRadius: BorderRadius.horizontal(
+                                right: Radius.circular(4),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
       ],
     );
   }
