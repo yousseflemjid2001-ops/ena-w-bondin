@@ -647,7 +647,7 @@ class _StrategicDecompositionTreeCardState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                '🌳 RACINE : CA Total ENA W BONDIN',
+                'RACINE : CA Total ENA W BONDIN',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 11.5,

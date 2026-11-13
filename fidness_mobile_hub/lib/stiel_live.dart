@@ -395,10 +395,10 @@ class StielLive extends ChangeNotifier {
       StielDwhData.churnArtisans = ac.map((a) {
         final sc = sI(a['score_risque']);
         final status = sc >= 70
-            ? 'Risque Critique 🔴'
+            ? 'Risque Critique'
             : sc >= 50
-                ? 'Risque Élevé 🟠'
-                : 'Risque Modéré 🟡';
+                ? 'Risque Élevé'
+                : 'Risque Modéré';
         final id = sS(a['id']).replaceAll('-', '');
         return {
           'id': sS(a['id']),

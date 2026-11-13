@@ -918,7 +918,7 @@ class _BondinFullMobileSuiteScreenState
   late TextEditingController _pushTitleCtrl;
   late TextEditingController _pushBodyCtrl;
   String _pushLiveLog =
-      '🟢 Agent IA Fidness prêt : Sélectionnez une cliente dans le tableau ou cliquez sur « Envoyer Push » pour déclencher la campagne mobile.';
+      'Agent IA Fidness prêt : Sélectionnez une cliente dans le tableau ou cliquez sur « Envoyer Push » pour déclencher la campagne mobile.';
 
   // Filtre Table Grossistes (Tab 3)
   String _grossisteFilter = 'all';
@@ -935,7 +935,7 @@ class _BondinFullMobileSuiteScreenState
     {
       'role': 'ai',
       'text':
-          '👋 **Bonjour Direction Maison Bondin 1910 !**\n'
+          '**Bonjour Direction Maison Bondin 1910 !**\n'
           'Je suis connecté en temps réel à votre entrepôt **PostgreSQL 17.7 (`57.131.30.69:5432`)** consolidant **15 036 transactions**, **2 829 clients Fidness** et vos **23 points de vente**.\n\n'
           '• **CA Fidélité Certifié Live** : 177 489,04 DT\n'
           '• **Panier Moyen Global** : 11,804 DT\n'
@@ -950,7 +950,7 @@ class _BondinFullMobileSuiteScreenState
     super.initState();
     final firstClient = BondinDwhData.churnSensitiveClients.first;
     _pushTitleCtrl =
-        TextEditingController(text: 'Offre VIP Réactivation +150 pts ☕');
+        TextEditingController(text: 'Offre VIP Réactivation +150 pts ');
     _pushBodyCtrl = TextEditingController(text: firstClient['msg'] as String);
     _fetchLivePostgresData();
     _liveSyncTimer = Timer.periodic(
@@ -994,13 +994,13 @@ class _BondinFullMobileSuiteScreenState
     setState(() {
       _selectedChurnClientIdx = idx;
       _pushTitleCtrl.text = c['tier'] == 'critique'
-          ? 'Offre VIP Réactivation +150 pts ☕'
+          ? 'Offre VIP Réactivation +150 pts '
           : c['tier'] == 'eleve'
-              ? 'Points Doublés +75 pts chez Bondin 🎁'
-              : 'Découverte Grand Cru +50 pts ☕';
+              ? 'Points Doublés +75 pts chez Bondin '
+              : 'Découverte Grand Cru +50 pts ';
       _pushBodyCtrl.text = c['msg'] as String;
       _pushLiveLog =
-          '🎯 Cliente chargée dans le Studio Push : ${c['nom']} (${c['pdv']} • Score Churn ${c['score']}%).';
+          'Cliente chargée dans le Studio Push : ${c['nom']} (${c['pdv']} • Score Churn ${c['score']}%).';
     });
   }
 
@@ -1026,7 +1026,7 @@ class _BondinFullMobileSuiteScreenState
     String answer;
     if (lower.contains('octob')) {
       answer =
-          '💡 **Indicateurs Clés ENA W BONDIN × FIDNESS (Octobre 2026 Live)** :\n'
+          '**Indicateurs Clés ENA W BONDIN × FIDNESS (Octobre 2026 Live)** :\n'
           '• **CA Fidélité Octobre** : **34 068,57 DT** sur **2 833 scans QR**\n'
           '  ├─ Succursales (Vrac & Grains) : **25 582,57 DT** (75,1%)\n'
           '  └─ Cafétérias (Boissons) : **8 486,00 DT** (24,9%)\n'
@@ -1037,7 +1037,7 @@ class _BondinFullMobileSuiteScreenState
         lower.contains('gafsa') ||
         lower.contains('kef')) {
       answer =
-          '🏆 **Top Points de Vente ENA W BONDIN (23 Établissements — PostgreSQL Live)** :\n'
+          '**Top Points de Vente ENA W BONDIN (23 Établissements — PostgreSQL Live)** :\n'
           '1. **Succursale Le Kef** : 28 477,46 DT (454 scans • PM 62,73 DT)\n'
           '2. **Succursale Gabès Jara** : 17 497,88 DT (379 scans • PM 46,17 DT)\n'
           '3. **Succursale Tunis Menzah VI** : 16 068,16 DT (589 scans • PM 27,28 DT)\n'
@@ -1046,7 +1046,7 @@ class _BondinFullMobileSuiteScreenState
           '6. **Cafétéria Gafsa Ville (#1 Trafic)** : 12 390,60 DT (**3 431 scans**)';
     } else if (lower.contains('grossiste') || lower.contains('b2b')) {
       answer =
-          '🕵️ **Audit Temps Réel des Profils Grossistes & Volumes B2B (`public.purchase`)** :\n'
+          '**Audit Temps Réel des Profils Grossistes & Volumes B2B (`public.purchase`)** :\n'
           '• **Top 1** : Alimi Hama (Succursale Gafsa Ville) — **7 344,72 DT** (73 scans • 29 350 pts)\n'
           '• **Top 2** : abdallah ghedifi (Succursale Ariana) — **6 707,18 DT** (271 scans • 25 442 pts)\n'
           '• **Top 3** : Derouiche Ahmed (Succursale La Marsa) — **5 505,20 DT** (162 scans • 21 075 pts)\n'
@@ -1054,13 +1054,13 @@ class _BondinFullMobileSuiteScreenState
           '• **Top 5** : wafa cherni (Succursale Le Kef) — **5 065,02 DT** (34 scans • PM 148,97 DT).';
     } else if (lower.contains('churn') || lower.contains('relance')) {
       answer =
-          '🚨 **Agent IA Fidness Anti-Churn (PostgreSQL Live • XGBoost 94,2%)** :\n'
+          '**Agent IA Fidness Anti-Churn (PostgreSQL Live • XGBoost 94,2%)** :\n'
           '• **Clients VIP Critiques (>28j sans scan)** : Mehdi Shili (57j • 4 110 DT), marwenbellil92 (52j • 3 875 DT), Khnissi Mouhamed (50j • 3 725 DT), wafa cherni (28j • 5 065 DT), Harbaoui Mohamed Amine (28j • 4 600 DT)\n'
           '• **Décrochage Élevé** : Hawami Chaker (35j • 3 692 DT), Hattabi Wahid (42j • 2 179 DT), Alex Bre (34j • 192 visites)\n'
           '• **Gain net prévisionnel** : **+1 838 TND** (ROI +850%).';
     } else {
       answer =
-          '📊 **Réponse Temps Réel DWH PostgreSQL 17.7 (`57.131.30.69:5432`)** :\n'
+          '**Réponse Temps Réel DWH PostgreSQL 17.7 (`57.131.30.69:5432`)** :\n'
           'Pour *« $q »* (Synchro : `${BondinDwhData.lastSyncTimestamp}`) :\n'
           '• **Chiffre d\'Affaires Fidélité** : **${BondinDwhData.totalCaTndLive.toStringAsFixed(2)} DT** (${BondinDwhData.totalScansLive} scans)\n'
           '• **Clients Actifs** : **${BondinDwhData.clientsActifsLive} membres** sur **${BondinDwhData.totalInscritsLive} inscrits CRM**\n'
@@ -1346,7 +1346,7 @@ class _BondinFullMobileSuiteScreenState
       {'badge': '03', 'label': 'Segmentation RFM & Grossistes'},
       {'badge': '04', 'label': 'Cagnotte, LTV & Récompenses'},
       {'badge': '05', 'label': 'Analyses Avancées & Cohortes'},
-      {'badge': '🤖', 'label': 'Chatbot Pro BONDIN Live'},
+      {'badge': 'IA', 'label': 'Chatbot Pro BONDIN Live'},
     ];
 
     return Container(
@@ -1537,7 +1537,7 @@ class _BondinFullMobileSuiteScreenState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    '📈 Courbe d\'Acquisition Mensuelle & Cumul CRM',
+                    'Courbe d\'Acquisition Mensuelle & Cumul CRM',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -1558,7 +1558,7 @@ class _BondinFullMobileSuiteScreenState
               const InscriptionsComboChart(),
               const Divider(color: Colors.white12, height: 22),
               const Text(
-                '🗂️ Répertoire Officiel des Adhérents & Inscrits CRM (public.user)',
+                'Répertoire Officiel des Adhérents & Inscrits CRM (public.user)',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -1699,7 +1699,7 @@ class _BondinFullMobileSuiteScreenState
             children: [
               // 2.1 CARTE INTERACTIVE DE TUNISIE + TICKER LIVE
               const Text(
-                '🗺️ Cartographie Nationale Interactive (6 Gouvernorats • 23 PDV)',
+                'Cartographie Nationale Interactive (6 Gouvernorats • 23 PDV)',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -1716,7 +1716,7 @@ class _BondinFullMobileSuiteScreenState
 
               // 2.2 CLASSEMENT TOP MAGASINS PAR CHIFFRE D'AFFAIRES (chart-top-magasins-mockup)
               const Text(
-                '🏆 Top 10 Points de Vente par Chiffre d\'Affaires Temps Réel (TND)',
+                'Top 10 Points de Vente par Chiffre d\'Affaires Temps Réel (TND)',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -1777,7 +1777,7 @@ class _BondinFullMobileSuiteScreenState
 
               // 2.3 CLASSEMENT TOP PDV PAR VOLUME D'ACHATS SCANS (chart-top-pdv-achats)
               const Text(
-                '📲 Top Points de Vente par Volume de Scans QR (Fréquentation)',
+                'Top Points de Vente par Volume de Scans QR (Fréquentation)',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -2205,7 +2205,7 @@ class _BondinFullMobileSuiteScreenState
           onSend: () {
             setState(() {
               _pushLiveLog =
-                  '🚀 Campagne Gruppe [URGENCE CRITIQUE] envoyée aux 5 clientes VIP (Code FIDNESS_VIP150) !';
+                  'Campagne Gruppe [URGENCE CRITIQUE] envoyée aux 5 clientes VIP (Code FIDNESS_VIP150) !';
             });
           },
         ),
@@ -2220,7 +2220,7 @@ class _BondinFullMobileSuiteScreenState
           onSend: () {
             setState(() {
               _pushLiveLog =
-                  '🚀 Campagne Groupe [DÉCROCHAGE ÉLEVÉ] envoyée aux 7 clientes (Code FIDNESS_DOUBLE75) !';
+                  'Campagne Groupe [DÉCROCHAGE ÉLEVÉ] envoyée aux 7 clientes (Code FIDNESS_DOUBLE75) !';
             });
           },
         ),
@@ -2235,7 +2235,7 @@ class _BondinFullMobileSuiteScreenState
           onSend: () {
             setState(() {
               _pushLiveLog =
-                  '🚀 Campagne Préventive envoyée aux 3 clientes sensibles (Code FIDNESS_CRU50) !';
+                  'Campagne Préventive envoyée aux 3 clientes sensibles (Code FIDNESS_CRU50) !';
             });
           },
         ),
@@ -2538,7 +2538,7 @@ class _BondinFullMobileSuiteScreenState
           ),
           const SizedBox(height: 4),
           Text(
-            '🎯 $target',
+            '$target',
             style: const TextStyle(
               color: Color(0xFFFDE68A),
               fontSize: 10.2,
@@ -3004,7 +3004,7 @@ class _BondinFullMobileSuiteScreenState
                               ),
                             ),
                             Text(
-                              '${r['desc']} • 🎯 ${r['profile']}',
+                              '${r['desc']} • ${r['profile']}',
                               style: const TextStyle(
                                 color: Color(0xFF94A3B8),
                                 fontSize: 10,
@@ -3065,7 +3065,7 @@ class _BondinFullMobileSuiteScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${m['prodA']}  ➕  ${m['prodB']}',
+                      '${m['prodA']} + ${m['prodB']}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 11,
@@ -3417,22 +3417,22 @@ class _BondinFullMobileSuiteScreenState
           childAspectRatio: 1.45,
           children: [
             _buildBcgCard(
-              title: '⭐ STARS (Forte Croiss.)',
+              title: 'STARS (Forte Croiss.)',
               sub: 'Grains & Moulu Torréfié B2B\n1 160 scans • 37 703 DT',
               col: const Color(0xFFF59E0B),
             ),
             _buildBcgCard(
-              title: '🐄 VACHES À LAIT',
+              title: 'VACHES À LAIT',
               sub: 'Espresso & Boissons Chaudes\n5 200 scans • 21 777 DT',
               col: const Color(0xFF10B981),
             ),
             _buildBcgCard(
-              title: '❓ DILEMMES (Cross-Sell)',
+              title: 'DILEMMES (Cross-Sell)',
               sub: 'Capsules & Coffrets 1910\n410 scans • 4 510 DT',
               col: const Color(0xFF38BDF8),
             ),
             _buildBcgCard(
-              title: '🍂 POIDS MORTS',
+              title: 'POIDS MORTS',
               sub: 'Sirops & Accessoires Été\n95 scans • 840 DT',
               col: const Color(0xFF94A3B8),
             ),

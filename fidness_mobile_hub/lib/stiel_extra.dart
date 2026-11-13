@@ -890,16 +890,16 @@ class StielGammesErosion extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(child: Text('📦 ${sS(g['gamme'])}', style: const TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w900))),
+                  Expanded(child: Text('${sS(g['gamme'])}', style: const TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w900))),
                   Text('${fmtNum(sD(g['ca_mensuel_expose']))} DT/mois', style: const TextStyle(color: kRed, fontSize: 10.5, fontWeight: FontWeight.w900)),
                 ],
               ),
               const SizedBox(height: 3),
               Text('${sI(g['artisans_count'])} artisans • ${fmtNum(sD(g['unites_mensuelles_perdues']))} unités perdues / mois',
                   style: const TextStyle(color: kMuted, fontSize: 10)),
-              Text('⚠️ ${sS(g['risque_concurrent'])}', style: const TextStyle(color: Color(0xFFFCD34D), fontSize: 10)),
+              Text('${sS(g['risque_concurrent'])}', style: const TextStyle(color: Color(0xFFFCD34D), fontSize: 10)),
               const SizedBox(height: 3),
-              Text('🎯 ${sS(g['offre_anti_erosion'])}', style: const TextStyle(color: kGreen, fontSize: 10, fontWeight: FontWeight.w700)),
+              Text('${sS(g['offre_anti_erosion'])}', style: const TextStyle(color: kGreen, fontSize: 10, fontWeight: FontWeight.w700)),
             ],
           ),
         );
@@ -1013,13 +1013,13 @@ class _StielGrandPalmaresState extends State<StielGrandPalmares> {
   int _top = 10;
 
   static const _cats = [
-    '🥇 Électriciens',
-    '🏬 Grossistes',
-    '📦 Best-Sellers',
-    '👔 Commerciaux SLA',
-    '📍 Régions Leaders',
-    '⚠️ Risque Churn IA',
-    '🎁 Cadeaux Convoités',
+    'Électriciens',
+    'Grossistes',
+    'Best-Sellers',
+    'Commerciaux SLA',
+    'Régions Leaders',
+    'Risque Churn IA',
+    'Cadeaux Convoités',
   ];
 
   bool _inRegion(String r) {
@@ -1146,7 +1146,7 @@ class _StielGrandPalmaresState extends State<StielGrandPalmares> {
           ),
         ...List.generate(rows.length, (i) {
           final r = rows[i];
-          final medal = i == 0 ? '🥇' : i == 1 ? '🥈' : i == 2 ? '🥉' : '${i + 1}';
+          final medal = i == 0 ? '' : i == 1 ? '' : i == 2 ? '' : '${i + 1}';
           return GestureDetector(
             onTap: r['e'] != null ? () => widget.onOpenElectricien?.call(r['e'] as Map<String, dynamic>) : null,
             child: Container(
@@ -1369,7 +1369,7 @@ class StielEmailPreview extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Objet : 📊 Rapport hebdomadaire Club Alpha by STIEL', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 11.5)),
+            const Text('Objet : Rapport hebdomadaire Club Alpha by STIEL', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 11.5)),
             const Text('Envoi : chaque lundi à 09h00 • Destinataires : Nizar & Ahmed', style: TextStyle(color: Color(0xFF64748B), fontSize: 9.5)),
             const Divider(),
             Text('• CA matériel incrémental : ${fmtNum(StielDwhData.totalCaIncremental, 0)} DT'),
@@ -1456,7 +1456,7 @@ class _StielWhatsAppVoiceCardState extends State<StielWhatsAppVoiceCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('🎙️ Script vocal (${sS(res!['persona'])} • ${sS(res!['timestamp'])})', style: const TextStyle(color: kGreen, fontSize: 10, fontWeight: FontWeight.w900)),
+                Text(' Script vocal (${sS(res!['persona'])} • ${sS(res!['timestamp'])})', style: const TextStyle(color: kGreen, fontSize: 10, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 3),
                 StielRichText(sS(res!['voice_script'], sS(res!['full_markdown']))),
               ],
@@ -1519,7 +1519,7 @@ Future<void> showStielExecutiveReport(BuildContext context) async {
         child: Column(
           children: [
             Row(children: [
-              const Expanded(child: Text('📄 Rapport Décisionnel Exécutif', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900))),
+              const Expanded(child: Text(' Rapport Décisionnel Exécutif', style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w900))),
               TextButton.icon(
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: txt));

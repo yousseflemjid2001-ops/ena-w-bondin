@@ -46,7 +46,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
   String _selectedPhotoFilter = 'all';
   final Map<String, String> _auditDecisions = {};
   int _selectedChurnIdx = 0;
-  String _pushStatusMsg = '🟢 Prêt pour relance artisan (API Agent IA)';
+  String _pushStatusMsg = 'Prêt pour relance artisan (API Agent IA)';
   bool _sendingOffer = false;
   bool _copilotBusy = false;
 
@@ -62,7 +62,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     {
       'role': 'ai',
       'text':
-          '👋 **Bonjour Direction STIEL / Club Alpha !**\n'
+          '**Bonjour Direction STIEL / Club Alpha !**\n'
           'Je suis le Copilot Décisionnel RAG branché en direct sur PostgreSQL (`57.131.30.69`).\n\n'
           '• **CA Incrémental Validé** : 40 471,90 TND (158 chantiers certifiés)\n'
           '• **Artisans Électriciens** : 172 adhérents (110 actifs • 64,0%)\n'
@@ -137,7 +137,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     String answer;
     if (lower.contains('kpi') || lower.contains('ca') || lower.contains('bilan') || lower.contains('marge')) {
       answer =
-          '📊 **Bilan Clé Club Alpha STIEL (YTD 2026)** :\n'
+          '**Bilan Clé Club Alpha STIEL (YTD 2026)** :\n'
           '• **Total Chantiers Déclarés** : ${StielDwhData.totalChantiers} chantiers (${StielDwhData.chantiersValides} validés • ${StielDwhData.tauxValidation}%)\n'
           '• **CA Matériel Incrémental** : ${fmtNum(StielDwhData.totalCaIncremental, 2)} TND\n'
           '• **Marge Brute Générée** : ${fmtNum(StielDwhData.margeBruteTnd, 2)} TND (ROI Programme : ${fmtNum(StielDwhData.roiRatio, 1)}%)\n'
@@ -145,26 +145,26 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     } else if (lower.contains('electricien') || lower.contains('artisan') || lower.contains('palmares')) {
       final top3 = StielDwhData.palmaresElectriciens.take(3).toList();
       answer =
-          '⚡ **Top Électriciens Ambassadeurs STIEL** :\n'
+          '**Top Électriciens Ambassadeurs STIEL** :\n'
           '${top3.asMap().entries.map((e) => '${e.key + 1}. **${e.value['nom']}** (${e.value['tier']} • ${e.value['region']}) : ${e.value['chantiers']} chantiers • ${fmtNum(sD(e.value['ca']))} DT (${e.value['points']} pts)').join('\n')}\n'
           '• Total membres inscrits : ${StielDwhData.totalElectriciens} installateurs.';
     } else if (lower.contains('commercial') || lower.contains('sla') || lower.contains('audit')) {
       answer =
-          '🎯 **Audit Terrain & Commerciaux STIEL** :\n'
+          '**Audit Terrain & Commerciaux STIEL** :\n'
           '${StielDwhData.palmaresCommerciaux.take(3).map((c) => '• **${c['nom']}** : ${c['chantiers']} chantiers (${c['valides']} validés • ${c['insitu']}% in-situ • SLA ${c['sla']}h)').join('\n')}\n'
           '• Taux national de conformité audit : **${StielDwhData.tauxConformitePhotos}%**.';
     } else if (lower.contains('distributeur') || lower.contains('comptoir') || lower.contains('grossiste')) {
       answer =
-          '🏢 **Top Distributeurs Matériel Électrique STIEL** :\n'
+          '**Top Distributeurs Matériel Électrique STIEL** :\n'
           '${StielDwhData.distributeurs.take(3).map((d) => '• **${d['nom']}** (${d['ville']}) : ${fmtNum(sD(d['ca']))} DT CA (${d['artisans']} artisans)').join('\n')}';
     } else if (lower.contains('churn') || lower.contains('risque')) {
       answer =
-          '⚠️ **Agent IA Churn Artisans STIEL** :\n'
+          '**Agent IA Churn Artisans STIEL** :\n'
           '${StielDwhData.churnArtisans.take(3).map((a) => '• **${a['nom']} (${a['gouv']})** : Score ${a['score']}/100 (${a['inactifJours']}j inactif • ${a['points']} pts)').join('\n')}\n'
           'Action recommandée : Offre Points x2 + appel WhatsApp IA.';
     } else {
       answer =
-          '💡 **Synthèse DWH Alpha by STIEL** :\n'
+          '**Synthèse DWH Alpha by STIEL** :\n'
           'Pour *« $q »* :\n'
           '• Total Chantiers : ${StielDwhData.totalChantiers} • CA Incrémental : ${fmtNum(StielDwhData.totalCaIncremental, 2)} DT\n'
           '• Artisans Actifs : ${StielDwhData.mauActifs} électriciens sur ${StielDwhData.totalElectriciens} membres\n'
@@ -195,10 +195,10 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     setState(() {
       _sendingOffer = false;
       if (res != null && res['message'] != null) {
-        _pushStatusMsg = '✅ ${res['message']}';
+        _pushStatusMsg = '${res['message']}';
       } else {
         _pushStatusMsg =
-            '🚀 Offre Points x2 & alerte commerciale déclenchées pour ${artisan['nom']} !';
+            'Offre Points x2 & alerte commerciale déclenchées pour ${artisan['nom']} !';
       }
     });
   }
@@ -381,7 +381,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         children: [
-          _buildSlicerPill('🇹🇳 Toutes Régions (${StielDwhData.totalChantiers})', 'Toutes Régions'),
+          _buildSlicerPill('Toutes Régions (${StielDwhData.totalChantiers})', 'Toutes Régions'),
           const SizedBox(width: 6),
           ...gouvs.take(8).expand((g) => [
                 _buildSlicerPill('${g['gouv']} (${g['chantiers']})', g['gouv'].toString()),
@@ -400,7 +400,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                 child: Row(
                   children: [
                     Text(
-                      'Gamme: $_selectedGamme ✕',
+                      'Gamme: $_selectedGamme ',
                       style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 9.5, fontWeight: FontWeight.w800),
                     ),
                   ],
@@ -683,7 +683,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('📈 Trajectoire d\'Accélération Terrain STIEL', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800)),
+              Text('Trajectoire d\'Accélération Terrain STIEL', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800)),
               SizedBox(height: 10),
               StielEvolutionChart(),
             ],
@@ -708,7 +708,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                '📊 Valeur CA & Courbe Cumulée Pareto (%)',
+                'Valeur CA & Courbe Cumulée Pareto (%)',
                 style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 8),
@@ -728,7 +728,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                '🗂️ Touchez une gamme pour filtrer les articles par famille STIEL',
+                'Touchez une gamme pour filtrer les articles par famille STIEL',
                 style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
               ),
               const SizedBox(height: 8),
@@ -751,7 +751,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                '🔀 Traçabilité Complète du CA Matériel par Canal & Typologie',
+                'Traçabilité Complète du CA Matériel par Canal & Typologie',
                 style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 10),
@@ -834,13 +834,13 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
         const SizedBox(height: 8),
         Row(
           children: [
-            _buildTierBadge('Platine ⭐', '${paliersMap['Platine'] ?? 3} Artisans', const Color(0xFF38BDF8)),
+            _buildTierBadge('Platine', '${paliersMap['Platine'] ?? 3} Artisans', const Color(0xFF38BDF8)),
             const SizedBox(width: 6),
-            _buildTierBadge('Or 🏆', '${paliersMap['Or'] ?? 5} Artisans', const Color(0xFFF59E0B)),
+            _buildTierBadge('Or', '${paliersMap['Or'] ?? 5} Artisans', const Color(0xFFF59E0B)),
             const SizedBox(width: 6),
-            _buildTierBadge('Argent 🥈', '${paliersMap['Argent'] ?? 5} Artisans', const Color(0xFFCBD5E1)),
+            _buildTierBadge('Argent', '${paliersMap['Argent'] ?? 5} Artisans', const Color(0xFFCBD5E1)),
             const SizedBox(width: 6),
-            _buildTierBadge('Bronze 🥉', '${paliersMap['Bronze'] ?? 159} Membres', const Color(0xFFD97706)),
+            _buildTierBadge('Bronze', '${paliersMap['Bronze'] ?? 159} Membres', const Color(0xFFD97706)),
           ],
         ),
         const SizedBox(height: 16),
@@ -856,7 +856,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    '💰 Équilibre Earn & Burn (1 pt = 0,010 TND)',
+                    'Équilibre Earn & Burn (1 pt = 0,010 TND)',
                     style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
                   ),
                   Text(
@@ -891,7 +891,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
               if (prochesList.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 const Text(
-                  '🎯 Artisans proches du palier supérieur (Opportunité d\'upsell) :',
+                  'Artisans proches du palier supérieur (Opportunité d\'upsell) :',
                   style: TextStyle(color: Color(0xFFFDE68A), fontSize: 10.5, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 6),
@@ -1069,7 +1069,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    '🎯 Contrôle Qualité Temps Réel des Audits',
+                    'Contrôle Qualité Temps Réel des Audits',
                     style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w800),
                   ),
                   Text(
@@ -1103,9 +1103,17 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Expanded(
-                    child: Text(
-                      '📸 Inspection Visuelle Coffrets, Disjoncteurs STIEL & Géolocalisation In-Situ',
-                      style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                    child: Row(
+                      children: [
+                        Icon(Icons.photo_library_outlined, size: 14, color: Color(0xFF60A5FA)),
+                        SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'Inspection Visuelle Coffrets, Disjoncteurs STIEL & Géolocalisation In-Situ',
+                            style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
@@ -1128,13 +1136,13 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildPhotoFilterChip('all', '📸 Tous (${allPhotos.length})', const Color(0xFF3B82F6)),
+                    _buildPhotoFilterChip('all', 'Tous (${allPhotos.length})', const Color(0xFF3B82F6), Icons.photo_library_outlined),
                     const SizedBox(width: 6),
-                    _buildPhotoFilterChip('insitu', '📍 Validé In-Situ (<150m)', const Color(0xFF10B981)),
+                    _buildPhotoFilterChip('insitu', 'Validé In-Situ (<150m)', const Color(0xFF10B981), Icons.gps_fixed_rounded),
                     const SizedBox(width: 6),
-                    _buildPhotoFilterChip('boutique', '🏪 Déporté / Comptoir', const Color(0xFFF59E0B)),
+                    _buildPhotoFilterChip('boutique', 'Déporté / Comptoir', const Color(0xFFF59E0B), Icons.storefront_outlined),
                     const SizedBox(width: 6),
-                    _buildPhotoFilterChip('alert', '🚨 Anomalie GPS (>300m)', const Color(0xFFEF4444)),
+                    _buildPhotoFilterChip('alert', 'Anomalie GPS (>300m)', const Color(0xFFEF4444), Icons.warning_amber_rounded),
                   ],
                 ),
               ),
@@ -1255,7 +1263,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     );
   }
 
-  Widget _buildPhotoFilterChip(String key, String label, Color accent) {
+  Widget _buildPhotoFilterChip(String key, String label, Color accent, IconData icon) {
     final bool isSel = _selectedPhotoFilter == key;
     return GestureDetector(
       onTap: () => setState(() => _selectedPhotoFilter = key),
@@ -1269,13 +1277,20 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
             width: isSel ? 1.3 : 1.0,
           ),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSel ? Colors.white : const Color(0xFFCBD5E1),
-            fontSize: 10,
-            fontWeight: isSel ? FontWeight.w900 : FontWeight.w600,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 12, color: isSel ? Colors.white : accent),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSel ? Colors.white : const Color(0xFFCBD5E1),
+                fontSize: 10,
+                fontWeight: isSel ? FontWeight.w900 : FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1290,13 +1305,13 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
     final String decision = _auditDecisions[id] ?? '';
 
     Color badgeCol = const Color(0xFF10B981);
-    String badgeLbl = '📍 In-Situ (${dist}m)';
+    String badgeLbl = 'In-Situ (${dist}m)';
     if (mode == 'alert') {
       badgeCol = const Color(0xFFEF4444);
-      badgeLbl = '🚨 Écart ${dist}m';
+      badgeLbl = 'Écart ${dist}m';
     } else if (mode == 'boutique') {
       badgeCol = const Color(0xFFF59E0B);
-      badgeLbl = '🏪 Déporté (${dist}m)';
+      badgeLbl = 'Déporté (${dist}m)';
     }
 
     return InkWell(
@@ -1392,7 +1407,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(
-                        '🔍 Zoom HD (${photos.length})',
+                        'Zoom HD (${photos.length})',
                         style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w800),
                       ),
                     ),
@@ -1424,13 +1439,13 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '👷 ${ch['artisan']} • ${ch['gouv']}',
+                          '${ch['artisan']} • ${ch['gouv']}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Color(0xFF93C5FD), fontSize: 9, fontWeight: FontWeight.w700),
                         ),
                         Text(
-                          '🕵️ ${ch['commercial']} • SLA ${ch['sla']}',
+                          '${ch['commercial']} • SLA ${ch['sla']}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 8.5),
@@ -1454,7 +1469,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              decision == 'Validé' ? '✅ Validé' : '❌ Rejeté',
+                              decision == 'Validé' ? 'Validé' : 'Rejeté',
                               style: TextStyle(
                                 color: decision == 'Validé' ? const Color(0xFF6EE7B7) : const Color(0xFFFCA5A5),
                                 fontSize: 8,
@@ -1530,7 +1545,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '📸 AUDIT PHOTO HD • #$id',
+                                'AUDIT PHOTO HD • #$id',
                                 style: const TextStyle(
                                   color: Color(0xFF60A5FA),
                                   fontSize: 10.5,
@@ -1677,7 +1692,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                '🛰️ Preuve Géolocalisation GPS & Audit SLA',
+                                'Preuve Géolocalisation GPS & Audit SLA',
                                 style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
                               ),
                               Container(
@@ -1708,7 +1723,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            '📦 Composants STIEL détectés : ${ch['skus']}',
+                            'Composants STIEL détectés : ${ch['skus']}',
                             style: const TextStyle(color: Color(0xFFFDE68A), fontSize: 10, fontWeight: FontWeight.w700),
                           ),
                         ],
@@ -1728,7 +1743,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                                 SnackBar(
                                   backgroundColor: const Color(0xFF065F46),
                                   content: Text(
-                                    '✅ Dossier #$id (${ch['artisan']}) validé — +${ch['pts']} Pts crédités.',
+                                    'Dossier #$id (${ch['artisan']}) validé — +${ch['pts']} Pts crédités.',
                                     style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800),
                                   ),
                                 ),
@@ -1754,7 +1769,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                                 SnackBar(
                                   backgroundColor: const Color(0xFF991B1B),
                                   content: Text(
-                                    '❌ Dossier #$id (${ch['artisan']}) marqué en contre-visite GPS.',
+                                    'Dossier #$id (${ch['artisan']}) marqué en contre-visite GPS.',
                                     style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800),
                                   ),
                                 ),
@@ -2024,14 +2039,14 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                '📊 Répartition du Portefeuille (Champions, Réguliers, À risque, Critiques)',
+                'Répartition du Portefeuille (Champions, Réguliers, À risque, Critiques)',
                 style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 8),
               StielSeverityBar(summary: churnSum),
               const SizedBox(height: 14),
               const Text(
-                '📍 Top Gouvernorats Exposés au Churn (CA Menacé en TND)',
+                'Top Gouvernorats Exposés au Churn (CA Menacé en TND)',
                 style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 8),
@@ -2049,7 +2064,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                '📈 Impact Financier sur 6 Mois de la Relance Automatique <48h',
+                'Impact Financier sur 6 Mois de la Relance Automatique <48h',
                 style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 10),
@@ -2236,7 +2251,7 @@ class _StielFullMobileSuiteScreenState extends State<StielFullMobileSuiteScreen>
                       if (isAi && m['sources'] != null && m['sources']!.isNotEmpty) ...[
                         const SizedBox(height: 5),
                         Text(
-                          '🔎 Sources : ${m['sources']}',
+                          'Sources : ${m['sources']}',
                           style: const TextStyle(color: Color(0xFF60A5FA), fontSize: 8.5, fontWeight: FontWeight.w700),
                         ),
                       ],

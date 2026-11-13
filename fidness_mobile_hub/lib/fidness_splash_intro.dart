@@ -39,10 +39,10 @@ class _FidnessCinematicSplashScreenState
 
   // Liste des messages de démarrage télémétrique
   final List<String> _bootSteps = [
-    '⚡ Initialisation du noyau neural FIDNESS v4.2...',
-    '🛡️ Chiffrement des tunnels DWH PostgreSQL 17.7...',
-    '🌐 Synchronisation Multi-Tenant (Bondin & Stiel)...',
-    '🚀 Prêt pour le pilotage décisionnel en temps réel.',
+    'Initialisation du noyau neural FIDNESS v4.2...',
+    'Chiffrement des tunnels DWH PostgreSQL 17.7...',
+    'Synchronisation Multi-Tenant (Bondin & Stiel)...',
+    'Prêt pour le pilotage décisionnel en temps réel.',
   ];
   int _currentStepIdx = 0;
   Timer? _stepTimer;

@@ -68,12 +68,12 @@ class StielDwhData {
 
   // 4. PALMARÈS YTD DES ÉLECTRICIENS ARTISANS (172 Inscrits • Paliers Platine, Or, Argent, Bronze)
   static List<Map<String, dynamic>> palmaresElectriciens = [
-    {'rank': 1, 'nom': 'Walid Bouazizi', 'code': 'EL-2023-014', 'region': 'Grand Tunis', 'tier': 'PLATINE', 'chantiers': 142, 'ca': 46900, 'points': 6420, 'churn': 9, 'status': 'Ambassadeur ⭐'},
+    {'rank': 1, 'nom': 'Walid Bouazizi', 'code': 'EL-2023-014', 'region': 'Grand Tunis', 'tier': 'PLATINE', 'chantiers': 142, 'ca': 46900, 'points': 6420, 'churn': 9, 'status': 'Ambassadeur'},
     {'rank': 2, 'nom': 'Bilel Guesmi', 'code': 'EL-2023-088', 'region': 'Grand Tunis', 'tier': 'PLATINE', 'chantiers': 118, 'ca': 38450, 'points': 5190, 'churn': 12, 'status': 'Très Actif'},
     {'rank': 3, 'nom': 'Mohamed Ali Karray', 'code': 'EL-2024-032', 'region': 'Sfax & Sud', 'tier': 'PLATINE', 'chantiers': 104, 'ca': 34120, 'points': 4680, 'churn': 14, 'status': 'Leader Sud'},
-    {'rank': 4, 'nom': 'Anis Gharbi', 'code': 'EL-2024-109', 'region': 'Sousse & Sahel', 'tier': 'OR', 'chantiers': 76, 'ca': 24800, 'points': 2850, 'churn': 78, 'status': 'À Risque ⚠️'},
+    {'rank': 4, 'nom': 'Anis Gharbi', 'code': 'EL-2024-109', 'region': 'Sousse & Sahel', 'tier': 'OR', 'chantiers': 76, 'ca': 24800, 'points': 2850, 'churn': 78, 'status': 'À Risque'},
     {'rank': 5, 'nom': 'Sami Khelifi', 'code': 'EL-2024-177', 'region': 'Bizerte & Nord', 'tier': 'OR', 'chantiers': 68, 'ca': 21950, 'points': 2640, 'churn': 22, 'status': 'Régulier'},
-    {'rank': 6, 'nom': 'Nabil Tounsi', 'code': 'EL-2025-045', 'region': 'Grand Tunis', 'tier': 'OR', 'chantiers': 62, 'ca': 19800, 'points': 2310, 'churn': 18, 'status': 'En Hausse 📈'},
+    {'rank': 6, 'nom': 'Nabil Tounsi', 'code': 'EL-2025-045', 'region': 'Grand Tunis', 'tier': 'OR', 'chantiers': 62, 'ca': 19800, 'points': 2310, 'churn': 18, 'status': 'En Hausse'},
     {'rank': 7, 'nom': 'Tarek Maalej', 'code': 'EL-2025-288', 'region': 'Sfax & Sud', 'tier': 'ARGENT', 'chantiers': 44, 'ca': 14200, 'points': 1790, 'churn': 54, 'status': 'Cible Palier Or'},
     {'rank': 8, 'nom': 'Hichem Mejri', 'code': 'EL-2025-112', 'region': 'Nabeul (Cap Bon)', 'tier': 'ARGENT', 'chantiers': 39, 'ca': 12450, 'points': 1520, 'churn': 31, 'status': 'Régulier'},
     {'rank': 9, 'nom': 'Mourad Ayari', 'code': 'EL-2025-304', 'region': 'Grand Tunis', 'tier': 'ARGENT', 'chantiers': 34, 'ca': 10890, 'points': 1280, 'churn': 25, 'status': 'Actif'},
@@ -176,23 +176,23 @@ class StielDwhData {
 
   // 7. DISTRIBUTEURS & COMPTOIRS PARTENAIRES (20 Points de Vente B2B)
   static List<Map<String, dynamic>> distributeurs = [
-    {'rank': 1, 'nom': 'Comptoir Électrique du Sud (CES)', 'ville': 'Sfax (Route de Gabès)', 'ca': 384200, 'volume': 16840, 'artisans': 148, 'share': '20.8%', 'commercial': 'Sonia Gharbi', 'tier': 'Distributeur Or 🏆'},
-    {'rank': 2, 'nom': 'STEQ Charguia', 'ville': 'Tunis (Charguia)', 'ca': 348900, 'volume': 14250, 'artisans': 164, 'share': '18.9%', 'commercial': 'Karim Ben Ali', 'tier': 'Distributeur Or 🏆'},
-    {'rank': 3, 'nom': 'Élec-Distribution Sahel & Cie', 'ville': 'Sousse (Sahloul)', 'ca': 271400, 'volume': 11200, 'artisans': 96, 'share': '14.7%', 'commercial': 'Mehdi Trabelsi', 'tier': 'Distributeur Argent 🥈'},
-    {'rank': 4, 'nom': 'Comptoir Moderne de Nabeul', 'ville': 'Nabeul (Centre)', 'ca': 218500, 'volume': 8940, 'artisans': 74, 'share': '11.8%', 'commercial': 'Mehdi Trabelsi', 'tier': 'Distributeur Argent 🥈'},
-    {'rank': 5, 'nom': 'Maghreb Électrique Bizerte', 'ville': 'Bizerte (Zone Port)', 'ca': 182300, 'volume': 7650, 'artisans': 62, 'share': '9.9%', 'commercial': 'Yassine Mansour', 'tier': 'Distributeur Argent 🥈'},
+    {'rank': 1, 'nom': 'Comptoir Électrique du Sud (CES)', 'ville': 'Sfax (Route de Gabès)', 'ca': 384200, 'volume': 16840, 'artisans': 148, 'share': '20.8%', 'commercial': 'Sonia Gharbi', 'tier': 'Distributeur Or'},
+    {'rank': 2, 'nom': 'STEQ Charguia', 'ville': 'Tunis (Charguia)', 'ca': 348900, 'volume': 14250, 'artisans': 164, 'share': '18.9%', 'commercial': 'Karim Ben Ali', 'tier': 'Distributeur Or'},
+    {'rank': 3, 'nom': 'Élec-Distribution Sahel & Cie', 'ville': 'Sousse (Sahloul)', 'ca': 271400, 'volume': 11200, 'artisans': 96, 'share': '14.7%', 'commercial': 'Mehdi Trabelsi', 'tier': 'Distributeur Argent'},
+    {'rank': 4, 'nom': 'Comptoir Moderne de Nabeul', 'ville': 'Nabeul (Centre)', 'ca': 218500, 'volume': 8940, 'artisans': 74, 'share': '11.8%', 'commercial': 'Mehdi Trabelsi', 'tier': 'Distributeur Argent'},
+    {'rank': 5, 'nom': 'Maghreb Électrique Bizerte', 'ville': 'Bizerte (Zone Port)', 'ca': 182300, 'volume': 7650, 'artisans': 62, 'share': '9.9%', 'commercial': 'Yassine Mansour', 'tier': 'Distributeur Argent'},
     {'rank': 6, 'nom': 'Comptoir Électro-Technique Ariana', 'ville': 'Ariana (Ennasr)', 'ca': 154800, 'volume': 6420, 'artisans': 58, 'share': '8.4%', 'commercial': 'Karim Ben Ali', 'tier': 'Partenaire Certifié'},
   ];
 
   // 8. BOUTIQUE CADEAUX & OUTILLAGE PRO STIEL
   static List<Map<String, dynamic>> cadeauxPro = [
-    {'titre': 'Veste Polaire Haute Visibilité STIEL', 'cat': 'Équipement Pro', 'points': 800, 'echanges': 48, 'stock': 12, 'valeurTnd': 45.0, 'status': 'Tension Stock ⚠️'},
-    {'titre': 'Boîte à Outils Électricien Facom / STIEL', 'cat': 'Outillage Pro', 'points': 2500, 'echanges': 34, 'stock': 8, 'valeurTnd': 140.0, 'status': 'Best-Seller 🏆'},
+    {'titre': 'Veste Polaire Haute Visibilité STIEL', 'cat': 'Équipement Pro', 'points': 800, 'echanges': 48, 'stock': 12, 'valeurTnd': 45.0, 'status': 'Tension Stock'},
+    {'titre': 'Boîte à Outils Électricien Facom / STIEL', 'cat': 'Outillage Pro', 'points': 2500, 'echanges': 34, 'stock': 8, 'valeurTnd': 140.0, 'status': 'Best-Seller'},
     {'titre': 'Multimètre Numérique Digital Pro', 'cat': 'Mesure & Test', 'points': 1200, 'echanges': 29, 'stock': 15, 'valeurTnd': 68.0, 'status': 'Stock Normal'},
-    {'titre': 'Visseuse Sans Fil 18V Li-Ion Pro', 'cat': 'Électroportatif', 'points': 4000, 'echanges': 22, 'stock': 5, 'valeurTnd': 220.0, 'status': 'Palier Platine ⭐'},
+    {'titre': 'Visseuse Sans Fil 18V Li-Ion Pro', 'cat': 'Électroportatif', 'points': 4000, 'echanges': 22, 'stock': 5, 'valeurTnd': 220.0, 'status': 'Palier Platine'},
     {'titre': 'Casque de Chantier Ventilé STIEL', 'cat': 'EPI Sécurité', 'points': 450, 'echanges': 19, 'stock': 35, 'valeurTnd': 25.0, 'status': 'Stock Élevé'},
     {'titre': 'Pince à Dénuder Automatique Pro', 'cat': 'Outillage Pro', 'points': 650, 'echanges': 18, 'stock': 22, 'valeurTnd': 35.0, 'status': 'Stock Normal'},
-    {'titre': 'Perforateur Burineur SDS-Plus 800W', 'cat': 'Électroportatif', 'points': 4500, 'echanges': 9, 'stock': 4, 'valeurTnd': 260.0, 'status': 'Palier Platine ⭐'},
+    {'titre': 'Perforateur Burineur SDS-Plus 800W', 'cat': 'Électroportatif', 'points': 4500, 'echanges': 9, 'stock': 4, 'valeurTnd': 260.0, 'status': 'Palier Platine'},
   ];
 
   // 9. AGENT IA CHURN ARTISANS (Décrochage chantiers & Recommandations)
@@ -206,7 +206,7 @@ class StielDwhData {
       'points': 2850,
       'cause': 'Chute déclarations (-60% M-1)',
       'action': 'Visite commercial in-situ + Offre 100 Pts bonus',
-      'status': 'Risque Critique 🔴'
+      'status': 'Risque Critique'
     },
     {
       'nom': 'Tarek Maalej',
@@ -217,7 +217,7 @@ class StielDwhData {
       'points': 1790,
       'cause': 'Aucun chantier depuis 5 semaines',
       'action': 'Appel délégué STIEL + Échantillons Série Noire',
-      'status': 'Risque Élevé 🟠'
+      'status': 'Risque Élevé'
     },
     {
       'nom': 'Mondher Zribi',
@@ -228,7 +228,7 @@ class StielDwhData {
       'points': 740,
       'cause': 'Baisse volume disjoncteurs',
       'action': 'Offre réactivation pack chantier +50 pts',
-      'status': 'Risque Élevé 🟠'
+      'status': 'Risque Élevé'
     },
     {
       'nom': 'Marwen Mansouri',
@@ -239,7 +239,7 @@ class StielDwhData {
       'points': 1260,
       'cause': 'Retard validation photo in-situ',
       'action': 'Assistance directe application Club Alpha',
-      'status': 'Risque Élevé 🟠'
+      'status': 'Risque Élevé'
     },
     {
       'nom': 'Skander Triki',
@@ -250,7 +250,7 @@ class StielDwhData {
       'points': 590,
       'cause': 'Fréquence chantiers ralentie',
       'action': 'Visite de courtoisie délégué commercial',
-      'status': 'Risque Modéré 🟡'
+      'status': 'Risque Modéré'
     },
   ];
 
