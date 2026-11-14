@@ -426,6 +426,13 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
   late final AnimationController _logoPulseCtrl;
   late final AnimationController _shimmerCtrl;
   late final AnimationController _entranceCtrl;
+  late final AnimationController _shakeCtrl;
+
+  late final Animation<double> _headerFade;
+  late final Animation<Offset> _headerSlide;
+  late final Animation<double> _cardFade;
+  late final Animation<Offset> _cardSlide;
+  late final Animation<double> _footerFade;
 
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
@@ -435,6 +442,7 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
   bool _obscurePassword = true;
   bool _rememberSession = true;
   bool _isAuthenticating = false;
+  bool _btnPressed = false;
   String _authStepText = '';
   String? _errorMessage;
 
@@ -443,20 +451,57 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
     super.initState();
     _bgParticleCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 18),
+      duration: const Duration(seconds: 22),
     )..repeat();
     _logoPulseCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2600),
+      duration: const Duration(milliseconds: 2800),
     )..repeat(reverse: true);
     _shimmerCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2400),
+      duration: const Duration(milliseconds: 3200),
     )..repeat();
     _entranceCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1100),
+      duration: const Duration(milliseconds: 1150),
     )..forward();
+    _shakeCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    );
+
+    _headerFade = CurvedAnimation(
+      parent: _entranceCtrl,
+      curve: const Interval(0.0, 0.55, curve: Curves.easeOut),
+    );
+    _headerSlide = Tween<Offset>(
+      begin: const Offset(0, -0.06),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _entranceCtrl,
+        curve: const Interval(0.0, 0.58, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    _cardFade = CurvedAnimation(
+      parent: _entranceCtrl,
+      curve: const Interval(0.20, 0.78, curve: Curves.easeOut),
+    );
+    _cardSlide = Tween<Offset>(
+      begin: const Offset(0, 0.08),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _entranceCtrl,
+        curve: const Interval(0.20, 0.82, curve: Curves.easeOutQuart),
+      ),
+    );
+
+    _footerFade = CurvedAnimation(
+      parent: _entranceCtrl,
+      curve: const Interval(0.55, 1.0, curve: Curves.easeOut),
+    );
 
     _emailFocus.addListener(() => setState(() {}));
     _passwordFocus.addListener(() => setState(() {}));
@@ -468,11 +513,17 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
     _logoPulseCtrl.dispose();
     _shimmerCtrl.dispose();
     _entranceCtrl.dispose();
+    _shakeCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
     super.dispose();
+  }
+
+  void _triggerError(String msg) {
+    setState(() => _errorMessage = msg);
+    _shakeCtrl.forward(from: 0.0);
   }
 
   Future<void> _submitLogin() async {
@@ -481,10 +532,9 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
     final password = _passwordCtrl.text.trim();
 
     if (id.isEmpty || password.isEmpty) {
-      setState(() {
-        _errorMessage =
-            'Veuillez saisir votre identifiant professionnel et votre mot de passe.';
-      });
+      _triggerError(
+        'Veuillez saisir votre identifiant professionnel et votre mot de passe.',
+      );
       return;
     }
 
@@ -496,9 +546,7 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
     } else if (id == 'clubalpha' && password == 'club.alpha') {
       resolvedTenant = 'stiel';
     } else {
-      setState(() {
-        _errorMessage = 'Identifiant ou mot de passe incorrect.';
-      });
+      _triggerError('Identifiant ou mot de passe incorrect.');
       return;
     }
 
@@ -541,26 +589,57 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 22,
-                  vertical: 10,
+                  vertical: 14,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 16),
-                    _buildAnimatedFidnessHeader(),
-                    const SizedBox(height: 16),
-                    _buildGlassLoginCard(),
-                    const SizedBox(height: 14),
-                    const Text(
-                      '© 2026 FIDNESS • Chiffrement SSL/TLS • Isolation Multi-DWH Certifiée',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFF64748B),
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w600,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 430),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 10),
+                      FadeTransition(
+                        opacity: _headerFade,
+                        child: SlideTransition(
+                          position: _headerSlide,
+                          child: _buildAnimatedFidnessHeader(),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      FadeTransition(
+                        opacity: _cardFade,
+                        child: SlideTransition(
+                          position: _cardSlide,
+                          child: AnimatedBuilder(
+                            animation: _shakeCtrl,
+                            builder: (context, child) {
+                              final t = _shakeCtrl.value;
+                              final dx = t == 0
+                                  ? 0.0
+                                  : math.sin(t * math.pi * 5) * (1.0 - t) * 10.0;
+                              return Transform.translate(
+                                offset: Offset(dx, 0),
+                                child: child,
+                              );
+                            },
+                            child: _buildGlassLoginCard(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      FadeTransition(
+                        opacity: _footerFade,
+                        child: const Text(
+                          '© 2026 FIDNESS • Chiffrement SSL/TLS • Isolation Multi-DWH Certifiée',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Color(0xFF64748B),
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -707,164 +786,349 @@ class _FidnessModernLoginScreenState extends State<FidnessModernLoginScreen>
   }
 
   Widget _buildGlassLoginCard() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-        child: Container(
-          padding: const EdgeInsets.all(18),
+    final bool emailFocused = _emailFocus.hasFocus;
+    final bool passFocused = _passwordFocus.hasFocus;
+
+    return AnimatedBuilder(
+      animation: _shimmerCtrl,
+      builder: (context, child) {
+        final glowAlpha =
+            0.16 + 0.08 * math.sin(_shimmerCtrl.value * 2 * math.pi);
+        return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            color: Colors.white.withValues(alpha: 0.07),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.16),
-              width: 1.2,
-            ),
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF4B67F6).withValues(alpha: glowAlpha),
+                blurRadius: 34,
+                spreadRadius: 1,
+                offset: const Offset(0, 12),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.55),
+                blurRadius: 24,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Identifiant Professionnel',
-                style: TextStyle(
-                  color: Color(0xFFCBD5E1),
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 5),
-              TextField(
-                controller: _emailCtrl,
-                focusNode: _emailFocus,
-                style: const TextStyle(color: Colors.white, fontSize: 13.5),
-                decoration: InputDecoration(
-                  hintText: 'Saisissez votre identifiant',
-                  hintStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
-                  filled: true,
-                  fillColor: const Color(0xFF0F172A),
-                  prefixIcon: const Icon(
-                    Icons.person_outline_rounded,
-                    size: 18,
-                    color: Color(0xFF60A5FA),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Clé d\'accès / Mot de passe',
-                style: TextStyle(
-                  color: Color(0xFFCBD5E1),
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 5),
-              TextField(
-                controller: _passwordCtrl,
-                focusNode: _passwordFocus,
-                obscureText: _obscurePassword,
-                onSubmitted: (_) => _submitLogin(),
-                style: const TextStyle(color: Colors.white, fontSize: 13.5),
-                decoration: InputDecoration(
-                  hintText: '••••••••',
-                  hintStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
-                  filled: true,
-                  fillColor: const Color(0xFF0F172A),
-                  prefixIcon: const Icon(
-                    Icons.lock_outline_rounded,
-                    size: 18,
-                    color: Color(0xFF60A5FA),
-                  ),
-                  suffixIcon: IconButton(
-                    onPressed: () =>
-                        setState(() => _obscurePassword = !_obscurePassword),
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      size: 18,
-                      color: const Color(0xFF94A3B8),
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Checkbox(
-                    value: _rememberSession,
-                    activeColor: const Color(0xFF4B67F6),
-                    onChanged: (v) =>
-                        setState(() => _rememberSession = v ?? true),
-                  ),
-                  const Text(
-                    'Session JWT',
-                    style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 11.5),
-                  ),
+          child: child,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            padding: const EdgeInsets.all(22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.09),
+                  Colors.white.withValues(alpha: 0.04),
                 ],
               ),
-              if (_errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    _errorMessage!,
-                    style:
-                        const TextStyle(color: Color(0xFFF87171), fontSize: 11),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.18),
+                width: 1.2,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Identifiant Professionnel',
+                  style: TextStyle(
+                    color: Color(0xFFCBD5E1),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              const SizedBox(height: 6),
-              GestureDetector(
-                onTap: _isAuthenticating ? null : _submitLogin,
-                child: Container(
-                  height: 48,
+                const SizedBox(height: 6),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOut,
                   decoration: BoxDecoration(
+                    color: const Color(0xFF0F172A),
                     borderRadius: BorderRadius.circular(14),
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF1D3993),
-                        Color(0xFF4B67F6),
-                        Color(0xFFFF5400),
-                      ],
+                    border: Border.all(
+                      color: emailFocused
+                          ? const Color(0xFF4B67F6)
+                          : Colors.white.withValues(alpha: 0.08),
+                      width: emailFocused ? 1.5 : 1.0,
+                    ),
+                    boxShadow: emailFocused
+                        ? [
+                            BoxShadow(
+                              color: const Color(0xFF4B67F6)
+                                  .withValues(alpha: 0.25),
+                              blurRadius: 14,
+                            ),
+                          ]
+                        : [],
+                  ),
+                  child: TextField(
+                    controller: _emailCtrl,
+                    focusNode: _emailFocus,
+                    style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                    decoration: InputDecoration(
+                      hintText: 'Saisissez votre identifiant',
+                      hintStyle: const TextStyle(
+                          color: Color(0xFF64748B), fontSize: 13),
+                      filled: false,
+                      prefixIcon: Icon(
+                        Icons.person_outline_rounded,
+                        size: 18,
+                        color: emailFocused
+                            ? const Color(0xFF93C5FD)
+                            : const Color(0xFF60A5FA),
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 14),
                     ),
                   ),
-                  child: Center(
-                    child: _isAuthenticating
-                        ? Text(
-                            _authStepText,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'Clé d\'accès / Mot de passe',
+                  style: TextStyle(
+                    color: Color(0xFFCBD5E1),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOut,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0F172A),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: passFocused
+                          ? const Color(0xFF4B67F6)
+                          : Colors.white.withValues(alpha: 0.08),
+                      width: passFocused ? 1.5 : 1.0,
+                    ),
+                    boxShadow: passFocused
+                        ? [
+                            BoxShadow(
+                              color: const Color(0xFF4B67F6)
+                                  .withValues(alpha: 0.25),
+                              blurRadius: 14,
                             ),
-                          )
-                        : const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          ]
+                        : [],
+                  ),
+                  child: TextField(
+                    controller: _passwordCtrl,
+                    focusNode: _passwordFocus,
+                    obscureText: _obscurePassword,
+                    onSubmitted: (_) => _submitLogin(),
+                    style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                    decoration: InputDecoration(
+                      hintText: '••••••••',
+                      hintStyle: const TextStyle(
+                          color: Color(0xFF64748B), fontSize: 13),
+                      filled: false,
+                      prefixIcon: Icon(
+                        Icons.lock_outline_rounded,
+                        size: 18,
+                        color: passFocused
+                            ? const Color(0xFF93C5FD)
+                            : const Color(0xFF60A5FA),
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () =>
+                            setState(() => _obscurePassword = !_obscurePassword),
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          size: 18,
+                          color: const Color(0xFF94A3B8),
+                        ),
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 14),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _rememberSession,
+                      activeColor: const Color(0xFF4B67F6),
+                      onChanged: (v) =>
+                          setState(() => _rememberSession = v ?? true),
+                    ),
+                    const Text(
+                      'Session JWT',
+                      style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 11.5),
+                    ),
+                  ],
+                ),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOut,
+                  child: _errorMessage != null
+                      ? Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEF4444)
+                                .withValues(alpha: 0.14),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: const Color(0xFFF87171)
+                                  .withValues(alpha: 0.45),
+                            ),
+                          ),
+                          child: Row(
                             children: [
-                              Icon(Icons.bolt_rounded,
-                                  color: Colors.white, size: 19),
-                              SizedBox(width: 8),
-                              Text(
-                                'SE CONNECTER AU HUB',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 13.5,
-                                  fontWeight: FontWeight.w800,
+                              const Icon(Icons.error_outline_rounded,
+                                  size: 15, color: Color(0xFFF87171)),
+                              const SizedBox(width: 7),
+                              Expanded(
+                                child: Text(
+                                  _errorMessage!,
+                                  style: const TextStyle(
+                                      color: Color(0xFFFCA5A5), fontSize: 11),
                                 ),
                               ),
                             ],
                           ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                const SizedBox(height: 6),
+                GestureDetector(
+                  onTapDown: (_) => setState(() => _btnPressed = true),
+                  onTapUp: (_) => setState(() => _btnPressed = false),
+                  onTapCancel: () => setState(() => _btnPressed = false),
+                  onTap: _isAuthenticating ? null : _submitLogin,
+                  child: AnimatedScale(
+                    scale: _btnPressed ? 0.975 : 1.0,
+                    duration: const Duration(milliseconds: 120),
+                    curve: Curves.easeOut,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF1D3993),
+                                  Color(0xFF4B67F6),
+                                  Color(0xFFFF5400),
+                                ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF4B67F6)
+                                      .withValues(alpha: 0.35),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: _isAuthenticating
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const SizedBox(
+                                          width: 15,
+                                          height: 15,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Flexible(
+                                          child: Text(
+                                            _authStepText,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11.5,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.bolt_rounded,
+                                            color: Colors.white, size: 19),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'SE CONNECTER AU HUB',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 13.5,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.4,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          ),
+                          // Reflet lumineux animé traversant le bouton
+                          if (!_isAuthenticating)
+                            Positioned.fill(
+                              child: IgnorePointer(
+                                child: AnimatedBuilder(
+                                  animation: _shimmerCtrl,
+                                  builder: (context, _) {
+                                    final dx = -1.4 + (_shimmerCtrl.value * 3.2);
+                                    return FractionalTranslation(
+                                      translation: Offset(dx, 0),
+                                      child: Transform.rotate(
+                                        angle: 0.35,
+                                        child: Container(
+                                          width: 55,
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white
+                                                    .withValues(alpha: 0.0),
+                                                Colors.white
+                                                    .withValues(alpha: 0.22),
+                                                Colors.white
+                                                    .withValues(alpha: 0.0),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
